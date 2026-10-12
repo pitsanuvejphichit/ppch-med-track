@@ -919,6 +919,37 @@
         margin: 0 auto !important;
         padding: 10px 0 !important;
       }
+
+      /* Dedicated Inspection Slip Print Mode */
+      body.printing-slip {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+      }
+      body.printing-slip .app-wrapper,
+      body.printing-slip .app-topbar,
+      body.printing-slip .app-sidebar,
+      body.printing-slip .app-main-content,
+      body.printing-slip #pageLoader,
+      body.printing-slip #toastNotice,
+      body.printing-slip .modal-overlay:not(#slipModal) {
+        display: none !important;
+      }
+      body.printing-slip #slipModal {
+        display: block !important;
+        position: static !important;
+        background: transparent !important;
+        padding: 0 !important;
+      }
+      body.printing-slip #slipModal .modal-box {
+        max-width: 100% !important;
+        box-shadow: none !important;
+        border: 1px solid #cbd5e1 !important;
+        padding: 16px !important;
+      }
+      body.printing-slip .no-print-slip {
+        display: none !important;
+      }
     }
   </style>
 </head>
@@ -1388,17 +1419,24 @@
   </div>
 
   <!-- Detail Slip Modal -->
-  <div id="slipModal" class="modal-overlay hidden no-print" onclick="if(event.target === this) closeSlipModal()">
-    <div class="modal-box" style="max-width: 440px;">
-      <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 10px; margin-bottom: 12px;">
-        <div style="font-size: 14px; font-weight: 700; color: var(--royal-blue);">สลิปผลการตรวจเช็คเครื่องมือแพทย์</div>
-        <button onclick="closeSlipModal()" style="border: none; background: transparent; cursor: pointer; color: var(--text-muted);"><span class="material-icons-round">close</span></button>
+  <div id="slipModal" class="modal-overlay hidden" onclick="if(event.target === this) closeSlipModal()">
+    <div class="modal-box" style="max-width: 620px; width: 95%; max-height: 90vh; display: flex; flex-direction: column;">
+      <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 12px; margin-bottom: 12px; flex-shrink: 0;">
+        <div style="font-size: 15px; font-weight: 700; color: var(--royal-blue); display: flex; align-items: center; gap: 8px;">
+          <span class="material-icons-round" style="font-size: 20px;">fact_check</span>
+          <span>สลิปผลการตรวจเช็คเครื่องมือแพทย์</span>
+        </div>
+        <button onclick="closeSlipModal()" class="no-print-slip" style="border: none; background: transparent; cursor: pointer; color: var(--text-muted);"><span class="material-icons-round">close</span></button>
       </div>
-      <div id="slipContent">
+      <div id="slipContent" style="overflow-y: auto; padding-right: 4px; flex-grow: 1;">
         <!-- Injected -->
       </div>
-      <div style="margin-top: 16px; display: flex; justify-content: flex-end;">
-        <button type="button" onclick="closeSlipModal()" class="btn-tool">ปิด</button>
+      <div class="no-print-slip" style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
+        <button type="button" onclick="printSlipDirect()" class="btn-tool" style="display: inline-flex; align-items: center; gap: 6px;">
+          <span class="material-icons-round" style="font-size: 16px; color: var(--royal-blue);">print</span>
+          <span>พิมพ์สลิป</span>
+        </button>
+        <button type="button" onclick="closeSlipModal()" class="btn-tool" style="background: var(--royal-blue); color: #fff; border-color: var(--royal-blue); padding: 7px 18px;">ปิด</button>
       </div>
     </div>
   </div>
@@ -2306,28 +2344,170 @@
       var ev = allEvaluations.find(function (e) { return e.id === evalId; });
       if (!ev) return;
       var eq = window.PPCH_STORE.getEquipmentById(ev.deviceId);
+      var form = window.PPCH_STORE.getFormById(ev.formId || (eq ? eq.formId : ''));
+      var deptName = window.PPCH_STORE.getDepartmentName(ev.department || (eq ? eq.currentDept : ''));
+      var isBorrowed = eq && (eq.homeDept !== eq.currentDept);
 
-      var html = '<div style="font-size: 13px; line-height: 1.8;">' +
-        '<div><strong>เครื่องมือ:</strong> ' + (eq ? eq.name : ev.deviceName) + '</div>' +
-        '<div><strong>รหัสครุภัณฑ์:</strong> ' + (eq ? eq.assetCode : ev.deviceAsset) + '</div>' +
-        '<div><strong>แผนก:</strong> ' + window.PPCH_STORE.getDepartmentName(ev.department) + '</div>' +
-        '<div><strong>วันเวลาตรวจ:</strong> ' + ev.evaluatedAt + '</div>' +
-        '<div><strong>ผู้ตรวจเช็ค:</strong> ' + ev.evaluatedBy + '</div>' +
-        '<div><strong>ผลการตรวจ:</strong> ' + (ev.result === 'normal' ? '<span style="color: var(--green-ready); font-weight: 700;">พร้อมใช้งาน</span>' : '<span style="color: var(--red-abnormal); font-weight: 700;">พบข้อบกพร่อง</span>') + '</div>';
-
-      if (ev.abnormalNote) {
-        html += '<div style="background: #fef2f2; border: 1px solid #fecaca; padding: 8px; border-radius: 6px; margin-top: 6px; color: #991b1b;"><strong>ข้อบกพร่อง:</strong> ' + ev.abnormalNote + '</div>';
+      // Parse checklist answers safely
+      var checklist = ev.checklist || {};
+      if (typeof checklist === 'string') {
+        try { checklist = JSON.parse(checklist); } catch (e) { checklist = {}; }
       }
 
+      // Check items
+      var formItems = (form && Array.isArray(form.items)) ? form.items : [];
+      var passCount = 0;
+      var failCount = 0;
+      var totalCount = formItems.length;
+
+      var checklistHtml = '';
+      if (ev.isRepairResolution) {
+        checklistHtml = '<div style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 10px; padding: 12px 14px; margin-top: 12px;">' +
+          '<div style="font-weight: 700; color: #065f46; display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">' +
+            '<span class="material-icons-round" style="font-size: 18px; color: #059669;">task_alt</span> บันทึกการแก้ไขงานซ่อม & ทดสอบระบบเสร็จสิ้น' +
+          '</div>' +
+          '<div style="font-size: 12.5px; color: #047857; line-height: 1.6;">' +
+            '<div><strong>การแก้ไข:</strong> ' + (ev.abnormalNote || 'ดำเนินการแก้ไขและทดสอบระบบเรียบร้อย') + '</div>' +
+            '<div><strong>ช่างผู้รับผิดชอบ:</strong> ' + ev.evaluatedBy + '</div>' +
+          '</div>' +
+        '</div>';
+      } else if (formItems.length > 0) {
+        var rowsHtml = '';
+        formItems.forEach(function (qText, idx) {
+          var val = checklist[idx] !== undefined ? checklist[idx] : (checklist[String(idx)] !== undefined ? checklist[String(idx)] : checklist[qText]);
+          var isPass = (val === 'pass' || val === 'normal' || val === true || val === 1 || val === 'ผ่าน');
+          var isFail = (val === 'fail' || val === 'abnormal' || val === false || val === 0 || val === 'ไม่ผ่าน');
+
+          if (isPass) passCount++;
+          if (isFail) failCount++;
+
+          var badgeHtml = '';
+          if (isPass) {
+            badgeHtml = '<span style="background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; padding: 3px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;"><span class="material-icons-round" style="font-size: 14px;">check_circle</span> ผ่าน</span>';
+          } else if (isFail) {
+            badgeHtml = '<span style="background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; padding: 3px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;"><span class="material-icons-round" style="font-size: 14px;">cancel</span> ไม่ผ่าน</span>';
+          } else {
+            badgeHtml = '<span style="background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; padding: 3px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 500; white-space: nowrap;">- ไม่ได้ระบุ -</span>';
+          }
+
+          rowsHtml += '<div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 10px 12px; border-bottom: 1px solid #f1f5f9; background: ' + (idx % 2 === 0 ? '#ffffff' : '#f8fafc') + ';">' +
+            '<div style="font-size: 12.5px; line-height: 1.5; color: #1e293b; display: flex; gap: 8px;">' +
+              '<span style="font-weight: 700; color: var(--royal-blue); min-width: 18px;">' + (idx + 1) + '.</span>' +
+              '<span>' + qText + '</span>' +
+            '</div>' +
+            '<div style="flex-shrink: 0; margin-top: 1px;">' + badgeHtml + '</div>' +
+          '</div>';
+        });
+
+        var summaryRate = totalCount > 0 ? Math.round((passCount / totalCount) * 100) : 0;
+        var summaryColor = failCount > 0 ? 'var(--red-abnormal)' : 'var(--green-ready)';
+
+        checklistHtml = '<div style="margin-top: 14px;">' +
+          '<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">' +
+            '<div style="font-size: 13px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 6px;">' +
+              '<span class="material-icons-round" style="font-size: 17px; color: var(--royal-blue);">fact_check</span>' +
+              '<span>รายการตรวจเช็คความพร้อมใช้ (' + (form ? (form.shortName || form.name) : 'ทุกข้อ') + ')</span>' +
+            '</div>' +
+            '<div style="font-size: 12px; font-weight: 700; color: ' + summaryColor + ';">' +
+              'ผ่าน ' + passCount + '/' + totalCount + ' ข้อ (' + summaryRate + '%)' +
+            '</div>' +
+          '</div>' +
+          '<div style="border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden;">' +
+            rowsHtml +
+          '</div>' +
+        '</div>';
+      } else if (Object.keys(checklist).length > 0) {
+        var rowsHtml = '';
+        var kList = Object.keys(checklist);
+        kList.forEach(function (k, idx) {
+          var val = checklist[k];
+          var isPass = (val === 'pass' || val === 'normal' || val === true || val === 'ผ่าน');
+          var badgeHtml = isPass
+            ? '<span style="background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700;">ผ่าน</span>'
+            : '<span style="background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700;">ไม่ผ่าน</span>';
+
+          rowsHtml += '<div style="display: flex; justify-content: space-between; padding: 8px 10px; border-bottom: 1px solid #f1f5f9; font-size: 12px;">' +
+            '<span>ข้อ ' + (idx + 1) + ' (' + k + ')</span>' +
+            badgeHtml +
+          '</div>';
+        });
+        checklistHtml = '<div style="margin-top: 12px; border: 1px solid #e2e8f0; border-radius: 8px;">' + rowsHtml + '</div>';
+      }
+
+      // UPS Battery Details
+      var upsHtml = '';
       if (ev.upsBattery && ev.upsBattery.tested) {
-        html += '<div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 8px; border-radius: 6px; margin-top: 6px; color: #166534;">' +
-          '<strong>รอบตรวจ UPS:</strong> อยู่ได้ ' + (ev.upsBattery.runtimeFormatted || '-') + ' ชม. (รอบ ' + (ev.upsBattery.cycleDate || '-') + ')' +
+        var isUpsPass = ev.upsBattery.status === 'normal' || (ev.upsBattery.runtimeHours * 60 + ev.upsBattery.runtimeMinutes >= 60);
+        upsHtml = '<div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 12px 14px; margin-top: 12px;">' +
+          '<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">' +
+            '<div style="font-weight: 700; color: #166534; font-size: 13px; display: flex; align-items: center; gap: 6px;">' +
+              '<span class="material-icons-round" style="font-size: 18px; color: #16a34a;">battery_charging_full</span> การตรวจสอบระยะเวลาใช้งานแบตเตอรี่ UPS (รอบ 1 & 16)' +
+            '</div>' +
+            (isUpsPass ? '<span style="background: #dcfce7; color: #15803d; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px;">≥ 1 ชม. (ผ่าน)</span>' : '<span style="background: #fee2e2; color: #b91c1c; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px;">ต่ำกว่าเกณฑ์</span>') +
+          '</div>' +
+          '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px; color: #166534;">' +
+            '<div>• ระยะเวลาสำรองไฟจริง: <strong>' + (ev.upsBattery.runtimeFormatted || '-') + ' ชม.</strong></div>' +
+            '<div>• รอบตรวจประจำวันที่: <strong>' + (ev.upsBattery.cycleDate || '-') + '</strong></div>' +
+          '</div>' +
         '</div>';
       }
 
-      html += '</div>';
+      // Abnormal / Defect Note
+      var defectHtml = '';
+      if (ev.abnormalNote) {
+        defectHtml = '<div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 10px; padding: 12px 14px; margin-top: 12px; color: #991b1b;">' +
+          '<div style="font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">' +
+            '<span class="material-icons-round" style="font-size: 18px; color: #dc2626;">warning</span> ข้อบกพร่องที่ตรวจพบ / บันทึกเพิ่มเติม' +
+          '</div>' +
+          '<div style="font-size: 12.5px; line-height: 1.5; color: #7f1d1d; background: #ffffff; border: 1px solid #fee2e2; padding: 8px 10px; border-radius: 6px; margin-top: 4px;">' +
+            ev.abnormalNote +
+          '</div>' +
+        '</div>';
+      }
+
+      // Status Badge
+      var statusBadgeHtml = ev.result === 'normal'
+        ? '<span class="badge-status badge-status-ready"><span class="material-icons-round" style="font-size: 14px;">check_circle</span> พร้อมใช้งาน</span>'
+        : '<span class="badge-status badge-status-abnormal"><span class="material-icons-round" style="font-size: 14px;">error</span> พบข้อบกพร่อง</span>';
+
+      var html = '<div style="line-height: 1.6;">' +
+        // Header Summary Card
+        '<div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 14px;">' +
+          '<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px;">' +
+            '<div>' +
+              '<div style="font-size: 14px; font-weight: 700; color: var(--royal-blue);">' + (eq ? eq.name : ev.deviceName) + '</div>' +
+              '<div style="font-size: 11.5px; color: var(--text-muted);">รุ่น ' + (eq ? (eq.model || '-') : '-') + '</div>' +
+            '</div>' +
+            '<span class="asset-code-clean">' + (eq ? eq.assetCode : ev.deviceAsset) + '</span>' +
+          '</div>' +
+          '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; font-size: 12px; border-top: 1px dashed #cbd5e1; padding-top: 8px; margin-top: 4px;">' +
+            '<div><span style="color: var(--text-muted);">แผนกที่ตรวจ:</span> <strong>' + deptName + '</strong>' + (isBorrowed ? ' <span style="font-size: 10px; color: #d97706;">(ยืม)</span>' : '') + '</div>' +
+            '<div><span style="color: var(--text-muted);">ผู้ตรวจเช็ค:</span> <strong>' + ev.evaluatedBy + '</strong></div>' +
+            '<div><span style="color: var(--text-muted);">วัน-เวลาตรวจ:</span> <strong style="font-family: var(--font-mono);">' + ev.evaluatedAt + '</strong></div>' +
+            '<div style="display: flex; align-items: center; gap: 4px;"><span style="color: var(--text-muted);">ผลสรุป:</span> ' + statusBadgeHtml + '</div>' +
+          '</div>' +
+        '</div>' +
+        // UPS Box
+        upsHtml +
+        // Defect Box
+        defectHtml +
+        // Full Checklist Table
+        checklistHtml +
+      '</div>';
+
       document.getElementById('slipContent').innerHTML = html;
       document.getElementById('slipModal').classList.remove('hidden');
+    }
+
+    function printSlipDirect() {
+      var cleanup = function () {
+        document.body.classList.remove('printing-slip');
+        window.removeEventListener('afterprint', cleanup);
+      };
+      window.addEventListener('afterprint', cleanup);
+      document.body.classList.add('printing-slip');
+      window.print();
+      setTimeout(cleanup, 2500);
     }
 
     function closeSlipModal() {

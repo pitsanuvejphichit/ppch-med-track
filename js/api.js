@@ -90,6 +90,10 @@
   }
 
   function mapEvaluationFromDb(r) {
+    var answersObj = r.answers || {};
+    if (typeof answersObj === 'string') {
+      try { answersObj = JSON.parse(answersObj); } catch (e) { answersObj = {}; }
+    }
     return {
       id: r.id,
       deviceId: r.device_id,
@@ -101,7 +105,7 @@
       evaluatedBy: r.evaluated_by,
       result: r.result,
       abnormalNote: r.abnormal_note || '',
-      checklist: r.answers || {},
+      checklist: answersObj,
       upsBattery: {
         tested: !!r.ups_tested,
         runtimeFormatted: r.ups_duration || ''
