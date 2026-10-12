@@ -992,7 +992,7 @@
         <div class="topbar-breadcrumbs">
           <span class="bread-parent">ระบบเครื่องมือแพทย์</span>
           <span class="bread-sep">/</span>
-          <span class="bread-current" id="breadCurrent">สรุปผลรายเครื่อง</span>
+          <span class="bread-current" id="breadCurrent">สรุปรายวัน</span>
         </div>
       </div>
 
@@ -1016,8 +1016,12 @@
         <div class="sidebar-section-title">เมนูหลัก</div>
         <nav class="sidebar-nav">
           <button onclick="switchView('summary')" id="navBtn_summary" class="nav-btn active">
-            <span class="material-icons-round">fact_check</span>
-            <span>สรุปผลรายเครื่อง</span>
+            <span class="material-icons-round">today</span>
+            <span>สรุปรายวัน</span>
+          </button>
+          <button onclick="switchView('device_summary')" id="navBtn_device_summary" class="nav-btn">
+            <span class="material-icons-round">medical_information</span>
+            <span>สรุปรายเครื่อง</span>
           </button>
           <button onclick="switchView('defective')" id="navBtn_defective" class="nav-btn">
             <span class="material-icons-round">build_circle</span>
@@ -1115,7 +1119,7 @@
               <!-- Search -->
               <div class="search-input-box">
                 <span class="material-icons-round">search</span>
-                <input type="text" id="filterSearch" placeholder="ค้นหาเครื่อง, รหัสครุภัณฑ์..." oninput="applyFilters()">
+                <input type="text" id="filterSearch" placeholder="ค้นหาเครื่อง, รหัสเครื่อง..." oninput="applyFilters()">
               </div>
 
               <!-- Date Picker & Quick Date Pills (Defaults to today) -->
@@ -1175,17 +1179,81 @@
               <table class="device-table">
                 <thead>
                   <tr>
-                    <th style="width: 130px;">รหัสครุภัณฑ์</th>
+                    <th style="width: 140px;">รหัสเครื่อง</th>
                     <th>เครื่องมือแพทย์ & รุ่น</th>
-                    <th style="width: 140px;">แผนกรับผิดชอบ</th>
-                    <th style="width: 110px;">ประเภท</th>
-                    <th style="width: 120px;">สถานะวันนี้</th>
-                    <th style="width: 120px;">เวลาตรวจ</th>
-                    <th style="width: 110px;">ผู้ตรวจ</th>
-                    <th class="btn-action-col no-print" style="width: 110px; text-align: center;">จัดการ</th>
+                    <th style="width: 150px;">แผนกรับผิดชอบ</th>
+                    <th style="width: 140px;">สถานะวันนี้</th>
+                    <th class="btn-action-col no-print" style="width: 120px; text-align: center;">จัดการ</th>
                   </tr>
                 </thead>
                 <tbody id="summaryTableBody">
+                  <!-- Populated by JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== SUB-VIEW 2: สรุปรายเครื่อง ==================== -->
+        <section id="viewDeviceSummary" style="display: none;">
+          <!-- Filter & Device Selector Bar -->
+          <div class="page-filter-bar no-print" style="flex-wrap: wrap; gap: 10px;">
+            <div class="filter-left-controls" style="flex-wrap: wrap; gap: 10px; width: 100%;">
+              <!-- Equipment Dropdown Selector -->
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <label for="historyDeviceSelect" style="font-size: 12px; font-weight: 700; color: var(--royal-blue); white-space: nowrap;">
+                  <span class="material-icons-round" style="font-size: 16px; vertical-align: -3px;">medical_services</span>
+                  เลือกเครื่องมือแพทย์:
+                </label>
+                <select id="historyDeviceSelect" class="filter-input" style="min-width: 280px; max-width: 440px; font-weight: 600;" onchange="onDeviceSelectChanged()">
+                  <!-- Populated by JavaScript -->
+                </select>
+              </div>
+
+              <div class="sidebar-divider" style="height: 24px; width: 1px; margin: 0 4px;"></div>
+
+              <!-- Month & Range Mode Filter -->
+              <div class="filter-date-group">
+                <input type="month" id="historyMonthInput" class="filter-input" onchange="onMonthInputChanged()">
+                <button type="button" onclick="setDeviceHistoryMode('month')" id="btnHistoryMonth" class="btn-pill-date active">รายเดือน</button>
+                <button type="button" onclick="setDeviceHistoryMode('all')" id="btnHistoryAll" class="btn-pill-date">แสดงทั้งหมด</button>
+              </div>
+
+              <!-- Refresh Button -->
+              <button type="button" onclick="renderDeviceSummaryView()" class="btn-reset-ghost" title="รีเฟรชข้อมูล">
+                <span class="material-icons-round" style="font-size: 16px;">refresh</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Device Dossier / Profile Card -->
+          <div id="deviceProfileContainer">
+            <!-- Populated by JavaScript -->
+          </div>
+
+          <!-- History Table Panel -->
+          <div class="content-panel" style="margin-top: 14px;">
+            <div class="panel-header">
+              <div class="panel-title" id="historyTableTitle">
+                <span class="material-icons-round" style="font-size: 18px; color: var(--royal-blue); vertical-align: -3px;">history</span>
+                ประวัติการตรวจเช็คความพร้อมใช้
+              </div>
+              <span class="panel-badge" id="historyCountBadge">0 รายการ</span>
+            </div>
+            <div style="overflow-x: auto;">
+              <table class="device-table">
+                <thead>
+                  <tr>
+                    <th style="width: 150px;">วัน-เวลาตรวจ</th>
+                    <th style="width: 140px;">แผนกที่ตรวจ</th>
+                    <th style="width: 130px;">ผู้ตรวจเช็ค</th>
+                    <th style="width: 140px;">ผลการตรวจ</th>
+                    <th>บันทึก / ปัญหาที่พบ</th>
+                    <th style="width: 130px;">UPS สำรองไฟ</th>
+                    <th class="btn-action-col no-print" style="width: 90px; text-align: center;">สลิป</th>
+                  </tr>
+                </thead>
+                <tbody id="deviceHistoryTableBody">
                   <!-- Populated by JavaScript -->
                 </tbody>
               </table>
@@ -1670,6 +1738,9 @@
         });
       }
 
+      // Populate device history dropdown (สรุปรายเครื่อง)
+      populateDeviceHistorySelect();
+
       // Update defective badge in sidebar
       var defectiveList = (window.PPCH_STORE && window.PPCH_STORE.getDefectiveEquipment) ? window.PPCH_STORE.getDefectiveEquipment() : [];
       var badgeDefect = document.getElementById('badgeDefectiveNav');
@@ -1687,6 +1758,8 @@
       renderDirectoryView();
       if (currentView === 'defective') {
         renderDefectiveView();
+      } else if (currentView === 'device_summary') {
+        renderDeviceSummaryView();
       }
     }
 
@@ -1694,22 +1767,33 @@
       currentView = viewKey;
       var bread = document.getElementById('breadCurrent');
       var breadMap = {
-        summary: 'สรุปผลรายเครื่อง',
+        summary: 'สรุปรายวัน',
+        device_summary: 'สรุปรายเครื่อง',
         defective: 'เครื่องมือไม่พร้อมใช้งาน & จัดการงานซ่อม',
         relocate: 'มอบหมายแผนก / ย้ายเครื่อง',
         directory: 'รายการเครื่อง & QR Code'
       };
       bread.innerText = breadMap[viewKey] || viewKey;
 
-      ['summary', 'defective', 'relocate', 'directory'].forEach(function (v) {
-        var btn = document.getElementById('navBtn_' + v);
-        var sec = document.getElementById('view' + v.charAt(0).toUpperCase() + v.slice(1));
-        if (btn) btn.classList.toggle('active', v === viewKey);
-        if (sec) sec.style.display = (v === viewKey) ? 'block' : 'none';
+      var viewIds = {
+        summary: 'viewSummary',
+        device_summary: 'viewDeviceSummary',
+        defective: 'viewDefective',
+        relocate: 'viewRelocate',
+        directory: 'viewDirectory'
+      };
+
+      Object.keys(viewIds).forEach(function (k) {
+        var btn = document.getElementById('navBtn_' + k);
+        var sec = document.getElementById(viewIds[k]);
+        if (btn) btn.classList.toggle('active', k === viewKey);
+        if (sec) sec.style.display = (k === viewKey) ? 'block' : 'none';
       });
 
       if (viewKey === 'defective') {
         renderDefectiveView();
+      } else if (viewKey === 'device_summary') {
+        renderDeviceSummaryView();
       }
     }
 
@@ -2048,7 +2132,7 @@
       if (!tbody) return;
 
       if (equipmentList.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 36px; color: var(--text-light);">ไม่พบเครื่องมือแพทย์ที่ตรงกับตัวกรอง</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 36px; color: var(--text-light);">ไม่พบเครื่องมือแพทย์ที่ตรงกับตัวกรอง</td></tr>';
         return;
       }
 
@@ -2056,23 +2140,12 @@
       equipmentList.forEach(function (eq) {
         var ev = evalMap[eq.id] || evalMap[eq.assetCode];
         var deptName = window.PPCH_STORE.getDepartmentName(eq.currentDept);
-        var form = window.PPCH_STORE.getFormById(eq.formId);
 
         var isUnderFix = (eq.status === 'in_progress' || eq.repairStatus === 'in_progress');
         var isDefective = (eq.status === 'abnormal' || eq.repairStatus === 'reported');
 
         var filterDateVal = document.getElementById('filterDate').value;
         var evaluatedToday = (ev && ev.evaluatedAt) || (eq.lastEvaluatedAt && eq.lastEvaluatedAt.indexOf(filterDateVal) === 0);
-        var evalTime = '-';
-        var evaluator = '-';
-
-        if (ev && ev.evaluatedAt) {
-          evalTime = ev.evaluatedAt.slice(11, 16) + ' น.';
-          evaluator = ev.evaluatedBy || 'ไม่ระบุ';
-        } else if (eq.lastEvaluatedAt && eq.lastEvaluatedAt.indexOf(filterDateVal) === 0) {
-          evalTime = eq.lastEvaluatedAt.slice(11, 16) + ' น.';
-          evaluator = eq.lastEvaluatedBy || 'ไม่ระบุ';
-        }
 
         var statusBadge = '<span class="badge-status badge-status-pending"><span class="material-icons-round" style="font-size: 14px;">schedule</span> รอตรวจวันนี้</span>';
         var actions = '<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-eval" title="เปิดหน้าตรวจเช็ค"><span class="material-icons-round" style="font-size: 13px;">assignment</span><span>ตรวจ</span></a>';
@@ -2111,15 +2184,241 @@
           '<td><span class="asset-code-clean">' + eq.assetCode + '</span></td>' +
           '<td><div style="font-weight: 700; color: var(--text-main);">' + eq.name + '</div><div style="font-size: 11px; color: var(--text-muted);">รุ่น ' + (eq.model || '-') + '</div></td>' +
           '<td><span style="font-weight: 500;">' + deptName + '</span>' + (eq.homeDept !== eq.currentDept ? ' <span style="font-size: 10px; color: #d97706;">(ยืม)</span>' : '') + '</td>' +
-          '<td><span style="color: var(--text-muted); font-size: 12px;">' + (form ? form.shortName : eq.formId) + '</span></td>' +
           '<td>' + statusBadge + '</td>' +
-          '<td style="color: var(--text-muted); font-family: var(--font-mono); font-size: 11.5px;">' + evalTime + '</td>' +
-          '<td style="color: var(--text-body); font-size: 11.5px;">' + evaluator + '</td>' +
           '<td class="btn-action-col no-print" style="text-align: center; white-space: nowrap;">' + actions + '</td>' +
         '</tr>';
       });
 
       tbody.innerHTML = html;
+    }
+
+    // ==================== DEVICE SUMMARY VIEW (สรุปรายเครื่อง) ====================
+    var currentDeviceHistoryId = null;
+    var deviceHistoryMode = 'month'; // 'month' or 'all'
+
+    function populateDeviceHistorySelect() {
+      var sel = document.getElementById('historyDeviceSelect');
+      if (!sel) return;
+      var curVal = sel.value || currentDeviceHistoryId;
+      sel.innerHTML = '';
+
+      if (!allEquipment || allEquipment.length === 0) {
+        sel.innerHTML = '<option value="">-- ไม่พบเครื่องมือแพทย์ --</option>';
+        return;
+      }
+
+      allEquipment.forEach(function (eq) {
+        var opt = document.createElement('option');
+        opt.value = eq.id;
+        var deptName = window.PPCH_STORE ? window.PPCH_STORE.getDepartmentName(eq.currentDept) : eq.currentDept;
+        opt.innerText = eq.assetCode + ' - ' + eq.name + ' (' + deptName + ')';
+        sel.appendChild(opt);
+      });
+
+      if (curVal && allEquipment.some(function (e) { return e.id === curVal; })) {
+        sel.value = curVal;
+        currentDeviceHistoryId = curVal;
+      } else {
+        sel.value = allEquipment[0].id;
+        currentDeviceHistoryId = allEquipment[0].id;
+      }
+    }
+
+    function onDeviceSelectChanged() {
+      var sel = document.getElementById('historyDeviceSelect');
+      if (sel) {
+        currentDeviceHistoryId = sel.value;
+      }
+      renderDeviceSummaryView();
+    }
+
+    function onMonthInputChanged() {
+      deviceHistoryMode = 'month';
+      var btnMonth = document.getElementById('btnHistoryMonth');
+      var btnAll = document.getElementById('btnHistoryAll');
+      if (btnMonth) btnMonth.classList.add('active');
+      if (btnAll) btnAll.classList.remove('active');
+      renderDeviceSummaryView();
+    }
+
+    function setDeviceHistoryMode(mode) {
+      deviceHistoryMode = mode;
+      var btnMonth = document.getElementById('btnHistoryMonth');
+      var btnAll = document.getElementById('btnHistoryAll');
+      if (btnMonth) btnMonth.classList.toggle('active', mode === 'month');
+      if (btnAll) btnAll.classList.toggle('active', mode === 'all');
+      renderDeviceSummaryView();
+    }
+
+    function renderDeviceSummaryView() {
+      var monthInput = document.getElementById('historyMonthInput');
+      if (monthInput && !monthInput.value) {
+        var now = new Date();
+        var y = now.getFullYear();
+        var m = ('0' + (now.getMonth() + 1)).slice(-2);
+        monthInput.value = y + '-' + m;
+      }
+
+      var sel = document.getElementById('historyDeviceSelect');
+      if (!sel || !sel.value) {
+        populateDeviceHistorySelect();
+      }
+      if (!sel || !sel.value) return;
+
+      var devId = sel.value;
+      currentDeviceHistoryId = devId;
+      var eq = window.PPCH_STORE.getEquipmentById(devId);
+      if (!eq) return;
+
+      var form = window.PPCH_STORE.getFormById(eq.formId);
+      var currentDeptName = window.PPCH_STORE.getDepartmentName(eq.currentDept);
+      var homeDeptName = window.PPCH_STORE.getDepartmentName(eq.homeDept);
+      var isBorrowed = (eq.homeDept !== eq.currentDept);
+
+      // Get all evaluations for this equipment
+      var devEvals = (allEvaluations || []).filter(function (ev) {
+        return ev.deviceId === eq.id || ev.deviceAsset === eq.assetCode;
+      });
+
+      // Filter by Month or All
+      var selectedMonth = monthInput ? monthInput.value : '';
+      var filteredEvals = devEvals;
+
+      if (deviceHistoryMode === 'month' && selectedMonth) {
+        filteredEvals = devEvals.filter(function (ev) {
+          return ev.evaluatedAt && ev.evaluatedAt.indexOf(selectedMonth) === 0;
+        });
+      }
+
+      // Sort newest first
+      filteredEvals.sort(function (a, b) {
+        return (b.evaluatedAt || '').localeCompare(a.evaluatedAt || '');
+      });
+
+      // Compute statistics for filtered period
+      var totalPeriodChecks = filteredEvals.length;
+      var passChecks = filteredEvals.filter(function (e) { return e.result === 'normal'; }).length;
+      var defectChecks = filteredEvals.filter(function (e) { return e.result === 'abnormal'; }).length;
+      var passRate = totalPeriodChecks > 0 ? Math.round((passChecks / totalPeriodChecks) * 100) : 0;
+      var latestEv = devEvals.length > 0 ? devEvals[0] : null;
+
+      // Status of the device right now
+      var statusBadge = '<span class="badge-status badge-status-ready"><span class="material-icons-round" style="font-size: 14px;">check_circle</span> พร้อมใช้งาน</span>';
+      if (eq.status === 'abnormal' || eq.repairStatus === 'reported') {
+        statusBadge = '<span class="badge-status badge-status-abnormal"><span class="material-icons-round" style="font-size: 14px;">error</span> พบข้อบกพร่อง</span>';
+      } else if (eq.status === 'in_progress' || eq.repairStatus === 'in_progress') {
+        statusBadge = '<span class="badge-status" style="color: var(--amber-pending);"><span class="material-icons-round" style="font-size: 14px;">build</span> กำลังซ่อมแซม</span>';
+      }
+
+      var periodLabel = (deviceHistoryMode === 'month')
+        ? ('ประจำเดือน ' + (selectedMonth ? selectedMonth : 'ปัจจุบัน'))
+        : 'ประวัติทั้งหมดตลอดอายุใช้งาน';
+
+      // Render Profile Card
+      var profileContainer = document.getElementById('deviceProfileContainer');
+      if (profileContainer) {
+        profileContainer.innerHTML = '<div style="background: #ffffff; border: 1px solid var(--border-main); border-radius: 12px; padding: 18px 20px; box-shadow: 0 2px 8px rgba(0, 46, 110, 0.04);">' +
+          '<div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 14px;">' +
+            '<div>' +
+              '<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;">' +
+                '<span class="asset-code-clean" style="font-size: 13px; font-weight: 700; padding: 3px 8px;">' + eq.assetCode + '</span>' +
+                '<span style="font-size: 12px; font-weight: 600; color: var(--royal-blue); background: #f0f7ff; border: 1px solid #bfdbfe; padding: 2px 8px; border-radius: 4px;">' + (form ? (form.shortName || form.name) : eq.formId) + '</span>' +
+                statusBadge +
+              '</div>' +
+              '<div style="font-size: 17px; font-weight: 800; color: var(--royal-blue); line-height: 1.3;">' + eq.name + '</div>' +
+              '<div style="font-size: 12.5px; color: var(--text-muted); margin-top: 4px;">' +
+                'รุ่น: <strong>' + (eq.model || '-') + '</strong> | S/N: <strong>' + (eq.serialNo || '-') + '</strong>' +
+                ' | แผนกประจำ: <strong>' + homeDeptName + '</strong>' +
+                ' | พิกัดปัจจุบัน: <strong style="color: var(--royal-blue);">' + currentDeptName + '</strong>' +
+                (isBorrowed ? ' <span style="font-size: 11px; color: #d97706; font-weight: 700;">(ยืมประจำการ)</span>' : '') +
+              '</div>' +
+            '</div>' +
+            '<div style="display: flex; gap: 8px;">' +
+              '<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-tool btn-tool-primary" style="text-decoration: none;">' +
+                '<span class="material-icons-round" style="font-size: 15px;">assignment</span><span>เปิดแบบตรวจ</span>' +
+              '</a>' +
+              '<button type="button" onclick="openQrModal(\'' + eq.id + '\')" class="btn-tool" title="QR Code">' +
+                '<span class="material-icons-round" style="font-size: 15px; color: var(--royal-blue);">qr_code_2</span>' +
+              '</button>' +
+            '</div>' +
+          '</div>' +
+          '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">' +
+            '<div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 14px;">' +
+              '<div style="font-size: 11px; color: var(--text-muted); font-weight: 600;">ตรวจในรอบนี้ (' + (deviceHistoryMode === 'month' ? 'รายเดือน' : 'ทั้งหมด') + ')</div>' +
+              '<div style="font-size: 20px; font-weight: 800; color: var(--royal-blue); margin-top: 2px;">' + totalPeriodChecks + ' <span style="font-size: 12px; font-weight: 500; color: var(--text-muted);">ครั้ง</span></div>' +
+            '</div>' +
+            '<div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 10px 14px;">' +
+              '<div style="font-size: 11px; color: #166534; font-weight: 600;">พร้อมใช้งาน (ผ่านเกณฑ์)</div>' +
+              '<div style="font-size: 20px; font-weight: 800; color: var(--green-ready); margin-top: 2px;">' + passChecks + ' <span style="font-size: 12px; font-weight: 600; color: #166534;">(' + passRate + '%)</span></div>' +
+            '</div>' +
+            '<div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 10px 14px;">' +
+              '<div style="font-size: 11px; color: #991b1b; font-weight: 600;">พบข้อบกพร่อง</div>' +
+              '<div style="font-size: 20px; font-weight: 800; color: var(--red-abnormal); margin-top: 2px;">' + defectChecks + ' <span style="font-size: 12px; font-weight: 500; color: #991b1b;">ครั้ง</span></div>' +
+            '</div>' +
+            '<div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 10px 14px;">' +
+              '<div style="font-size: 11px; color: #1e40af; font-weight: 600;">ตรวจล่าสุดเมื่อ</div>' +
+              '<div style="font-size: 13px; font-weight: 700; color: #1e3a8a; margin-top: 5px; font-family: var(--font-mono);">' + (latestEv ? latestEv.evaluatedAt.slice(0, 16) : (eq.lastEvaluatedAt ? eq.lastEvaluatedAt.slice(0, 16) : '-')) + '</div>' +
+              '<div style="font-size: 11px; color: #3b82f6;">ผู้ตรวจ: ' + (latestEv ? (latestEv.evaluatedBy || 'ไม่ระบุ') : (eq.lastEvaluatedBy || '-')) + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }
+
+      // Update Panel Badge & Title
+      var bCount = document.getElementById('historyCountBadge');
+      if (bCount) bCount.innerText = filteredEvals.length + ' รายการ';
+      var tTitle = document.getElementById('historyTableTitle');
+      if (tTitle) tTitle.innerHTML = '<span class="material-icons-round" style="font-size: 18px; color: var(--royal-blue); vertical-align: -3px;">history</span> ประวัติการตรวจเช็ค ' + periodLabel;
+
+      // Render Table Rows
+      var tbody = document.getElementById('deviceHistoryTableBody');
+      if (!tbody) return;
+
+      if (filteredEvals.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--text-light);">' +
+          '<div style="font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px;">ไม่พบประวัติการตรวจเช็ค' + (deviceHistoryMode === 'month' ? 'ในเดือนที่เลือก' : 'ของเครื่องนี้') + '</div>' +
+          (deviceHistoryMode === 'month' ? '<button type="button" onclick="setDeviceHistoryMode(\'all\')" class="btn-tool" style="margin-top: 4px;"><span class="material-icons-round" style="font-size: 14px;">all_inclusive</span><span>คลิกเพื่อดูประวัติทั้งหมด</span></button>' : '') +
+          '</td></tr>';
+        return;
+      }
+
+      var rowsHtml = '';
+      filteredEvals.forEach(function (ev) {
+        var deptName = window.PPCH_STORE.getDepartmentName(ev.department || eq.currentDept);
+        var sBadge = ev.result === 'normal'
+          ? '<span class="badge-status badge-status-ready"><span class="material-icons-round" style="font-size: 14px;">check_circle</span> พร้อมใช้</span>'
+          : '<span class="badge-status badge-status-abnormal"><span class="material-icons-round" style="font-size: 14px;">error</span> ข้อบกพร่อง</span>';
+
+        if (ev.isRepairResolution) {
+          sBadge = '<span class="badge-status badge-status-ready" style="color: #047857; background: #ecfdf5; border-color: #a7f3d0;"><span class="material-icons-round" style="font-size: 14px;">task_alt</span> ซ่อมเสร็จ</span>';
+        }
+
+        var upsText = '-';
+        if (ev.upsBattery && ev.upsBattery.tested) {
+          var isUpsPass = ev.upsBattery.status === 'normal' || (ev.upsBattery.runtimeHours * 60 + ev.upsBattery.runtimeMinutes >= 60);
+          upsText = '<span style="font-size: 11px; font-weight: 600; color: ' + (isUpsPass ? '#16a34a' : '#dc2626') + ';">' +
+            (ev.upsBattery.runtimeFormatted ? ev.upsBattery.runtimeFormatted + ' ชม.' : 'ทดสอบแล้ว') +
+          '</span>';
+        }
+
+        var noteText = ev.abnormalNote ? ('<span style="color: var(--red-abnormal); font-weight: 500;">' + ev.abnormalNote + '</span>') : '<span style="color: var(--text-muted);">- ปกติ -</span>';
+
+        rowsHtml += '<tr>' +
+          '<td style="font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--text-main);">' + (ev.evaluatedAt || '-') + '</td>' +
+          '<td><span style="font-weight: 500;">' + deptName + '</span></td>' +
+          '<td style="font-size: 12px; color: var(--text-main); font-weight: 600;">' + (ev.evaluatedBy || 'ไม่ระบุ') + '</td>' +
+          '<td>' + sBadge + '</td>' +
+          '<td style="font-size: 12px;">' + noteText + '</td>' +
+          '<td style="font-size: 12px;">' + upsText + '</td>' +
+          '<td class="btn-action-col no-print" style="text-align: center;">' +
+            '<button type="button" onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-slip" title="ดูสลิปผลการตรวจแบบละเอียด">' +
+              '<span class="material-icons-round" style="font-size: 13px;">receipt_long</span><span>สลิป</span>' +
+            '</button>' +
+          '</td>' +
+        '</tr>';
+      });
+
+      tbody.innerHTML = rowsHtml;
     }
 
     // ==================== RELOCATION VIEW ====================
@@ -2475,16 +2774,19 @@
         '<div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 14px;">' +
           '<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px;">' +
             '<div>' +
-              '<div style="font-size: 14px; font-weight: 700; color: var(--royal-blue);">' + (eq ? eq.name : ev.deviceName) + '</div>' +
-              '<div style="font-size: 11.5px; color: var(--text-muted);">รุ่น ' + (eq ? (eq.model || '-') : '-') + '</div>' +
+              '<div style="font-size: 14.5px; font-weight: 700; color: var(--royal-blue); line-height: 1.3;">' + (eq ? eq.name : ev.deviceName) + '</div>' +
+              '<div style="font-size: 11.5px; color: var(--text-muted); margin-top: 2px;">รุ่น: ' + (eq ? (eq.model || '-') : '-') + ' | S/N: ' + (eq ? (eq.serialNo || '-') : '-') + '</div>' +
             '</div>' +
-            '<span class="asset-code-clean">' + (eq ? eq.assetCode : ev.deviceAsset) + '</span>' +
+            '<div style="text-align: right;">' +
+              '<span class="asset-code-clean" title="รหัสเครื่อง" style="font-size: 12px; font-weight: 700;">' + (eq ? eq.assetCode : ev.deviceAsset) + '</span>' +
+            '</div>' +
           '</div>' +
-          '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; font-size: 12px; border-top: 1px dashed #cbd5e1; padding-top: 8px; margin-top: 4px;">' +
-            '<div><span style="color: var(--text-muted);">แผนกที่ตรวจ:</span> <strong>' + deptName + '</strong>' + (isBorrowed ? ' <span style="font-size: 10px; color: #d97706;">(ยืม)</span>' : '') + '</div>' +
-            '<div><span style="color: var(--text-muted);">ผู้ตรวจเช็ค:</span> <strong>' + ev.evaluatedBy + '</strong></div>' +
-            '<div><span style="color: var(--text-muted);">วัน-เวลาตรวจ:</span> <strong style="font-family: var(--font-mono);">' + ev.evaluatedAt + '</strong></div>' +
-            '<div style="display: flex; align-items: center; gap: 4px;"><span style="color: var(--text-muted);">ผลสรุป:</span> ' + statusBadgeHtml + '</div>' +
+          '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; font-size: 12px; border-top: 1px dashed #cbd5e1; padding-top: 10px; margin-top: 6px;">' +
+            '<div><span style="color: var(--text-muted);">ประเภทเครื่องมือ:</span> <strong style="color: var(--royal-blue); font-weight: 700;">' + (form ? (form.shortName || form.name) : (ev.formId || '-')) + '</strong></div>' +
+            '<div><span style="color: var(--text-muted);">แผนกที่ตรวจ:</span> <strong>' + deptName + '</strong>' + (isBorrowed ? ' <span style="font-size: 10px; color: #d97706; font-weight: 700;">(ยืม)</span>' : '') + '</div>' +
+            '<div><span style="color: var(--text-muted);">ผู้ตรวจ:</span> <strong style="color: var(--text-main); font-weight: 700;">' + (ev.evaluatedBy || 'ไม่ระบุ') + '</strong></div>' +
+            '<div><span style="color: var(--text-muted);">เวลาตรวจ:</span> <strong style="font-family: var(--font-mono); color: var(--royal-blue); font-weight: 600;">' + (ev.evaluatedAt || '-') + '</strong></div>' +
+            '<div style="grid-column: 1 / -1; display: flex; align-items: center; gap: 6px; padding-top: 4px; border-top: 1px solid #f1f5f9;"><span style="color: var(--text-muted);">ผลการประเมิน:</span> ' + statusBadgeHtml + '</div>' +
           '</div>' +
         '</div>' +
         // UPS Box
