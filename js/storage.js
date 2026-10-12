@@ -16,6 +16,7 @@
 
   // Pure in-memory state for current browser session (Populated directly from Google Sheets API)
   var inMemoryData = {
+    departments: (window.PPCH_CONFIG && window.PPCH_CONFIG.departments) ? JSON.parse(JSON.stringify(window.PPCH_CONFIG.departments)) : [],
     equipment: (window.PPCH_CONFIG && window.PPCH_CONFIG.initialEquipment) ? JSON.parse(JSON.stringify(window.PPCH_CONFIG.initialEquipment)) : [],
     evaluations: [],
     transfers: [],
@@ -79,6 +80,12 @@
         inMemoryData.transfers = cloudData.transfers;
       } else {
         inMemoryData.transfers = [];
+      }
+      if (Array.isArray(cloudData.departments) && cloudData.departments.length > 0) {
+        inMemoryData.departments = cloudData.departments;
+        if (window.PPCH_CONFIG) {
+          window.PPCH_CONFIG.departments = cloudData.departments;
+        }
       }
 
       notifyUpdated();
@@ -153,12 +160,76 @@
       return null;
     },
 
+    getDepartments: function () {
+      return (inMemoryData.departments && inMemoryData.departments.length > 0)
+        ? inMemoryData.departments
+        : ((window.PPCH_CONFIG && window.PPCH_CONFIG.departments) || []);
+    },
+
     getDepartmentName: function (deptId) {
-      var depts = (window.PPCH_CONFIG && window.PPCH_CONFIG.departments) || [];
+      var depts = this.getDepartments();
       for (var i = 0; i < depts.length; i++) {
         if (depts[i].id === deptId) return depts[i].name;
       }
-      return deptId;
+      return deptId || '-';
+    },
+
+    addDepartment: function (dept) {
+      if (!inMemoryData.departments) inMemoryData.departments = [];
+      var exists = inMemoryData.departments.some(function (d) { return d.id === dept.id; });
+      if (!exists) {
+        inMemoryData.departments.push(dept);
+        if (window.PPCH_CONFIG) window.PPCH_CONFIG.departments = inMemoryData.departments;
+        notifyUpdated();
+      }
+      return inMemoryData.departments;
+    },
+
+    updateDepartment: function (id, deptData) {
+      if (!inMemoryData.departments) inMemoryData.departments = [];
+      for (var i = 0; i < inMemoryData.departments.length; i++) {
+        if (inMemoryData.departments[i].id === id) {
+          if (deptData.name) inMemoryData.departments[i].name = deptData.name;
+          break;
+        }
+      }
+      if (window.PPCH_CONFIG) window.PPCH_CONFIG.departments = inMemoryData.departments;
+      notifyUpdated();
+      return inMemoryData.departments;
+    },
+
+    deleteDepartment: function (id) {
+      if (!inMemoryData.departments) return;
+      inMemoryData.departments = inMemoryData.departments.filter(function (d) { return d.id !== id; });
+      if (window.PPCH_CONFIG) window.PPCH_CONFIG.departments = inMemoryData.departments;
+      notifyUpdated();
+      return inMemoryData.departments;
+    },
+
+    addEquipment: function (item) {
+      if (!inMemoryData.equipment) inMemoryData.equipment = [];
+      inMemoryData.equipment.unshift(item);
+      notifyUpdated();
+      return inMemoryData.equipment;
+    },
+
+    updateEquipment: function (id, itemData) {
+      if (!inMemoryData.equipment) return;
+      for (var i = 0; i < inMemoryData.equipment.length; i++) {
+        if (inMemoryData.equipment[i].id === id) {
+          Object.assign(inMemoryData.equipment[i], itemData);
+          break;
+        }
+      }
+      notifyUpdated();
+      return inMemoryData.equipment;
+    },
+
+    deleteEquipment: function (id) {
+      if (!inMemoryData.equipment) return;
+      inMemoryData.equipment = inMemoryData.equipment.filter(function (eq) { return eq.id !== id; });
+      notifyUpdated();
+      return inMemoryData.equipment;
     },
 
     getFormById: function (formId) {

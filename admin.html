@@ -1036,6 +1036,10 @@
             <span class="material-icons-round">qr_code_2</span>
             <span>รายการเครื่อง & QR Code</span>
           </button>
+          <button onclick="switchView('settings')" id="navBtn_settings" class="nav-btn">
+            <span class="material-icons-round">settings</span>
+            <span>ตั้งค่าระบบ</span>
+          </button>
         </nav>
 
         <div class="sidebar-divider"></div>
@@ -1483,6 +1487,139 @@
           </div>
         </section>
 
+        <!-- ==================== SUB-VIEW 5: ตั้งค่าระบบ (SETTINGS) ==================== -->
+        <section id="viewSettings" style="display: none;">
+          <!-- Settings Navigation Sub-Tabs -->
+          <div style="display: flex; gap: 8px; margin-bottom: 14px; border-bottom: 2px solid var(--border-subtle); padding-bottom: 10px;">
+            <button type="button" id="tabBtn_settings_dept" onclick="switchSettingsTab('departments')" class="btn-tool btn-tool-primary" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-weight: 600;">
+              <span class="material-icons-round" style="font-size: 18px;">corporate_fare</span>
+              <span>การจัดการแผนก</span>
+              <span id="badgeSettingsDeptCount" class="nav-count-badge" style="background: rgba(255,255,255,0.25); color: #fff; margin-left: 4px;">0</span>
+            </button>
+            <button type="button" id="tabBtn_settings_equip" onclick="switchSettingsTab('equipment')" class="btn-tool" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-weight: 600;">
+              <span class="material-icons-round" style="font-size: 18px;">medical_services</span>
+              <span>การจัดการเครื่องมือแพทย์</span>
+              <span id="badgeSettingsEquipCount" class="nav-count-badge" style="background: var(--royal-subtle); color: var(--royal-blue); margin-left: 4px;">0</span>
+            </button>
+          </div>
+
+          <!-- TAB 1: การจัดการแผนก -->
+          <div id="settingsPanelDepartments">
+            <div class="content-panel" style="margin-bottom: 16px;">
+              <div class="panel-header" style="flex-wrap: wrap; gap: 10px;">
+                <div>
+                  <div class="panel-title" style="display: flex; align-items: center; gap: 8px;">
+                    <span class="material-icons-round" style="color: var(--royal-blue);">apartment</span>
+                    <span>จัดการแผนกโรงพยาบาลพิษณุเวช</span>
+                  </div>
+                  <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                    เพิ่ม ลบ หรือแก้ไขแผนกในระบบ เพื่อให้เจ้าหน้าที่และแผนกต่างๆ ใช้งานในแบบประเมินและมอบหมายเครื่อง
+                  </div>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <button type="button" onclick="openAddDeptModal()" class="btn-tool btn-tool-primary" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px;">
+                    <span class="material-icons-round" style="font-size: 18px;">add_circle</span>
+                    <span>เพิ่มแผนกใหม่</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Filter / Search bar for departments -->
+              <div style="padding: 10px 16px; background: #f8fafc; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+                <div class="search-input-box" style="min-width: 260px;">
+                  <span class="material-icons-round">search</span>
+                  <input type="text" id="deptSearchInput" placeholder="ค้นหาชื่อแผนก หรือ รหัส..." oninput="renderDepartmentsTable()">
+                </div>
+                <div style="font-size: 12px; color: var(--text-muted);" id="deptSummaryCountText">
+                  แสดง 0 แผนก
+                </div>
+              </div>
+
+              <!-- Departments Table -->
+              <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+                <table class="data-table-modern">
+                  <thead>
+                    <tr>
+                      <th style="width: 60px; text-align: center;">ลำดับ</th>
+                      <th style="width: 140px;">รหัสแผนก</th>
+                      <th>ชื่อแผนก</th>
+                      <th style="width: 160px; text-align: center;">จำนวนเครื่องมือแพทย์</th>
+                      <th style="width: 130px; text-align: center;">จัดการ</th>
+                    </tr>
+                  </thead>
+                  <tbody id="departmentsTableBody">
+                    <!-- Injected via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: การจัดการเครื่องมือแพทย์ -->
+          <div id="settingsPanelEquipment" style="display: none;">
+            <div class="content-panel">
+              <div class="panel-header" style="flex-wrap: wrap; gap: 10px;">
+                <div>
+                  <div class="panel-title" style="display: flex; align-items: center; gap: 8px;">
+                    <span class="material-icons-round" style="color: var(--royal-blue);">precision_manufacturing</span>
+                    <span>จัดการข้อมูลเครื่องมือแพทย์ (Equipment Master)</span>
+                  </div>
+                  <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                    เพิ่ม ลบ หรือแก้ไขรายการเครื่องมือแพทย์ รหัสเครื่อง แบบฟอร์มตรวจ และแผนกสังกัด
+                  </div>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <button type="button" onclick="openAddEquipmentModal()" class="btn-tool btn-tool-primary" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px;">
+                    <span class="material-icons-round" style="font-size: 18px;">add_circle</span>
+                    <span>เพิ่มเครื่องมือแพทย์</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Filter / Search bar for equipment -->
+              <div style="padding: 10px 16px; background: #f8fafc; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; flex: 1;">
+                  <div class="search-input-box" style="min-width: 220px;">
+                    <span class="material-icons-round">search</span>
+                    <input type="text" id="equipSearchInput" placeholder="ค้นหารหัสเครื่อง, ชื่อ, รุ่น, S/N..." oninput="renderEquipmentSettingsTable()">
+                  </div>
+                  <select id="settingsFilterDept" class="filter-input" onchange="renderEquipmentSettingsTable()" style="max-width: 200px;">
+                    <option value="all">ทุกแผนก</option>
+                  </select>
+                  <select id="settingsFilterForm" class="filter-input" onchange="renderEquipmentSettingsTable()" style="max-width: 200px;">
+                    <option value="all">ทุกแบบฟอร์ม</option>
+                  </select>
+                </div>
+                <div style="font-size: 12px; color: var(--text-muted);" id="equipSummaryCountText">
+                  แสดง 0 เครื่อง
+                </div>
+              </div>
+
+              <!-- Equipment Table -->
+              <div class="table-responsive" style="max-height: 650px; overflow-y: auto;">
+                <table class="data-table-modern">
+                  <thead>
+                    <tr>
+                      <th style="width: 50px; text-align: center;">ลำดับ</th>
+                      <th style="width: 140px;">รหัสเครื่อง</th>
+                      <th>ชื่อเครื่องมือแพทย์</th>
+                      <th style="width: 140px;">รุ่น / ยี่ห้อ</th>
+                      <th style="width: 120px;">Serial No.</th>
+                      <th style="width: 170px;">แบบฟอร์มตรวจ</th>
+                      <th style="width: 150px;">แผนกปัจจุบัน</th>
+                      <th style="width: 110px; text-align: center;">สถานะ</th>
+                      <th style="width: 120px; text-align: center;">จัดการ</th>
+                    </tr>
+                  </thead>
+                  <tbody id="equipmentSettingsTableBody">
+                    <!-- Injected via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
       </main>
     </div>
   </div>
@@ -1637,6 +1774,133 @@
     </div>
   </div>
 
+  <!-- Modal: เพิ่ม / แก้ไขแผนก -->
+  <div id="modalAddEditDept" class="modal-overlay hidden no-print" onclick="if(event.target === this) closeDeptModal()">
+    <div class="modal-box" style="max-width: 460px; text-align: left;">
+      <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 10px; margin-bottom: 14px;">
+        <div style="font-size: 15px; font-weight: 700; color: var(--royal-blue); display: flex; align-items: center; gap: 8px;">
+          <span class="material-icons-round" style="color: var(--royal-blue);">apartment</span>
+          <span id="modalDeptTitle">เพิ่มแผนกใหม่</span>
+        </div>
+        <button onclick="closeDeptModal()" style="border: none; background: transparent; cursor: pointer; color: var(--text-muted);"><span class="material-icons-round">close</span></button>
+      </div>
+
+      <form id="formAddEditDept" onsubmit="saveDepartment(event)">
+        <input type="hidden" id="modalDeptMode" value="add">
+        
+        <div style="margin-bottom: 12px;">
+          <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">
+            รหัสแผนก (Code / ID) <span style="color: var(--red-abnormal);">*</span>
+          </label>
+          <input type="text" id="modalDeptId" class="filter-input" style="width: 100%; text-transform: uppercase; font-family: var(--font-mono); font-weight: 600;" placeholder="เช่น ER, ICU, PHARMACY" required>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 3px;" id="modalDeptIdHint">
+            ใช้ภาษาอังกฤษตัวพิมพ์ใหญ่หรือตัวเลข (เช่น HR, IT, WARD23)
+          </div>
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">
+            ชื่อแผนก (Department Name) <span style="color: var(--red-abnormal);">*</span>
+          </label>
+          <input type="text" id="modalDeptName" class="filter-input" style="width: 100%; font-size: 13.5px; font-weight: 600;" placeholder="เช่น แผนกการเงิน" required>
+        </div>
+
+        <div style="display: flex; gap: 8px; justify-content: flex-end; padding-top: 10px; border-top: 1px solid var(--border-subtle);">
+          <button type="button" onclick="closeDeptModal()" class="btn-tool">ยกเลิก</button>
+          <button type="submit" id="btnSaveDept" class="btn-tool btn-tool-primary" style="display: inline-flex; align-items: center; gap: 6px;">
+            <span class="material-icons-round" style="font-size: 16px;">save</span>
+            <span>บันทึกข้อมูล</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: เพิ่ม / แก้ไขเครื่องมือแพทย์ -->
+  <div id="modalAddEditEquipment" class="modal-overlay hidden no-print" onclick="if(event.target === this) closeEquipmentModal()">
+    <div class="modal-box" style="max-width: 580px; text-align: left;">
+      <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 10px; margin-bottom: 14px;">
+        <div style="font-size: 15px; font-weight: 700; color: var(--royal-blue); display: flex; align-items: center; gap: 8px;">
+          <span class="material-icons-round" style="color: var(--royal-blue);">medical_services</span>
+          <span id="modalEquipTitle">เพิ่มเครื่องมือแพทย์ใหม่</span>
+        </div>
+        <button onclick="closeEquipmentModal()" style="border: none; background: transparent; cursor: pointer; color: var(--text-muted);"><span class="material-icons-round">close</span></button>
+      </div>
+
+      <form id="formAddEditEquipment" onsubmit="saveEquipment(event)">
+        <input type="hidden" id="modalEquipMode" value="add">
+        <input type="hidden" id="modalEquipDbId" value="">
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">
+              รหัสเครื่อง (Asset Code) <span style="color: var(--red-abnormal);">*</span>
+            </label>
+            <input type="text" id="modalEquipAssetCode" class="filter-input" style="width: 100%; font-family: var(--font-mono); font-weight: 700;" placeholder="เช่น EQ-68-DEF-001" required>
+          </div>
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">
+              แบบฟอร์มตรวจเช็ค <span style="color: var(--red-abnormal);">*</span>
+            </label>
+            <select id="modalEquipFormId" class="filter-input" style="width: 100%;" required>
+              <!-- Populated via script -->
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">
+            ชื่อเครื่องมือแพทย์ (Equipment Name) <span style="color: var(--red-abnormal);">*</span>
+          </label>
+          <input type="text" id="modalEquipName" class="filter-input" style="width: 100%; font-size: 13.5px; font-weight: 600;" placeholder="เช่น เครื่องกระตุกหัวใจ Defibrillator" required>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">
+              รุ่น / ยี่ห้อ (Model)
+            </label>
+            <input type="text" id="modalEquipModel" class="filter-input" style="width: 100%;" placeholder="เช่น Mindray BeneHeart D3">
+          </div>
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">
+              Serial Number (S/N)
+            </label>
+            <input type="text" id="modalEquipSerialNo" class="filter-input" style="width: 100%; font-family: var(--font-mono);" placeholder="เช่น SN-882910">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">
+              แผนกสังกัดปัจจุบัน <span style="color: var(--red-abnormal);">*</span>
+            </label>
+            <select id="modalEquipCurrentDept" class="filter-input" style="width: 100%; font-weight: 600;" required>
+              <!-- Filled dynamically from DB departments -->
+            </select>
+          </div>
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">
+              สถานะความพร้อม
+            </label>
+            <select id="modalEquipStatus" class="filter-input" style="width: 100%; font-weight: 600;">
+              <option value="ready">พร้อมใช้งาน (Ready)</option>
+              <option value="abnormal">ไม่พร้อมใช้งาน / ชำรุด (Abnormal)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 8px; justify-content: flex-end; padding-top: 10px; border-top: 1px solid var(--border-subtle);">
+          <button type="button" onclick="closeEquipmentModal()" class="btn-tool">ยกเลิก</button>
+          <button type="submit" id="btnSaveEquipment" class="btn-tool btn-tool-primary" style="display: inline-flex; align-items: center; gap: 6px;">
+            <span class="material-icons-round" style="font-size: 16px;">save</span>
+            <span>บันทึกข้อมูล</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Toast Notice -->
   <div id="toastNotice">
     <span class="material-icons-round" style="color: #38bdf8; font-size: 18px;">info</span>
@@ -1685,36 +1949,9 @@
       var dateInput = document.getElementById('filterDate');
       if (dateInput) dateInput.value = todayStr;
 
-      // 2. Populate departments in filter
-      var deptSel = document.getElementById('filterDept');
-      var relocateSel = document.getElementById('relocateTargetDept');
-      if (window.PPCH_CONFIG && window.PPCH_CONFIG.departments) {
-        window.PPCH_CONFIG.departments.forEach(function (dp) {
-          if (deptSel) {
-            var opt = document.createElement('option');
-            opt.value = dp.id;
-            opt.innerText = dp.name;
-            deptSel.appendChild(opt);
-          }
-          if (relocateSel) {
-            var opt2 = document.createElement('option');
-            opt2.value = dp.id;
-            opt2.innerText = dp.name;
-            relocateSel.appendChild(opt2);
-          }
-        });
-      }
-
-      // 3. Populate categories in filter
-      var catSel = document.getElementById('filterCategory');
-      if (catSel && window.PPCH_CONFIG && window.PPCH_CONFIG.forms) {
-        window.PPCH_CONFIG.forms.forEach(function (f) {
-          var opt = document.createElement('option');
-          opt.value = f.id;
-          opt.innerText = f.shortName || f.name;
-          catSel.appendChild(opt);
-        });
-      }
+      // 2. Populate selects
+      populateDepartmentSelects();
+      populateFormSelects();
 
       // 4. Fetch live data directly from Supabase Cloud (Single source of truth)
       if (window.PPCH_API && window.PPCH_API.isConfigured()) {
@@ -1765,7 +2002,9 @@
         });
       }
 
-      // Populate device history dropdown (สรุปรายเครื่อง)
+      // Populate selects and device history dropdown
+      populateDepartmentSelects();
+      populateFormSelects();
       populateDeviceHistorySelect();
 
       // Update defective badge in sidebar
@@ -1786,6 +2025,8 @@
         renderDefectiveView();
       } else if (currentView === 'device_summary') {
         renderDeviceSummaryView();
+      } else if (currentView === 'settings') {
+        renderSettingsView();
       }
     }
 
@@ -1797,7 +2038,8 @@
         device_summary: 'สรุปรายเครื่อง',
         defective: 'เครื่องมือไม่พร้อมใช้งาน & จัดการงานซ่อม',
         relocate: 'มอบหมายแผนก',
-        directory: 'รายการเครื่อง & QR Code'
+        directory: 'รายการเครื่อง & QR Code',
+        settings: 'ตั้งค่าระบบ'
       };
       bread.innerText = breadMap[viewKey] || viewKey;
 
@@ -1806,7 +2048,8 @@
         device_summary: 'viewDeviceSummary',
         defective: 'viewDefective',
         relocate: 'viewRelocate',
-        directory: 'viewDirectory'
+        directory: 'viewDirectory',
+        settings: 'viewSettings'
       };
 
       Object.keys(viewIds).forEach(function (k) {
@@ -1820,6 +2063,8 @@
         renderDefectiveView();
       } else if (viewKey === 'device_summary') {
         renderDeviceSummaryView();
+      } else if (viewKey === 'settings') {
+        renderSettingsView();
       }
     }
 
@@ -2852,6 +3097,541 @@
 
     function closeSlipModal() {
       document.getElementById('slipModal').classList.add('hidden');
+    }
+
+    // ==================== SETTINGS VIEW: DEPARTMENTS & EQUIPMENT ====================
+    var currentSettingsTab = 'departments';
+
+    function switchSettingsTab(tabKey) {
+      currentSettingsTab = tabKey;
+      var btnDept = document.getElementById('tabBtn_settings_dept');
+      var btnEquip = document.getElementById('tabBtn_settings_equip');
+      var pnlDept = document.getElementById('settingsPanelDepartments');
+      var pnlEquip = document.getElementById('settingsPanelEquipment');
+
+      if (tabKey === 'departments') {
+        if (btnDept) {
+          btnDept.className = 'btn-tool btn-tool-primary';
+          var b = btnDept.querySelector('.nav-count-badge');
+          if (b) { b.style.background = 'rgba(255,255,255,0.25)'; b.style.color = '#fff'; }
+        }
+        if (btnEquip) {
+          btnEquip.className = 'btn-tool';
+          var b = btnEquip.querySelector('.nav-count-badge');
+          if (b) { b.style.background = 'var(--royal-subtle)'; b.style.color = 'var(--royal-blue)'; }
+        }
+        if (pnlDept) pnlDept.style.display = 'block';
+        if (pnlEquip) pnlEquip.style.display = 'none';
+        renderDepartmentsTable();
+      } else {
+        if (btnDept) {
+          btnDept.className = 'btn-tool';
+          var b = btnDept.querySelector('.nav-count-badge');
+          if (b) { b.style.background = 'var(--royal-subtle)'; b.style.color = 'var(--royal-blue)'; }
+        }
+        if (btnEquip) {
+          btnEquip.className = 'btn-tool btn-tool-primary';
+          var b = btnEquip.querySelector('.nav-count-badge');
+          if (b) { b.style.background = 'rgba(255,255,255,0.25)'; b.style.color = '#fff'; }
+        }
+        if (pnlDept) pnlDept.style.display = 'none';
+        if (pnlEquip) pnlEquip.style.display = 'block';
+        renderEquipmentSettingsTable();
+      }
+    }
+
+    function renderSettingsView() {
+      var depts = (window.PPCH_STORE && window.PPCH_STORE.getDepartments) ? window.PPCH_STORE.getDepartments() : ((window.PPCH_CONFIG && window.PPCH_CONFIG.departments) || []);
+      var equip = (window.PPCH_STORE && window.PPCH_STORE.getEquipment) ? window.PPCH_STORE.getEquipment() : [];
+
+      var bDept = document.getElementById('badgeSettingsDeptCount');
+      if (bDept) bDept.innerText = depts.length;
+
+      var bEquip = document.getElementById('badgeSettingsEquipCount');
+      if (bEquip) bEquip.innerText = equip.length;
+
+      if (currentSettingsTab === 'departments') {
+        renderDepartmentsTable();
+      } else {
+        renderEquipmentSettingsTable();
+      }
+    }
+
+    function populateDepartmentSelects() {
+      var depts = (window.PPCH_STORE && window.PPCH_STORE.getDepartments) ? window.PPCH_STORE.getDepartments() : ((window.PPCH_CONFIG && window.PPCH_CONFIG.departments) || []);
+      
+      // 1. filterDept
+      var deptSel = document.getElementById('filterDept');
+      if (deptSel) {
+        var curVal = deptSel.value || 'all';
+        deptSel.innerHTML = '<option value="all">ทุกแผนก</option>';
+        depts.forEach(function (dp) {
+          var opt = document.createElement('option');
+          opt.value = dp.id;
+          opt.innerText = dp.name;
+          deptSel.appendChild(opt);
+        });
+        deptSel.value = curVal;
+      }
+
+      // 2. relocateTargetDept
+      var relocateSel = document.getElementById('relocateTargetDept');
+      if (relocateSel) {
+        var curRel = relocateSel.value || '';
+        relocateSel.innerHTML = '<option value="">-- เลือกแผนกปลายทาง --</option>';
+        depts.forEach(function (dp) {
+          var opt = document.createElement('option');
+          opt.value = dp.id;
+          opt.innerText = dp.name;
+          relocateSel.appendChild(opt);
+        });
+        relocateSel.value = curRel;
+      }
+
+      // 3. settingsFilterDept
+      var setDeptSel = document.getElementById('settingsFilterDept');
+      if (setDeptSel) {
+        var curSetVal = setDeptSel.value || 'all';
+        setDeptSel.innerHTML = '<option value="all">ทุกแผนก</option>';
+        depts.forEach(function (dp) {
+          var opt = document.createElement('option');
+          opt.value = dp.id;
+          opt.innerText = dp.name;
+          setDeptSel.appendChild(opt);
+        });
+        setDeptSel.value = curSetVal;
+      }
+
+      // 4. modalEquipCurrentDept
+      var mDeptSel = document.getElementById('modalEquipCurrentDept');
+      if (mDeptSel) {
+        var curMVal = mDeptSel.value || '';
+        mDeptSel.innerHTML = '';
+        depts.forEach(function (dp) {
+          var opt = document.createElement('option');
+          opt.value = dp.id;
+          opt.innerText = dp.name;
+          mDeptSel.appendChild(opt);
+        });
+        if (curMVal) mDeptSel.value = curMVal;
+      }
+    }
+
+    function populateFormSelects() {
+      var forms = (window.PPCH_CONFIG && window.PPCH_CONFIG.forms) || [];
+
+      // 1. filterCategory (Summary View)
+      var catSel = document.getElementById('filterCategory');
+      if (catSel && catSel.children.length <= 1) {
+        catSel.innerHTML = '<option value="all">ทุกประเภท</option>';
+        forms.forEach(function (f) {
+          var opt = document.createElement('option');
+          opt.value = f.id;
+          opt.innerText = f.shortName || f.name;
+          catSel.appendChild(opt);
+        });
+      }
+
+      // 2. settingsFilterForm
+      var setFormSel = document.getElementById('settingsFilterForm');
+      if (setFormSel && setFormSel.children.length <= 1) {
+        setFormSel.innerHTML = '<option value="all">ทุกแบบฟอร์ม</option>';
+        forms.forEach(function (f) {
+          var opt = document.createElement('option');
+          opt.value = f.id;
+          opt.innerText = f.shortName || f.name;
+          setFormSel.appendChild(opt);
+        });
+      }
+
+      // 3. modalEquipFormId
+      var mFormSel = document.getElementById('modalEquipFormId');
+      if (mFormSel && mFormSel.children.length === 0) {
+        mFormSel.innerHTML = '';
+        forms.forEach(function (f) {
+          var opt = document.createElement('option');
+          opt.value = f.id;
+          opt.innerText = f.name;
+          mFormSel.appendChild(opt);
+        });
+      }
+    }
+
+    // ---------- DEPARTMENT CRUD ----------
+    function renderDepartmentsTable() {
+      var tbody = document.getElementById('departmentsTableBody');
+      if (!tbody) return;
+
+      var depts = (window.PPCH_STORE && window.PPCH_STORE.getDepartments) ? window.PPCH_STORE.getDepartments() : ((window.PPCH_CONFIG && window.PPCH_CONFIG.departments) || []);
+      var equip = (window.PPCH_STORE && window.PPCH_STORE.getEquipment) ? window.PPCH_STORE.getEquipment() : [];
+
+      var search = (document.getElementById('deptSearchInput') ? document.getElementById('deptSearchInput').value : '').trim().toLowerCase();
+
+      var filtered = depts.filter(function (dp) {
+        if (!search) return true;
+        return (dp.id && dp.id.toLowerCase().indexOf(search) !== -1) ||
+               (dp.name && dp.name.toLowerCase().indexOf(search) !== -1);
+      });
+
+      var countEl = document.getElementById('deptSummaryCountText');
+      if (countEl) countEl.innerText = 'แสดง ' + filtered.length + ' จากทั้งหมด ' + depts.length + ' แผนก';
+
+      var bDept = document.getElementById('badgeSettingsDeptCount');
+      if (bDept) bDept.innerText = depts.length;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 30px; color: var(--text-muted); font-size: 13px;">ไม่พบข้อมูลแผนกที่ค้นหา</td></tr>';
+        return;
+      }
+
+      var html = '';
+      filtered.forEach(function (dp, idx) {
+        var eqCount = equip.filter(function (e) {
+          return e.currentDept === dp.id || e.homeDept === dp.id;
+        }).length;
+
+        var countBadge = eqCount > 0
+          ? '<span style="background: #e0f2fe; color: #0284c7; padding: 2px 8px; border-radius: 12px; font-weight: 700; font-size: 11.5px;">' + eqCount + ' เครื่อง</span>'
+          : '<span style="color: var(--text-light); font-size: 11.5px;">0 เครื่อง</span>';
+
+        html += '<tr>' +
+          '<td style="text-align: center; color: var(--text-muted); font-size: 12px;">' + (idx + 1) + '</td>' +
+          '<td><span style="font-family: var(--font-mono); font-weight: 700; font-size: 12px; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: var(--royal-blue);">' + escapeHtml(dp.id) + '</span></td>' +
+          '<td style="font-weight: 600; color: var(--text-main); font-size: 13px;">' + escapeHtml(dp.name) + '</td>' +
+          '<td style="text-align: center;">' + countBadge + '</td>' +
+          '<td style="text-align: center;">' +
+            '<div style="display: flex; gap: 6px; justify-content: center;">' +
+              '<button type="button" onclick="openEditDeptModal(\'' + escapeHtml(dp.id) + '\')" class="btn-tool" style="padding: 4px 8px; font-size: 11px; height: 28px;" title="แก้ไขชื่อแผนก">' +
+                '<span class="material-icons-round" style="font-size: 14px; color: var(--royal-blue);">edit</span>' +
+                '<span>แก้ไข</span>' +
+              '</button>' +
+              '<button type="button" onclick="deleteDepartmentConfirm(\'' + escapeHtml(dp.id) + '\')" class="btn-tool" style="padding: 4px 8px; font-size: 11px; height: 28px; color: var(--red-abnormal); border-color: #fecaca;" title="ลบแผนก">' +
+                '<span class="material-icons-round" style="font-size: 14px; color: var(--red-abnormal);">delete</span>' +
+                '<span>ลบ</span>' +
+              '</button>' +
+            '</div>' +
+          '</td>' +
+        '</tr>';
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    function openAddDeptModal() {
+      document.getElementById('modalDeptMode').value = 'add';
+      document.getElementById('modalDeptTitle').innerText = 'เพิ่มแผนกใหม่';
+      var idInput = document.getElementById('modalDeptId');
+      idInput.value = '';
+      idInput.disabled = false;
+      document.getElementById('modalDeptName').value = '';
+      document.getElementById('modalDeptIdHint').style.display = 'block';
+      document.getElementById('modalAddEditDept').classList.remove('hidden');
+      setTimeout(function () { idInput.focus(); }, 100);
+    }
+
+    function openEditDeptModal(deptId) {
+      var depts = (window.PPCH_STORE && window.PPCH_STORE.getDepartments) ? window.PPCH_STORE.getDepartments() : [];
+      var target = null;
+      for (var i = 0; i < depts.length; i++) {
+        if (depts[i].id === deptId) { target = depts[i]; break; }
+      }
+      if (!target) return;
+
+      document.getElementById('modalDeptMode').value = 'edit';
+      document.getElementById('modalDeptTitle').innerText = 'แก้ไขแผนก (' + target.id + ')';
+      var idInput = document.getElementById('modalDeptId');
+      idInput.value = target.id;
+      idInput.disabled = true;
+      document.getElementById('modalDeptName').value = target.name;
+      document.getElementById('modalDeptIdHint').style.display = 'none';
+      document.getElementById('modalAddEditDept').classList.remove('hidden');
+      setTimeout(function () { document.getElementById('modalDeptName').focus(); }, 100);
+    }
+
+    function closeDeptModal() {
+      document.getElementById('modalAddEditDept').classList.add('hidden');
+    }
+
+    function saveDepartment(event) {
+      if (event) event.preventDefault();
+      var mode = document.getElementById('modalDeptMode').value;
+      var id = document.getElementById('modalDeptId').value.trim().toUpperCase();
+      var name = document.getElementById('modalDeptName').value.trim();
+
+      if (!id || !name) {
+        showToast('กรุณากรอกรหัสแผนกและชื่อแผนกให้ครบถ้วน');
+        return;
+      }
+
+      var btn = document.getElementById('btnSaveDept');
+      if (btn) btn.disabled = true;
+
+      if (mode === 'add') {
+        window.PPCH_API.createDepartment({ id: id, name: name }, function (res) {
+          if (btn) btn.disabled = false;
+          if (res && res.success) {
+            if (window.PPCH_STORE) window.PPCH_STORE.addDepartment({ id: id, name: name });
+            closeDeptModal();
+            showToast('เพิ่มแผนก "' + name + '" เรียบร้อยแล้ว');
+            loadData();
+          } else {
+            showToast('เกิดข้อผิดพลาด: ' + (res ? res.message : 'ไม่สามารถบันทึกได้'));
+          }
+        });
+      } else {
+        window.PPCH_API.updateDepartment(id, { name: name }, function (res) {
+          if (btn) btn.disabled = false;
+          if (res && res.success) {
+            if (window.PPCH_STORE) window.PPCH_STORE.updateDepartment(id, { name: name });
+            closeDeptModal();
+            showToast('แก้ไขแผนก "' + name + '" เรียบร้อยแล้ว');
+            loadData();
+          } else {
+            showToast('เกิดข้อผิดพลาด: ' + (res ? res.message : 'ไม่สามารถแก้ไขได้'));
+          }
+        });
+      }
+    }
+
+    function deleteDepartmentConfirm(deptId) {
+      var depts = (window.PPCH_STORE && window.PPCH_STORE.getDepartments) ? window.PPCH_STORE.getDepartments() : [];
+      var target = null;
+      for (var i = 0; i < depts.length; i++) {
+        if (depts[i].id === deptId) { target = depts[i]; break; }
+      }
+      var deptName = target ? target.name : deptId;
+
+      var equip = (window.PPCH_STORE && window.PPCH_STORE.getEquipment) ? window.PPCH_STORE.getEquipment() : [];
+      var assignedEq = equip.filter(function (e) {
+        return e.currentDept === deptId || e.homeDept === deptId;
+      });
+
+      var promptMsg = '';
+      if (assignedEq.length > 0) {
+        promptMsg = 'คำเตือน: มีเครื่องมือแพทย์จำนวน ' + assignedEq.length + ' เครื่อง สังกัดแผนก "' + deptName + '" (' + deptId + ')\n\n' +
+                    'หากท่านลบแผนกนี้ เครื่องมือแพทย์ดังกล่าวจะถูกปลดเป็นไม่มีสังกัด\n\n' +
+                    'คุณแน่ใจหรือไม่ว่าต้องการลบแผนกนี้?';
+      } else {
+        promptMsg = 'ยืนยันการลบแผนก "' + deptName + '" (' + deptId + ') ออกจากระบบฐานข้อมูลหรือไม่?';
+      }
+
+      if (!confirm(promptMsg)) return;
+
+      window.PPCH_API.deleteDepartment(deptId, function (res) {
+        if (res && res.success) {
+          if (window.PPCH_STORE) window.PPCH_STORE.deleteDepartment(deptId);
+          showToast('ลบแผนก "' + deptName + '" เรียบร้อย');
+          loadData();
+        } else {
+          showToast('เกิดข้อผิดพลาดในการลบ: ' + (res ? res.message : ''));
+        }
+      });
+    }
+
+    // ---------- EQUIPMENT CRUD ----------
+    function renderEquipmentSettingsTable() {
+      var tbody = document.getElementById('equipmentSettingsTableBody');
+      if (!tbody) return;
+
+      var equip = (window.PPCH_STORE && window.PPCH_STORE.getEquipment) ? window.PPCH_STORE.getEquipment() : [];
+      var search = (document.getElementById('equipSearchInput') ? document.getElementById('equipSearchInput').value : '').trim().toLowerCase();
+      var deptFilter = (document.getElementById('settingsFilterDept') ? document.getElementById('settingsFilterDept').value : 'all');
+      var formFilter = (document.getElementById('settingsFilterForm') ? document.getElementById('settingsFilterForm').value : 'all');
+
+      var filtered = equip.filter(function (eq) {
+        if (search) {
+          var sMatch = (eq.assetCode && eq.assetCode.toLowerCase().indexOf(search) !== -1) ||
+                       (eq.name && eq.name.toLowerCase().indexOf(search) !== -1) ||
+                       (eq.model && eq.model.toLowerCase().indexOf(search) !== -1) ||
+                       (eq.serialNo && eq.serialNo.toLowerCase().indexOf(search) !== -1);
+          if (!sMatch) return false;
+        }
+        if (deptFilter !== 'all' && eq.currentDept !== deptFilter && eq.homeDept !== deptFilter) return false;
+        if (formFilter !== 'all' && eq.formId !== formFilter) return false;
+        return true;
+      });
+
+      var countEl = document.getElementById('equipSummaryCountText');
+      if (countEl) countEl.innerText = 'แสดง ' + filtered.length + ' จากทั้งหมด ' + equip.length + ' เครื่อง';
+
+      var bEquip = document.getElementById('badgeSettingsEquipCount');
+      if (bEquip) bEquip.innerText = equip.length;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 30px; color: var(--text-muted); font-size: 13px;">ไม่พบเครื่องมือแพทย์ที่ตรงกับเงื่อนไขการค้นหา</td></tr>';
+        return;
+      }
+
+      var html = '';
+      filtered.forEach(function (eq, idx) {
+        var formObj = window.PPCH_STORE ? window.PPCH_STORE.getFormById(eq.formId) : null;
+        var formName = formObj ? (formObj.shortName || formObj.name) : (eq.formId || '-');
+        var deptName = window.PPCH_STORE ? window.PPCH_STORE.getDepartmentName(eq.currentDept) : (eq.currentDept || '-');
+
+        var isReady = (eq.status === 'ready');
+        var statusBadge = isReady
+          ? '<span style="background: #ecfdf5; color: var(--green-ready); padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px;">พร้อมใช้งาน</span>'
+          : '<span style="background: #fef2f2; color: var(--red-abnormal); padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px;">ชำรุด</span>';
+
+        html += '<tr>' +
+          '<td style="text-align: center; color: var(--text-muted); font-size: 12px;">' + (idx + 1) + '</td>' +
+          '<td><span style="font-family: var(--font-mono); font-weight: 700; font-size: 12px; color: var(--royal-blue);">' + escapeHtml(eq.assetCode) + '</span></td>' +
+          '<td style="font-weight: 600; color: var(--text-main); font-size: 13px;">' + escapeHtml(eq.name) + '</td>' +
+          '<td style="color: var(--text-body); font-size: 12px;">' + escapeHtml(eq.model || '-') + '</td>' +
+          '<td style="font-family: var(--font-mono); font-size: 11.5px; color: var(--text-muted);">' + escapeHtml(eq.serialNo || '-') + '</td>' +
+          '<td><span style="font-size: 11.5px; background: var(--royal-subtle); color: var(--royal-blue); padding: 2px 6px; border-radius: 4px;">' + escapeHtml(formName) + '</span></td>' +
+          '<td style="font-weight: 500; font-size: 12.5px; color: var(--text-main);">' + escapeHtml(deptName) + '</td>' +
+          '<td style="text-align: center;">' + statusBadge + '</td>' +
+          '<td style="text-align: center;">' +
+            '<div style="display: flex; gap: 6px; justify-content: center;">' +
+              '<button type="button" onclick="openEditEquipmentModal(\'' + escapeHtml(eq.id) + '\')" class="btn-tool" style="padding: 4px 8px; font-size: 11px; height: 28px;" title="แก้ไขเครื่องมือ">' +
+                '<span class="material-icons-round" style="font-size: 14px; color: var(--royal-blue);">edit</span>' +
+                '<span>แก้ไข</span>' +
+              '</button>' +
+              '<button type="button" onclick="deleteEquipmentConfirm(\'' + escapeHtml(eq.id) + '\')" class="btn-tool" style="padding: 4px 8px; font-size: 11px; height: 28px; color: var(--red-abnormal); border-color: #fecaca;" title="ลบเครื่องมือ">' +
+                '<span class="material-icons-round" style="font-size: 14px; color: var(--red-abnormal);">delete</span>' +
+                '<span>ลบ</span>' +
+              '</button>' +
+            '</div>' +
+          '</td>' +
+        '</tr>';
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    function openAddEquipmentModal() {
+      document.getElementById('modalEquipMode').value = 'add';
+      document.getElementById('modalEquipDbId').value = '';
+      document.getElementById('modalEquipTitle').innerText = 'เพิ่มเครื่องมือแพทย์ใหม่';
+
+      document.getElementById('modalEquipAssetCode').value = '';
+      document.getElementById('modalEquipName').value = '';
+      document.getElementById('modalEquipModel').value = '';
+      document.getElementById('modalEquipSerialNo').value = '';
+      document.getElementById('modalEquipStatus').value = 'ready';
+
+      populateFormSelects();
+      populateDepartmentSelects();
+
+      document.getElementById('modalAddEditEquipment').classList.remove('hidden');
+      setTimeout(function () { document.getElementById('modalEquipAssetCode').focus(); }, 100);
+    }
+
+    function openEditEquipmentModal(deviceId) {
+      var eq = window.PPCH_STORE ? window.PPCH_STORE.getEquipmentById(deviceId) : null;
+      if (!eq) return;
+
+      document.getElementById('modalEquipMode').value = 'edit';
+      document.getElementById('modalEquipDbId').value = eq.id;
+      document.getElementById('modalEquipTitle').innerText = 'แก้ไขข้อมูลเครื่อง (' + eq.assetCode + ')';
+
+      document.getElementById('modalEquipAssetCode').value = eq.assetCode || '';
+      document.getElementById('modalEquipName').value = eq.name || '';
+      document.getElementById('modalEquipModel').value = eq.model || '';
+      document.getElementById('modalEquipSerialNo').value = eq.serialNo || '';
+      document.getElementById('modalEquipFormId').value = eq.formId || 'defibrillator';
+      document.getElementById('modalEquipCurrentDept').value = eq.currentDept || 'CENTRAL';
+      document.getElementById('modalEquipStatus').value = eq.status || 'ready';
+
+      document.getElementById('modalAddEditEquipment').classList.remove('hidden');
+      setTimeout(function () { document.getElementById('modalEquipName').focus(); }, 100);
+    }
+
+    function closeEquipmentModal() {
+      document.getElementById('modalAddEditEquipment').classList.add('hidden');
+    }
+
+    function saveEquipment(event) {
+      if (event) event.preventDefault();
+      var mode = document.getElementById('modalEquipMode').value;
+      var dbId = document.getElementById('modalEquipDbId').value;
+      var assetCode = document.getElementById('modalEquipAssetCode').value.trim();
+      var name = document.getElementById('modalEquipName').value.trim();
+      var model = document.getElementById('modalEquipModel').value.trim();
+      var serialNo = document.getElementById('modalEquipSerialNo').value.trim();
+      var formId = document.getElementById('modalEquipFormId').value;
+      var currentDept = document.getElementById('modalEquipCurrentDept').value;
+      var status = document.getElementById('modalEquipStatus').value;
+
+      if (!assetCode || !name) {
+        showToast('กรุณากรอกรหัสเครื่องและชื่อเครื่องมือแพทย์ให้ครบถ้วน');
+        return;
+      }
+
+      var btn = document.getElementById('btnSaveEquipment');
+      if (btn) btn.disabled = true;
+
+      var itemPayload = {
+        assetCode: assetCode,
+        name: name,
+        model: model,
+        serialNo: serialNo,
+        formId: formId,
+        homeDept: currentDept,
+        currentDept: currentDept,
+        status: status,
+        repairStatus: (status === 'abnormal') ? 'reported' : 'ready'
+      };
+
+      if (mode === 'add') {
+        itemPayload.id = 'EQ-' + Date.now();
+        window.PPCH_API.createEquipment(itemPayload, function (res) {
+          if (btn) btn.disabled = false;
+          if (res && res.success) {
+            var created = res.data || itemPayload;
+            if (window.PPCH_STORE) window.PPCH_STORE.addEquipment(created);
+            closeEquipmentModal();
+            showToast('เพิ่มเครื่องมือแพทย์ "' + assetCode + '" เรียบร้อย');
+            loadData();
+          } else {
+            showToast('เกิดข้อผิดพลาด: ' + (res ? res.message : ''));
+          }
+        });
+      } else {
+        window.PPCH_API.updateEquipment(dbId, itemPayload, function (res) {
+          if (btn) btn.disabled = false;
+          if (res && res.success) {
+            if (window.PPCH_STORE) window.PPCH_STORE.updateEquipment(dbId, itemPayload);
+            closeEquipmentModal();
+            showToast('แก้ไขเครื่องมือแพทย์ "' + assetCode + '" เรียบร้อย');
+            loadData();
+          } else {
+            showToast('เกิดข้อผิดพลาด: ' + (res ? res.message : ''));
+          }
+        });
+      }
+    }
+
+    function deleteEquipmentConfirm(deviceId) {
+      var eq = window.PPCH_STORE ? window.PPCH_STORE.getEquipmentById(deviceId) : null;
+      var assetCode = eq ? eq.assetCode : deviceId;
+      var name = eq ? eq.name : '';
+
+      var promptMsg = 'ยืนยันการลบเครื่องมือแพทย์ ' + assetCode + ' (' + name + ') ออกจากระบบฐานข้อมูลหรือไม่?\n\n' +
+                      'คำเตือน: ประวัติการตรวจเช็คและบันทึกงานซ่อมทั้งหมดของเครื่องนี้จะถูกลบตามไปด้วย';
+
+      if (!confirm(promptMsg)) return;
+
+      window.PPCH_API.deleteEquipment(deviceId, function (res) {
+        if (res && res.success) {
+          if (window.PPCH_STORE) window.PPCH_STORE.deleteEquipment(deviceId);
+          showToast('ลบเครื่องมือแพทย์ "' + assetCode + '" เรียบร้อย');
+          loadData();
+        } else {
+          showToast('เกิดข้อผิดพลาดในการลบ: ' + (res ? res.message : ''));
+        }
+      });
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
     }
 
     // ==================== UTILITIES ====================

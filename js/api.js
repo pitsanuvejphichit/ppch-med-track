@@ -171,19 +171,22 @@
       var pEvaluations = supabaseFetch('evaluations?select=*&order=evaluated_at.desc&limit=500');
       var pRepairs = supabaseFetch('repairs?select=*&order=created_at.desc&limit=200');
       var pTransfers = supabaseFetch('transfers?select=*&order=created_at.desc&limit=200');
+      var pDepartments = supabaseFetch('departments?select=*&order=name.asc').catch(function () { return []; });
 
-      Promise.all([pEquipment, pEvaluations, pRepairs, pTransfers])
+      Promise.all([pEquipment, pEvaluations, pRepairs, pTransfers, pDepartments])
         .then(function (results) {
           var eqList = (results[0] || []).map(mapEquipmentFromDb);
           var evList = (results[1] || []).map(mapEvaluationFromDb);
           var repList = (results[2] || []).map(mapRepairFromDb);
           var trfList = (results[3] || []).map(mapTransferFromDb);
+          var deptList = results[4] || [];
 
           var responseData = {
             equipment: eqList,
             evaluations: evList,
             repairs: repList,
-            transfers: trfList
+            transfers: trfList,
+            departments: deptList
           };
 
           if (callback) {
@@ -502,6 +505,136 @@
       });
     },
 
+    // 5.2 Department Management (CRUD)
+    createDepartment: function (deptData, callback) {
+      if (!deptData || !deptData.name) {
+        if (callback) callback({ success: false, message: 'กรุณาระบุชื่อแผนก' });
+        return;
+      }
+      var deptId = (deptData.id || deptData.code || ('DEPT_' + Date.now())).trim().toUpperCase();
+      var body = {
+        id: deptId,
+        name: deptData.name.trim()
+      };
+      supabaseFetch('departments', { method: 'POST', body: body })
+        .then(function (res) {
+          var created = (Array.isArray(res) && res[0]) ? res[0] : body;
+          if (callback) callback({ success: true, data: created, message: 'เพิ่มแผนกเรียบร้อย' });
+        })
+        .catch(function (err) {
+          console.error('Supabase createDepartment error:', err);
+          if (callback) callback({ success: false, message: err.message });
+        });
+    },
+
+    updateDepartment: function (deptId, deptData, callback) {
+      if (!deptId || !deptData || !deptData.name) {
+        if (callback) callback({ success: false, message: 'ข้อมูลไม่ครบถ้วน' });
+        return;
+      }
+      var body = { name: deptData.name.trim() };
+      supabaseFetch('departments?id=eq.' + encodeURIComponent(deptId), { method: 'PATCH', body: body })
+        .then(function (res) {
+          var updated = (Array.isArray(res) && res[0]) ? res[0] : { id: deptId, name: deptData.name };
+          if (callback) callback({ success: true, data: updated, message: 'แก้ไขแผนกเรียบร้อย' });
+        })
+        .catch(function (err) {
+          console.error('Supabase updateDepartment error:', err);
+          if (callback) callback({ success: false, message: err.message });
+        });
+    },
+
+    deleteDepartment: function (deptId, callback) {
+      if (!deptId) {
+        if (callback) callback({ success: false, message: 'กรุณาระบุรหัสแผนก' });
+        return;
+      }
+      supabaseFetch('departments?id=eq.' + encodeURIComponent(deptId), { method: 'DELETE' })
+        .then(function () {
+          if (callback) callback({ success: true, message: 'ลบแผนกเรียบร้อย' });
+        })
+        .catch(function (err) {
+          console.error('Supabase deleteDepartment error:', err);
+          if (callback) callback({ success: false, message: err.message });
+        });
+    },
+
+    // 5.3 Equipment Management (CRUD)
+    createEquipment: function (itemData, callback) {
+      if (!itemData || !itemData.assetCode || !itemData.name) {
+        if (callback) callback({ success: false, message: 'กรุณาระบุรหัสเครื่องและชื่อเครื่องมือแพทย์' });
+        return;
+      }
+      var eqId = itemData.id || ('EQ-' + Date.now());
+      var row = {
+        id: eqId,
+        asset_code: itemData.assetCode.trim(),
+        name: itemData.name.trim(),
+        form_id: itemData.formId || 'defibrillator',
+        model: itemData.model || '',
+        serial_no: itemData.serialNo || '',
+        frequency: itemData.frequency || 'daily',
+        home_dept: itemData.homeDept || itemData.currentDept || 'CENTRAL',
+        current_dept: itemData.currentDept || itemData.homeDept || 'CENTRAL',
+        status: itemData.status || 'ready',
+        repair_status: itemData.repairStatus || 'ready',
+        abnormal_reason: itemData.abnormalReason || ''
+      };
+
+      supabaseFetch('equipment', { method: 'POST', body: row })
+        .then(function (res) {
+          var created = (Array.isArray(res) && res[0]) ? mapEquipmentFromDb(res[0]) : mapEquipmentFromDb(row);
+          if (callback) callback({ success: true, data: created, message: 'เพิ่มเครื่องมือแพทย์เรียบร้อย' });
+        })
+        .catch(function (err) {
+          console.error('Supabase createEquipment error:', err);
+          if (callback) callback({ success: false, message: err.message });
+        });
+    },
+
+    updateEquipment: function (deviceId, itemData, callback) {
+      if (!deviceId || !itemData) {
+        if (callback) callback({ success: false, message: 'ข้อมูลไม่ครบถ้วน' });
+        return;
+      }
+      var body = {
+        updated_at: new Date().toISOString()
+      };
+      if (itemData.assetCode !== undefined) body.asset_code = itemData.assetCode.trim();
+      if (itemData.name !== undefined) body.name = itemData.name.trim();
+      if (itemData.formId !== undefined) body.form_id = itemData.formId;
+      if (itemData.model !== undefined) body.model = itemData.model;
+      if (itemData.serialNo !== undefined) body.serial_no = itemData.serialNo;
+      if (itemData.homeDept !== undefined) body.home_dept = itemData.homeDept;
+      if (itemData.currentDept !== undefined) body.current_dept = itemData.currentDept;
+      if (itemData.status !== undefined) body.status = itemData.status;
+
+      supabaseFetch('equipment?id=eq.' + encodeURIComponent(deviceId), { method: 'PATCH', body: body })
+        .then(function (res) {
+          var updated = (Array.isArray(res) && res[0]) ? mapEquipmentFromDb(res[0]) : null;
+          if (callback) callback({ success: true, data: updated, message: 'แก้ไขข้อมูลเครื่องมือแพทย์เรียบร้อย' });
+        })
+        .catch(function (err) {
+          console.error('Supabase updateEquipment error:', err);
+          if (callback) callback({ success: false, message: err.message });
+        });
+    },
+
+    deleteEquipment: function (deviceId, callback) {
+      if (!deviceId) {
+        if (callback) callback({ success: false, message: 'กรุณาระบุรหัสเครื่องมือแพทย์' });
+        return;
+      }
+      supabaseFetch('equipment?id=eq.' + encodeURIComponent(deviceId), { method: 'DELETE' })
+        .then(function () {
+          if (callback) callback({ success: true, message: 'ลบเครื่องมือแพทย์เรียบร้อย' });
+        })
+        .catch(function (err) {
+          console.error('Supabase deleteEquipment error:', err);
+          if (callback) callback({ success: false, message: err.message });
+        });
+    },
+
     // 6. Supabase Real-time Subscription
     initRealtime: function (onChangeCallback) {
       var client = getSupabaseClient();
@@ -512,6 +645,9 @@
           .channel('public-db-changes')
           .on('postgres_changes', { event: '*', schema: 'public', table: 'equipment' }, function () {
             if (onChangeCallback) onChangeCallback('equipment');
+          })
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'departments' }, function () {
+            if (onChangeCallback) onChangeCallback('departments');
           })
           .on('postgres_changes', { event: '*', schema: 'public', table: 'evaluations' }, function () {
             if (onChangeCallback) onChangeCallback('evaluations');
