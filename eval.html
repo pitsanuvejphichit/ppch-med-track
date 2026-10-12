@@ -521,8 +521,13 @@
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
           <div style="background: #f8fafc; border: 1px solid var(--border-main); padding: 8px 12px; border-radius: 8px;">
-            <div style="font-size: 11px; color: var(--text-muted);">แผนกที่รับผิดชอบตรวจเช็ค</div>
-            <div id="evalDeptDisplay" style="font-size: 13px; font-weight: 700; color: var(--text-main); margin-top: 2px;">-</div>
+            <label for="evalDeptSelect" style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--text-muted); cursor: pointer; margin-bottom: 3px;">
+              <span>แผนกที่ตรวจเช็ค *</span>
+              <span style="font-size: 10px; color: var(--royal-blue); font-weight: 600;">(เปลี่ยนแผนกได้หากย้ายเครื่อง)</span>
+            </label>
+            <select id="evalDeptSelect" class="form-control-select" style="padding: 4px 8px; font-size: 12.5px; font-weight: 700; color: var(--royal-blue); background: #ffffff; cursor: pointer;">
+              <option value="">-- กำลังโหลดแผนก --</option>
+            </select>
           </div>
           <div style="background: #f8fafc; border: 1px solid var(--border-main); padding: 8px 12px; border-radius: 8px;">
             <label for="evalDateTimeInput" style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--text-muted); cursor: pointer; margin-bottom: 2px;">
@@ -772,7 +777,18 @@
 
       function setupDropdownAndDevice() {
         var select = document.getElementById('evalDeviceSelect');
+        var deptSelect = document.getElementById('evalDeptSelect');
         var allEq = (window.PPCH_STORE && window.PPCH_STORE.getEquipment ? window.PPCH_STORE.getEquipment() : []) || [];
+
+        if (deptSelect && window.PPCH_CONFIG && window.PPCH_CONFIG.departments) {
+          deptSelect.innerHTML = '';
+          window.PPCH_CONFIG.departments.forEach(function (dp) {
+            var opt = document.createElement('option');
+            opt.value = dp.id;
+            opt.innerText = dp.name;
+            deptSelect.appendChild(opt);
+          });
+        }
 
         if (select) {
           select.innerHTML = '<option value="">-- กรุณาเลือกเครื่องมือแพทย์ --</option>';
@@ -922,7 +938,26 @@
 
       document.getElementById('formNameHeading').innerText = currentForm.name;
       document.getElementById('badgeCategoryPill').innerText = currentForm.category;
-      document.getElementById('evalDeptDisplay').innerText = window.PPCH_STORE.getDepartmentName(currentDevice.currentDept);
+
+      // Set department: default to yesterday's / latest evaluation department, or currentDept
+      var defaultDept = currentDevice.currentDept;
+      var devEvals = (window.PPCH_STORE && window.PPCH_STORE.getEvaluations) ? window.PPCH_STORE.getEvaluations() : [];
+      var matchEvals = devEvals.filter(function (e) {
+        return e.deviceId === currentDevice.id || e.deviceAsset === currentDevice.assetCode;
+      });
+      if (matchEvals.length > 0) {
+        matchEvals.sort(function (a, b) {
+          return (b.evaluatedAt || '').localeCompare(a.evaluatedAt || '');
+        });
+        if (matchEvals[0].department) {
+          defaultDept = matchEvals[0].department;
+        }
+      }
+
+      var deptSelect = document.getElementById('evalDeptSelect');
+      if (deptSelect) {
+        deptSelect.value = defaultDept;
+      }
 
       // Check repair lock status: ONLY lock if device is actually currently defective or in repair
       var underRepair = (currentDevice.status === 'abnormal' || currentDevice.status === 'in_progress' || currentDevice.repairStatus === 'reported' || currentDevice.repairStatus === 'in_progress');
@@ -1235,13 +1270,15 @@
         };
       }
 
+      var chosenDept = (document.getElementById('evalDeptSelect') && document.getElementById('evalDeptSelect').value) ? document.getElementById('evalDeptSelect').value : currentDevice.currentDept;
+
       var record = {
         id: 'EV-' + Date.now(),
         deviceId: currentDevice.id,
         deviceAsset: currentDevice.assetCode,
         deviceName: currentDevice.name,
         formId: currentDevice.formId,
-        department: currentDevice.currentDept,
+        department: chosenDept,
         evaluatedBy: evaluator,
         evaluatedAt: evalTimeStr,
         result: hasFail ? 'abnormal' : 'normal',
@@ -1249,6 +1286,8 @@
         checklist: checklistState,
         upsBattery: upsObj
       };
+
+      currentDevice.currentDept = chosenDept;
 
       var btnSubmit = document.getElementById('btnSubmitEval');
       if (btnSubmit) {

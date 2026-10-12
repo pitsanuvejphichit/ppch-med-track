@@ -235,6 +235,14 @@
       return { success: true, record: evalRecord, equipment: eq };
     },
 
+    assignDepartment: function (deviceId, toDeptId) {
+      var eq = this.getEquipmentById(deviceId);
+      if (!eq) throw new Error('ไม่พบเครื่องมือแพทย์รหัส ' + deviceId);
+      eq.currentDept = toDeptId;
+      notifyUpdated();
+      return { success: true, equipment: eq };
+    },
+
     transferEquipment: function (deviceId, toDeptId, transferredBy, reason) {
       var eq = null;
       for (var i = 0; i < inMemoryData.equipment.length; i++) {

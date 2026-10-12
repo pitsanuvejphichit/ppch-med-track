@@ -247,6 +247,7 @@
         repair_status: isAbnormal ? 'reported' : 'ready',
         last_evaluated_at: record.evaluatedAt,
         last_evaluated_by: record.evaluatedBy,
+        current_dept: record.department,
         updated_at: new Date().toISOString()
       };
 
@@ -472,6 +473,33 @@
           console.error('Supabase transferEquipment error:', err);
           if (callback) callback({ success: false, message: err.message });
         });
+    },
+
+    // 5.1 Assign Department (มอบหมายแผนก)
+    assignDepartment: function (deviceId, toDeptId, callback) {
+      var eqUpdate = {
+        current_dept: toDeptId,
+        updated_at: new Date().toISOString()
+      };
+
+      supabaseFetch('equipment?id=eq.' + encodeURIComponent(deviceId), {
+        method: 'PATCH',
+        body: eqUpdate
+      })
+      .then(function () {
+        if (callback) callback({ success: true, message: 'มอบหมายแผนกสำเร็จ' });
+
+        // Background GAS sync
+        PPCH_API.postToGas({
+          action: 'assignDepartment',
+          deviceId: deviceId,
+          department: toDeptId
+        }, function () {});
+      })
+      .catch(function (err) {
+        console.error('Supabase assignDepartment error:', err);
+        if (callback) callback({ success: false, message: err.message });
+      });
     },
 
     // 6. Supabase Real-time Subscription
