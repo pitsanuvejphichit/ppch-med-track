@@ -585,6 +585,20 @@
         .then(function (res) {
           var created = (Array.isArray(res) && res[0]) ? mapEquipmentFromDb(res[0]) : mapEquipmentFromDb(row);
           if (callback) callback({ success: true, data: created, message: 'เพิ่มเครื่องมือแพทย์เรียบร้อย' });
+
+          // Background Google Sheets Synchronization
+          PPCH_API.postToGas({
+            action: 'createEquipment',
+            id: created.id,
+            assetCode: created.assetCode,
+            name: created.name,
+            formId: created.formId,
+            model: created.model,
+            serialNo: created.serialNo,
+            homeDept: created.homeDept,
+            currentDept: created.currentDept,
+            status: created.status
+          });
         })
         .catch(function (err) {
           console.error('Supabase createEquipment error:', err);
@@ -613,6 +627,20 @@
         .then(function (res) {
           var updated = (Array.isArray(res) && res[0]) ? mapEquipmentFromDb(res[0]) : null;
           if (callback) callback({ success: true, data: updated, message: 'แก้ไขข้อมูลเครื่องมือแพทย์เรียบร้อย' });
+
+          // Background Google Sheets Synchronization
+          PPCH_API.postToGas({
+            action: 'updateEquipment',
+            deviceId: deviceId,
+            assetCode: itemData.assetCode,
+            name: itemData.name,
+            formId: itemData.formId,
+            model: itemData.model,
+            serialNo: itemData.serialNo,
+            homeDept: itemData.homeDept,
+            currentDept: itemData.currentDept,
+            status: itemData.status
+          });
         })
         .catch(function (err) {
           console.error('Supabase updateEquipment error:', err);
@@ -628,6 +656,12 @@
       supabaseFetch('equipment?id=eq.' + encodeURIComponent(deviceId), { method: 'DELETE' })
         .then(function () {
           if (callback) callback({ success: true, message: 'ลบเครื่องมือแพทย์เรียบร้อย' });
+
+          // Background Google Sheets Synchronization
+          PPCH_API.postToGas({
+            action: 'deleteEquipment',
+            deviceId: deviceId
+          });
         })
         .catch(function (err) {
           console.error('Supabase deleteEquipment error:', err);
