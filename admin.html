@@ -954,6 +954,17 @@
       background: #d1fae5;
       color: #065f46;
     }
+    /* Resolve Defect Shortcut: Emerald/Green */
+    .btn-icon-resolve {
+      background: #ecfdf5;
+      color: #059669;
+      border-color: #6ee7b7;
+    }
+    .btn-icon-resolve:hover {
+      background: #059669;
+      color: #ffffff;
+      border-color: #059669;
+    }
 
     /* ==================== FLOATING SPEED DIAL ACTION MENU ==================== */
     .floating-action-wrapper {
@@ -1314,10 +1325,9 @@
     }
 
     .grid-relocate-container {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
-      margin-bottom: 16px;
+      max-width: 680px;
+      margin: 0 auto 16px auto;
+      width: 100%;
     }
 
     /* ==================== DASHBOARD EXECUTIVE STYLES ==================== */
@@ -2177,7 +2187,8 @@
 
       /* Relocate Sub-view */
       .grid-relocate-container {
-        grid-template-columns: 1fr !important;
+        width: 100% !important;
+        margin: 0 auto 14px auto !important;
       }
 
       /* Modals on Mobile */
@@ -2859,13 +2870,28 @@
               </div>
               <div style="padding: 18px 20px;">
                 <form id="relocationForm" onsubmit="handleRelocationSubmit(event)">
-                  <div style="margin-bottom: 14px;">
-                    <label for="relocateDeviceSelect" style="display: block; font-size: 12px; font-weight: 700; color: var(--text-main); margin-bottom: 5px;">
+                  <div style="margin-bottom: 16px;">
+                    <label style="display: block; font-size: 12.5px; font-weight: 700; color: var(--text-main); margin-bottom: 8px;">
                       1. เลือกเครื่องมือแพทย์ที่ต้องการมอบหมาย *
                     </label>
-                    <select id="relocateDeviceSelect" class="filter-input" style="width: 100%; font-weight: 600;" onchange="onRelocateDeviceSelected()" required>
-                      <option value="">-- กรุณาเลือกเครื่องมือแพทย์ --</option>
-                    </select>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px;">
+                      <div>
+                        <label for="relocateDeviceNameSelect" style="display: block; font-size: 11.5px; font-weight: 600; color: var(--royal-blue); margin-bottom: 4px;">
+                          1.1 เลือกชื่อเครื่องมือแพทย์
+                        </label>
+                        <select id="relocateDeviceNameSelect" class="filter-input" style="width: 100%; font-weight: 600;" onchange="onRelocateDeviceNameChanged()" required>
+                          <option value="">-- เลือกชื่อเครื่องมือ --</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label for="relocateDeviceSelect" style="display: block; font-size: 11.5px; font-weight: 600; color: var(--royal-blue); margin-bottom: 4px;">
+                          1.2 เลือกรหัสเครื่อง / ครุภัณฑ์
+                        </label>
+                        <select id="relocateDeviceSelect" class="filter-input" style="width: 100%; font-weight: 600;" onchange="onRelocateDeviceSelected()" required>
+                          <option value="">-- เลือกรหัสเครื่อง --</option>
+                        </select>
+                      </div>
+                    </div>
                   </div>
 
                   <!-- Device Current Details Box -->
@@ -2897,48 +2923,6 @@
                     <span>บันทึกการย้ายแผนก</span>
                   </button>
                 </form>
-              </div>
-            </div>
-
-            <!-- Workflow Guide Card -->
-            <div class="content-panel" style="margin-bottom: 0;">
-              <div class="panel-header">
-                <div class="panel-title" style="display: flex; align-items: center; gap: 8px;">
-                  <span class="material-icons-round" style="color: #0284c7; font-size: 20px;">info</span>
-                  <span>แนวทางการย้ายแผนกรับผิดชอบเครื่องมือแพทย์</span>
-                </div>
-              </div>
-              <div style="padding: 18px 20px; font-size: 12.5px; line-height: 1.6; color: var(--text-body);">
-                <div style="background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; color: #0369a1;">
-                  <strong>💡 การย้ายแผนกรับผิดชอบ (Permanent Relocation):</strong><br>
-                  เมื่อมีการกำหนดแผนกใหม่ ระบบจะถือเป็นการ <em>ย้ายแผนกรับผิดชอบโดยสมบูรณ์</em> ทันที (ไม่มีสถานะยืม) โดยแผนกใหม่จะรับหน้าที่ตรวจเช็คประจำวันต่อไป
-                </div>
-
-                <div style="display: flex; flex-direction: column; gap: 12px;">
-                  <div style="display: flex; gap: 10px;">
-                    <span style="background: #e0f2fe; color: #0284c7; font-weight: 800; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0;">1</span>
-                    <div>
-                      <strong style="color: var(--text-main);">กรณีแผนกใหม่นำเครื่องไปใช้งาน (เปลี่ยนเองในฟอร์มตรวจ):</strong><br>
-                      แผนกที่นำเครื่องไปสามารถสแกน QR Code เพื่อเปิดแบบตรวจเช็ค แล้วกดเลือกเปลี่ยนแผนกในฟอร์มเป็นแผนกตนเองได้ทันที เมื่อบันทึกสำเร็จ เครื่องจะถูกย้ายแผนกรับผิดชอบมาขึ้นกับแผนกใหม่ทันที
-                    </div>
-                  </div>
-
-                  <div style="display: flex; gap: 10px;">
-                    <span style="background: #e0f2fe; color: #0284c7; font-weight: 800; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0;">2</span>
-                    <div>
-                      <strong style="color: var(--text-main);">กรณีเจ้าหน้าที่ย้ายแผนกจากหน้านี้:</strong><br>
-                      เจ้าหน้าที่เครื่องมือแพทย์สามารถกดเลือกเปลี่ยนแผนกจากหน้านี้เป็นแผนกใหม่ได้ทันที ถือเป็นการย้ายแผนกรับผิดชอบอย่างสมบูรณ์
-                    </div>
-                  </div>
-
-                  <div style="display: flex; gap: 10px;">
-                    <span style="background: #ecfdf5; color: #059669; font-weight: 800; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0;">✓</span>
-                    <div>
-                      <strong style="color: #065f46;">ผลลัพธ์ในวันถัดไป:</strong><br>
-                      ค่าเริ่มต้นของแผนกในแบบฟอร์มตรวจ และในตารางสรุปรายวัน จะเปลี่ยนเป็นแผนกใหม่ที่ย้ายไปโดยอัตโนมัติ
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -3009,7 +2993,7 @@
               </div>
 
               <!-- Departments Table -->
-              <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+              <div class="table-responsive" style="overflow-x: auto;">
                 <table class="data-table-modern">
                   <thead>
                     <tr>
@@ -3074,7 +3058,7 @@
               </div>
 
               <!-- Equipment Table -->
-              <div class="table-responsive" style="max-height: 650px; overflow-y: auto;">
+              <div class="table-responsive" style="overflow-x: auto;">
                 <table class="data-table-modern">
                   <thead>
                     <tr>
@@ -3536,18 +3520,8 @@
         allEvaluations = [];
       }
 
-      // Populate relocation device dropdown
-      var devSel = document.getElementById('relocateDeviceSelect');
-      if (devSel) {
-        devSel.innerHTML = '<option value="">-- กรุณาเลือกเครื่องมือแพทย์ --</option>';
-        allEquipment.forEach(function (eq) {
-          var opt = document.createElement('option');
-          opt.value = eq.id;
-          var deptName = window.PPCH_STORE ? window.PPCH_STORE.getDepartmentName(eq.currentDept) : eq.currentDept;
-          opt.innerText = eq.assetCode + ' - ' + eq.name + ' [' + deptName + ']';
-          devSel.appendChild(opt);
-        });
-      }
+      // Populate relocation cascade dropdowns
+      populateRelocateNameSelect();
 
       // Populate selects and device history dropdown
       populateDepartmentSelects();
@@ -3641,6 +3615,8 @@
         renderDefectiveView();
       } else if (viewKey === 'device_summary') {
         renderDeviceSummaryView();
+      } else if (viewKey === 'relocate') {
+        populateRelocateNameSelect();
       } else if (viewKey === 'settings') {
         renderSettingsView();
       }
@@ -4188,6 +4164,7 @@
     }
 
     function openResolveModal(deviceId) {
+      if (typeof closeAllFloatingMenus === 'function') closeAllFloatingMenus();
       var eq = window.PPCH_STORE.getEquipmentById(deviceId);
       if (!eq) return;
 
@@ -4509,21 +4486,23 @@
 
         if (isConditional) {
           var allowReasonTxt = eq.allowUseReason ? (' (' + eq.allowUseReason + ')') : '';
-          statusBadge = '<div class="status-symbol-btn symbol-conditional" title="อนุญาตให้ใช้งานต่อ' + allowReasonTxt + ' (โดย ' + (eq.allowUseBy || '-') + ')" onclick="openAllowUseModal(\'' + eq.id + '\')"><span class="material-icons-round">build_circle</span></div>';
+          statusBadge = '<div class="status-symbol-btn symbol-conditional" title="อนุญาตให้ใช้งานต่อ' + allowReasonTxt + ' (โดย ' + (eq.allowUseBy || '-') + ')" onclick="openResolveModal(\'' + eq.id + '\')"><span class="material-icons-round">build_circle</span></div>';
           actionBtns.push('<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-eval" title="เปิดหน้าตรวจเช็ค"><span class="material-icons-round">assignment</span></a>');
-          actionBtns.push('<button type="button" onclick="openAllowUseModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-allow" title="ดู/แก้ไขการอนุญาตให้ใช้งานต่อ"><span class="material-icons-round">published_with_changes</span></button>');
+          actionBtns.push('<button type="button" onclick="openResolveModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-resolve" title="บันทึกการแก้ไขเครื่องมือแพทย์เสร็จสิ้น (คืนสถานะพร้อมใช้)"><span class="material-icons-round">task_alt</span></button>');
           actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="ดูรายการแจ้งซ่อม"><span class="material-icons-round">build</span></button>');
           if (ev) {
             actionBtns.push('<button type="button" onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-icon btn-icon-slip" title="ดูสลิปผลการตรวจ"><span class="material-icons-round">receipt_long</span></button>');
           }
         } else if (isUnderFix) {
           statusBadge = '<div class="status-symbol-btn symbol-in-progress" title="กำลังซ่อมบำรุง / อยู่ระหว่างการแก้ไข" onclick="switchView(\'defective\')"><span class="material-icons-round">build</span></div>';
+          actionBtns.push('<button type="button" onclick="openResolveModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-resolve" title="บันทึกการแก้ไขเครื่องมือแพทย์เสร็จสิ้น (คืนสถานะพร้อมใช้)"><span class="material-icons-round">task_alt</span></button>');
           actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="ดูงานซ่อมบำรุง"><span class="material-icons-round">build</span></button>');
         } else if (isDefective) {
           var defectTxt = (eq.abnormalReason || (ev && ev.abnormalNote)) ? (' (' + (eq.abnormalReason || ev.abnormalNote) + ')') : '';
           statusBadge = '<div class="status-symbol-btn symbol-abnormal" title="พบข้อบกพร่อง / ไม่พร้อมใช้งาน' + defectTxt + '" onclick="switchView(\'defective\')"><span class="material-icons-round">cancel</span></div>';
           actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="จัดการงานซ่อมบำรุง"><span class="material-icons-round">build</span></button>');
           actionBtns.push('<button type="button" onclick="openAllowUseModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-allow" title="อนุญาตให้ใช้งานต่อชั่วคราว แม้ไม่พร้อมใช้งาน"><span class="material-icons-round">published_with_changes</span></button>');
+          actionBtns.push('<button type="button" onclick="openResolveModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-resolve" title="บันทึกการแก้ไขเครื่องมือแพทย์เสร็จสิ้น (คืนสถานะพร้อมใช้)"><span class="material-icons-round">task_alt</span></button>');
           if (ev) {
             actionBtns.push('<button type="button" onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-icon btn-icon-slip" title="ดูสลิปผลการตรวจ"><span class="material-icons-round">receipt_long</span></button>');
           }
@@ -4964,6 +4943,74 @@
     }
 
     // ==================== ASSIGN DEPARTMENT VIEW (มอบหมายแผนก) ====================
+    function populateRelocateNameSelect() {
+      var nameSel = document.getElementById('relocateDeviceNameSelect');
+      if (!nameSel) return;
+
+      var currentSelectedName = nameSel.value;
+      nameSel.innerHTML = '<option value="">-- กรุณาเลือกชื่อเครื่องมือแพทย์ --</option>';
+
+      var namesMap = {};
+      (allEquipment || []).forEach(function (eq) {
+        var n = (eq.name || 'ไม่ระบุชื่อ').trim();
+        if (n) namesMap[n] = true;
+      });
+
+      var uniqueNames = Object.keys(namesMap).sort(function (a, b) {
+        return a.localeCompare(b, 'th');
+      });
+
+      uniqueNames.forEach(function (name) {
+        var opt = document.createElement('option');
+        opt.value = name;
+        opt.innerText = name;
+        nameSel.appendChild(opt);
+      });
+
+      if (currentSelectedName && namesMap[currentSelectedName]) {
+        nameSel.value = currentSelectedName;
+      } else if (uniqueNames.length > 0) {
+        nameSel.value = uniqueNames[0];
+      }
+
+      onRelocateDeviceNameChanged();
+    }
+
+    function onRelocateDeviceNameChanged() {
+      var nameSel = document.getElementById('relocateDeviceNameSelect');
+      var codeSel = document.getElementById('relocateDeviceSelect');
+      if (!codeSel) return;
+
+      var selectedName = nameSel ? nameSel.value : '';
+      var prevCodeVal = codeSel.value;
+      codeSel.innerHTML = '<option value="">-- เลือกรหัสเครื่อง --</option>';
+
+      if (!selectedName) {
+        onRelocateDeviceSelected();
+        return;
+      }
+
+      var matchingEqs = (allEquipment || []).filter(function (eq) {
+        return (eq.name || 'ไม่ระบุชื่อ').trim() === selectedName;
+      });
+
+      matchingEqs.forEach(function (eq) {
+        var opt = document.createElement('option');
+        opt.value = eq.id;
+        var deptName = window.PPCH_STORE ? window.PPCH_STORE.getDepartmentName(eq.currentDept) : eq.currentDept;
+        opt.innerText = eq.assetCode + ' [' + deptName + ']';
+        codeSel.appendChild(opt);
+      });
+
+      if (prevCodeVal && matchingEqs.some(function (e) { return e.id === prevCodeVal; })) {
+        codeSel.value = prevCodeVal;
+      } else if (matchingEqs.length > 0) {
+        codeSel.value = matchingEqs[0].id;
+      }
+
+      onRelocateDeviceSelected();
+    }
+
     function onRelocateDeviceSelected() {
       var devId = document.getElementById('relocateDeviceSelect').value;
       var eq = window.PPCH_STORE.getEquipmentById(devId);
