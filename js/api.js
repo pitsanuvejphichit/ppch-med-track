@@ -337,6 +337,54 @@
       });
     },
 
+    // 3.1 Allow Continued Conditional Use (Update equipment status to conditional_ready)
+    allowUseEquipment: function (deviceId, officerName, reason, allowAt, callback) {
+      var nowStr = allowAt || new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }).slice(0, 16).replace('T', ' ');
+      var eqUpdate = {
+        status: 'conditional_ready',
+        updated_at: new Date().toISOString()
+      };
+
+      supabaseFetch('equipment?id=eq.' + encodeURIComponent(deviceId), {
+        method: 'PATCH',
+        body: eqUpdate
+      }).then(function () {
+        if (callback) callback({ success: true, message: 'บันทึกอนุญาตให้ใช้งานต่อเรียบร้อย' });
+        PPCH_API.postToGas({
+          action: 'allowUseEquipment',
+          deviceId: deviceId,
+          officerName: officerName,
+          reason: reason,
+          allowAt: nowStr
+        });
+      }).catch(function (err) {
+        console.error('Supabase allowUseEquipment error:', err);
+        if (callback) callback({ success: false, message: err.message });
+      });
+    },
+
+    // 3.2 Revoke Conditional Use (Revert equipment status to abnormal)
+    revokeAllowUse: function (deviceId, callback) {
+      var eqUpdate = {
+        status: 'abnormal',
+        updated_at: new Date().toISOString()
+      };
+
+      supabaseFetch('equipment?id=eq.' + encodeURIComponent(deviceId), {
+        method: 'PATCH',
+        body: eqUpdate
+      }).then(function () {
+        if (callback) callback({ success: true, message: 'ยกเลิกการอนุญาตให้ใช้งานต่อเรียบร้อย' });
+        PPCH_API.postToGas({
+          action: 'revokeAllowUse',
+          deviceId: deviceId
+        });
+      }).catch(function (err) {
+        console.error('Supabase revokeAllowUse error:', err);
+        if (callback) callback({ success: false, message: err.message });
+      });
+    },
+
     // 4. Resolve Defect (Insert into repairs + Set equipment status = 'ready' + Background push to Sheets)
     resolveDefect: function (deviceId, techName, actionTaken, resolvedDt, testNote, callback) {
       var nowStr = resolvedDt || new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }).slice(0, 16).replace('T', ' ');

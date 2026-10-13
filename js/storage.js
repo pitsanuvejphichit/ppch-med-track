@@ -64,8 +64,14 @@
               item.status = 'ready';
               item.repairStatus = 'ready';
               item.abnormalReason = '';
+              item.allowUse = false;
             } else if (latestEv.result === 'abnormal') {
-              item.status = 'abnormal';
+              if (item.allowUse || item.status === 'conditional_ready') {
+                item.status = 'conditional_ready';
+                item.allowUse = true;
+              } else {
+                item.status = 'abnormal';
+              }
               item.repairStatus = item.repairStatus || 'reported';
               item.abnormalReason = latestEv.abnormalNote || item.abnormalReason || 'พบข้อบกพร่องจากการตรวจเช็ค';
               item.repairReportedAt = item.repairReportedAt || latestEv.evaluatedAt;
@@ -120,8 +126,14 @@
             eq.status = 'ready';
             eq.repairStatus = 'ready';
             eq.abnormalReason = '';
+            eq.allowUse = false;
           } else if (latestEv.result === 'abnormal') {
-            eq.status = 'abnormal';
+            if (eq.allowUse || eq.status === 'conditional_ready') {
+              eq.status = 'conditional_ready';
+              eq.allowUse = true;
+            } else {
+              eq.status = 'abnormal';
+            }
             eq.repairStatus = eq.repairStatus || 'reported';
             eq.abnormalReason = latestEv.abnormalNote || eq.abnormalReason || 'พบข้อบกพร่องจากการตรวจเช็ค';
             eq.repairReportedAt = eq.repairReportedAt || latestEv.evaluatedAt;
@@ -365,6 +377,48 @@
       return { success: true, equipment: eq };
     },
 
+    // Allow continued conditional use even if defective
+    allowUseEquipment: function (deviceId, officerName, reason, allowAt) {
+      var eq = null;
+      for (var i = 0; i < inMemoryData.equipment.length; i++) {
+        if (inMemoryData.equipment[i].id === deviceId) {
+          eq = inMemoryData.equipment[i];
+          break;
+        }
+      }
+      if (!eq) throw new Error('ไม่พบเครื่องมือแพทย์รหัส: ' + deviceId);
+
+      var nowStr = allowAt || new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }).slice(0, 16).replace('T', ' ');
+      eq.status = 'conditional_ready';
+      eq.allowUse = true;
+      eq.allowUseBy = officerName || 'เจ้าหน้าที่';
+      eq.allowUseAt = nowStr;
+      eq.allowUseReason = reason || 'อนุญาตให้ใช้งานต่อชั่วคราว';
+
+      notifyUpdated();
+      return { success: true, equipment: eq };
+    },
+
+    revokeAllowUse: function (deviceId) {
+      var eq = null;
+      for (var i = 0; i < inMemoryData.equipment.length; i++) {
+        if (inMemoryData.equipment[i].id === deviceId) {
+          eq = inMemoryData.equipment[i];
+          break;
+        }
+      }
+      if (!eq) throw new Error('ไม่พบเครื่องมือแพทย์รหัส: ' + deviceId);
+
+      eq.status = 'abnormal';
+      eq.allowUse = false;
+      eq.allowUseBy = '';
+      eq.allowUseAt = '';
+      eq.allowUseReason = '';
+
+      notifyUpdated();
+      return { success: true, equipment: eq };
+    },
+
     resolveDefect: function (deviceId, techName, actionTaken, resolvedDt, testNote) {
       var eq = null;
       for (var i = 0; i < inMemoryData.equipment.length; i++) {
@@ -395,6 +449,10 @@
       eq.status = 'ready';
       eq.repairStatus = 'ready';
       eq.abnormalReason = '';
+      eq.allowUse = false;
+      eq.allowUseBy = '';
+      eq.allowUseAt = '';
+      eq.allowUseReason = '';
       eq.lastEvaluatedAt = nowStr;
       eq.lastEvaluatedBy = techName;
       eq.lastEvaluatedStatus = 'normal';
@@ -422,7 +480,7 @@
 
     getDefectiveEquipment: function () {
       return (inMemoryData.equipment || []).filter(function (eq) {
-        return eq.status === 'abnormal' || eq.status === 'in_progress' || eq.repairStatus === 'reported' || eq.repairStatus === 'in_progress';
+        return eq.status === 'abnormal' || eq.status === 'in_progress' || eq.status === 'conditional_ready' || eq.repairStatus === 'reported' || eq.repairStatus === 'in_progress';
       });
     },
 

@@ -1845,7 +1845,7 @@
         <div class="topbar-breadcrumbs">
           <span class="bread-parent">ระบบเครื่องมือแพทย์</span>
           <span class="bread-sep">/</span>
-          <span class="bread-current" id="breadCurrent">แดชบอร์ดภาพรวม</span>
+          <span class="bread-current" id="breadCurrent">สรุปรายวัน</span>
         </div>
       </div>
 
@@ -1881,11 +1881,11 @@
 
         <div class="sidebar-section-title">เมนูหลัก</div>
         <nav class="sidebar-nav">
-          <button onclick="switchView('dashboard')" id="navBtn_dashboard" class="nav-btn active">
+          <button onclick="switchView('dashboard')" id="navBtn_dashboard" class="nav-btn">
             <span class="material-icons-round">dashboard</span>
             <span>แดชบอร์ดภาพรวม</span>
           </button>
-          <button onclick="switchView('summary')" id="navBtn_summary" class="nav-btn">
+          <button onclick="switchView('summary')" id="navBtn_summary" class="nav-btn active">
             <span class="material-icons-round">today</span>
             <span>สรุปรายวัน</span>
           </button>
@@ -1933,7 +1933,7 @@
       <main class="app-main-content">
 
         <!-- ==================== SUB-VIEW 0: แดชบอร์ดภาพรวม (EXECUTIVE DASHBOARD) ==================== -->
-        <section id="viewDashboard">
+        <section id="viewDashboard" style="display: none;">
           <!-- 1. Executive Hero Header Banner -->
           <div class="dash-hero-card no-print">
             <div class="dash-hero-left">
@@ -2129,7 +2129,7 @@
         </section>
 
         <!-- ==================== SUB-VIEW 1: สรุปผลรายเครื่อง ==================== -->
-        <section id="viewSummary" style="display: none;">
+        <section id="viewSummary">
           <!-- 5-Column Clickable KPI Strip -->
           <div class="kpi-strip-5 no-print">
             <div class="kpi-card" id="kpiCard_all" onclick="filterByKpi('all')" title="คลิกเพื่อดูทั้งหมด">
@@ -2212,7 +2212,8 @@
               <!-- Status Selector -->
               <select id="filterStatus" class="filter-input" onchange="applyFilters()">
                 <option value="all">ทุกสถานะ</option>
-                <option value="ready">พร้อมใช้งาน</option>
+                <option value="ready">พร้อมใช้งาน (รวมอนุญาตใช้)</option>
+                <option value="conditional_ready">อนุญาตให้ใช้งานต่อ (มีเงื่อนไข)</option>
                 <option value="pending">รอตรวจ</option>
                 <option value="abnormal">พบข้อบกพร่อง</option>
               </select>
@@ -2857,6 +2858,72 @@
     </div>
   </div>
 
+  <!-- Modal: อนุญาตให้ใช้งานต่อ (Conditional Use / Waiver) -->
+  <div id="modalAllowUse" class="modal-overlay hidden no-print" onclick="if(event.target === this) closeAllowUseModal()">
+    <div class="modal-box" style="max-width: 520px; text-align: left;">
+      <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 10px; margin-bottom: 14px;">
+        <div style="font-size: 15px; font-weight: 700; color: var(--royal-blue); display: flex; align-items: center; gap: 8px;">
+          <span class="material-icons-round" style="color: #d97706; font-size: 22px;">published_with_changes</span>
+          <span id="modalAllowTitle">อนุญาตให้ใช้งานต่อ (Conditional Use)</span>
+        </div>
+        <button type="button" onclick="closeAllowUseModal()" style="border: none; background: transparent; cursor: pointer; color: var(--text-muted);"><span class="material-icons-round">close</span></button>
+      </div>
+
+      <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 12px; margin-bottom: 14px;">
+        <div style="font-weight: 700; font-size: 13.5px; color: #92400e;" id="modalAllowDeviceName">-</div>
+        <div style="font-size: 11.5px; color: #b45309; margin-top: 2px;" id="modalAllowDeviceMeta">-</div>
+        <div style="margin-top: 6px; font-size: 12px; color: #b91c1c; background: #ffffff; padding: 6px 10px; border-radius: 6px; border: 1px solid #fecaca;" id="modalAllowDefectReason">-</div>
+      </div>
+
+      <form id="formAllowUse" onsubmit="submitAllowUse(event)">
+        <input type="hidden" id="allowUseDeviceId" value="">
+
+        <div style="margin-bottom: 12px;">
+          <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">
+            ชื่อเจ้าหน้าที่ / ผู้มีอำนาจอนุญาตให้ใช้งานต่อ <span style="color: var(--red-abnormal);">*</span>
+          </label>
+          <input type="text" id="allowUseOfficerName" class="filter-input" style="width: 100%; font-size: 13px; font-weight: 600;" value="อาภากร บุญเกตกูล" placeholder="ระบุชื่อเจ้าหน้าที่" required>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">
+            เหตุผลและเงื่อนไขการอนุญาตให้ใช้งานต่อ <span style="color: var(--red-abnormal);">*</span>
+          </label>
+          <select id="allowUseReasonQuick" class="filter-input" style="width: 100%; margin-bottom: 6px; font-size: 12px;" onchange="if(this.value) document.getElementById('allowUseReason').value = this.value;">
+            <option value="">-- เลือกเหตุผลตัวอย่าง หรือพิมพ์ระบุเองด้านล่าง --</option>
+            <option value="ชำรุดส่วนอุปกรณ์เสริม ไม่กระทบระบบการทำงานหลักและไม่กระทบความปลอดภัยผู้ป่วย">ชำรุดส่วนอุปกรณ์เสริม ไม่กระทบระบบการทำงานหลัก</option>
+            <option value="ส่งสั่งซื้ออะไหล่แล้ว สามารถใช้งานได้ภายใต้การเฝ้าระวัง">ส่งสั่งซื้ออะไหล่แล้ว สามารถใช้งานได้ภายใต้การเฝ้าระวัง</option>
+            <option value="ชำรุดระบบจ่ายไฟสำรอง แต่ใช้งานผ่านระบบไฟตรง (AC) ในห้องผู้ป่วยได้ตามปกติ">ชำรุดระบบจ่ายไฟสำรอง แต่ใช้งานผ่านไฟตรง (AC) ได้</option>
+            <option value="เป็นข้อบกพร่องภายนอก (ตัวเครื่อง/รอยขีดข่วน) ระบบตรวจวัดทำงานได้สมบูรณ์">เป็นข้อบกพร่องภายนอก ระบบตรวจวัดทำงานสมบูรณ์</option>
+            <option value="ผ่านการทดสอบเบื้องต้นโดยช่าง อนุญาตให้ใช้งานได้ชั่วคราวระหว่างรอรอบบำรุงรักษา">ผ่านการทดสอบเบื้องต้น อนุญาตให้ใช้ชั่วคราว</option>
+          </select>
+          <textarea id="allowUseReason" class="filter-input" style="width: 100%; height: 65px; resize: vertical; font-size: 12.5px;" placeholder="ระบุเหตุผล เงื่อนไข หรือข้อควรระวังในการใช้งาน..." required></textarea>
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">
+            วัน-เวลาที่ทำการอนุญาต
+          </label>
+          <input type="datetime-local" id="allowUseDateTime" class="filter-input" style="width: 100%; font-family: var(--font-mono);" required>
+        </div>
+
+        <div style="display: flex; gap: 8px; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid var(--border-subtle); flex-wrap: wrap;">
+          <button type="button" id="btnRevokeAllowUse" onclick="revokeAllowUseAction()" class="btn-tool" style="color: #dc2626; border-color: #fecaca; background: #fef2f2; display: none;">
+            <span class="material-icons-round" style="font-size: 14px;">cancel</span>
+            <span>ยกเลิกการอนุญาต (เปลี่ยนเป็นไม่พร้อมใช้)</span>
+          </button>
+          <div style="display: flex; gap: 8px; margin-left: auto;">
+            <button type="button" onclick="closeAllowUseModal()" class="btn-tool">ยกเลิก</button>
+            <button type="submit" class="btn-tool" style="background: #d97706; color: #ffffff; border-color: #b45309; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+              <span class="material-icons-round" style="font-size: 16px;">check_circle</span>
+              <span>บันทึกอนุญาตให้ใช้งานต่อ</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Modal: เพิ่ม / แก้ไขแผนก -->
   <div id="modalAddEditDept" class="modal-overlay hidden no-print" onclick="if(event.target === this) closeDeptModal()">
     <div class="modal-box" style="max-width: 460px; text-align: left;">
@@ -3008,7 +3075,7 @@
   <script src="js/qrcode.min.js"></script>
 
   <script>
-    var currentView = 'dashboard';
+    var currentView = 'summary';
     var allEquipment = [];
     var allEvaluations = [];
     var activeKpiFilter = 'all';
@@ -3255,11 +3322,20 @@
         deptStats[d.id] = { id: d.id, name: d.name, total: 0, ready: 0, defective: 0, checkedToday: 0 };
       });
 
+      var condCount = 0;
       allEquipment.forEach(function (eq) {
-        var isReady = (eq.status === 'ready' || !eq.status);
-        if (eq.status === 'abnormal') abnormalCount++;
-        else if (eq.status === 'in_progress') inProgressCount++;
-        else readyCount++;
+        var isConditional = (eq.status === 'conditional_ready' || eq.allowUse);
+        var isReady = (eq.status === 'ready' || isConditional || !eq.status);
+        if (isConditional) {
+          condCount++;
+          readyCount++;
+        } else if (eq.status === 'abnormal') {
+          abnormalCount++;
+        } else if (eq.status === 'in_progress') {
+          inProgressCount++;
+        } else {
+          readyCount++;
+        }
 
         var isHighRisk = (eq.riskLevel !== 'low');
         var checkedToday = !!(todayEvalMap[eq.id] || todayEvalMap[eq.assetCode]);
@@ -3309,7 +3385,9 @@
         badgeAvailEl.innerText = availRate >= 95 ? 'ผ่านเกณฑ์ HA (≥ 95%)' : 'ต่ำกว่าเป้าหมาย HA (< 95%)';
         badgeAvailEl.style.color = availRate >= 95 ? '#059669' : '#dc2626';
       }
-      if (textAvailEl) textAvailEl.innerText = 'พร้อมใช้ ' + readyCount + ' จาก ' + totalEquip + ' เครื่อง';
+      if (textAvailEl) {
+        textAvailEl.innerText = 'พร้อมใช้ ' + readyCount + ' จาก ' + totalEquip + ' เครื่อง' + (condCount > 0 ? ' (อนุญาตใช้มีเงื่อนไข ' + condCount + ' เครื่อง)' : '');
+      }
 
       // 2. Compliance Rate (Weighted: High risk checked today + Low risk checked this month)
       var totalReq = highRiskTotal + lowRiskTotal;
@@ -3328,7 +3406,7 @@
       var textDefectEl = document.getElementById('dashDefectiveText');
       if (valDefectEl) valDefectEl.innerText = totalDefect;
       if (textDefectEl) {
-        textDefectEl.innerText = 'ชำรุดรอซ่อม ' + abnormalCount + ' • กำลังซ่อม ' + inProgressCount;
+        textDefectEl.innerText = 'ชำรุดรอซ่อม ' + abnormalCount + ' • กำลังซ่อม ' + inProgressCount + (condCount > 0 ? ' • ผ่อนผันให้ใช้ ' + condCount : '');
         textDefectEl.style.color = totalDefect > 0 ? '#dc2626' : '#059669';
       }
 
@@ -3611,21 +3689,27 @@
           defectiveList.forEach(function (eq) {
             var deptName = window.PPCH_STORE.getDepartmentName(eq.currentDept);
             var isUnderFix = (eq.status === 'in_progress' || eq.repairStatus === 'in_progress');
-
+            var isConditional = (eq.status === 'conditional_ready' || eq.allowUse);
             var statusBadge = '';
             var actionBtn = '';
 
             if (isUnderFix) {
               var ackInfo = eq.repairAcknowledgedBy ? '<div style="font-size: 10.5px; color: #b45309; margin-top: 2px;">โดย ' + eq.repairAcknowledgedBy + '</div>' : '';
-              statusBadge = '<div><span class="badge-status" style="color: var(--amber-pending); font-weight: 700;"><span class="material-icons-round" style="font-size: 14px;">build</span> กำลังดำเนินการแก้ไข</span>' + ackInfo + '</div>';
-              actionBtn = '<button onclick="openResolveModal(\'' + eq.id + '\')" class="btn-tool" style="background: var(--green-ready); color: #ffffff; border-color: var(--green-ready); font-weight: 600;" title="บันทึกรายละเอียดการซ่อมเสร็จสิ้น">' +
-                '<span class="material-icons-round" style="font-size: 14px;">task_alt</span><span>บันทึกการแก้ไข</span>' +
-              '</button>';
+              var condInfo = isConditional ? '<div style="margin-top: 3px;"><span class="badge-status" style="font-size: 10px; color: #b45309; background: #fffbeb; border: 1px solid #fde68a;"><span class="material-icons-round" style="font-size: 12px;">published_with_changes</span> อนุญาตให้ใช้งานต่อ</span></div>' : '';
+              statusBadge = '<div><span class="badge-status" style="color: var(--amber-pending); font-weight: 700;"><span class="material-icons-round" style="font-size: 14px;">build</span> กำลังดำเนินการแก้ไข</span>' + ackInfo + condInfo + '</div>';
+              actionBtn = '<div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">' +
+                '<button onclick="openAllowUseModal(\'' + eq.id + '\')" class="btn-tool" style="background: #fffbeb; color: #b45309; border-color: #fde68a;" title="ดูข้อมูล/แก้ไขการอนุญาตให้ใช้งานต่อ"><span class="material-icons-round" style="font-size: 13px;">published_with_changes</span><span>' + (isConditional ? 'การอนุญาต' : 'อนุญาตใช้') + '</span></button>' +
+                '<button onclick="openResolveModal(\'' + eq.id + '\')" class="btn-tool" style="background: var(--green-ready); color: #ffffff; border-color: var(--green-ready); font-weight: 600;" title="บันทึกรายละเอียดการซ่อมเสร็จสิ้น"><span class="material-icons-round" style="font-size: 14px;">task_alt</span><span>บันทึกการแก้ไข</span></button>' +
+              '</div>';
             } else {
-              statusBadge = '<span class="badge-status badge-status-abnormal" style="font-weight: 700;"><span class="material-icons-round" style="font-size: 14px;">error</span> พบข้อบกพร่อง (รอรับทราบ)</span>';
-              actionBtn = '<button onclick="openAcknowledgeModal(\'' + eq.id + '\')" class="btn-tool btn-tool-primary" title="เจ้าหน้าที่เครื่องมือแพทย์กดรับทราบเพื่อเริ่มแก้ไข">' +
-                '<span class="material-icons-round" style="font-size: 14px;">thumb_up</span><span>รับทราบ</span>' +
-              '</button>';
+              var condBadge = isConditional
+                ? '<div><span class="badge-status" style="color: #b45309; background: #fffbeb; border: 1px solid #fde68a; font-weight: 700;"><span class="material-icons-round" style="font-size: 14px;">published_with_changes</span> อนุญาตให้ใช้งานต่อ (รอซ่อม)</span><div style="font-size: 10.5px; color: #b45309; margin-top: 2px;">โดย ' + (eq.allowUseBy || 'เจ้าหน้าที่') + '</div></div>'
+                : '<span class="badge-status badge-status-abnormal" style="font-weight: 700;"><span class="material-icons-round" style="font-size: 14px;">error</span> พบข้อบกพร่อง (รอรับทราบ)</span>';
+              statusBadge = condBadge;
+              actionBtn = '<div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">' +
+                '<button onclick="openAllowUseModal(\'' + eq.id + '\')" class="btn-tool" style="background: #fffbeb; color: #b45309; border-color: #fde68a;" title="อนุญาตให้ใช้งานต่อได้แม้มีข้อบกพร่อง"><span class="material-icons-round" style="font-size: 13px;">published_with_changes</span><span>' + (isConditional ? 'การอนุญาต' : 'อนุญาตใช้ต่อ') + '</span></button>' +
+                '<button onclick="openAcknowledgeModal(\'' + eq.id + '\')" class="btn-tool btn-tool-primary" title="เจ้าหน้าที่เครื่องมือแพทย์กดรับทราบเพื่อเริ่มแก้ไข"><span class="material-icons-round" style="font-size: 14px;">thumb_up</span><span>รับทราบ</span></button>' +
+              '</div>';
             }
 
             var reporterText = eq.repairReportedBy || eq.lastEvaluatedBy || '-';
@@ -3782,6 +3866,110 @@
       }
     }
 
+    // ==================== CONDITIONAL USE (อนุญาตให้ใช้งานต่อ) ====================
+    function openAllowUseModal(deviceId) {
+      var eq = window.PPCH_STORE.getEquipmentById(deviceId);
+      if (!eq) return;
+
+      document.getElementById('allowUseDeviceId').value = eq.id;
+      document.getElementById('modalAllowDeviceName').innerText = eq.name + ' (' + eq.assetCode + ')';
+      document.getElementById('modalAllowDeviceMeta').innerText = 'รุ่น: ' + (eq.model || '-') + ' • แผนกปัจจุบัน: ' + window.PPCH_STORE.getDepartmentName(eq.currentDept);
+      document.getElementById('modalAllowDefectReason').innerText = 'ข้อบกพร่องที่พบ: ' + (eq.abnormalReason || 'ตรวจพบความผิดปกติ');
+
+      document.getElementById('allowUseOfficerName').value = eq.allowUseBy || 'อาภากร บุญเกตกูล';
+      document.getElementById('allowUseReason').value = eq.allowUseReason || '';
+      document.getElementById('allowUseReasonQuick').value = '';
+
+      var isConditional = (eq.status === 'conditional_ready' || eq.allowUse);
+      var btnRevoke = document.getElementById('btnRevokeAllowUse');
+      if (btnRevoke) {
+        btnRevoke.style.display = isConditional ? 'inline-flex' : 'none';
+      }
+
+      var modalTitle = document.getElementById('modalAllowTitle');
+      if (modalTitle) {
+        modalTitle.innerText = isConditional ? 'แก้ไขข้อมูลการอนุญาตให้ใช้งานต่อ' : 'อนุญาตให้ใช้งานต่อ (Conditional Use)';
+      }
+
+      var dt = eq.allowUseAt ? new Date(eq.allowUseAt) : new Date();
+      if (isNaN(dt.getTime())) dt = new Date();
+      var year = dt.getFullYear();
+      var month = ('0' + (dt.getMonth() + 1)).slice(-2);
+      var day = ('0' + dt.getDate()).slice(-2);
+      var hours = ('0' + dt.getHours()).slice(-2);
+      var minutes = ('0' + dt.getMinutes()).slice(-2);
+      document.getElementById('allowUseDateTime').value = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+
+      document.getElementById('modalAllowUse').classList.remove('hidden');
+    }
+
+    function closeAllowUseModal() {
+      document.getElementById('modalAllowUse').classList.add('hidden');
+    }
+
+    function submitAllowUse(e) {
+      e.preventDefault();
+      var deviceId = document.getElementById('allowUseDeviceId').value;
+      var officerName = document.getElementById('allowUseOfficerName').value.trim();
+      var reason = document.getElementById('allowUseReason').value.trim();
+      var dtVal = document.getElementById('allowUseDateTime').value;
+
+      if (!deviceId || !officerName || !reason) {
+        alert('กรุณากรอกข้อมูลชื่อเจ้าหน้าที่และเหตุผลการอนุญาตให้ครบถ้วน');
+        return;
+      }
+
+      var formattedDt = dtVal ? dtVal.replace('T', ' ') : null;
+
+      try {
+        var res = window.PPCH_STORE.allowUseEquipment(deviceId, officerName, reason, formattedDt);
+        if (window.PPCH_API && window.PPCH_API.allowUseEquipment) {
+          window.PPCH_API.allowUseEquipment(deviceId, officerName, reason, formattedDt, function (apiRes) {
+            if (apiRes && apiRes.success) {
+              window.PPCH_API.fetchOverview(function (res2) {
+                if (res2 && res2.success && res2.data) {
+                  window.PPCH_STORE.initFromCloud(res2.data);
+                  loadData();
+                }
+              });
+            }
+          });
+        }
+        closeAllowUseModal();
+        showToast('บันทึกอนุญาตให้ใช้งานต่อ ' + (res.equipment ? res.equipment.assetCode : deviceId) + ' เรียบร้อยแล้ว (สถานะ: อนุญาตให้ใช้งานต่อ)');
+        loadData();
+      } catch (err) {
+        alert('เกิดข้อผิดพลาดในการบันทึก: ' + err.message);
+      }
+    }
+
+    function revokeAllowUseAction() {
+      var deviceId = document.getElementById('allowUseDeviceId').value;
+      if (!deviceId) return;
+      if (!confirm('ยืนยันยกเลิกการอนุญาตให้ใช้งานต่อ? เครื่องมือจะกลับเป็นสถานะ "ไม่พร้อมใช้งาน / พบข้อบกพร่อง"')) return;
+
+      try {
+        var res = window.PPCH_STORE.revokeAllowUse(deviceId);
+        if (window.PPCH_API && window.PPCH_API.revokeAllowUse) {
+          window.PPCH_API.revokeAllowUse(deviceId, function (apiRes) {
+            if (apiRes && apiRes.success) {
+              window.PPCH_API.fetchOverview(function (res2) {
+                if (res2 && res2.success && res2.data) {
+                  window.PPCH_STORE.initFromCloud(res2.data);
+                  loadData();
+                }
+              });
+            }
+          });
+        }
+        closeAllowUseModal();
+        showToast('ยกเลิกการอนุญาต ' + (res.equipment ? res.equipment.assetCode : deviceId) + ' เรียบร้อยแล้ว (กลับเป็นสถานะไม่พร้อมใช้งาน)');
+        loadData();
+      } catch (err) {
+        alert('เกิดข้อผิดพลาด: ' + err.message);
+      }
+    }
+
     function setQuickDate(type) {
       var d = new Date();
       if (type === 'yesterday') {
@@ -3842,11 +4030,16 @@
       // Filter machines
       var filtered = allEquipment.filter(function (eq) {
         var ev = evalMapByDevice[eq.id] || evalMapByDevice[eq.assetCode];
+        var isConditionalReady = (eq.status === 'conditional_ready' || eq.allowUse);
         var isUnderFix = (eq.status === 'in_progress' || eq.repairStatus === 'in_progress');
         var isCurrentlyDefective = (eq.status === 'abnormal' || eq.repairStatus === 'reported');
         var status = 'pending';
 
-        if (isUnderFix) {
+        if (isConditionalReady) {
+          status = 'conditional_ready';
+          checkedCount++;
+          readyCount++;
+        } else if (isUnderFix) {
           status = 'abnormal';
           checkedCount++;
           abnormalCount++;
@@ -3875,7 +4068,7 @@
         if (deptVal !== 'all' && eq.currentDept !== deptVal) return false;
         if (catVal !== 'all' && eq.formId !== catVal) return false;
         if (statusVal !== 'all' && status !== statusVal) return false;
-        if (activeKpiFilter === 'ready' && status !== 'ready') return false;
+        if (activeKpiFilter === 'ready' && (status !== 'ready' && status !== 'conditional_ready')) return false;
         if (activeKpiFilter === 'abnormal' && status !== 'abnormal') return false;
         if (activeKpiFilter === 'pending' && status !== 'pending') return false;
         if (activeKpiFilter === 'checked' && status === 'pending') return false;
@@ -3916,6 +4109,7 @@
         var ev = evalMap[eq.id] || evalMap[eq.assetCode];
         var deptName = window.PPCH_STORE.getDepartmentName(eq.currentDept);
 
+        var isConditional = (eq.status === 'conditional_ready' || eq.allowUse);
         var isUnderFix = (eq.status === 'in_progress' || eq.repairStatus === 'in_progress');
         var isDefective = (eq.status === 'abnormal' || eq.repairStatus === 'reported');
 
@@ -3925,12 +4119,21 @@
         var statusBadge = '<span class="badge-status badge-status-pending"><span class="material-icons-round" style="font-size: 14px;">schedule</span> รอตรวจวันนี้</span>';
         var actions = '<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-eval" title="เปิดหน้าตรวจเช็ค"><span class="material-icons-round" style="font-size: 13px;">assignment</span><span>ตรวจ</span></a>';
 
-        if (isUnderFix) {
+        if (isConditional) {
+          statusBadge = '<span class="badge-status" style="color: #b45309; background: #fffbeb; border: 1px solid #fde68a;" title="อนุญาตให้ใช้งานต่อ: ' + (eq.allowUseReason || '') + ' (โดย ' + (eq.allowUseBy || '-') + ')"><span class="material-icons-round" style="font-size: 14px;">published_with_changes</span> อนุญาตให้ใช้งานต่อ</span>';
+          actions = '<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-eval" title="เปิดหน้าตรวจเช็ค"><span class="material-icons-round" style="font-size: 13px;">assignment</span><span>ตรวจ</span></a>' +
+            ' <button onclick="openAllowUseModal(\'' + eq.id + '\')" class="btn-action-slip" style="color: #b45309; border-color: #fde68a; background: #fffbeb;" title="ดู/แก้ไขการอนุญาตให้ใช้งานต่อ"><span class="material-icons-round" style="font-size: 13px;">published_with_changes</span><span>การอนุญาต</span></button>' +
+            ' <button onclick="switchView(\'defective\')" class="btn-action-slip" title="ดูรายการแจ้งซ่อม" style="color: var(--amber-pending); border-color: var(--amber-border);"><span class="material-icons-round" style="font-size: 13px;">build</span><span>งานซ่อม</span></button>';
+          if (ev) {
+            actions += ' <button onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-slip" title="ดูสลิปผล"><span class="material-icons-round" style="font-size: 13px;">receipt_long</span><span>สลิป</span></button>';
+          }
+        } else if (isUnderFix) {
           statusBadge = '<span class="badge-status" style="color: var(--amber-pending);"><span class="material-icons-round" style="font-size: 14px;">build</span> กำลังซ่อมบำรุง</span>';
           actions = '<button onclick="switchView(\'defective\')" class="btn-action-slip" title="เครื่องอยู่ระหว่างซ่อมบำรุง คลิกเพื่อดู/บันทึกการแก้ไข" style="color: var(--amber-pending); border-color: var(--amber-border);"><span class="material-icons-round" style="font-size: 13px;">build</span><span>งานซ่อม</span></button>';
         } else if (isDefective) {
           statusBadge = '<span class="badge-status badge-status-abnormal" title="' + (eq.abnormalReason || (ev && ev.abnormalNote) || '') + '"><span class="material-icons-round" style="font-size: 14px;">error</span> ข้อบกพร่อง</span>';
-          actions = '<button onclick="switchView(\'defective\')" class="btn-action-slip" title="พบข้อบกพร่อง คลิกเพื่อรับทราบงานซ่อม" style="color: var(--red-abnormal); border-color: var(--red-border);"><span class="material-icons-round" style="font-size: 13px;">build_circle</span><span>จัดการซ่อม</span></button>';
+          actions = '<button onclick="switchView(\'defective\')" class="btn-action-slip" title="พบข้อบกพร่อง คลิกเพื่อรับทราบงานซ่อม" style="color: var(--red-abnormal); border-color: var(--red-border);"><span class="material-icons-round" style="font-size: 13px;">build_circle</span><span>จัดการซ่อม</span></button>' +
+            ' <button onclick="openAllowUseModal(\'' + eq.id + '\')" class="btn-action-slip" style="color: #b45309; border-color: #fde68a; background: #fffbeb;" title="อนุญาตให้ใช้งานต่อชั่วคราว แม้ไม่พร้อมใช้งาน"><span class="material-icons-round" style="font-size: 13px;">published_with_changes</span><span>อนุญาตใช้</span></button>';
           if (ev) {
             actions += ' <button onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-slip" title="ดูสลิปผล"><span class="material-icons-round" style="font-size: 13px;">receipt_long</span><span>สลิป</span></button>';
           }

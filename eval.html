@@ -592,6 +592,39 @@
       </div>
     </div>
 
+    <!-- Conditional Use Allowed Banner (Shown if Equipment is permitted for use despite minor defects) -->
+    <div id="conditionalUseBanner" style="display: none; background: #fffbeb; border: 1.5px solid #fde68a; border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; box-shadow: 0 4px 14px rgba(217, 119, 6, 0.08); animation: loaderPop 0.3s ease;">
+      <div style="display: flex; align-items: flex-start; gap: 12px;">
+        <div style="width: 42px; height: 42px; border-radius: 10px; background: #fef3c7; color: #b45309; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <span class="material-icons-round" style="font-size: 24px;">published_with_changes</span>
+        </div>
+        <div style="flex: 1;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;">
+            <div style="font-size: 14px; font-weight: 700; color: #92400e;">
+              เครื่องมือแพทย์ได้รับอนุญาตให้ใช้งานต่อได้ (มีเงื่อนไขชั่วคราว)
+            </div>
+            <span style="font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 9999px; background: #d97706; color: #ffffff;">
+              อนุญาตให้ใช้งานต่อ
+            </span>
+          </div>
+          <div style="font-size: 12px; color: #b91c1c; margin-bottom: 4px;" id="conditionalUseDefectReason">
+            ข้อบกพร่องเดิม: -
+          </div>
+          <div style="font-size: 12.5px; color: #78350f; margin-bottom: 4px;" id="conditionalUseReasonText">
+            เหตุผล/เงื่อนไข: -
+          </div>
+          <div style="font-size: 11.5px; color: #92400e; display: flex; flex-wrap: wrap; gap: 14px; background: rgba(254, 243, 199, 0.7); padding: 5px 10px; border-radius: 6px; margin-bottom: 6px;">
+            <span id="conditionalUseBy">ผู้อนุญาต: -</span>
+            <span id="conditionalUseAt">วันที่อนุญาต: -</span>
+          </div>
+          <div style="font-size: 12px; font-weight: 600; color: #15803d; display: flex; align-items: center; gap: 5px;">
+            <span class="material-icons-round" style="font-size: 16px;">check_circle</span>
+            <span>ปลดล็อกแบบตรวจเช็คแล้ว เจ้าหน้าที่สามารถตรวจเช็คความพร้อมใช้ประจำวันได้ตามปกติ</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Card 2: UPS Battery Check (Shown ONLY on 1st & 16th of Month or when Dev Simulation is ON) -->
     <section class="eval-card" id="cardUpsBattery" style="display: none;">
       <div class="eval-card-header">
@@ -982,12 +1015,30 @@
         deptSelect.value = defaultDept;
       }
 
-      // Check repair lock status: ONLY lock if device is actually currently defective or in repair
+      // Check repair lock status: ONLY lock if device is actually currently defective or in repair without waiver
       var underRepair = (currentDevice.status === 'abnormal' || currentDevice.status === 'in_progress' || currentDevice.repairStatus === 'reported' || currentDevice.repairStatus === 'in_progress');
-      if (currentDevice.status === 'ready') {
+      if (currentDevice.status === 'ready' || currentDevice.status === 'conditional_ready' || currentDevice.allowUse) {
         underRepair = false;
       }
       applyRepairLock(underRepair);
+
+      // Handle conditional use banner
+      var condBanner = document.getElementById('conditionalUseBanner');
+      if (condBanner) {
+        if (currentDevice.status === 'conditional_ready' || currentDevice.allowUse) {
+          condBanner.style.display = 'block';
+          var defReasonEl = document.getElementById('conditionalUseDefectReason');
+          var reasonEl = document.getElementById('conditionalUseReasonText');
+          var byEl = document.getElementById('conditionalUseBy');
+          var atEl = document.getElementById('conditionalUseAt');
+          if (defReasonEl) defReasonEl.innerText = 'ข้อบกพร่องเดิม: ' + (currentDevice.abnormalReason || 'ตรวจพบความผิดปกติ');
+          if (reasonEl) reasonEl.innerText = 'เหตุผล/เงื่อนไขการอนุญาต: ' + (currentDevice.allowUseReason || 'อนุญาตให้ใช้งานต่อชั่วคราว');
+          if (byEl) byEl.innerText = 'ผู้อนุญาต: ' + (currentDevice.allowUseBy || 'เจ้าหน้าที่');
+          if (atEl) atEl.innerText = 'วันที่อนุญาต: ' + (currentDevice.allowUseAt || '-');
+        } else {
+          condBanner.style.display = 'none';
+        }
+      }
 
       checkExistingEvaluationOnDate();
 
