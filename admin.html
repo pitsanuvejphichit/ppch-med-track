@@ -1190,12 +1190,171 @@
         padding: 10px 12px !important;
       }
 
-      /* Tables on Mobile */
-      .table-responsive {
-        -webkit-overflow-scrolling: touch;
+      /* ==================== TABLE TO CARD TRANSFORMATION (MOBILE) ==================== */
+      .table-responsive,
+      div[style*="overflow-x: auto"] {
+        overflow-x: visible !important;
       }
-      .device-table, .data-table-modern {
-        min-width: 650px !important;
+
+      .device-table,
+      .data-table-modern {
+        min-width: 100% !important;
+        width: 100% !important;
+        display: block !important;
+        border: none !important;
+      }
+
+      .device-table thead,
+      .data-table-modern thead {
+        display: none !important;
+      }
+
+      .device-table tbody,
+      .data-table-modern tbody {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        width: 100% !important;
+      }
+
+      .device-table tbody tr,
+      .data-table-modern tbody tr {
+        display: flex !important;
+        flex-direction: column !important;
+        background: #ffffff !important;
+        border: 1px solid var(--border-main) !important;
+        border-radius: 12px !important;
+        padding: 12px 14px !important;
+        box-shadow: 0 2px 8px rgba(0, 46, 110, 0.04) !important;
+        gap: 6px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+
+      .device-table tbody tr td,
+      .data-table-modern tbody tr td {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 5px 0 !important;
+        border: none !important;
+        border-bottom: 1px dashed #e2e8f0 !important;
+        width: 100% !important;
+        text-align: right !important;
+        font-size: 12.5px !important;
+        box-sizing: border-box !important;
+      }
+
+      .device-table tbody tr td:last-child,
+      .data-table-modern tbody tr td:last-child {
+        border-bottom: none !important;
+        padding-top: 8px !important;
+        margin-top: 2px !important;
+        justify-content: flex-end !important;
+      }
+
+      .device-table tbody tr td::before,
+      .data-table-modern tbody tr td::before {
+        content: attr(data-label);
+        font-size: 11.5px !important;
+        font-weight: 600 !important;
+        color: var(--text-muted) !important;
+        text-align: left !important;
+        margin-right: 10px !important;
+        flex-shrink: 0 !important;
+      }
+
+      .device-table tbody tr td:not([data-label])::before,
+      .data-table-modern tbody tr td:not([data-label])::before,
+      .device-table tbody tr td[data-label=""]::before,
+      .data-table-modern tbody tr td[data-label=""]::before,
+      .device-table tbody tr td[data-label="จัดการ"]::before,
+      .data-table-modern tbody tr td[data-label="จัดการ"]::before,
+      .device-table tbody tr td[data-label="ดำเนินการ"]::before,
+      .data-table-modern tbody tr td[data-label="ดำเนินการ"]::before,
+      .device-table tbody tr td[data-label="สลิป"]::before {
+        display: none !important;
+      }
+
+      .device-table tbody tr td[data-label="จัดการ"],
+      .data-table-modern tbody tr td[data-label="จัดการ"],
+      .device-table tbody tr td[data-label="ดำเนินการ"],
+      .data-table-modern tbody tr td[data-label="ดำเนินการ"],
+      .device-table tbody tr td[data-label="สลิป"] {
+        justify-content: stretch !important;
+        width: 100% !important;
+      }
+
+      .device-table tbody tr td[data-label="จัดการ"] > div,
+      .data-table-modern tbody tr td[data-label="จัดการ"] > div,
+      .device-table tbody tr td[data-label="ดำเนินการ"] > div {
+        width: 100% !important;
+        display: flex !important;
+        gap: 6px !important;
+      }
+
+      .device-table tbody tr td[data-label="จัดการ"] .btn-tool,
+      .data-table-modern tbody tr td[data-label="จัดการ"] .btn-tool,
+      .device-table tbody tr td[data-label="จัดการ"] .btn-action-slip,
+      .device-table tbody tr td[data-label="จัดการ"] .btn-action-eval,
+      .device-table tbody tr td[data-label="ดำเนินการ"] .btn-tool,
+      .device-table tbody tr td[data-label="สลิป"] .btn-action-slip {
+        flex: 1 !important;
+        height: 32px !important;
+        justify-content: center !important;
+      }
+
+      /* Multi-line card items */
+      .device-table tbody tr td[data-label="เครื่องมือแพทย์ & รุ่น"],
+      .device-table tbody tr td[data-label="ชื่อเครื่องมือแพทย์"],
+      .device-table tbody tr td[data-label="เครื่องมือแพทย์ & แผนก"],
+      .device-table tbody tr td[data-label="เครื่องมือแพทย์"],
+      .device-table tbody tr td[data-label="อาการข้อบกพร่องที่พบ"],
+      .device-table tbody tr td[data-label="การดำเนินการแก้ไข"],
+      .device-table tbody tr td[data-label="รายละเอียดการแก้ไข (สิ่งที่ดำเนินการไป)"],
+      .device-table tbody tr td[data-label="บันทึก / ปัญหาที่พบ"] {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        text-align: left !important;
+        gap: 2px !important;
+      }
+
+      .device-table tbody tr td[data-label="เครื่องมือแพทย์ & รุ่น"]::before,
+      .device-table tbody tr td[data-label="ชื่อเครื่องมือแพทย์"]::before,
+      .device-table tbody tr td[data-label="เครื่องมือแพทย์ & แผนก"]::before,
+      .device-table tbody tr td[data-label="เครื่องมือแพทย์"]::before,
+      .device-table tbody tr td[data-label="อาการข้อบกพร่องที่พบ"]::before,
+      .device-table tbody tr td[data-label="การดำเนินการแก้ไข"]::before,
+      .device-table tbody tr td[data-label="รายละเอียดการแก้ไข (สิ่งที่ดำเนินการไป)"]::before,
+      .device-table tbody tr td[data-label="บันทึก / ปัญหาที่พบ"]::before {
+        font-size: 11px !important;
+        margin-bottom: 2px !important;
+      }
+
+      /* Empty rows */
+      .device-table tbody tr.table-empty-row,
+      .data-table-modern tbody tr.table-empty-row,
+      .device-table tbody tr:has(td[colspan]),
+      .data-table-modern tbody tr:has(td[colspan]) {
+        display: block !important;
+        padding: 24px 14px !important;
+        text-align: center !important;
+        background: #f8fafc !important;
+      }
+      .device-table tbody tr.table-empty-row td,
+      .data-table-modern tbody tr.table-empty-row td,
+      .device-table tbody tr:has(td[colspan]) td,
+      .data-table-modern tbody tr:has(td[colspan]) td {
+        display: block !important;
+        text-align: center !important;
+        border: none !important;
+        padding: 0 !important;
+      }
+      .device-table tbody tr.table-empty-row td::before,
+      .data-table-modern tbody tr.table-empty-row td::before,
+      .device-table tbody tr:has(td[colspan]) td::before,
+      .data-table-modern tbody tr:has(td[colspan]) td::before {
+        display: none !important;
       }
 
       /* Relocate Sub-view */
@@ -2424,7 +2583,7 @@
       var tbody = document.getElementById('defectiveTableBody');
       if (tbody) {
         if (defectiveList.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--green-ready); font-weight: 600;"><span class="material-icons-round" style="font-size: 28px; vertical-align: middle; margin-right: 6px;">verified</span>ขณะนี้ไม่มีเครื่องมือแพทย์ที่พบข้อบกพร่อง ทุกเครื่องพร้อมใช้งาน 100%</td></tr>';
+          tbody.innerHTML = '<tr class="table-empty-row"><td colspan="7" style="text-align: center; padding: 40px; color: var(--green-ready); font-weight: 600;"><span class="material-icons-round" style="font-size: 28px; vertical-align: middle; margin-right: 6px;">verified</span>ขณะนี้ไม่มีเครื่องมือแพทย์ที่พบข้อบกพร่อง ทุกเครื่องพร้อมใช้งาน 100%</td></tr>';
         } else {
           var html = '';
           defectiveList.forEach(function (eq) {
@@ -2451,13 +2610,13 @@
             var reportedTime = eq.repairReportedAt || eq.lastEvaluatedAt || '-';
 
             html += '<tr>' +
-              '<td><span class="asset-code-clean">' + eq.assetCode + '</span></td>' +
-              '<td><div style="font-weight: 700; color: var(--text-main);">' + eq.name + '</div><div style="font-size: 11px; color: var(--text-muted);">รุ่น ' + (eq.model || '-') + '</div></td>' +
-              '<td><span style="font-weight: 500;">' + deptName + '</span></td>' +
-              '<td><div style="color: #b91c1c; font-weight: 500; font-size: 12px; background: #fff5f5; padding: 5px 9px; border-radius: 6px; border: 1px solid #fed7d7;">' + (eq.abnormalReason || 'ตรวจพบความผิดปกติ') + '</div></td>' +
-              '<td><div style="font-size: 12px; font-weight: 600; color: var(--text-main);">' + reporterText + '</div><div style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">' + reportedTime + '</div></td>' +
-              '<td>' + statusBadge + '</td>' +
-              '<td class="btn-action-col no-print" style="text-align: center; white-space: nowrap;">' + actionBtn + '</td>' +
+              '<td data-label="รหัสครุภัณฑ์"><span class="asset-code-clean">' + eq.assetCode + '</span></td>' +
+              '<td data-label="เครื่องมือแพทย์ & รุ่น"><div style="font-weight: 700; color: var(--text-main);">' + eq.name + '</div><div style="font-size: 11px; color: var(--text-muted);">รุ่น ' + (eq.model || '-') + '</div></td>' +
+              '<td data-label="แผนกปัจจุบัน"><span style="font-weight: 500;">' + deptName + '</span></td>' +
+              '<td data-label="อาการข้อบกพร่องที่พบ"><div style="color: #b91c1c; font-weight: 500; font-size: 12px; background: #fff5f5; padding: 5px 9px; border-radius: 6px; border: 1px solid #fed7d7;">' + (eq.abnormalReason || 'ตรวจพบความผิดปกติ') + '</div></td>' +
+              '<td data-label="ผู้แจ้ง / วันที่ตรวจพบ"><div style="font-size: 12px; font-weight: 600; color: var(--text-main);">' + reporterText + '</div><div style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">' + reportedTime + '</div></td>' +
+              '<td data-label="สถานะงานซ่อม">' + statusBadge + '</td>' +
+              '<td data-label="ดำเนินการ" class="btn-action-col no-print" style="text-align: center; white-space: nowrap;">' + actionBtn + '</td>' +
             '</tr>';
           });
           tbody.innerHTML = html;
@@ -2471,18 +2630,18 @@
 
       if (hBody) {
         if (repairs.length === 0) {
-          hBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 24px; color: var(--text-light);">ยังไม่มีประวัติการซ่อมบำรุงที่บันทึกเสร็จสิ้น</td></tr>';
+          hBody.innerHTML = '<tr class="table-empty-row"><td colspan="5" style="text-align: center; padding: 24px; color: var(--text-light);">ยังไม่มีประวัติการซ่อมบำรุงที่บันทึกเสร็จสิ้น</td></tr>';
         } else {
           var hHtml = '';
           repairs.slice(0, 20).forEach(function (r) {
             hHtml += '<tr>' +
-              '<td style="font-size: 11.5px; color: var(--text-muted); font-family: var(--font-mono);">' + (r.resolvedAt || '-') + '</td>' +
-              '<td><span class="asset-code-clean">' + (r.deviceAsset || '-') + '</span></td>' +
-              '<td><div style="font-weight: 600;">' + (r.deviceName || '-') + '</div><div style="font-size: 11px; color: var(--text-muted);">' + window.PPCH_STORE.getDepartmentName(r.department) + '</div></td>' +
-              '<td><div style="font-size: 12px; color: var(--text-main); font-weight: 600;">' + (r.actionTaken || '-') + '</div>' +
+              '<td data-label="วัน-เวลาที่แก้ไขเสร็จ" style="font-size: 11.5px; color: var(--text-muted); font-family: var(--font-mono);">' + (r.resolvedAt || '-') + '</td>' +
+              '<td data-label="รหัสครุภัณฑ์"><span class="asset-code-clean">' + (r.deviceAsset || '-') + '</span></td>' +
+              '<td data-label="เครื่องมือแพทย์"><div style="font-weight: 600;">' + (r.deviceName || '-') + '</div><div style="font-size: 11px; color: var(--text-muted);">' + window.PPCH_STORE.getDepartmentName(r.department) + '</div></td>' +
+              '<td data-label="รายละเอียดการแก้ไข (สิ่งที่ดำเนินการไป)"><div style="font-size: 12px; color: var(--text-main); font-weight: 600;">' + (r.actionTaken || '-') + '</div>' +
                 (r.defectReason ? '<div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">อาการเดิม: ' + r.defectReason + '</div>' : '') +
               '</td>' +
-              '<td><span style="font-size: 12px; font-weight: 600; color: var(--green-ready);"><span class="material-icons-round" style="font-size: 13px; vertical-align: -2px;">person</span> ' + (r.resolvedBy || '-') + '</span></td>' +
+              '<td data-label="ผู้ดำเนินการแก้ไข"><span style="font-size: 12px; font-weight: 600; color: var(--green-ready);"><span class="material-icons-round" style="font-size: 13px; vertical-align: -2px;">person</span> ' + (r.resolvedBy || '-') + '</span></td>' +
             '</tr>';
           });
           hBody.innerHTML = hHtml;
@@ -2726,7 +2885,7 @@
       if (!tbody) return;
 
       if (equipmentList.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 36px; color: var(--text-light);">ไม่พบเครื่องมือแพทย์ที่ตรงกับตัวกรอง</td></tr>';
+        tbody.innerHTML = '<tr class="table-empty-row"><td colspan="5" style="text-align: center; padding: 36px; color: var(--text-light);">ไม่พบเครื่องมือแพทย์ที่ตรงกับตัวกรอง</td></tr>';
         return;
       }
 
@@ -2775,11 +2934,11 @@
         }
 
         html += '<tr>' +
-          '<td><span class="asset-code-clean">' + eq.assetCode + '</span></td>' +
-          '<td><div style="font-weight: 700; color: var(--text-main);">' + eq.name + '</div><div style="font-size: 11px; color: var(--text-muted);">รุ่น ' + (eq.model || '-') + '</div></td>' +
-          '<td><span style="font-weight: 500;">' + deptName + '</span>' + (eq.homeDept !== eq.currentDept ? ' <span style="font-size: 10px; color: #d97706;">(ยืม)</span>' : '') + '</td>' +
-          '<td>' + statusBadge + '</td>' +
-          '<td class="btn-action-col no-print" style="text-align: center; white-space: nowrap;">' + actions + '</td>' +
+          '<td data-label="รหัสเครื่อง"><span class="asset-code-clean">' + eq.assetCode + '</span></td>' +
+          '<td data-label="เครื่องมือแพทย์ & รุ่น"><div style="font-weight: 700; color: var(--text-main);">' + eq.name + '</div><div style="font-size: 11px; color: var(--text-muted);">รุ่น ' + (eq.model || '-') + '</div></td>' +
+          '<td data-label="แผนกรับผิดชอบ"><span style="font-weight: 500;">' + deptName + '</span>' + (eq.homeDept !== eq.currentDept ? ' <span style="font-size: 10px; color: #d97706;">(ยืม)</span>' : '') + '</td>' +
+          '<td data-label="สถานะวันนี้">' + statusBadge + '</td>' +
+          '<td data-label="จัดการ" class="btn-action-col no-print" style="text-align: center; white-space: nowrap;">' + actions + '</td>' +
         '</tr>';
       });
 
@@ -2975,7 +3134,7 @@
       if (!tbody) return;
 
       if (filteredEvals.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--text-light);">' +
+        tbody.innerHTML = '<tr class="table-empty-row"><td colspan="7" style="text-align: center; padding: 40px; color: var(--text-light);">' +
           '<div style="font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px;">ไม่พบประวัติการตรวจเช็ค' + (deviceHistoryMode === 'month' ? 'ในเดือนที่เลือก' : 'ของเครื่องนี้') + '</div>' +
           (deviceHistoryMode === 'month' ? '<button type="button" onclick="setDeviceHistoryMode(\'all\')" class="btn-tool" style="margin-top: 4px;"><span class="material-icons-round" style="font-size: 14px;">all_inclusive</span><span>คลิกเพื่อดูประวัติทั้งหมด</span></button>' : '') +
           '</td></tr>';
@@ -3004,13 +3163,13 @@
         var noteText = ev.abnormalNote ? ('<span style="color: var(--red-abnormal); font-weight: 500;">' + ev.abnormalNote + '</span>') : '<span style="color: var(--text-muted);">- ปกติ -</span>';
 
         rowsHtml += '<tr>' +
-          '<td style="font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--text-main);">' + (ev.evaluatedAt || '-') + '</td>' +
-          '<td><span style="font-weight: 500;">' + deptName + '</span></td>' +
-          '<td style="font-size: 12px; color: var(--text-main); font-weight: 600;">' + (ev.evaluatedBy || 'ไม่ระบุ') + '</td>' +
-          '<td>' + sBadge + '</td>' +
-          '<td style="font-size: 12px;">' + noteText + '</td>' +
-          '<td style="font-size: 12px;">' + upsText + '</td>' +
-          '<td class="btn-action-col no-print" style="text-align: center;">' +
+          '<td data-label="วัน-เวลาตรวจ" style="font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--text-main);">' + (ev.evaluatedAt || '-') + '</td>' +
+          '<td data-label="แผนกที่ตรวจ"><span style="font-weight: 500;">' + deptName + '</span></td>' +
+          '<td data-label="ผู้ตรวจเช็ค" style="font-size: 12px; color: var(--text-main); font-weight: 600;">' + (ev.evaluatedBy || 'ไม่ระบุ') + '</td>' +
+          '<td data-label="ผลการตรวจ">' + sBadge + '</td>' +
+          '<td data-label="บันทึก / ปัญหาที่พบ" style="font-size: 12px;">' + noteText + '</td>' +
+          '<td data-label="UPS สำรองไฟ" style="font-size: 12px;">' + upsText + '</td>' +
+          '<td data-label="สลิป" class="btn-action-col no-print" style="text-align: center;">' +
             '<button type="button" onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-slip" title="ดูสลิปผลการตรวจแบบละเอียด">' +
               '<span class="material-icons-round" style="font-size: 13px;">receipt_long</span><span>สลิป</span>' +
             '</button>' +
@@ -3617,7 +3776,7 @@
       if (bDept) bDept.innerText = depts.length;
 
       if (filtered.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 30px; color: var(--text-muted); font-size: 13px;">ไม่พบข้อมูลแผนกที่ค้นหา</td></tr>';
+        tbody.innerHTML = '<tr class="table-empty-row"><td colspan="5" style="text-align: center; padding: 30px; color: var(--text-muted); font-size: 13px;">ไม่พบข้อมูลแผนกที่ค้นหา</td></tr>';
         return;
       }
 
@@ -3632,11 +3791,11 @@
           : '<span style="color: var(--text-light); font-size: 11.5px;">0 เครื่อง</span>';
 
         html += '<tr>' +
-          '<td style="text-align: center; color: var(--text-muted); font-size: 12px;">' + (idx + 1) + '</td>' +
-          '<td><span style="font-family: var(--font-mono); font-weight: 700; font-size: 12px; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: var(--royal-blue);">' + escapeHtml(dp.id) + '</span></td>' +
-          '<td style="font-weight: 600; color: var(--text-main); font-size: 13px;">' + escapeHtml(dp.name) + '</td>' +
-          '<td style="text-align: center;">' + countBadge + '</td>' +
-          '<td style="text-align: center;">' +
+          '<td data-label="ลำดับ" style="text-align: center; color: var(--text-muted); font-size: 12px;">' + (idx + 1) + '</td>' +
+          '<td data-label="รหัสแผนก"><span style="font-family: var(--font-mono); font-weight: 700; font-size: 12px; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: var(--royal-blue);">' + escapeHtml(dp.id) + '</span></td>' +
+          '<td data-label="ชื่อแผนก" style="font-weight: 600; color: var(--text-main); font-size: 13px;">' + escapeHtml(dp.name) + '</td>' +
+          '<td data-label="จำนวนเครื่องมือแพทย์" style="text-align: center;">' + countBadge + '</td>' +
+          '<td data-label="จัดการ" style="text-align: center;">' +
             '<div style="display: flex; gap: 6px; justify-content: center;">' +
               '<button type="button" onclick="openEditDeptModal(\'' + escapeHtml(dp.id) + '\')" class="btn-tool" style="padding: 4px 8px; font-size: 11px; height: 28px;" title="แก้ไขชื่อแผนก">' +
                 '<span class="material-icons-round" style="font-size: 14px; color: var(--royal-blue);">edit</span>' +
@@ -3800,7 +3959,7 @@
       if (bEquip) bEquip.innerText = equip.length;
 
       if (filtered.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 30px; color: var(--text-muted); font-size: 13px;">ไม่พบเครื่องมือแพทย์ที่ตรงกับเงื่อนไขการค้นหา</td></tr>';
+        tbody.innerHTML = '<tr class="table-empty-row"><td colspan="10" style="text-align: center; padding: 30px; color: var(--text-muted); font-size: 13px;">ไม่พบเครื่องมือแพทย์ที่ตรงกับเงื่อนไขการค้นหา</td></tr>';
         return;
       }
 
@@ -3821,16 +3980,16 @@
           : '<span style="background: #fef2f2; color: var(--red-abnormal); padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px;">ชำรุด</span>';
 
         html += '<tr>' +
-          '<td style="text-align: center; color: var(--text-muted); font-size: 12px;">' + (idx + 1) + '</td>' +
-          '<td><span style="font-family: var(--font-mono); font-weight: 700; font-size: 12px; color: var(--royal-blue);">' + escapeHtml(eq.assetCode) + '</span></td>' +
-          '<td style="font-weight: 600; color: var(--text-main); font-size: 13px;">' + escapeHtml(eq.name) + '</td>' +
-          '<td style="color: var(--text-body); font-size: 12px;">' + escapeHtml(eq.model || '-') + '</td>' +
-          '<td style="font-family: var(--font-mono); font-size: 11.5px; color: var(--text-muted);">' + escapeHtml(eq.serialNo || '-') + '</td>' +
-          '<td style="text-align: center;">' + riskBadge + '</td>' +
-          '<td><span style="font-size: 11.5px; background: var(--royal-subtle); color: var(--royal-blue); padding: 2px 6px; border-radius: 4px;">' + escapeHtml(formName) + '</span></td>' +
-          '<td style="font-weight: 500; font-size: 12.5px; color: var(--text-main);">' + escapeHtml(deptName) + '</td>' +
-          '<td style="text-align: center;">' + statusBadge + '</td>' +
-          '<td style="text-align: center;">' +
+          '<td data-label="ลำดับ" style="text-align: center; color: var(--text-muted); font-size: 12px;">' + (idx + 1) + '</td>' +
+          '<td data-label="รหัสเครื่อง"><span style="font-family: var(--font-mono); font-weight: 700; font-size: 12px; color: var(--royal-blue);">' + escapeHtml(eq.assetCode) + '</span></td>' +
+          '<td data-label="ชื่อเครื่องมือแพทย์" style="font-weight: 600; color: var(--text-main); font-size: 13px;">' + escapeHtml(eq.name) + '</td>' +
+          '<td data-label="รุ่น / ยี่ห้อ" style="color: var(--text-body); font-size: 12px;">' + escapeHtml(eq.model || '-') + '</td>' +
+          '<td data-label="Serial No." style="font-family: var(--font-mono); font-size: 11.5px; color: var(--text-muted);">' + escapeHtml(eq.serialNo || '-') + '</td>' +
+          '<td data-label="ระดับความเสี่ยง" style="text-align: center;">' + riskBadge + '</td>' +
+          '<td data-label="แบบฟอร์มตรวจ"><span style="font-size: 11.5px; background: var(--royal-subtle); color: var(--royal-blue); padding: 2px 6px; border-radius: 4px;">' + escapeHtml(formName) + '</span></td>' +
+          '<td data-label="แผนกปัจจุบัน" style="font-weight: 500; font-size: 12.5px; color: var(--text-main);">' + escapeHtml(deptName) + '</td>' +
+          '<td data-label="สถานะ" style="text-align: center;">' + statusBadge + '</td>' +
+          '<td data-label="จัดการ" style="text-align: center;">' +
             '<div style="display: flex; gap: 6px; justify-content: center;">' +
               '<button type="button" onclick="openEditEquipmentModal(\'' + escapeHtml(eq.id) + '\')" class="btn-tool" style="padding: 4px 8px; font-size: 11px; height: 28px;" title="แก้ไขเครื่องมือ">' +
                 '<span class="material-icons-round" style="font-size: 14px; color: var(--royal-blue);">edit</span>' +
