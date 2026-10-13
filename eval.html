@@ -1148,7 +1148,14 @@
           var byEl = document.getElementById('conditionalUseBy');
           var atEl = document.getElementById('conditionalUseAt');
           if (defReasonEl) defReasonEl.innerText = 'ข้อบกพร่องเดิม: ' + (currentDevice.abnormalReason || 'ตรวจพบความผิดปกติ');
-          if (reasonEl) reasonEl.innerText = 'เหตุผล/เงื่อนไขการอนุญาต: ' + (currentDevice.allowUseReason || 'อนุญาตให้ใช้งานต่อชั่วคราว');
+          if (reasonEl) {
+            if (currentDevice.allowUseReason && currentDevice.allowUseReason.trim()) {
+              reasonEl.innerText = 'เหตุผล/เงื่อนไข: ' + currentDevice.allowUseReason;
+              reasonEl.style.display = 'block';
+            } else {
+              reasonEl.style.display = 'none';
+            }
+          }
           if (byEl) byEl.innerText = 'ผู้อนุญาต: ' + (currentDevice.allowUseBy || 'เจ้าหน้าที่');
           if (atEl) atEl.innerText = 'วันที่อนุญาต: ' + (currentDevice.allowUseAt || '-');
         } else {

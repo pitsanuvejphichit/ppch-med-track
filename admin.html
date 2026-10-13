@@ -2295,9 +2295,13 @@
                 <span class="material-icons-round" style="font-size: 15px;">print</span>
                 <span>พิมพ์</span>
               </button>
-              <button type="button" onclick="exportCsv()" class="btn-tool" title="ส่งออก CSV">
-                <span class="material-icons-round" style="font-size: 15px; color: #059669;">download</span>
-                <span>ส่งออก</span>
+              <button type="button" onclick="exportExcel()" class="btn-tool" style="color: #047857; font-weight: 600;" title="ส่งออกเป็นไฟล์ Excel (.xls) เปิดดูใน Microsoft Excel ได้ทันที ภาษาไทยไม่เพี้ยน">
+                <span class="material-icons-round" style="font-size: 15px; color: #047857;">table_view</span>
+                <span>ส่งออก Excel</span>
+              </button>
+              <button type="button" onclick="exportCsv()" class="btn-tool" title="ส่งออกเป็นไฟล์ CSV (UTF-8 with BOM)">
+                <span class="material-icons-round" style="font-size: 15px; color: #64748b;">file_download</span>
+                <span>CSV</span>
               </button>
               <button type="button" onclick="syncWithGas()" class="btn-tool btn-tool-primary" id="btnSync" title="ซิงค์ข้อมูล Google Apps Script">
                 <span class="material-icons-round" style="font-size: 15px;">sync</span>
@@ -2953,17 +2957,9 @@
 
         <div style="margin-bottom: 12px;">
           <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">
-            เหตุผลและเงื่อนไขการอนุญาตให้ใช้งานต่อ <span style="color: var(--red-abnormal);">*</span>
+            เหตุผล / เงื่อนไขการอนุญาตให้ใช้งานต่อ (ถ้ามี)
           </label>
-          <select id="allowUseReasonQuick" class="filter-input" style="width: 100%; margin-bottom: 6px; font-size: 12px;" onchange="if(this.value) document.getElementById('allowUseReason').value = this.value;">
-            <option value="">-- เลือกเหตุผลตัวอย่าง หรือพิมพ์ระบุเองด้านล่าง --</option>
-            <option value="ชำรุดส่วนอุปกรณ์เสริม ไม่กระทบระบบการทำงานหลักและไม่กระทบความปลอดภัยผู้ป่วย">ชำรุดส่วนอุปกรณ์เสริม ไม่กระทบระบบการทำงานหลัก</option>
-            <option value="ส่งสั่งซื้ออะไหล่แล้ว สามารถใช้งานได้ภายใต้การเฝ้าระวัง">ส่งสั่งซื้ออะไหล่แล้ว สามารถใช้งานได้ภายใต้การเฝ้าระวัง</option>
-            <option value="ชำรุดระบบจ่ายไฟสำรอง แต่ใช้งานผ่านระบบไฟตรง (AC) ในห้องผู้ป่วยได้ตามปกติ">ชำรุดระบบจ่ายไฟสำรอง แต่ใช้งานผ่านไฟตรง (AC) ได้</option>
-            <option value="เป็นข้อบกพร่องภายนอก (ตัวเครื่อง/รอยขีดข่วน) ระบบตรวจวัดทำงานได้สมบูรณ์">เป็นข้อบกพร่องภายนอก ระบบตรวจวัดทำงานสมบูรณ์</option>
-            <option value="ผ่านการทดสอบเบื้องต้นโดยช่าง อนุญาตให้ใช้งานได้ชั่วคราวระหว่างรอรอบบำรุงรักษา">ผ่านการทดสอบเบื้องต้น อนุญาตให้ใช้ชั่วคราว</option>
-          </select>
-          <textarea id="allowUseReason" class="filter-input" style="width: 100%; height: 65px; resize: vertical; font-size: 12.5px;" placeholder="ระบุเหตุผล เงื่อนไข หรือข้อควรระวังในการใช้งาน..." required></textarea>
+          <textarea id="allowUseReason" class="filter-input" style="width: 100%; height: 75px; resize: vertical; font-size: 12.5px;" placeholder="ระบุเหตุผล เงื่อนไข หรือข้อควรระวังในการใช้งาน (ไม่บังคับกรอก)..."></textarea>
         </div>
 
         <div style="margin-bottom: 16px;">
@@ -3944,7 +3940,6 @@
 
       document.getElementById('allowUseOfficerName').value = eq.allowUseBy || 'อาภากร บุญเกตกูล';
       document.getElementById('allowUseReason').value = eq.allowUseReason || '';
-      document.getElementById('allowUseReasonQuick').value = '';
 
       var isConditional = (eq.status === 'conditional_ready' || eq.allowUse);
       var btnRevoke = document.getElementById('btnRevokeAllowUse');
@@ -3980,8 +3975,8 @@
       var reason = document.getElementById('allowUseReason').value.trim();
       var dtVal = document.getElementById('allowUseDateTime').value;
 
-      if (!deviceId || !officerName || !reason) {
-        alert('กรุณากรอกข้อมูลชื่อเจ้าหน้าที่และเหตุผลการอนุญาตให้ครบถ้วน');
+      if (!deviceId || !officerName) {
+        alert('กรุณาระบุชื่อเจ้าหน้าที่ผู้มีอำนาจอนุญาต');
         return;
       }
 
@@ -5547,16 +5542,193 @@
       }
     }
 
-    function exportCsv() {
-      var csv = 'AssetCode,Name,Department,Date,Status,Evaluator\n';
-      allEquipment.forEach(function (eq) {
-        csv += '"' + eq.assetCode + '","' + eq.name + '","' + window.PPCH_STORE.getDepartmentName(eq.currentDept) + '","' + (document.getElementById('filterDate').value) + '","' + eq.status + '",""\n';
+    function exportExcel() {
+      var dateVal = document.getElementById('filterDate').value;
+      var evalsOnDate = allEvaluations.filter(function (ev) {
+        return ev.evaluatedAt && ev.evaluatedAt.indexOf(dateVal) === 0;
       });
+      var evalMapByDevice = {};
+      evalsOnDate.forEach(function (ev) {
+        var k1 = ev.deviceId;
+        var k2 = ev.deviceAsset;
+        if (k1 && (!evalMapByDevice[k1] || ev.evaluatedAt > evalMapByDevice[k1].evaluatedAt)) {
+          evalMapByDevice[k1] = ev;
+        }
+        if (k2 && (!evalMapByDevice[k2] || ev.evaluatedAt > evalMapByDevice[k2].evaluatedAt)) {
+          evalMapByDevice[k2] = ev;
+        }
+      });
+
+      var tableHtml = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">' +
+        '<head>' +
+        '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">' +
+        '<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>สรุปรายวัน_' + dateVal + '</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->' +
+        '<style>' +
+        'body { font-family: "Sarabun", "Tahoma", sans-serif; font-size: 13px; }' +
+        'table { border-collapse: collapse; width: 100%; }' +
+        'th { background-color: #004b93; color: #ffffff; font-weight: bold; padding: 10px 8px; border: 1px solid #cbd5e1; text-align: center; }' +
+        'td { padding: 8px 10px; border: 1px solid #e2e8f0; vertical-align: middle; }' +
+        '.text-center { text-align: center; }' +
+        '.badge-ready { background-color: #ecfdf5; color: #047857; font-weight: bold; text-align: center; }' +
+        '.badge-conditional { background-color: #fffbeb; color: #b45309; font-weight: bold; text-align: center; }' +
+        '.badge-abnormal { background-color: #fef2f2; color: #dc2626; font-weight: bold; text-align: center; }' +
+        '.badge-pending { background-color: #f8fafc; color: #64748b; text-align: center; }' +
+        '</style>' +
+        '</head>' +
+        '<body>' +
+        '<h3 style="color: #004b93; margin-bottom: 4px;">รายงานการตรวจเช็คความพร้อมใช้งานเครื่องมือแพทย์ประจำวัน</h3>' +
+        '<p style="color: #64748b; font-size: 12px; margin-top: 0; margin-bottom: 12px;">ประจำวันที่: ' + dateVal + ' | โรงพยาบาลพิษณุเวช พิจิตร</p>' +
+        '<table>' +
+        '<thead>' +
+        '<tr>' +
+        '<th>ลำดับ</th>' +
+        '<th>รหัสครุภัณฑ์</th>' +
+        '<th>ชื่อเครื่องมือแพทย์</th>' +
+        '<th>รุ่น</th>' +
+        '<th>แผนกรับผิดชอบ</th>' +
+        '<th>วันที่ตรวจ</th>' +
+        '<th>สถานะความพร้อม</th>' +
+        '<th>ผู้ตรวจเช็ค</th>' +
+        '<th>เวลาที่ตรวจ</th>' +
+        '<th>อาการข้อบกพร่อง</th>' +
+        '<th>เงื่อนไขการอนุญาตให้ใช้งานต่อ</th>' +
+        '<th>ผู้อนุญาต</th>' +
+        '</tr>' +
+        '</thead>' +
+        '<tbody>';
+
+      allEquipment.forEach(function (eq, idx) {
+        var ev = evalMapByDevice[eq.id] || evalMapByDevice[eq.assetCode];
+        var isConditional = (eq.status === 'conditional_ready' || eq.allowUse);
+        var isUnderFix = (eq.status === 'in_progress' || eq.repairStatus === 'in_progress');
+        var isDefective = (eq.status === 'abnormal' || eq.repairStatus === 'reported');
+
+        var statusTh = 'รอตรวจวันนี้';
+        var statusCls = 'badge-pending';
+        if (isConditional) {
+          statusTh = 'อนุญาตให้ใช้งานต่อ (มีเงื่อนไข)';
+          statusCls = 'badge-conditional';
+        } else if (isUnderFix) {
+          statusTh = 'กำลังดำเนินการแก้ไข/ซ่อมบำรุง';
+          statusCls = 'badge-conditional';
+        } else if (isDefective) {
+          statusTh = 'พบข้อบกพร่อง/ชำรุด';
+          statusCls = 'badge-abnormal';
+        } else if (eq.status === 'ready' && (ev || (eq.lastEvaluatedAt && eq.lastEvaluatedAt.indexOf(dateVal) === 0))) {
+          statusTh = 'พร้อมใช้งาน';
+          statusCls = 'badge-ready';
+        } else if (ev) {
+          statusTh = (ev.result === 'normal') ? 'พร้อมใช้งาน' : 'พบข้อบกพร่อง/ชำรุด';
+          statusCls = (ev.result === 'normal') ? 'badge-ready' : 'badge-abnormal';
+        }
+
+        var evaluator = (ev && ev.evaluatedBy) ? ev.evaluatedBy : (eq.lastEvaluatedBy || '-');
+        var evalTime = (ev && ev.evaluatedAt) ? ev.evaluatedAt : (eq.lastEvaluatedAt || '-');
+        var defectReason = eq.abnormalReason || (ev && ev.abnormalNote) || '-';
+        var allowReason = isConditional ? (eq.allowUseReason || '-') : '-';
+        var allowBy = isConditional ? (eq.allowUseBy || '-') : '-';
+        var deptName = window.PPCH_STORE.getDepartmentName(eq.currentDept);
+
+        tableHtml += '<tr>' +
+          '<td class="text-center">' + (idx + 1) + '</td>' +
+          '<td class="text-center" style="font-weight: bold; mso-number-format:\'\\@\';">' + eq.assetCode + '</td>' +
+          '<td style="font-weight: 600;">' + eq.name + '</td>' +
+          '<td>' + (eq.model || '-') + '</td>' +
+          '<td>' + deptName + '</td>' +
+          '<td class="text-center" style="mso-number-format:\'\\@\';">' + dateVal + '</td>' +
+          '<td class="' + statusCls + '">' + statusTh + '</td>' +
+          '<td>' + evaluator + '</td>' +
+          '<td class="text-center" style="mso-number-format:\'\\@\';">' + evalTime + '</td>' +
+          '<td>' + defectReason + '</td>' +
+          '<td>' + allowReason + '</td>' +
+          '<td>' + allowBy + '</td>' +
+          '</tr>';
+      });
+
+      tableHtml += '</tbody></table></body></html>';
+
+      var blob = new Blob(['\uFEFF' + tableHtml], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+      var link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'PPCH_Med_Daily_' + dateVal + '.xls';
+      link.click();
+      showToast('ส่งออกไฟล์ Excel (.xls) สำเร็จ! เปิดดูใน Microsoft Excel ได้ทันที');
+    }
+
+    function exportCsv() {
+      var dateVal = document.getElementById('filterDate').value;
+      var evalsOnDate = allEvaluations.filter(function (ev) {
+        return ev.evaluatedAt && ev.evaluatedAt.indexOf(dateVal) === 0;
+      });
+      var evalMapByDevice = {};
+      evalsOnDate.forEach(function (ev) {
+        var k1 = ev.deviceId;
+        var k2 = ev.deviceAsset;
+        if (k1 && (!evalMapByDevice[k1] || ev.evaluatedAt > evalMapByDevice[k1].evaluatedAt)) {
+          evalMapByDevice[k1] = ev;
+        }
+        if (k2 && (!evalMapByDevice[k2] || ev.evaluatedAt > evalMapByDevice[k2].evaluatedAt)) {
+          evalMapByDevice[k2] = ev;
+        }
+      });
+
+      // UTF-8 BOM (\uFEFF) ensures Excel on Windows reads Thai text correctly
+      var csv = '\uFEFF';
+      csv += 'ลำดับ,รหัสครุภัณฑ์,ชื่อเครื่องมือแพทย์,รุ่น,แผนกรับผิดชอบ,วันที่ตรวจ,สถานะความพร้อม,ผู้ตรวจเช็ค,เวลาที่ตรวจ,อาการข้อบกพร่อง,เงื่อนไขการอนุญาตให้ใช้งานต่อ,ผู้อนุญาต\n';
+
+      allEquipment.forEach(function (eq, idx) {
+        var ev = evalMapByDevice[eq.id] || evalMapByDevice[eq.assetCode];
+        var isConditional = (eq.status === 'conditional_ready' || eq.allowUse);
+        var isUnderFix = (eq.status === 'in_progress' || eq.repairStatus === 'in_progress');
+        var isDefective = (eq.status === 'abnormal' || eq.repairStatus === 'reported');
+
+        var statusTh = 'รอตรวจวันนี้';
+        if (isConditional) {
+          statusTh = 'อนุญาตให้ใช้งานต่อ (มีเงื่อนไข)';
+        } else if (isUnderFix) {
+          statusTh = 'กำลังดำเนินการแก้ไข/ซ่อมบำรุง';
+        } else if (isDefective) {
+          statusTh = 'พบข้อบกพร่อง/ชำรุด';
+        } else if (eq.status === 'ready' && (ev || (eq.lastEvaluatedAt && eq.lastEvaluatedAt.indexOf(dateVal) === 0))) {
+          statusTh = 'พร้อมใช้งาน';
+        } else if (ev) {
+          statusTh = (ev.result === 'normal') ? 'พร้อมใช้งาน' : 'พบข้อบกพร่อง/ชำรุด';
+        }
+
+        var evaluator = (ev && ev.evaluatedBy) ? ev.evaluatedBy : (eq.lastEvaluatedBy || '-');
+        var evalTime = (ev && ev.evaluatedAt) ? ev.evaluatedAt : (eq.lastEvaluatedAt || '-');
+        var defectReason = eq.abnormalReason || (ev && ev.abnormalNote) || '-';
+        var allowReason = isConditional ? (eq.allowUseReason || '-') : '-';
+        var allowBy = isConditional ? (eq.allowUseBy || '-') : '-';
+        var deptName = window.PPCH_STORE.getDepartmentName(eq.currentDept);
+
+        function cleanCell(val) {
+          if (!val) return '""';
+          return '"' + String(val).replace(/"/g, '""') + '"';
+        }
+
+        csv += [
+          idx + 1,
+          cleanCell(eq.assetCode),
+          cleanCell(eq.name),
+          cleanCell(eq.model || '-'),
+          cleanCell(deptName),
+          cleanCell(dateVal),
+          cleanCell(statusTh),
+          cleanCell(evaluator),
+          cleanCell(evalTime),
+          cleanCell(defectReason),
+          cleanCell(allowReason),
+          cleanCell(allowBy)
+        ].join(',') + '\n';
+      });
+
       var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       var link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
-      link.download = 'PPCH_Med_Daily_' + document.getElementById('filterDate').value + '.csv';
+      link.download = 'PPCH_Med_Daily_' + dateVal + '.csv';
       link.click();
+      showToast('ส่งออกไฟล์ CSV สำเร็จ! (รองรับภาษาไทย)');
     }
 
     function showToast(msg) {

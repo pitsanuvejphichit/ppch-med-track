@@ -393,7 +393,7 @@
       eq.allowUse = true;
       eq.allowUseBy = officerName || 'เจ้าหน้าที่';
       eq.allowUseAt = nowStr;
-      eq.allowUseReason = reason || 'อนุญาตให้ใช้งานต่อชั่วคราว';
+      eq.allowUseReason = reason ? reason.trim() : '';
 
       notifyUpdated();
       return { success: true, equipment: eq };
