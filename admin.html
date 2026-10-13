@@ -978,6 +978,317 @@
       margin-bottom: 16px;
     }
 
+    /* ==================== DASHBOARD EXECUTIVE STYLES ==================== */
+    .dash-hero-card {
+      background: linear-gradient(135deg, #002e6e 0%, #004b93 60%, #0284c7 100%);
+      border-radius: 14px;
+      padding: 22px 24px;
+      color: #ffffff;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 25px -5px rgba(0, 46, 110, 0.25);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .dash-hero-card::after {
+      content: '';
+      position: absolute;
+      right: -30px;
+      top: -30px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 70%);
+      pointer-events: none;
+    }
+    .dash-hero-title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .dash-hero-sub {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.88);
+      font-weight: 400;
+      max-width: 650px;
+      line-height: 1.5;
+    }
+    .dash-hero-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .dash-live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+
+    /* 4-Column Executive KPI Cards */
+    .dash-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .dash-kpi-card {
+      background: #ffffff;
+      border: 1px solid var(--border-main);
+      border-radius: 12px;
+      padding: 16px 18px;
+      box-shadow: 0 2px 10px rgba(0, 46, 110, 0.04);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+    .dash-kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 46, 110, 0.08);
+    }
+    .dash-kpi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    .dash-kpi-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .dash-kpi-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .dash-kpi-main {
+      margin-bottom: 10px;
+    }
+    .dash-kpi-val {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+    .dash-kpi-sub {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .dash-kpi-progress {
+      width: 100%;
+      height: 6px;
+      background: #f1f5f9;
+      border-radius: 99px;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+    .dash-kpi-bar {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.4s ease;
+    }
+
+    /* 2-Column Analytics Grid */
+    .dash-analytics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .dash-panel {
+      background: #ffffff;
+      border: 1px solid var(--border-main);
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 46, 110, 0.04);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .dash-panel-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+    }
+    .dash-panel-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--royal-blue);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .dash-panel-body {
+      padding: 16px 18px;
+      flex: 1;
+    }
+
+    /* Risk Breakdown Bars */
+    .risk-breakdown-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    .risk-box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .risk-pill-high {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .risk-pill-low {
+      background: #eff6ff;
+      color: #2563eb;
+      border: 1px solid #bfdbfe;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .segmented-status-bar {
+      height: 10px;
+      background: #e2e8f0;
+      border-radius: 99px;
+      display: flex;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+    .seg-fill-ready { background: #10b981; }
+    .seg-fill-abnormal { background: #ef4444; }
+    .seg-fill-progress { background: #f59e0b; }
+    .seg-fill-pending { background: #cbd5e1; }
+    
+    .status-count-legend {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 11.5px;
+      margin-top: 6px;
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--text-body);
+    }
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Department Readiness Items */
+    .dept-rank-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px dashed #e2e8f0;
+      gap: 12px;
+    }
+    .dept-rank-item:last-child {
+      border-bottom: none;
+    }
+
+    /* Recent Activity Item */
+    .recent-eval-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #f1f5f9;
+      gap: 10px;
+    }
+    .recent-eval-item:last-child {
+      border-bottom: none;
+    }
+
+    /* Quick Action Hub Cards */
+    .dash-shortcuts-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .dash-shortcut-card {
+      background: #ffffff;
+      border: 1px solid var(--border-main);
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+    .dash-shortcut-card:hover {
+      border-color: var(--royal-blue);
+      background: #f8fafc;
+      transform: translateY(-1px);
+    }
+    .dash-shortcut-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--royal-subtle);
+      color: var(--royal-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
     @media (max-width: 991px) {
       /* Top Header */
       .app-topbar {
@@ -1431,6 +1742,42 @@
         width: 100% !important;
       }
 
+      /* Dashboard Mobile Overrides */
+      .dash-hero-card {
+        padding: 16px !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px !important;
+      }
+      .dash-hero-title {
+        font-size: 16px !important;
+      }
+      .dash-hero-sub {
+        font-size: 12px !important;
+      }
+      .dash-hero-right {
+        width: 100% !important;
+        justify-content: space-between !important;
+      }
+      .dash-kpi-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+      }
+      .dash-kpi-card {
+        padding: 12px 14px !important;
+      }
+      .dash-kpi-val {
+        font-size: 22px !important;
+      }
+      .dash-analytics-grid {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+      }
+      .dash-shortcuts-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+      }
+
       /* Relocate Sub-view */
       .grid-relocate-container {
         grid-template-columns: 1fr !important;
@@ -1449,6 +1796,9 @@
     @media (max-width: 480px) {
       #topStatusText {
         display: none;
+      }
+      .dash-shortcuts-grid {
+        grid-template-columns: 1fr !important;
       }
     }
   </style>
@@ -1495,7 +1845,7 @@
         <div class="topbar-breadcrumbs">
           <span class="bread-parent">ระบบเครื่องมือแพทย์</span>
           <span class="bread-sep">/</span>
-          <span class="bread-current" id="breadCurrent">สรุปรายวัน</span>
+          <span class="bread-current" id="breadCurrent">แดชบอร์ดภาพรวม</span>
         </div>
       </div>
 
@@ -1531,7 +1881,11 @@
 
         <div class="sidebar-section-title">เมนูหลัก</div>
         <nav class="sidebar-nav">
-          <button onclick="switchView('summary')" id="navBtn_summary" class="nav-btn active">
+          <button onclick="switchView('dashboard')" id="navBtn_dashboard" class="nav-btn active">
+            <span class="material-icons-round">dashboard</span>
+            <span>แดชบอร์ดภาพรวม</span>
+          </button>
+          <button onclick="switchView('summary')" id="navBtn_summary" class="nav-btn">
             <span class="material-icons-round">today</span>
             <span>สรุปรายวัน</span>
           </button>
@@ -1578,8 +1932,204 @@
       <!-- 3. Main Workstation -->
       <main class="app-main-content">
 
+        <!-- ==================== SUB-VIEW 0: แดชบอร์ดภาพรวม (EXECUTIVE DASHBOARD) ==================== -->
+        <section id="viewDashboard">
+          <!-- 1. Executive Hero Header Banner -->
+          <div class="dash-hero-card no-print">
+            <div class="dash-hero-left">
+              <div class="dash-hero-badge">
+                <span class="material-icons-round" style="font-size: 14px;">insights</span>
+                <span>EXECUTIVE OPERATIONS CENTER • HA & JCI STANDARDS</span>
+              </div>
+              <h1 class="dash-hero-title">แดชบอร์ดภาพรวมการบริหารความพร้อมใช้เครื่องมือแพทย์</h1>
+              <p class="dash-hero-sub">ศูนย์ควบคุมและติดตามความพร้อมใช้งานเครื่องมือแพทย์ โรงพยาบาลพิษณุเวช พิจิตร แบบเรียลไทม์</p>
+            </div>
+            <div class="dash-hero-right">
+              <div class="dash-hero-date-box">
+                <div class="dash-hero-date-label">สถานะข้อมูลประจำวัน</div>
+                <div class="dash-hero-date-val" id="dashLiveDateText">กำลังโหลดวันที่...</div>
+              </div>
+              <button type="button" class="btn-hero-action" onclick="loadData()" title="รีเฟรชข้อมูลเรียลไทม์">
+                <span class="material-icons-round" style="font-size: 16px;">refresh</span>
+                <span>อัปเดตข้อมูล</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 2. High-Impact KPI Grid (4 Metrics) -->
+          <div class="dash-kpi-grid no-print">
+            <!-- KPI 1: Availability Rate -->
+            <div class="dash-kpi-card" style="border-left: 4px solid #10b981;">
+              <div class="dash-kpi-head">
+                <span class="dash-kpi-title">อัตราความพร้อมใช้งานเครื่องมือแพทย์</span>
+                <span class="dash-kpi-sub" id="dashBadgeAvailability">เป้าหมาย HA ≥ 95%</span>
+              </div>
+              <div class="dash-kpi-val" id="dashValAvailability" style="color: #059669;">--%</div>
+              <div class="dash-kpi-bar">
+                <div class="dash-kpi-bar-fill" id="dashBarAvailability" style="width: 0%; background: #10b981;"></div>
+              </div>
+              <div class="dash-kpi-sub" id="dashTextAvailability" style="margin-top: 6px;">พร้อมใช้ 0 จาก 0 เครื่อง</div>
+            </div>
+
+            <!-- KPI 2: Today Compliance Rate -->
+            <div class="dash-kpi-card" style="border-left: 4px solid #3b82f6;">
+              <div class="dash-kpi-head">
+                <span class="dash-kpi-title">การตรวจเช็คตามเกณฑ์ประเมิน</span>
+                <span class="dash-kpi-sub">เสี่ยงสูงทุกวัน / เสี่ยงต่ำรายเดือน</span>
+              </div>
+              <div class="dash-kpi-val" id="dashValCompliance" style="color: #2563eb;">--%</div>
+              <div class="dash-kpi-bar">
+                <div class="dash-kpi-bar-fill" id="dashBarCompliance" style="width: 0%; background: #3b82f6;"></div>
+              </div>
+              <div class="dash-kpi-sub" id="dashTextCompliance" style="margin-top: 6px;">ตรวจครบ 0 จาก 0 รายการ</div>
+            </div>
+
+            <!-- KPI 3: Defective & In-Repair -->
+            <div class="dash-kpi-card" onclick="switchView('defective')" style="border-left: 4px solid #ef4444; cursor: pointer;" title="คลิกเพื่อเปิดหน้าจัดการงานซ่อม">
+              <div class="dash-kpi-head">
+                <span class="dash-kpi-title">ไม่พร้อมใช้งาน / รอซ่อม</span>
+                <span class="material-icons-round" style="font-size: 16px; color: #ef4444;">open_in_new</span>
+              </div>
+              <div class="dash-kpi-val" id="dashValDefective" style="color: #dc2626;">0</div>
+              <div class="dash-kpi-sub" id="dashDefectiveText" style="margin-top: 14px; font-weight: 600;">
+                รอดำเนินการ 0 • กำลังซ่อม 0
+              </div>
+            </div>
+
+            <!-- KPI 4: UPS Emergency Power Readiness -->
+            <div class="dash-kpi-card" style="border-left: 4px solid #8b5cf6;">
+              <div class="dash-kpi-head">
+                <span class="dash-kpi-title">ความพร้อมระบบสำรองไฟฉุกเฉิน (UPS)</span>
+                <span class="dash-kpi-sub">เกณฑ์มาตรฐาน ≥ 60 นาที</span>
+              </div>
+              <div class="dash-kpi-val" id="dashValUps" style="color: #7c3aed;">100%</div>
+              <div class="dash-kpi-bar">
+                <div class="dash-kpi-bar-fill" id="dashBarUps" style="width: 100%; background: #8b5cf6;"></div>
+              </div>
+              <div class="dash-kpi-sub" id="dashTextUps" style="margin-top: 6px;">สำรองไฟฉุกเฉินสมบูรณ์</div>
+            </div>
+          </div>
+
+          <!-- 3. Analytics Grid Row 1: Risk Segmentation & Department Readiness -->
+          <div class="dash-analytics-grid no-print">
+            <!-- Left: Risk Breakdown -->
+            <div class="dash-panel">
+              <div class="dash-panel-header">
+                <div class="dash-panel-title">
+                  <span class="material-icons-round" style="color: var(--royal-blue);">security</span>
+                  <span>การควบคุมความพร้อมตามระดับความเสี่ยง (Risk Breakdown)</span>
+                </div>
+                <div style="font-size: 11.5px; color: var(--text-muted);">เกณฑ์ HA & JCI</div>
+              </div>
+              <div class="dash-panel-body" id="dashRiskBreakdownContainer">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+
+            <!-- Right: Department Readiness -->
+            <div class="dash-panel">
+              <div class="dash-panel-header">
+                <div class="dash-panel-title">
+                  <span class="material-icons-round" style="color: var(--royal-blue);">local_hospital</span>
+                  <span>ความพร้อมใช้งานจำแนกตามแผนก (Department Readiness)</span>
+                </div>
+                <span class="badge-status badge-status-ready" style="font-size: 11px;">Real-time</span>
+              </div>
+              <div class="dash-panel-body" id="dashDeptReadinessContainer" style="max-height: 380px; overflow-y: auto;">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Analytics Grid Row 2: Active Defects Watchlist & Recent Live Stream -->
+          <div class="dash-analytics-grid no-print" style="margin-top: 16px;">
+            <!-- Left: Active Defects Watchlist -->
+            <div class="dash-panel">
+              <div class="dash-panel-header">
+                <div class="dash-panel-title">
+                  <span class="material-icons-round" style="color: #dc2626;">warning</span>
+                  <span>รายการเฝ้าระวัง / เครื่องมือแพทย์ไม่พร้อมใช้ (Active Watchlist)</span>
+                </div>
+                <button type="button" onclick="switchView('defective')" class="btn-tool" style="font-size: 11.5px; padding: 4px 10px;">
+                  <span>ดูงานซ่อมทั้งหมด</span>
+                  <span class="material-icons-round" style="font-size: 14px;">arrow_forward</span>
+                </button>
+              </div>
+              <div class="dash-panel-body" id="dashActiveDefectContainer" style="max-height: 400px; overflow-y: auto;">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+
+            <!-- Right: Recent Live Stream -->
+            <div class="dash-panel">
+              <div class="dash-panel-header">
+                <div class="dash-panel-title">
+                  <span class="material-icons-round" style="color: var(--royal-blue);">history</span>
+                  <span>บันทึกการตรวจเช็คล่าสุด (Live Inspection Stream)</span>
+                </div>
+                <button type="button" onclick="switchView('summary')" class="btn-tool" style="font-size: 11.5px; padding: 4px 10px;">
+                  <span>ดูสรุปรายวัน</span>
+                  <span class="material-icons-round" style="font-size: 14px;">arrow_forward</span>
+                </button>
+              </div>
+              <div class="dash-panel-body" id="dashRecentFeedContainer" style="max-height: 400px; overflow-y: auto;">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. Quick Navigation Shortcuts Hub -->
+          <div style="margin-top: 20px;">
+            <div style="font-size: 13px; font-weight: 700; color: var(--text-muted); margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+              <span class="material-icons-round" style="font-size: 16px;">touch_app</span>
+              <span>ทางลัดการใช้งานระบบ (Quick Action Hub)</span>
+            </div>
+            <div class="dash-shortcuts-grid no-print">
+              <div class="dash-shortcut-card" onclick="switchView('summary')">
+                <div class="dash-shortcut-icon">
+                  <span class="material-icons-round">today</span>
+                </div>
+                <div>
+                  <div style="font-weight: 700; font-size: 13px; color: var(--royal-blue);">สรุปผลรายวัน</div>
+                  <div style="font-size: 11px; color: var(--text-muted);">ตรวจสอบความพร้อมประจำวันและพิมพ์สลิป</div>
+                </div>
+              </div>
+
+              <div class="dash-shortcut-card" onclick="switchView('device_summary')">
+                <div class="dash-shortcut-icon">
+                  <span class="material-icons-round">medical_information</span>
+                </div>
+                <div>
+                  <div style="font-weight: 700; font-size: 13px; color: var(--royal-blue);">สรุปรายเครื่อง</div>
+                  <div style="font-size: 11px; color: var(--text-muted);">ดูประวัติการตรวจเช็คย้อนหลังแยกรายชิ้น</div>
+                </div>
+              </div>
+
+              <div class="dash-shortcut-card" onclick="switchView('defective')">
+                <div class="dash-shortcut-icon" style="background: #fef2f2; color: #dc2626;">
+                  <span class="material-icons-round">build_circle</span>
+                </div>
+                <div>
+                  <div style="font-weight: 700; font-size: 13px; color: #dc2626;">เครื่องไม่พร้อมใช้ & งานซ่อม</div>
+                  <div style="font-size: 11px; color: var(--text-muted);">รับเรื่องและบันทึกปิดงานซ่อมบำรุง</div>
+                </div>
+              </div>
+
+              <div class="dash-shortcut-card" onclick="switchView('directory')">
+                <div class="dash-shortcut-icon" style="background: #ecfdf5; color: #059669;">
+                  <span class="material-icons-round">qr_code_2</span>
+                </div>
+                <div>
+                  <div style="font-weight: 700; font-size: 13px; color: #059669;">รายการเครื่อง & QR Code</div>
+                  <div style="font-size: 11px; color: var(--text-muted);">ทะเบียนครุภัณฑ์และพิมพ์สติกเกอร์ QR</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <!-- ==================== SUB-VIEW 1: สรุปผลรายเครื่อง ==================== -->
-        <section id="viewSummary">
+        <section id="viewSummary" style="display: none;">
           <!-- 5-Column Clickable KPI Strip -->
           <div class="kpi-strip-5 no-print">
             <div class="kpi-card" id="kpiCard_all" onclick="filterByKpi('all')" title="คลิกเพื่อดูทั้งหมด">
@@ -2458,7 +3008,7 @@
   <script src="js/qrcode.min.js"></script>
 
   <script>
-    var currentView = 'summary';
+    var currentView = 'dashboard';
     var allEquipment = [];
     var allEvaluations = [];
     var activeKpiFilter = 'all';
@@ -2564,7 +3114,9 @@
 
       applyFilters();
       renderDirectoryView();
-      if (currentView === 'defective') {
+      if (currentView === 'dashboard') {
+        renderDashboardView();
+      } else if (currentView === 'defective') {
         renderDefectiveView();
       } else if (currentView === 'device_summary') {
         renderDeviceSummaryView();
@@ -2601,6 +3153,7 @@
       currentView = viewKey;
       var bread = document.getElementById('breadCurrent');
       var breadMap = {
+        dashboard: 'แดชบอร์ดภาพรวม',
         summary: 'สรุปรายวัน',
         device_summary: 'สรุปรายเครื่อง',
         defective: 'เครื่องมือไม่พร้อมใช้งาน & จัดการงานซ่อม',
@@ -2611,6 +3164,7 @@
       if (bread) bread.innerText = breadMap[viewKey] || viewKey;
 
       var viewIds = {
+        dashboard: 'viewDashboard',
         summary: 'viewSummary',
         device_summary: 'viewDeviceSummary',
         defective: 'viewDefective',
@@ -2626,13 +3180,396 @@
         if (sec) sec.style.display = (k === viewKey) ? 'block' : 'none';
       });
 
-      if (viewKey === 'defective') {
+      if (viewKey === 'dashboard') {
+        renderDashboardView();
+      } else if (viewKey === 'defective') {
         renderDefectiveView();
       } else if (viewKey === 'device_summary') {
         renderDeviceSummaryView();
       } else if (viewKey === 'settings') {
         renderSettingsView();
       }
+    }
+
+    // ==================== EXECUTIVE DASHBOARD VIEW ====================
+    function renderDashboardView() {
+      var totalEquip = allEquipment.length;
+      var readyCount = 0;
+      var abnormalCount = 0;
+      var inProgressCount = 0;
+
+      var todayStr = new Date().toISOString().slice(0, 10);
+      var thaiDateStr = new Date().toLocaleDateString('th-TH', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      var dateEl = document.getElementById('dashLiveDateText');
+      if (dateEl) dateEl.innerText = thaiDateStr;
+
+      // Group latest evaluation today per device
+      var todayEvalMap = {};
+      allEvaluations.forEach(function (ev) {
+        if (!ev || !ev.evaluatedAt) return;
+        if (ev.evaluatedAt.indexOf(todayStr) === 0) {
+          if (!todayEvalMap[ev.deviceId] || ev.evaluatedAt > todayEvalMap[ev.deviceId].evaluatedAt) {
+            todayEvalMap[ev.deviceId] = ev;
+          }
+          if (ev.deviceAsset && (!todayEvalMap[ev.deviceAsset] || ev.evaluatedAt > todayEvalMap[ev.deviceAsset].evaluatedAt)) {
+            todayEvalMap[ev.deviceAsset] = ev;
+          }
+        }
+      });
+
+      // Group latest evaluation this month per device (for monthly low-risk compliance)
+      var currentMonthStr = todayStr.slice(0, 7);
+      var monthEvalMap = {};
+      allEvaluations.forEach(function (ev) {
+        if (!ev || !ev.evaluatedAt) return;
+        if (ev.evaluatedAt.indexOf(currentMonthStr) === 0) {
+          if (!monthEvalMap[ev.deviceId] || ev.evaluatedAt > monthEvalMap[ev.deviceId].evaluatedAt) {
+            monthEvalMap[ev.deviceId] = ev;
+          }
+          if (ev.deviceAsset && (!monthEvalMap[ev.deviceAsset] || ev.evaluatedAt > monthEvalMap[ev.deviceAsset].evaluatedAt)) {
+            monthEvalMap[ev.deviceAsset] = ev;
+          }
+        }
+      });
+
+      // Counters by Risk
+      var highRiskTotal = 0;
+      var highRiskReady = 0;
+      var highRiskCheckedToday = 0;
+      var highRiskDefective = 0;
+
+      var lowRiskTotal = 0;
+      var lowRiskReady = 0;
+      var lowRiskCheckedThisMonth = 0;
+      var lowRiskDefective = 0;
+
+      // Departments map
+      var depts = (window.PPCH_STORE && window.PPCH_STORE.getDepartments) ? window.PPCH_STORE.getDepartments() : [];
+      var deptStats = {};
+      depts.forEach(function (d) {
+        deptStats[d.id] = { id: d.id, name: d.name, total: 0, ready: 0, defective: 0, checkedToday: 0 };
+      });
+
+      allEquipment.forEach(function (eq) {
+        var isReady = (eq.status === 'ready' || !eq.status);
+        if (eq.status === 'abnormal') abnormalCount++;
+        else if (eq.status === 'in_progress') inProgressCount++;
+        else readyCount++;
+
+        var isHighRisk = (eq.riskLevel !== 'low');
+        var checkedToday = !!(todayEvalMap[eq.id] || todayEvalMap[eq.assetCode]);
+        var checkedMonth = !!(monthEvalMap[eq.id] || monthEvalMap[eq.assetCode]);
+
+        if (isHighRisk) {
+          highRiskTotal++;
+          if (isReady) highRiskReady++;
+          else highRiskDefective++;
+          if (checkedToday) highRiskCheckedToday++;
+        } else {
+          lowRiskTotal++;
+          if (isReady) lowRiskReady++;
+          else lowRiskDefective++;
+          if (checkedMonth) lowRiskCheckedThisMonth++;
+        }
+
+        var deptId = eq.currentDept || 'er';
+        if (!deptStats[deptId]) {
+          deptStats[deptId] = {
+            id: deptId,
+            name: (window.PPCH_STORE && window.PPCH_STORE.getDepartmentName) ? window.PPCH_STORE.getDepartmentName(deptId) : deptId,
+            total: 0,
+            ready: 0,
+            defective: 0,
+            checkedToday: 0
+          };
+        }
+        deptStats[deptId].total++;
+        if (isReady) deptStats[deptId].ready++;
+        else deptStats[deptId].defective++;
+        if (checkedToday) deptStats[deptId].checkedToday++;
+      });
+
+      // 1. Availability Rate
+      var availRate = totalEquip > 0 ? ((readyCount / totalEquip) * 100) : 100;
+      var valAvailEl = document.getElementById('dashValAvailability');
+      var barAvailEl = document.getElementById('dashBarAvailability');
+      var textAvailEl = document.getElementById('dashTextAvailability');
+      var badgeAvailEl = document.getElementById('dashBadgeAvailability');
+      if (valAvailEl) valAvailEl.innerText = availRate.toFixed(1) + '%';
+      if (barAvailEl) {
+        barAvailEl.style.width = Math.min(availRate, 100) + '%';
+        barAvailEl.style.background = (availRate >= 95 ? '#10b981' : (availRate >= 85 ? '#f59e0b' : '#ef4444'));
+      }
+      if (badgeAvailEl) {
+        badgeAvailEl.innerText = availRate >= 95 ? 'ผ่านเกณฑ์ HA (≥ 95%)' : 'ต่ำกว่าเป้าหมาย HA (< 95%)';
+        badgeAvailEl.style.color = availRate >= 95 ? '#059669' : '#dc2626';
+      }
+      if (textAvailEl) textAvailEl.innerText = 'พร้อมใช้ ' + readyCount + ' จาก ' + totalEquip + ' เครื่อง';
+
+      // 2. Compliance Rate (Weighted: High risk checked today + Low risk checked this month)
+      var totalReq = highRiskTotal + lowRiskTotal;
+      var totalDone = highRiskCheckedToday + lowRiskCheckedThisMonth;
+      var compRate = totalReq > 0 ? ((totalDone / totalReq) * 100) : 0;
+      var valCompEl = document.getElementById('dashValCompliance');
+      var barCompEl = document.getElementById('dashBarCompliance');
+      var textCompEl = document.getElementById('dashTextCompliance');
+      if (valCompEl) valCompEl.innerText = compRate.toFixed(1) + '%';
+      if (barCompEl) barCompEl.style.width = Math.min(compRate, 100) + '%';
+      if (textCompEl) textCompEl.innerText = 'ตรวจครบ ' + totalDone + ' จาก ' + totalReq + ' เครื่อง (เสี่ยงสูงตรวจวันนี้ ' + highRiskCheckedToday + '/' + highRiskTotal + ')';
+
+      // 3. Defective & In-Repair
+      var totalDefect = abnormalCount + inProgressCount;
+      var valDefectEl = document.getElementById('dashValDefective');
+      var textDefectEl = document.getElementById('dashDefectiveText');
+      if (valDefectEl) valDefectEl.innerText = totalDefect;
+      if (textDefectEl) {
+        textDefectEl.innerText = 'ชำรุดรอซ่อม ' + abnormalCount + ' • กำลังซ่อม ' + inProgressCount;
+        textDefectEl.style.color = totalDefect > 0 ? '#dc2626' : '#059669';
+      }
+
+      // 4. UPS Battery Health
+      var batteryEvals = (window.PPCH_STORE && window.PPCH_STORE.getBatteryEvaluations) ? window.PPCH_STORE.getBatteryEvaluations('all') : [];
+      var upsPassCount = 0;
+      batteryEvals.forEach(function (ev) {
+        if (ev.upsBattery && (ev.upsBattery.status === 'normal' || (ev.upsBattery.runtimeHours * 60 + ev.upsBattery.runtimeMinutes >= 60))) {
+          upsPassCount++;
+        }
+      });
+      var upsTotalTested = batteryEvals.length;
+      var upsRate = upsTotalTested > 0 ? Math.round((upsPassCount / upsTotalTested) * 100) : 100;
+      var valUpsEl = document.getElementById('dashValUps');
+      var barUpsEl = document.getElementById('dashBarUps');
+      var textUpsEl = document.getElementById('dashTextUps');
+      if (valUpsEl) valUpsEl.innerText = upsRate + '%';
+      if (barUpsEl) {
+        barUpsEl.style.width = upsRate + '%';
+        barUpsEl.style.background = upsRate >= 90 ? '#059669' : '#f59e0b';
+      }
+      if (textUpsEl) textUpsEl.innerText = upsTotalTested > 0 ? ('ผ่านเกณฑ์ ' + upsPassCount + ' จาก ' + upsTotalTested + ' ครั้งที่ทดสอบ') : 'ระบบสำรองไฟฉุกเฉิน ≥ 60 นาที (ปกติ)';
+
+      // Sub-panels
+      renderDashRiskBreakdown(highRiskTotal, highRiskReady, highRiskCheckedToday, highRiskDefective, lowRiskTotal, lowRiskReady, lowRiskCheckedThisMonth, lowRiskDefective);
+      renderDashDeptReadiness(deptStats);
+      renderDashActiveDefects();
+      renderDashRecentFeed();
+    }
+
+    function renderDashRiskBreakdown(highTotal, highReady, highCheckedToday, highDefective, lowTotal, lowReady, lowCheckedMonth, lowDefective) {
+      var container = document.getElementById('dashRiskBreakdownContainer');
+      if (!container) return;
+
+      var highReadyPct = highTotal > 0 ? Math.round((highReady / highTotal) * 100) : 100;
+      var highCheckPct = highTotal > 0 ? Math.round((highCheckedToday / highTotal) * 100) : 0;
+      var lowReadyPct = lowTotal > 0 ? Math.round((lowReady / lowTotal) * 100) : 100;
+      var lowCheckPct = lowTotal > 0 ? Math.round((lowCheckedMonth / lowTotal) * 100) : 0;
+
+      var html = '' +
+        '<div class="risk-breakdown-box" style="margin-bottom: 14px;">' +
+          '<div class="risk-box-header">' +
+            '<div class="risk-box-title">' +
+              '<span class="material-icons-round" style="color: #dc2626; font-size: 18px;">warning</span>' +
+              '<span>กลุ่มความเสี่ยงสูง (High Risk) - ประเมินทุกวัน</span>' +
+            '</div>' +
+            '<div class="risk-box-badge risk-badge-high">เสี่ยงสูง ' + highTotal + ' เครื่อง</div>' +
+          '</div>' +
+          '<div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; margin-top: 8px;">' +
+            '<span style="color: var(--text-muted);">ความพร้อมใช้งาน: <strong style="color: ' + (highReadyPct >= 95 ? '#059669' : '#dc2626') + ';">' + highReady + '/' + highTotal + ' เครื่อง (' + highReadyPct + '%)</strong></span>' +
+            '<span style="color: var(--text-muted);">ตรวจเช็ควันนี้: <strong style="color: #2563eb;">' + highCheckedToday + '/' + highTotal + ' เครื่อง (' + highCheckPct + '%)</strong></span>' +
+          '</div>' +
+          '<div class="risk-seg-bar">' +
+            '<div class="seg-fill-ready" style="width: ' + highReadyPct + '%;" title="พร้อมใช้ ' + highReady + ' เครื่อง"></div>' +
+            '<div class="seg-fill-abnormal" style="width: ' + (100 - highReadyPct) + '%;" title="ไม่พร้อมใช้ ' + highDefective + ' เครื่อง"></div>' +
+          '</div>' +
+          '<div class="status-count-legend">' +
+            '<span class="legend-item"><span class="legend-dot" style="background: #10b981;"></span> พร้อมใช้ ' + highReady + '</span>' +
+            '<span class="legend-item"><span class="legend-dot" style="background: #ef4444;"></span> ชำรุด/รอซ่อม ' + highDefective + '</span>' +
+            '<span class="legend-item"><span class="legend-dot" style="background: #3b82f6;"></span> ตรวจแล้ววันนี้ ' + highCheckedToday + '</span>' +
+            '<span class="legend-item"><span class="legend-dot" style="background: #cbd5e1;"></span> ยังไม่ตรวจ ' + (highTotal - highCheckedToday) + '</span>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="risk-breakdown-box">' +
+          '<div class="risk-box-header">' +
+            '<div class="risk-box-title">' +
+              '<span class="material-icons-round" style="color: #059669; font-size: 18px;">verified_user</span>' +
+              '<span>กลุ่มความเสี่ยงต่ำ (Low Risk) - ประเมินเดือนละครั้ง</span>' +
+            '</div>' +
+            '<div class="risk-box-badge risk-badge-low">เสี่ยงต่ำ ' + lowTotal + ' เครื่อง</div>' +
+          '</div>' +
+          '<div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; margin-top: 8px;">' +
+            '<span style="color: var(--text-muted);">ความพร้อมใช้งาน: <strong style="color: ' + (lowReadyPct >= 95 ? '#059669' : '#dc2626') + ';">' + lowReady + '/' + lowTotal + ' เครื่อง (' + lowReadyPct + '%)</strong></span>' +
+            '<span style="color: var(--text-muted);">ตรวจเช็คเดือนนี้: <strong style="color: #2563eb;">' + lowCheckedMonth + '/' + lowTotal + ' เครื่อง (' + lowCheckPct + '%)</strong></span>' +
+          '</div>' +
+          '<div class="risk-seg-bar">' +
+            '<div class="seg-fill-ready" style="width: ' + lowReadyPct + '%;" title="พร้อมใช้ ' + lowReady + ' เครื่อง"></div>' +
+            '<div class="seg-fill-abnormal" style="width: ' + (100 - lowReadyPct) + '%;" title="ไม่พร้อมใช้ ' + lowDefective + ' เครื่อง"></div>' +
+          '</div>' +
+          '<div class="status-count-legend">' +
+            '<span class="legend-item"><span class="legend-dot" style="background: #10b981;"></span> พร้อมใช้ ' + lowReady + '</span>' +
+            '<span class="legend-item"><span class="legend-dot" style="background: #ef4444;"></span> ชำรุด/รอซ่อม ' + lowDefective + '</span>' +
+            '<span class="legend-item"><span class="legend-dot" style="background: #3b82f6;"></span> ตรวจแล้วเดือนนี้ ' + lowCheckedMonth + '</span>' +
+            '<span class="legend-item"><span class="legend-dot" style="background: #cbd5e1;"></span> ยังไม่ตรวจ ' + (lowTotal - lowCheckedMonth) + '</span>' +
+          '</div>' +
+        '</div>';
+
+      container.innerHTML = html;
+    }
+
+    function renderDashDeptReadiness(deptStats) {
+      var container = document.getElementById('dashDeptReadinessContainer');
+      if (!container) return;
+
+      var deptList = Object.keys(deptStats).map(function (k) { return deptStats[k]; });
+      var activeDepts = deptList.filter(function (d) { return d.total > 0; });
+      if (activeDepts.length === 0) activeDepts = deptList;
+
+      activeDepts.sort(function (a, b) {
+        if (b.defective !== a.defective) return b.defective - a.defective;
+        return b.total - a.total;
+      });
+
+      var html = '';
+      activeDepts.forEach(function (d) {
+        var pct = d.total > 0 ? Math.round((d.ready / d.total) * 100) : 100;
+        var barColor = pct === 100 ? '#10b981' : (pct >= 80 ? '#f59e0b' : '#ef4444');
+        var statusBadge = d.defective === 0
+          ? '<span class="badge-status badge-status-ready" style="font-size: 11px;"><span class="material-icons-round" style="font-size: 13px;">check_circle</span> พร้อมใช้ 100%</span>'
+          : '<span class="badge-status badge-status-abnormal" style="font-size: 11px;"><span class="material-icons-round" style="font-size: 13px;">error</span> ชำรุด ' + d.defective + ' เครื่อง</span>';
+
+        html += '' +
+          '<div class="dept-rank-item">' +
+            '<div style="flex: 1; min-width: 0;">' +
+              '<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">' +
+                '<div style="font-weight: 700; font-size: 13px; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">' +
+                  d.name +
+                '</div>' +
+                '<div style="font-size: 12px; font-weight: 600; color: var(--royal-blue); margin-left: 8px;">' +
+                  d.ready + '/' + d.total + ' เครื่อง (' + pct + '%)' +
+                '</div>' +
+              '</div>' +
+              '<div style="height: 6px; background: #e2e8f0; border-radius: 999px; overflow: hidden; margin-bottom: 4px;">' +
+                '<div style="height: 100%; width: ' + pct + '%; background: ' + barColor + '; border-radius: 999px;"></div>' +
+              '</div>' +
+              '<div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--text-muted);">' +
+                '<span>ตรวจเช็ควันนี้: ' + d.checkedToday + '/' + d.total + '</span>' +
+                statusBadge +
+              '</div>' +
+            '</div>' +
+          '</div>';
+      });
+
+      container.innerHTML = html || '<div style="text-align: center; color: var(--text-muted); padding: 20px;">ไม่พบข้อมูลแผนก</div>';
+    }
+
+    function renderDashActiveDefects() {
+      var container = document.getElementById('dashActiveDefectContainer');
+      if (!container) return;
+
+      var defectives = (window.PPCH_STORE && window.PPCH_STORE.getDefectiveEquipment) ? window.PPCH_STORE.getDefectiveEquipment() : [];
+
+      if (defectives.length === 0) {
+        container.innerHTML = '' +
+          '<div style="text-align: center; padding: 32px 16px; background: #f0fdf4; border: 1.5px dashed #86efac; border-radius: 12px;">' +
+            '<span class="material-icons-round" style="font-size: 42px; color: #16a34a; margin-bottom: 6px;">verified</span>' +
+            '<div style="font-size: 15px; font-weight: 700; color: #166534;">เครื่องมือแพทย์ทุกรายการพร้อมใช้งาน 100%</div>' +
+            '<div style="font-size: 12px; color: #15803d; margin-top: 4px;">' +
+              'ไม่พบรายการชำรุดหรือแจ้งซ่อมค้างอยู่ในระบบ ปลอดภัยตามมาตรฐานความปลอดภัยผู้ป่วย' +
+            '</div>' +
+          '</div>';
+        return;
+      }
+
+      var html = '<div style="display: flex; flex-direction: column; gap: 8px;">';
+      defectives.forEach(function (eq) {
+        var deptName = (window.PPCH_STORE && window.PPCH_STORE.getDepartmentName) ? window.PPCH_STORE.getDepartmentName(eq.currentDept) : eq.currentDept;
+        var isProgress = (eq.status === 'in_progress' || eq.repairStatus === 'in_progress');
+        var statusBadge = isProgress
+          ? '<span class="badge-status badge-status-warning" style="font-size: 11px;">กำลังดำเนินการซ่อม</span>'
+          : '<span class="badge-status badge-status-abnormal" style="font-size: 11px;">รอรับเรื่องซ่อม</span>';
+
+        html += '' +
+          '<div style="background: #ffffff; border: 1px solid var(--border-main); border-left: 3.5px solid ' + (isProgress ? '#f59e0b' : '#ef4444') + '; border-radius: 8px; padding: 10px 12px;">' +
+            '<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">' +
+              '<div>' +
+                '<div style="font-weight: 700; font-size: 13px; color: var(--text-main);">' + eq.name + '</div>' +
+                '<div style="font-size: 11.5px; color: var(--text-muted); margin-top: 2px;">' +
+                  '<strong style="font-family: var(--font-mono); color: var(--royal-blue);">' + eq.assetCode + '</strong> • แผนก: ' + deptName +
+                '</div>' +
+              '</div>' +
+              statusBadge +
+            '</div>' +
+            '<div style="margin-top: 6px; font-size: 12px; color: #b91c1c; background: #fef2f2; padding: 5px 8px; border-radius: 6px; border: 1px solid #fee2e2;">' +
+              '<strong>อาการที่พบ:</strong> ' + (eq.abnormalReason || 'พบข้อบกพร่องจากการตรวจเช็ค') +
+            '</div>' +
+            '<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 11px; color: var(--text-muted);">' +
+              '<span>แจ้งเมื่อ: ' + (eq.repairReportedAt || eq.lastEvaluatedAt || '-') + ' โดย ' + (eq.repairReportedBy || eq.lastEvaluatedBy || 'เจ้าหน้าที่') + '</span>' +
+              '<button type="button" onclick="switchView(\'defective\')" class="btn-tool btn-tool-primary" style="padding: 3px 8px; font-size: 11px; height: 26px;">' +
+                '<span>จัดการ</span>' +
+              '</button>' +
+            '</div>' +
+          '</div>';
+      });
+      html += '</div>';
+
+      container.innerHTML = html;
+    }
+
+    function renderDashRecentFeed() {
+      var container = document.getElementById('dashRecentFeedContainer');
+      if (!container) return;
+
+      var recents = allEvaluations.slice(0, 6);
+      if (recents.length === 0) {
+        container.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 24px;">ยังไม่มีประวัติการตรวจเช็คในระบบ</div>';
+        return;
+      }
+
+      var html = '<div style="display: flex; flex-direction: column;">';
+      recents.forEach(function (ev) {
+        var deptName = (window.PPCH_STORE && window.PPCH_STORE.getDepartmentName) ? window.PPCH_STORE.getDepartmentName(ev.department) : (ev.department || '-');
+        var isNormal = ev.result === 'normal';
+        var statusBadge = isNormal
+          ? '<span class="badge-status badge-status-ready" style="font-size: 11px;"><span class="material-icons-round" style="font-size: 13px;">check_circle</span> พร้อมใช้</span>'
+          : '<span class="badge-status badge-status-abnormal" style="font-size: 11px;"><span class="material-icons-round" style="font-size: 13px;">error</span> ข้อบกพร่อง</span>';
+
+        if (ev.isRepairResolution) {
+          statusBadge = '<span class="badge-status badge-status-ready" style="font-size: 11px; background: #ecfdf5; color: #047857; border-color: #a7f3d0;"><span class="material-icons-round" style="font-size: 13px;">task_alt</span> ซ่อมเสร็จ</span>';
+        }
+
+        html += '' +
+          '<div class="recent-eval-item">' +
+            '<div style="display: flex; align-items: flex-start; gap: 10px; flex: 1; min-width: 0;">' +
+              '<span class="material-icons-round" style="font-size: 20px; color: ' + (isNormal ? '#10b981' : '#ef4444') + '; margin-top: 2px;">' +
+                (isNormal ? 'check_circle' : 'report_problem') +
+              '</span>' +
+              '<div style="flex: 1; min-width: 0;">' +
+                '<div style="font-weight: 700; font-size: 12.5px; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">' +
+                  (ev.deviceName || ev.deviceAsset || 'เครื่องมือแพทย์') +
+                '</div>' +
+                '<div style="font-size: 11px; color: var(--text-muted); margin-top: 1px;">' +
+                  '<span style="font-family: var(--font-mono); color: var(--royal-blue);">' + (ev.deviceAsset || '-') + '</span> • แผนก: ' + deptName +
+                '</div>' +
+                '<div style="font-size: 10.5px; color: var(--text-muted); margin-top: 2px;">' +
+                  (ev.evaluatedAt || '-') + ' • โดย ' + (ev.evaluatedBy || 'ไม่ระบุ') +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0;">' +
+              statusBadge +
+              '<button type="button" onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-slip" style="padding: 2px 8px; font-size: 11px; height: 24px;">' +
+                '<span class="material-icons-round" style="font-size: 12px;">receipt_long</span><span>สลิป</span>' +
+              '</button>' +
+            '</div>' +
+          '</div>';
+      });
+      html += '</div>';
+
+      container.innerHTML = html;
     }
 
     // ==================== DEFECTIVE VIEW & REPAIR WORKFLOW ====================
