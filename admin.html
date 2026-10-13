@@ -1194,6 +1194,8 @@
       .table-responsive,
       div[style*="overflow-x: auto"] {
         overflow-x: visible !important;
+        overflow-y: visible !important;
+        max-height: none !important;
       }
 
       .device-table,
@@ -1309,6 +1311,7 @@
       .device-table tbody tr td[data-label="ชื่อเครื่องมือแพทย์"],
       .device-table tbody tr td[data-label="เครื่องมือแพทย์ & แผนก"],
       .device-table tbody tr td[data-label="เครื่องมือแพทย์"],
+      .device-table tbody tr td[data-label="ชื่อแผนก"],
       .device-table tbody tr td[data-label="อาการข้อบกพร่องที่พบ"],
       .device-table tbody tr td[data-label="การดำเนินการแก้ไข"],
       .device-table tbody tr td[data-label="รายละเอียดการแก้ไข (สิ่งที่ดำเนินการไป)"],
@@ -1323,12 +1326,65 @@
       .device-table tbody tr td[data-label="ชื่อเครื่องมือแพทย์"]::before,
       .device-table tbody tr td[data-label="เครื่องมือแพทย์ & แผนก"]::before,
       .device-table tbody tr td[data-label="เครื่องมือแพทย์"]::before,
+      .device-table tbody tr td[data-label="ชื่อแผนก"]::before,
       .device-table tbody tr td[data-label="อาการข้อบกพร่องที่พบ"]::before,
       .device-table tbody tr td[data-label="การดำเนินการแก้ไข"]::before,
       .device-table tbody tr td[data-label="รายละเอียดการแก้ไข (สิ่งที่ดำเนินการไป)"]::before,
       .device-table tbody tr td[data-label="บันทึก / ปัญหาที่พบ"]::before {
         font-size: 11px !important;
         margin-bottom: 2px !important;
+      }
+
+      /* Summary Device Title Card Header (Sub-view 1) */
+      .device-table tbody tr td.summary-device-title {
+        order: -1 !important;
+        display: block !important;
+        text-align: left !important;
+        padding-bottom: 8px !important;
+        margin-bottom: 2px !important;
+        border-bottom: 1px solid var(--border-subtle) !important;
+      }
+      .device-table tbody tr td.summary-device-title::before {
+        display: none !important;
+      }
+      .device-table tbody tr td.summary-device-title div {
+        font-size: 14px !important;
+        font-weight: 700 !important;
+        color: var(--royal-blue) !important;
+        line-height: 1.4 !important;
+      }
+
+      /* Settings Sub-Tabs and Filter Bar on Mobile */
+      .settings-subtabs-nav {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 8px !important;
+      }
+      .settings-subtabs-nav .btn-tool {
+        padding: 8px 6px !important;
+        font-size: 12px !important;
+        min-width: 0 !important;
+        justify-content: center !important;
+      }
+      .settings-filter-bar {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 8px !important;
+        padding: 10px 12px !important;
+      }
+      .settings-filter-bar .search-input-box {
+        width: 100% !important;
+        min-width: 100% !important;
+      }
+      .settings-filter-bar select {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      .settings-filter-bar #deptSummaryCountText,
+      .settings-filter-bar #equipSummaryCountText {
+        text-align: right !important;
+        width: 100% !important;
+        font-size: 11.5px !important;
       }
 
       /* Empty rows */
@@ -1644,7 +1700,7 @@
                 <thead>
                   <tr>
                     <th style="width: 140px;">รหัสเครื่อง</th>
-                    <th>เครื่องมือแพทย์ & รุ่น</th>
+                    <th>เครื่องมือแพทย์</th>
                     <th style="width: 150px;">แผนกรับผิดชอบ</th>
                     <th style="width: 140px;">สถานะวันนี้</th>
                     <th class="btn-action-col no-print" style="width: 120px; text-align: center;">จัดการ</th>
@@ -1961,7 +2017,7 @@
         <!-- ==================== SUB-VIEW 5: ตั้งค่าระบบ (SETTINGS) ==================== -->
         <section id="viewSettings" style="display: none;">
           <!-- Settings Navigation Sub-Tabs -->
-          <div style="display: flex; gap: 8px; margin-bottom: 14px; border-bottom: 2px solid var(--border-subtle); padding-bottom: 10px; flex-wrap: wrap;">
+          <div class="settings-subtabs-nav" style="display: flex; gap: 8px; margin-bottom: 14px; border-bottom: 2px solid var(--border-subtle); padding-bottom: 10px; flex-wrap: wrap;">
             <button type="button" id="tabBtn_settings_dept" onclick="switchSettingsTab('departments')" class="btn-tool btn-tool-primary" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 14px; font-weight: 600; flex: 1; min-width: 140px;">
               <span class="material-icons-round" style="font-size: 18px;">corporate_fare</span>
               <span>การจัดการแผนก</span>
@@ -1996,12 +2052,12 @@
               </div>
 
               <!-- Filter / Search bar for departments -->
-              <div style="padding: 10px 16px; background: #f8fafc; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; gap: 10px;">
-                <div class="search-input-box" style="min-width: 260px;">
+              <div class="settings-filter-bar" style="padding: 10px 16px; background: #f8fafc; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+                <div class="search-input-box" style="flex: 1; min-width: 200px;">
                   <span class="material-icons-round">search</span>
                   <input type="text" id="deptSearchInput" placeholder="ค้นหาชื่อแผนก หรือ รหัส..." oninput="renderDepartmentsTable()">
                 </div>
-                <div style="font-size: 12px; color: var(--text-muted);" id="deptSummaryCountText">
+                <div style="font-size: 12px; color: var(--text-muted); white-space: nowrap;" id="deptSummaryCountText">
                   แสดง 0 แผนก
                 </div>
               </div>
@@ -2048,9 +2104,9 @@
               </div>
 
               <!-- Filter / Search bar for equipment -->
-              <div style="padding: 10px 16px; background: #f8fafc; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; flex: 1;">
-                  <div class="search-input-box" style="min-width: 220px;">
+              <div class="settings-filter-bar" style="padding: 10px 16px; background: #f8fafc; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; flex: 1; width: 100%;">
+                  <div class="search-input-box" style="flex: 1; min-width: 200px;">
                     <span class="material-icons-round">search</span>
                     <input type="text" id="equipSearchInput" placeholder="ค้นหารหัสเครื่อง, ชื่อ, รุ่น, S/N..." oninput="renderEquipmentSettingsTable()">
                   </div>
@@ -2066,7 +2122,7 @@
                     <option value="all">ทุกแบบฟอร์ม</option>
                   </select>
                 </div>
-                <div style="font-size: 12px; color: var(--text-muted);" id="equipSummaryCountText">
+                <div style="font-size: 12px; color: var(--text-muted); white-space: nowrap;" id="equipSummaryCountText">
                   แสดง 0 เครื่อง
                 </div>
               </div>
@@ -2964,7 +3020,7 @@
 
         html += '<tr>' +
           '<td data-label="รหัสเครื่อง"><span class="asset-code-clean">' + eq.assetCode + '</span></td>' +
-          '<td data-label="เครื่องมือแพทย์ & รุ่น"><div style="font-weight: 700; color: var(--text-main);">' + eq.name + '</div><div style="font-size: 11px; color: var(--text-muted);">รุ่น ' + (eq.model || '-') + '</div></td>' +
+          '<td class="summary-device-title" data-label=""><div style="font-weight: 700; color: var(--text-main); font-size: 13.5px;">' + eq.name + '</div></td>' +
           '<td data-label="แผนกรับผิดชอบ"><span style="font-weight: 500;">' + deptName + '</span>' + (eq.homeDept !== eq.currentDept ? ' <span style="font-size: 10px; color: #d97706;">(ยืม)</span>' : '') + '</td>' +
           '<td data-label="สถานะวันนี้">' + statusBadge + '</td>' +
           '<td data-label="จัดการ" class="btn-action-col no-print" style="text-align: center; white-space: nowrap;">' + actions + '</td>' +
