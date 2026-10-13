@@ -296,12 +296,12 @@
       align-items: flex-start;
     }
 
-    /* Lean Left Sidebar (Locked / Sticky) */
+    /* ==================== LEAN LEFT SIDEBAR (COLLAPSIBLE MINI / EXPAND ON HOVER) ==================== */
     .app-sidebar {
-      width: 220px;
-      background: #ffffff;
-      border-right: 1px solid var(--border-main);
-      padding: 14px 10px;
+      width: 68px;
+      background: linear-gradient(180deg, #001f44 0%, #001733 100%);
+      border-right: 1px solid rgba(0, 50, 110, 0.4);
+      padding: 14px 8px;
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
@@ -309,24 +309,46 @@
       top: 56px;
       height: calc(100vh - 56px);
       overflow-y: auto;
-      z-index: 90;
+      overflow-x: hidden;
+      z-index: 95;
       align-self: flex-start;
+      transition: width 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+                  margin-right 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+                  box-shadow 0.24s ease;
+    }
+    @media (min-width: 993px) {
+      .app-sidebar:hover {
+        width: 240px;
+        margin-right: -172px; /* 240px - 68px = 172px: preserves exact 68px layout width, zero main content twitch! */
+        box-shadow: 10px 0 32px rgba(0, 15, 45, 0.45);
+      }
     }
     .app-sidebar::-webkit-scrollbar {
       width: 4px;
     }
     .app-sidebar::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
+      background: rgba(255, 255, 255, 0.18);
       border-radius: 4px;
     }
 
     .sidebar-section-title {
-      font-size: 10.5px;
+      font-size: 10px;
       font-weight: 700;
-      color: var(--text-light);
+      color: #64748b;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      padding: 6px 10px 4px 10px;
+      padding: 6px 8px 4px 8px;
+      white-space: nowrap;
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: opacity 0.15s ease, max-height 0.2s ease, padding 0.2s ease;
+    }
+    .app-sidebar:hover .sidebar-section-title,
+    .app-sidebar.mobile-open .sidebar-section-title {
+      opacity: 1;
+      max-height: 30px;
+      padding: 8px 10px 4px 10px;
     }
 
     .sidebar-nav {
@@ -338,95 +360,153 @@
     .nav-btn {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 9px 12px;
+      gap: 12px;
+      padding: 10px 14px;
       border-radius: 8px;
       font-size: 12.5px;
       font-weight: 500;
-      color: var(--text-body);
+      color: #cbd5e1;
       text-decoration: none;
       background: transparent;
       border: none;
       width: 100%;
       text-align: left;
       cursor: pointer;
+      position: relative;
+      white-space: nowrap;
       transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .nav-btn:hover {
-      background: var(--royal-subtle);
-      color: var(--royal-blue);
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
       transform: translateX(2px);
     }
     .nav-btn.active {
-      background: linear-gradient(135deg, var(--royal-blue) 0%, var(--royal-light) 100%) !important;
+      background: linear-gradient(135deg, #0072db 0%, #0284c7 100%) !important;
       color: #ffffff !important;
       font-weight: 600 !important;
-      box-shadow: 0 4px 12px rgba(0, 75, 147, 0.25);
+      box-shadow: 0 4px 14px rgba(0, 114, 219, 0.45);
     }
     .nav-btn .material-icons-round {
-      font-size: 18px;
-      color: var(--text-muted);
+      font-size: 20px;
+      color: #94a3b8;
       transition: color 0.15s;
+      flex-shrink: 0;
+      width: 24px;
+      text-align: center;
     }
     .nav-btn:hover .material-icons-round {
-      color: var(--royal-blue);
+      color: #ffffff;
     }
     .nav-btn.active .material-icons-round {
       color: #ffffff;
     }
 
+    /* Text labels inside buttons hide when collapsed, expand smoothly when hovered */
+    .nav-btn > span:not(.material-icons-round):not(.nav-count-badge) {
+      opacity: 0;
+      max-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      pointer-events: none;
+      transform: translateX(-4px);
+      transition: opacity 0.16s ease, max-width 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.18s ease;
+    }
+    .app-sidebar:hover .nav-btn > span:not(.material-icons-round):not(.nav-count-badge),
+    .app-sidebar.mobile-open .nav-btn > span:not(.material-icons-round):not(.nav-count-badge) {
+      opacity: 1;
+      max-width: 170px;
+      pointer-events: auto;
+      transform: translateX(0);
+    }
+
     .nav-btn-lab {
-      color: var(--royal-blue);
+      color: #38bdf8;
       font-weight: 600;
     }
+    .nav-btn-lab:hover {
+      color: #7dd3fc;
+    }
+    .nav-btn-lab .material-icons-round {
+      color: #38bdf8;
+    }
+
     .nav-ext-icon {
+      opacity: 0;
       margin-left: auto;
       font-size: 13px !important;
-      color: var(--text-light) !important;
+      color: #94a3b8 !important;
+      transition: opacity 0.15s ease;
+    }
+    .app-sidebar:hover .nav-ext-icon,
+    .app-sidebar.mobile-open .nav-ext-icon {
+      opacity: 1;
     }
 
     .nav-count-badge {
-      margin-left: auto;
-      font-size: 11px;
+      font-size: 9.5px;
       font-weight: 700;
       color: #ffffff;
       background: var(--red-abnormal);
-      padding: 1px 7px;
+      padding: 1px 4px;
       border-radius: 9999px;
-      min-width: 19px;
+      min-width: 15px;
       text-align: center;
-      line-height: 1.4;
+      line-height: 1.3;
       box-shadow: 0 2px 6px rgba(220, 38, 38, 0.35);
       animation: pulseDefect 2s infinite ease-in-out;
+      position: absolute;
+      top: 5px;
+      right: 6px;
+      transition: all 0.18s ease;
     }
-    @keyframes pulseDefect {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
+    .app-sidebar:hover .nav-count-badge,
+    .app-sidebar.mobile-open .nav-count-badge {
+      position: static;
+      margin-left: auto;
+      font-size: 11px;
+      padding: 1px 7px;
+      min-width: 19px;
     }
 
     .sidebar-divider {
       height: 1px;
-      background: var(--border-subtle);
+      background: rgba(255, 255, 255, 0.1);
       margin: 10px 4px;
     }
 
     .sidebar-bottom-status {
       margin-top: auto;
       padding-top: 12px;
-      border-top: 1px solid var(--border-subtle);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 10px;
       font-size: 11px;
-      color: var(--text-muted);
-      padding-left: 6px;
+      color: #94a3b8;
+      padding-left: 10px;
+      white-space: nowrap;
+      overflow: hidden;
     }
     .sync-dot-live {
-      width: 7px;
-      height: 7px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      background: var(--green-ready);
+      background: #10b981;
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
       flex-shrink: 0;
+    }
+    #syncText {
+      opacity: 0;
+      max-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      transition: opacity 0.15s ease, max-width 0.2s ease;
+    }
+    .app-sidebar:hover #syncText,
+    .app-sidebar.mobile-open #syncText {
+      opacity: 1;
+      max-width: 180px;
     }
 
     /* ==================== 3. MAIN WORKSTATION ==================== */
@@ -434,7 +514,7 @@
       flex: 1;
       min-width: 0;
       padding: 16px 24px;
-      max-width: calc(100% - 220px);
+      max-width: calc(100% - 68px);
     }
 
     /* Clickable KPI Strip 5 */
@@ -1796,11 +1876,12 @@
         left: 0 !important;
         bottom: 0 !important;
         width: 280px !important;
+        margin-right: 0 !important;
         max-width: 85vw !important;
         height: 100vh !important;
         z-index: 1050 !important;
-        background: #ffffff !important;
-        box-shadow: 0 10px 35px rgba(0, 46, 110, 0.28) !important;
+        background: linear-gradient(180deg, #001f44 0%, #001733 100%) !important;
+        box-shadow: 0 10px 35px rgba(0, 15, 45, 0.5) !important;
         transform: translateX(-100%);
         transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
         overflow-y: auto !important;
@@ -1816,23 +1897,26 @@
         justify-content: space-between;
         padding-bottom: 12px;
         margin-bottom: 12px;
-        border-bottom: 1px solid var(--border-subtle);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      }
+      .sidebar-mobile-header span {
+        color: #ffffff !important;
       }
       .btn-sidebar-close {
         border: none;
-        background: #f1f5f9;
+        background: rgba(255, 255, 255, 0.12);
         border-radius: 6px;
         width: 32px;
         height: 32px;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: var(--text-muted);
+        color: #cbd5e1;
         cursor: pointer;
       }
       .btn-sidebar-close:hover {
-        background: #e2e8f0;
-        color: var(--text-main);
+        background: rgba(255, 255, 255, 0.22);
+        color: #ffffff;
       }
 
       .sidebar-backdrop {
@@ -2373,32 +2457,32 @@
 
         <div class="sidebar-section-title">เมนูหลัก</div>
         <nav class="sidebar-nav">
-          <button onclick="switchView('dashboard')" id="navBtn_dashboard" class="nav-btn">
+          <button onclick="switchView('dashboard')" id="navBtn_dashboard" class="nav-btn" title="แดชบอร์ดภาพรวม">
             <span class="material-icons-round">dashboard</span>
             <span>แดชบอร์ดภาพรวม</span>
           </button>
-          <button onclick="switchView('summary')" id="navBtn_summary" class="nav-btn active">
+          <button onclick="switchView('summary')" id="navBtn_summary" class="nav-btn active" title="สรุปรายวัน">
             <span class="material-icons-round">today</span>
             <span>สรุปรายวัน</span>
           </button>
-          <button onclick="switchView('device_summary')" id="navBtn_device_summary" class="nav-btn">
+          <button onclick="switchView('device_summary')" id="navBtn_device_summary" class="nav-btn" title="สรุปรายเครื่อง">
             <span class="material-icons-round">medical_information</span>
             <span>สรุปรายเครื่อง</span>
           </button>
-          <button onclick="switchView('defective')" id="navBtn_defective" class="nav-btn">
+          <button onclick="switchView('defective')" id="navBtn_defective" class="nav-btn" title="เครื่องมือไม่พร้อมใช้งาน">
             <span class="material-icons-round">build_circle</span>
             <span>เครื่องมือไม่พร้อมใช้งาน</span>
             <span id="badgeDefectiveNav" class="nav-count-badge" style="display: none;">0</span>
           </button>
-          <button onclick="switchView('relocate')" id="navBtn_relocate" class="nav-btn">
+          <button onclick="switchView('relocate')" id="navBtn_relocate" class="nav-btn" title="มอบหมายแผนก">
             <span class="material-icons-round">assignment_ind</span>
             <span>มอบหมายแผนก</span>
           </button>
-          <button onclick="switchView('directory')" id="navBtn_directory" class="nav-btn">
+          <button onclick="switchView('directory')" id="navBtn_directory" class="nav-btn" title="รายการเครื่อง & QR Code">
             <span class="material-icons-round">qr_code_2</span>
             <span>รายการเครื่อง & QR Code</span>
           </button>
-          <button onclick="switchView('settings')" id="navBtn_settings" class="nav-btn">
+          <button onclick="switchView('settings')" id="navBtn_settings" class="nav-btn" title="ตั้งค่าระบบ">
             <span class="material-icons-round">settings</span>
             <span>ตั้งค่าระบบ</span>
           </button>
