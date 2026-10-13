@@ -356,11 +356,100 @@
       color: #ffffff;
     }
 
+    .btn-quick-pass {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 11px;
+      border-radius: 9999px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #047857;
+      background: #ecfdf5;
+      border: 1.5px solid #a7f3d0;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .btn-quick-pass:hover {
+      background: #d1fae5;
+      border-color: #6ee7b7;
+      transform: translateY(-1px);
+    }
+    .btn-quick-pass:active {
+      transform: scale(0.96);
+    }
+
+    /* Visual Stepper / Progress Bar */
+    .eval-stepper-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding: 10px 16px;
+      background: #ffffff;
+      border: 1px solid var(--border-main);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 46, 110, 0.03);
+    }
+    .stepper-step {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+    }
+    .stepper-step.active {
+      color: var(--royal-blue);
+      font-weight: 700;
+    }
+    .stepper-step.done {
+      color: var(--green-ready);
+      font-weight: 700;
+    }
+    .stepper-step .step-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      background: #f1f5f9;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+    }
+    .stepper-step.active .step-num {
+      background: var(--royal-blue);
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(0, 75, 147, 0.3);
+    }
+    .stepper-step.done .step-num {
+      background: var(--green-ready);
+      color: #ffffff;
+    }
+    .stepper-line {
+      flex: 1;
+      height: 2px;
+      background: #e2e8f0;
+      margin: 0 10px;
+      border-radius: 9999px;
+      transition: background 0.2s ease;
+    }
+    .stepper-line.done {
+      background: var(--green-ready);
+    }
+
+    /* Primary Hero CTA (Concept 1: One Clear Main Action) */
     .btn-submit-main {
       width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 14px;
+      height: 48px;
+      padding: 0 20px;
+      border-radius: 10px;
+      font-size: 15px;
       font-weight: 700;
       color: #ffffff;
       background: linear-gradient(135deg, var(--royal-blue) 0%, var(--royal-light) 100%);
@@ -370,12 +459,15 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      box-shadow: 0 4px 14px rgba(0, 75, 147, 0.25);
-      transition: all 0.15s;
+      box-shadow: 0 4px 14px rgba(0, 75, 147, 0.28);
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .btn-submit-main:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 18px rgba(0, 75, 147, 0.35);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 75, 147, 0.38);
+    }
+    .btn-submit-main:active {
+      transform: scale(0.98);
     }
 
     /* Modal */
@@ -501,6 +593,24 @@
 
   <!-- Main Container -->
   <main class="eval-container">
+
+    <!-- Visual Progress Stepper (Video Concept 5: Form Chunking) -->
+    <div class="eval-stepper-bar" id="evalStepper">
+      <div class="stepper-step active" id="step1_device">
+        <div class="step-num">1</div>
+        <div class="step-label">เลือกเครื่องมือ</div>
+      </div>
+      <div class="stepper-line" id="stepperLine1"></div>
+      <div class="stepper-step" id="step2_check">
+        <div class="step-num">2</div>
+        <div class="step-label">ตรวจเช็คความพร้อม</div>
+      </div>
+      <div class="stepper-line" id="stepperLine2"></div>
+      <div class="stepper-step" id="step3_submit">
+        <div class="step-num">3</div>
+        <div class="step-label">บันทึกผล</div>
+      </div>
+    </div>
 
     <!-- Card 1: Equipment Selection & Header -->
     <section class="eval-card">
@@ -695,13 +805,19 @@
       </div>
 
       <section class="eval-card">
-        <div class="eval-card-header">
+        <div class="eval-card-header" style="flex-wrap: wrap; gap: 8px;">
           <div class="eval-card-title">
             <span class="material-icons-round" style="color: var(--royal-blue); font-size: 18px;">checklist</span>
             <span>รายการตรวจเช็คความพร้อมใช้งาน</span>
           </div>
-          <div id="checklistProgressBadge" style="font-size: 11.5px; font-weight: 600; color: var(--text-muted); background: #f1f5f9; border: 1px solid var(--border-main); padding: 3px 10px; border-radius: 9999px;">
-            ประเมินแล้ว 0/0 ข้อ
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <button type="button" id="btnQuickPassAll" onclick="setAllChoices('pass')" class="btn-quick-pass" title="กดครั้งเดียวเพื่อผ่านทุกข้อ แล้วแก้ไขเฉพาะข้อที่ไม่ผ่าน">
+              <span class="material-icons-round" style="font-size: 14px;">done_all</span>
+              <span>ผ่านทุกข้อ</span>
+            </button>
+            <div id="checklistProgressBadge" style="font-size: 11.5px; font-weight: 600; color: var(--text-muted); background: #f1f5f9; border: 1px solid var(--border-main); padding: 3px 10px; border-radius: 9999px;">
+              ประเมินแล้ว 0/0 ข้อ
+            </div>
           </div>
         </div>
 
@@ -1235,6 +1351,65 @@
       updateChecklistProgress();
     }
 
+    function setAllChoices(choice) {
+      if (isDeviceLockedForRepair) return;
+      var total = (currentForm && currentForm.items) ? currentForm.items.length : 0;
+      for (var i = 0; i < total; i++) {
+        checklistState[i] = choice;
+        var row = document.getElementById('checkItemRow_' + i);
+        if (row) row.classList.remove('item-unanswered-highlight');
+
+        var btnPass = document.getElementById('btnPass_' + i);
+        var btnFail = document.getElementById('btnFail_' + i);
+        if (btnPass && btnFail) {
+          if (choice === 'pass') {
+            btnPass.className = 'btn-check-choice active-pass';
+            btnFail.className = 'btn-check-choice';
+          } else {
+            btnPass.className = 'btn-check-choice';
+            btnFail.className = 'btn-check-choice active-fail';
+          }
+        }
+      }
+      updateChecklistProgress();
+    }
+
+    function updateStepperState() {
+      var s1 = document.getElementById('step1_device');
+      var s2 = document.getElementById('step2_check');
+      var s3 = document.getElementById('step3_submit');
+      var l1 = document.getElementById('stepperLine1');
+      var l2 = document.getElementById('stepperLine2');
+      if (!s1 || !s2 || !s3) return;
+
+      var total = (currentForm && currentForm.items) ? currentForm.items.length : 0;
+      var answered = 0;
+      for (var k in checklistState) {
+        if (checklistState[k] !== null && checklistState[k] !== undefined) answered++;
+      }
+      var isAllChecklistDone = total > 0 && answered === total;
+
+      if (!currentDevice) {
+        s1.className = 'stepper-step active';
+        s2.className = 'stepper-step';
+        s3.className = 'stepper-step';
+        if (l1) l1.className = 'stepper-line';
+        if (l2) l2.className = 'stepper-line';
+      } else if (!isAllChecklistDone) {
+        s1.className = 'stepper-step done';
+        s2.className = 'stepper-step active';
+        s3.className = 'stepper-step';
+        if (l1) l1.className = 'stepper-line done';
+        if (l2) l2.className = 'stepper-line';
+      } else {
+        s1.className = 'stepper-step done';
+        s2.className = 'stepper-step done';
+        s3.className = 'stepper-step active';
+        if (l1) l1.className = 'stepper-line done';
+        if (l2) l2.className = 'stepper-line done';
+      }
+    }
+
     function updateChecklistProgress() {
       var total = (currentForm && currentForm.items) ? currentForm.items.length : 0;
       var answered = 0;
@@ -1250,6 +1425,7 @@
         badge.style.color = 'var(--text-muted)';
         badge.style.background = '#f1f5f9';
         badge.style.borderColor = 'var(--border-main)';
+        updateStepperState();
         return;
       }
 
@@ -1264,6 +1440,8 @@
         badge.style.background = '#fffbeb';
         badge.style.borderColor = '#fde68a';
       }
+
+      updateStepperState();
     }
 
     function submitEvaluation() {
