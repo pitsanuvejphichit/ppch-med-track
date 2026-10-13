@@ -2221,23 +2221,213 @@
         margin-bottom: 2px !important;
       }
 
-      /* Summary Device Title Card Header (Sub-view 1) */
-      .device-table tbody tr td.summary-device-title {
-        order: -1 !important;
-        display: block !important;
-        text-align: left !important;
-        padding-bottom: 8px !important;
-        margin-bottom: 2px !important;
-        border-bottom: 1px solid var(--border-subtle) !important;
+      /* ==================== HIGH-DENSITY COMPACT CARD PROPORTIONS (MOBILE) ==================== */
+      #summaryTableBody tr,
+      .device-table tbody tr:has(.summary-device-title) {
+        display: grid !important;
+        grid-template-columns: auto 1fr auto !important;
+        grid-template-rows: auto auto !important;
+        grid-template-areas:
+          "title title status"
+          "code dept action" !important;
+        align-items: center !important;
+        gap: 6px 8px !important;
+        background: #ffffff !important;
+        border: 1px solid var(--border-main) !important;
+        border-radius: 12px !important;
+        padding: 10px 12px !important;
+        box-shadow: 0 1px 4px rgba(0, 46, 110, 0.04) !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        position: relative !important;
       }
+      #summaryTableBody tr:hover,
+      .device-table tbody tr:has(.summary-device-title):hover {
+        border-color: var(--border-blue-soft) !important;
+        box-shadow: 0 3px 10px rgba(0, 46, 110, 0.08) !important;
+      }
+
+      /* 1. Equipment Title (Top-Left) */
+      #summaryTableBody tr td.summary-device-title,
+      .device-table tbody tr td.summary-device-title {
+        grid-area: title !important;
+        display: flex !important;
+        align-items: center !important;
+        text-align: left !important;
+        border: none !important;
+        border-bottom: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        min-width: 0 !important;
+        width: 100% !important;
+      }
+      #summaryTableBody tr td.summary-device-title::before,
       .device-table tbody tr td.summary-device-title::before {
         display: none !important;
       }
+      #summaryTableBody tr td.summary-device-title div,
       .device-table tbody tr td.summary-device-title div {
-        font-size: 14px !important;
+        font-size: 13.5px !important;
         font-weight: 700 !important;
         color: var(--royal-blue) !important;
-        line-height: 1.4 !important;
+        line-height: 1.35 !important;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+      }
+
+      /* 2. Status Symbol Button (Top-Right) */
+      #summaryTableBody tr td[data-label="สถานะวันนี้"],
+      .device-table tbody tr:has(.summary-device-title) td[data-label="สถานะวันนี้"] {
+        grid-area: status !important;
+        display: flex !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: auto !important;
+      }
+      #summaryTableBody tr td[data-label="สถานะวันนี้"]::before,
+      .device-table tbody tr:has(.summary-device-title) td[data-label="สถานะวันนี้"]::before {
+        display: none !important;
+      }
+      #summaryTableBody tr td[data-label="สถานะวันนี้"] .status-symbol-btn,
+      .device-table tbody tr:has(.summary-device-title) td[data-label="สถานะวันนี้"] .status-symbol-btn {
+        width: 30px !important;
+        height: 30px !important;
+        min-width: 30px !important;
+      }
+      #summaryTableBody tr td[data-label="สถานะวันนี้"] .status-symbol-btn .material-icons-round,
+      .device-table tbody tr:has(.summary-device-title) td[data-label="สถานะวันนี้"] .status-symbol-btn .material-icons-round {
+        font-size: 19px !important;
+      }
+
+      /* 3. Asset Code Badge (Bottom-Left 1) */
+      #summaryTableBody tr td[data-label="รหัสเครื่อง"],
+      .device-table tbody tr:has(.summary-device-title) td[data-label="รหัสเครื่อง"] {
+        grid-area: code !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: auto !important;
+      }
+      #summaryTableBody tr td[data-label="รหัสเครื่อง"]::before,
+      .device-table tbody tr:has(.summary-device-title) td[data-label="รหัสเครื่อง"]::before {
+        display: none !important;
+      }
+      #summaryTableBody tr td[data-label="รหัสเครื่อง"] .asset-code-clean,
+      .device-table tbody tr:has(.summary-device-title) td[data-label="รหัสเครื่อง"] .asset-code-clean {
+        font-size: 11px !important;
+        font-weight: 600 !important;
+        padding: 2px 6px !important;
+        border-radius: 4px !important;
+        background: #f1f5f9 !important;
+        color: var(--text-body) !important;
+        border: 1px solid var(--border-main) !important;
+      }
+
+      /* 4. Responsible Department (Bottom-Left 2) */
+      #summaryTableBody tr td[data-label="แผนกรับผิดชอบ"],
+      .device-table tbody tr:has(.summary-device-title) td[data-label="แผนกรับผิดชอบ"] {
+        grid-area: dept !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        color: var(--text-muted) !important;
+        font-size: 11.5px !important;
+        min-width: 0 !important;
+        gap: 3px !important;
+      }
+      #summaryTableBody tr td[data-label="แผนกรับผิดชอบ"]::before,
+      .device-table tbody tr:has(.summary-device-title) td[data-label="แผนกรับผิดชอบ"]::before {
+        content: "🏥 " !important;
+        font-size: 12px !important;
+        margin-right: 0 !important;
+      }
+      #summaryTableBody tr td[data-label="แผนกรับผิดชอบ"] span,
+      .device-table tbody tr:has(.summary-device-title) td[data-label="แผนกรับผิดชอบ"] span {
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        font-weight: 500 !important;
+      }
+
+      /* 5. Action Button (Bottom-Right) */
+      #summaryTableBody tr td[data-label="จัดการ"],
+      .device-table tbody tr:has(.summary-device-title) td[data-label="จัดการ"] {
+        grid-area: action !important;
+        display: flex !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+        border: none !important;
+        border-top: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: auto !important;
+      }
+      #summaryTableBody tr td[data-label="จัดการ"]::before,
+      .device-table tbody tr:has(.summary-device-title) td[data-label="จัดการ"]::before {
+        display: none !important;
+      }
+      #summaryTableBody tr td[data-label="จัดการ"] .floating-action-wrapper,
+      .device-table tbody tr:has(.summary-device-title) td[data-label="จัดการ"] .floating-action-wrapper {
+        position: relative !important;
+        width: auto !important;
+        display: inline-flex !important;
+        justify-content: flex-end !important;
+      }
+      #summaryTableBody tr td[data-label="จัดการ"] .btn-floating-trigger,
+      .device-table tbody tr:has(.summary-device-title) td[data-label="จัดการ"] .btn-floating-trigger {
+        width: 30px !important;
+        height: 30px !important;
+        min-width: 30px !important;
+      }
+      #summaryTableBody tr td[data-label="จัดการ"] .btn-floating-trigger .trigger-icon,
+      .device-table tbody tr:has(.summary-device-title) td[data-label="จัดการ"] .btn-floating-trigger .trigger-icon {
+        font-size: 16px !important;
+      }
+      #summaryTableBody tr td[data-label="จัดการ"] .floating-action-tray,
+      .device-table tbody tr:has(.summary-device-title) td[data-label="จัดการ"] .floating-action-tray {
+        position: absolute !important;
+        right: 0 !important;
+        bottom: -4px !important;
+        top: auto !important;
+        transform: none !important;
+        width: auto !important;
+        white-space: nowrap !important;
+        display: none;
+        align-items: center !important;
+        gap: 6px !important;
+        padding: 4px 8px !important;
+        border-radius: 12px !important;
+        background: #ffffff !important;
+        border: 1px solid var(--border-main) !important;
+        box-shadow: 0 4px 18px rgba(0, 30, 80, 0.22) !important;
+        z-index: 100 !important;
+      }
+      #summaryTableBody tr td[data-label="จัดการ"] .floating-action-wrapper.open .floating-action-tray,
+      .device-table tbody tr:has(.summary-device-title) td[data-label="จัดการ"] .floating-action-wrapper.open .floating-action-tray {
+        display: flex !important;
+      }
+      #summaryTableBody tr td[data-label="จัดการ"] .btn-action-icon,
+      .device-table tbody tr:has(.summary-device-title) td[data-label="จัดการ"] .btn-action-icon {
+        width: 30px !important;
+        height: 30px !important;
+        min-width: 30px !important;
+        border-radius: 6px !important;
+      }
+      #summaryTableBody tr td[data-label="จัดการ"] .btn-action-icon .material-icons-round,
+      .device-table tbody tr:has(.summary-device-title) td[data-label="จัดการ"] .btn-action-icon .material-icons-round {
+        font-size: 16px !important;
       }
 
       /* Settings Sub-Tabs and Filter Bar on Mobile */
