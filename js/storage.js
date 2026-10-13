@@ -275,7 +275,10 @@
         eq.lastEvaluatedAt = nowStr;
         eq.lastEvaluatedStatus = evalPayload.result;
         eq.lastEvaluatedBy = evalPayload.evaluatedBy;
-        eq.currentDept = evalPayload.department || eq.currentDept;
+        if (evalPayload.department) {
+          eq.currentDept = evalPayload.department;
+          eq.homeDept = evalPayload.department;
+        }
 
         if (evalPayload.result === 'abnormal') {
           eq.status = 'abnormal';
@@ -322,6 +325,7 @@
       var eq = this.getEquipmentById(deviceId);
       if (!eq) throw new Error('ไม่พบเครื่องมือแพทย์รหัส ' + deviceId);
       eq.currentDept = toDeptId;
+      eq.homeDept = toDeptId;
       notifyUpdated();
       return { success: true, equipment: eq };
     },
@@ -339,6 +343,7 @@
       var oldDept = eq.currentDept;
       var nowStr = new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }).slice(0, 16).replace('T', ' ');
       eq.currentDept = toDeptId;
+      eq.homeDept = toDeptId;
 
       var transferLog = {
         id: 'TR-' + Date.now(),
