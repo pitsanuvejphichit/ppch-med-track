@@ -290,9 +290,10 @@
       display: flex;
       flex: 1;
       min-height: calc(100vh - 56px);
+      align-items: flex-start;
     }
 
-    /* Lean Left Sidebar */
+    /* Lean Left Sidebar (Locked / Sticky) */
     .app-sidebar {
       width: 220px;
       background: #ffffff;
@@ -301,6 +302,19 @@
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
+      position: sticky;
+      top: 56px;
+      height: calc(100vh - 56px);
+      overflow-y: auto;
+      z-index: 90;
+      align-self: flex-start;
+    }
+    .app-sidebar::-webkit-scrollbar {
+      width: 4px;
+    }
+    .app-sidebar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
     }
 
     .sidebar-section-title {
@@ -415,8 +429,8 @@
     /* ==================== 3. MAIN WORKSTATION ==================== */
     .app-main-content {
       flex: 1;
+      min-width: 0;
       padding: 16px 24px;
-      overflow-y: auto;
       max-width: calc(100% - 220px);
     }
 
@@ -799,6 +813,257 @@
     .btn-action-slip.btn-repair-danger:hover {
       background: #b91c1c;
       transform: translateY(-1px);
+    }
+
+    /* ==================== STATUS SYMBOL BUTTONS ==================== */
+    .status-symbol-btn {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 1.5px solid transparent;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      user-select: none;
+      vertical-align: middle;
+    }
+    .status-symbol-btn .material-icons-round {
+      font-size: 20px;
+    }
+    .status-symbol-btn:hover {
+      transform: scale(1.15);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+    }
+    /* Green: พร้อมใช้งาน */
+    .status-symbol-btn.symbol-ready {
+      background: #ecfdf5;
+      color: #059669;
+      border-color: #a7f3d0;
+    }
+    .status-symbol-btn.symbol-ready-repaired {
+      background: #ecfdf5;
+      color: #047857;
+      border-color: #6ee7b7;
+    }
+    /* Red: ข้อบกพร่อง / กากบาท */
+    .status-symbol-btn.symbol-abnormal {
+      background: #fef2f2;
+      color: #dc2626;
+      border-color: #fecaca;
+    }
+    /* Yellow/Amber: ซ่อมบำรุง / ประแจ */
+    .status-symbol-btn.symbol-in-progress {
+      background: #fffbeb;
+      color: #d97706;
+      border-color: #fde68a;
+    }
+    /* Amber: อนุญาตให้ใช้งานต่อ */
+    .status-symbol-btn.symbol-conditional {
+      background: #fffbeb;
+      color: #d97706;
+      border-color: #fde68a;
+    }
+    /* Subtle Grey: รอตรวจ */
+    .status-symbol-btn.symbol-pending {
+      background: #f8fafc;
+      color: #94a3b8;
+      border-color: #e2e8f0;
+    }
+    .status-symbol-btn.symbol-pending:hover {
+      color: #004b93;
+      border-color: #93c5fd;
+      background: #f0f7ff;
+    }
+
+    /* ==================== COMPACT ACTION ICON BUTTONS ==================== */
+    .btn-action-icon {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 1px solid transparent;
+      text-decoration: none;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      padding: 0;
+      flex-shrink: 0;
+      vertical-align: middle;
+    }
+    .btn-action-icon .material-icons-round {
+      font-size: 16px;
+    }
+    .btn-action-icon:hover {
+      transform: translateY(-1px) scale(1.08);
+      box-shadow: 0 3px 8px rgba(0, 75, 147, 0.18);
+    }
+    /* Eval Icon: Royal Blue */
+    .btn-icon-eval {
+      background: linear-gradient(135deg, var(--royal-blue) 0%, var(--royal-light) 100%);
+      color: #ffffff;
+      border-color: var(--royal-blue);
+    }
+    .btn-icon-eval:hover {
+      background: linear-gradient(135deg, #003b75 0%, #004b93 100%);
+      color: #ffffff;
+    }
+    /* Re-eval: Subtle Blue */
+    .btn-icon-re-eval {
+      background: var(--royal-subtle);
+      color: var(--royal-blue);
+      border-color: var(--border-blue-soft);
+    }
+    .btn-icon-re-eval:hover {
+      background: #dbeafe;
+      color: var(--royal-blue);
+    }
+    /* Allow Use: Amber */
+    .btn-icon-allow {
+      background: #fffbeb;
+      color: #b45309;
+      border-color: #fde68a;
+    }
+    .btn-icon-allow:hover {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    /* Repair: Red/Orange */
+    .btn-icon-repair {
+      background: #fef2f2;
+      color: #dc2626;
+      border-color: #fecaca;
+    }
+    .btn-icon-repair:hover {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+    /* Slip: Green */
+    .btn-icon-slip {
+      background: #ecfdf5;
+      color: #047857;
+      border-color: #a7f3d0;
+    }
+    .btn-icon-slip:hover {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    /* ==================== FLOATING SPEED DIAL ACTION MENU ==================== */
+    .floating-action-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .device-table tbody tr:has(.floating-action-wrapper.open) {
+      z-index: 30;
+      position: relative;
+    }
+
+    .btn-floating-trigger {
+      position: relative;
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 1.5px solid var(--border-main);
+      color: var(--royal-blue);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0, 46, 110, 0.08);
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 0;
+    }
+    .btn-floating-trigger:hover {
+      background: var(--royal-subtle);
+      border-color: var(--border-blue-soft);
+      transform: scale(1.08);
+      box-shadow: 0 3px 8px rgba(0, 75, 147, 0.18);
+    }
+    .btn-floating-trigger .trigger-icon {
+      font-size: 18px;
+    }
+    .floating-badge-count {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      background: var(--royal-blue);
+      color: #ffffff;
+      font-size: 9.5px;
+      font-weight: 700;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid #ffffff;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .floating-action-tray {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%) scale(0.9);
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 10px 25px -4px rgba(0, 46, 110, 0.22), 0 4px 10px -2px rgba(0, 0, 0, 0.08);
+      border-radius: 20px;
+      padding: 3px 6px;
+      display: none;
+      align-items: center;
+      gap: 5px;
+      z-index: 150;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1), transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
+    }
+
+    .floating-action-wrapper.open .floating-action-tray {
+      display: inline-flex;
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(-50%) scale(1);
+    }
+    .floating-action-wrapper.open .btn-floating-trigger {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .btn-floating-close {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: none;
+      background: #f1f5f9;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      margin-left: 2px;
+      transition: all 0.15s;
+      padding: 0;
+    }
+    .btn-floating-close:hover {
+      background: #fee2e2;
+      color: #dc2626;
+      transform: scale(1.1);
+    }
+    .btn-floating-close .material-icons-round {
+      font-size: 14px;
     }
 
     /* Equipment Cards Grid (View 3) */
@@ -1683,6 +1948,31 @@
         border-radius: 8px !important;
       }
 
+      .device-table tbody tr td[data-label="จัดการ"] .floating-action-wrapper {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+      }
+      .device-table tbody tr td[data-label="จัดการ"] .floating-action-tray {
+        position: static !important;
+        transform: none !important;
+        width: 100% !important;
+        justify-content: center !important;
+        border-radius: 12px !important;
+        padding: 6px 10px !important;
+        box-shadow: 0 4px 12px rgba(0, 46, 110, 0.12) !important;
+      }
+      .device-table tbody tr td[data-label="จัดการ"] .floating-action-wrapper.open .btn-floating-trigger {
+        display: none !important;
+      }
+      .device-table tbody tr td[data-label="จัดการ"] .btn-action-icon {
+        width: 36px !important;
+        height: 36px !important;
+        min-width: 36px !important;
+        border-radius: 8px !important;
+      }
+
       /* Multi-line card items */
       .device-table tbody tr td[data-label="เครื่องมือแพทย์ & รุ่น"],
       .device-table tbody tr td[data-label="ชื่อเครื่องมือแพทย์"],
@@ -2320,11 +2610,11 @@
               <table class="device-table">
                 <thead>
                   <tr>
-                    <th style="width: 140px;">รหัสเครื่อง</th>
+                    <th style="width: 130px;">รหัสเครื่อง</th>
                     <th>เครื่องมือแพทย์</th>
-                    <th style="width: 150px;">แผนกรับผิดชอบ</th>
-                    <th style="width: 140px;">สถานะวันนี้</th>
-                    <th class="btn-action-col no-print" style="width: 120px; text-align: center;">จัดการ</th>
+                    <th style="width: 160px;">แผนกรับผิดชอบ</th>
+                    <th style="width: 75px; text-align: center;">สถานะ</th>
+                    <th class="btn-action-col no-print" style="width: 80px; text-align: center;">จัดการ</th>
                   </tr>
                 </thead>
                 <tbody id="summaryTableBody">
@@ -3279,6 +3569,7 @@
 
     function switchView(viewKey) {
       closeMobileSidebar();
+      if (typeof closeAllFloatingMenus === 'function') closeAllFloatingMenus();
       currentView = viewKey;
       var bread = document.getElementById('breadCurrent');
       var breadMap = {
@@ -3930,6 +4221,7 @@
 
     // ==================== CONDITIONAL USE (อนุญาตให้ใช้งานต่อ) ====================
     function openAllowUseModal(deviceId) {
+      if (typeof closeAllFloatingMenus === 'function') closeAllFloatingMenus();
       var eq = window.PPCH_STORE.getEquipmentById(deviceId);
       if (!eq) return;
 
@@ -4177,66 +4469,158 @@
         var filterDateVal = document.getElementById('filterDate').value;
         var evaluatedToday = (ev && ev.evaluatedAt) || (eq.lastEvaluatedAt && eq.lastEvaluatedAt.indexOf(filterDateVal) === 0);
 
-        var statusBadge = '<span class="badge-status badge-status-pending"><span class="material-icons-round" style="font-size: 14px;">schedule</span> รอตรวจวันนี้</span>';
-        var actions = '<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-eval" title="เปิดหน้าตรวจเช็ค"><span class="material-icons-round" style="font-size: 13px;">assignment</span><span>ตรวจเช็ค</span></a>';
+        var statusBadge = '';
+        var actionBtns = [];
 
         if (isConditional) {
-          statusBadge = '<span class="badge-status" style="color: #b45309; background: #fffbeb; border: 1px solid #fde68a;" title="อนุญาตให้ใช้งานต่อ: ' + (eq.allowUseReason || '') + ' (โดย ' + (eq.allowUseBy || '-') + ')"><span class="material-icons-round" style="font-size: 14px;">published_with_changes</span> อนุญาตให้ใช้งานต่อ</span>';
-          actions = '<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-eval" title="เปิดหน้าตรวจเช็ค"><span class="material-icons-round" style="font-size: 13px;">assignment</span><span>ตรวจเช็ค</span></a>' +
-            ' <button onclick="openAllowUseModal(\'' + eq.id + '\')" class="btn-action-slip" style="color: #b45309; border-color: #fde68a; background: #fffbeb;" title="ดู/แก้ไขการอนุญาตให้ใช้งานต่อ"><span class="material-icons-round" style="font-size: 13px;">published_with_changes</span><span>การอนุญาต</span></button>' +
-            ' <button onclick="switchView(\'defective\')" class="btn-action-slip" title="ดูรายการแจ้งซ่อม" style="color: var(--amber-pending); border-color: var(--amber-border);"><span class="material-icons-round" style="font-size: 13px;">build</span><span>งานซ่อม</span></button>';
+          var allowReasonTxt = eq.allowUseReason ? (' (' + eq.allowUseReason + ')') : '';
+          statusBadge = '<div class="status-symbol-btn symbol-conditional" title="อนุญาตให้ใช้งานต่อ' + allowReasonTxt + ' (โดย ' + (eq.allowUseBy || '-') + ')" onclick="openAllowUseModal(\'' + eq.id + '\')"><span class="material-icons-round">build_circle</span></div>';
+          actionBtns.push('<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-eval" title="เปิดหน้าตรวจเช็ค"><span class="material-icons-round">assignment</span></a>');
+          actionBtns.push('<button type="button" onclick="openAllowUseModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-allow" title="ดู/แก้ไขการอนุญาตให้ใช้งานต่อ"><span class="material-icons-round">published_with_changes</span></button>');
+          actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="ดูรายการแจ้งซ่อม"><span class="material-icons-round">build</span></button>');
           if (ev) {
-            actions += ' <button onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-slip btn-slip-success" title="ดูสลิปผล"><span class="material-icons-round" style="font-size: 13px;">receipt_long</span><span>สลิป</span></button>';
+            actionBtns.push('<button type="button" onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-icon btn-icon-slip" title="ดูสลิปผลการตรวจ"><span class="material-icons-round">receipt_long</span></button>');
           }
         } else if (isUnderFix) {
-          statusBadge = '<span class="badge-status" style="color: var(--amber-pending);"><span class="material-icons-round" style="font-size: 14px;">build</span> กำลังซ่อมบำรุง</span>';
-          actions = '<button onclick="switchView(\'defective\')" class="btn-action-slip" title="เครื่องอยู่ระหว่างซ่อมบำรุง คลิกเพื่อดู/บันทึกการแก้ไข" style="color: var(--amber-pending); border-color: var(--amber-border);"><span class="material-icons-round" style="font-size: 13px;">build</span><span>ดูงานซ่อม</span></button>';
+          statusBadge = '<div class="status-symbol-btn symbol-in-progress" title="กำลังซ่อมบำรุง / อยู่ระหว่างการแก้ไข" onclick="switchView(\'defective\')"><span class="material-icons-round">build</span></div>';
+          actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="ดูงานซ่อมบำรุง"><span class="material-icons-round">build</span></button>');
         } else if (isDefective) {
-          statusBadge = '<span class="badge-status badge-status-abnormal" title="' + (eq.abnormalReason || (ev && ev.abnormalNote) || '') + '"><span class="material-icons-round" style="font-size: 14px;">error</span> ข้อบกพร่อง</span>';
-          actions = '<button onclick="switchView(\'defective\')" class="btn-action-slip btn-repair-danger" title="พบข้อบกพร่อง คลิกเพื่อรับทราบงานซ่อม"><span class="material-icons-round" style="font-size: 13px;">build_circle</span><span>จัดการซ่อม</span></button>' +
-            ' <button onclick="openAllowUseModal(\'' + eq.id + '\')" class="btn-action-slip" style="color: #b45309; border-color: #fde68a; background: #fffbeb;" title="อนุญาตให้ใช้งานต่อชั่วคราว แม้ไม่พร้อมใช้งาน"><span class="material-icons-round" style="font-size: 13px;">published_with_changes</span><span>อนุญาตใช้</span></button>';
+          var defectTxt = (eq.abnormalReason || (ev && ev.abnormalNote)) ? (' (' + (eq.abnormalReason || ev.abnormalNote) + ')') : '';
+          statusBadge = '<div class="status-symbol-btn symbol-abnormal" title="พบข้อบกพร่อง / ไม่พร้อมใช้งาน' + defectTxt + '" onclick="switchView(\'defective\')"><span class="material-icons-round">cancel</span></div>';
+          actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="จัดการงานซ่อมบำรุง"><span class="material-icons-round">build</span></button>');
+          actionBtns.push('<button type="button" onclick="openAllowUseModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-allow" title="อนุญาตให้ใช้งานต่อชั่วคราว แม้ไม่พร้อมใช้งาน"><span class="material-icons-round">published_with_changes</span></button>');
           if (ev) {
-            actions += ' <button onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-slip btn-slip-success" title="ดูสลิปผล"><span class="material-icons-round" style="font-size: 13px;">receipt_long</span><span>สลิป</span></button>';
+            actionBtns.push('<button type="button" onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-icon btn-icon-slip" title="ดูสลิปผลการตรวจ"><span class="material-icons-round">receipt_long</span></button>');
           }
         } else if (eq.status === 'ready' && evaluatedToday) {
           var wasRepaired = (ev && ev.result === 'abnormal') || (ev && ev.isRepairResolution) || (eq.repairReportedAt && eq.repairReportedAt.indexOf(filterDateVal) === 0);
           if (wasRepaired) {
-            statusBadge = '<span class="badge-status badge-status-ready" style="color: #047857; background: #ecfdf5; border-color: #a7f3d0;"><span class="material-icons-round" style="font-size: 14px;">task_alt</span> พร้อมใช้ (ซ่อมเสร็จ)</span>';
+            statusBadge = '<div class="status-symbol-btn symbol-ready-repaired" title="พร้อมใช้งาน (ซ่อมเสร็จแล้ว)"' + (ev ? (' onclick="openSlipModal(\'' + ev.id + '\')"') : '') + '><span class="material-icons-round">task_alt</span></div>';
           } else {
-            statusBadge = '<span class="badge-status badge-status-ready"><span class="material-icons-round" style="font-size: 14px;">check_circle</span> พร้อมใช้</span>';
+            statusBadge = '<div class="status-symbol-btn symbol-ready" title="พร้อมใช้งาน (ตรวจเรียบร้อยแล้ว)"' + (ev ? (' onclick="openSlipModal(\'' + ev.id + '\')"') : '') + '><span class="material-icons-round">check_circle</span></div>';
           }
           if (ev) {
-            actions = '<button onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-slip btn-slip-success" title="ดูสลิปผล"><span class="material-icons-round" style="font-size: 13px;">receipt_long</span><span>สลิป</span></button>' +
-              ' <a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-eval btn-action-eval-subtle" title="เปิดหน้าตรวจเช็คซ้ำ"><span class="material-icons-round" style="font-size: 13px;">refresh</span><span>ตรวจซ้ำ</span></a>';
-          } else {
-            actions = '<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-eval btn-action-eval-subtle" title="เปิดหน้าตรวจเช็คซ้ำ"><span class="material-icons-round" style="font-size: 13px;">refresh</span><span>ตรวจซ้ำ</span></a>';
+            actionBtns.push('<button type="button" onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-icon btn-icon-slip" title="ดูสลิปผลการตรวจ"><span class="material-icons-round">receipt_long</span></button>');
           }
+          actionBtns.push('<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-re-eval" title="เปิดหน้าตรวจเช็คซ้ำ"><span class="material-icons-round">refresh</span></a>');
         } else if (ev) {
           if (ev.result === 'normal') {
-            statusBadge = '<span class="badge-status badge-status-ready"><span class="material-icons-round" style="font-size: 14px;">check_circle</span> พร้อมใช้</span>';
-            actions = '<button onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-slip btn-slip-success" title="ดูสลิปผล"><span class="material-icons-round" style="font-size: 13px;">receipt_long</span><span>สลิป</span></button>' +
-              ' <a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-eval btn-action-eval-subtle" title="เปิดหน้าตรวจเช็คซ้ำ"><span class="material-icons-round" style="font-size: 13px;">refresh</span><span>ตรวจซ้ำ</span></a>';
+            statusBadge = '<div class="status-symbol-btn symbol-ready" title="พร้อมใช้งาน (ตรวจเรียบร้อยแล้ว)" onclick="openSlipModal(\'' + ev.id + '\')"><span class="material-icons-round">check_circle</span></div>';
+            actionBtns.push('<button type="button" onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-icon btn-icon-slip" title="ดูสลิปผลการตรวจ"><span class="material-icons-round">receipt_long</span></button>');
+            actionBtns.push('<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-re-eval" title="เปิดหน้าตรวจเช็คซ้ำ"><span class="material-icons-round">refresh</span></a>');
           } else {
-            statusBadge = '<span class="badge-status badge-status-abnormal" title="' + (ev.abnormalNote || '') + '"><span class="material-icons-round" style="font-size: 14px;">error</span> ข้อบกพร่อง</span>';
-            actions = '<button onclick="switchView(\'defective\')" class="btn-action-slip btn-repair-danger" title="พบข้อบกพร่อง คลิกเพื่อรับทราบงานซ่อม"><span class="material-icons-round" style="font-size: 13px;">build_circle</span><span>จัดการซ่อม</span></button>' +
-              ' <button onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-slip btn-slip-success" title="ดูสลิปผล"><span class="material-icons-round" style="font-size: 13px;">receipt_long</span><span>สลิป</span></button>';
+            statusBadge = '<div class="status-symbol-btn symbol-abnormal" title="พบข้อบกพร่อง: ' + (ev.abnormalNote || '') + '" onclick="switchView(\'defective\')"><span class="material-icons-round">cancel</span></div>';
+            actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="จัดการงานซ่อมบำรุง"><span class="material-icons-round">build</span></button>');
+            actionBtns.push('<button type="button" onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-icon btn-icon-slip" title="ดูสลิปผลการตรวจ"><span class="material-icons-round">receipt_long</span></button>');
           }
         } else if (evaluatedToday) {
-          statusBadge = '<span class="badge-status badge-status-ready"><span class="material-icons-round" style="font-size: 14px;">check_circle</span> พร้อมใช้</span>';
-          actions = '<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-eval btn-action-eval-subtle" title="เปิดหน้าตรวจเช็คซ้ำ"><span class="material-icons-round" style="font-size: 13px;">refresh</span><span>ตรวจซ้ำ</span></a>';
+          statusBadge = '<div class="status-symbol-btn symbol-ready" title="พร้อมใช้งาน"><span class="material-icons-round">check_circle</span></div>';
+          actionBtns.push('<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-re-eval" title="เปิดหน้าตรวจเช็คซ้ำ"><span class="material-icons-round">refresh</span></a>');
+        } else {
+          statusBadge = '<div class="status-symbol-btn symbol-pending" title="รอตรวจวันนี้" onclick="location.href=\'eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '\'"><span class="material-icons-round">schedule</span></div>';
+          actionBtns.push('<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-eval" title="เปิดหน้าตรวจเช็ค"><span class="material-icons-round">assignment</span></a>');
+        }
+
+        var actionsHtml = '';
+        if (actionBtns.length === 1) {
+          actionsHtml = '<div style="display: flex; justify-content: center; align-items: center;">' + actionBtns[0] + '</div>';
+        } else if (actionBtns.length > 1) {
+          actionsHtml = '<div class="floating-action-wrapper" onmouseenter="handleFloatingEnter(this)" onmouseleave="handleFloatingLeave(this)">' +
+            '<button type="button" class="btn-floating-trigger" onclick="toggleFloatingMenu(this, event)" title="เมนูจัดการ (คลิกหรือชี้เพื่อเปิด ' + actionBtns.length + ' รายการ)">' +
+              '<span class="material-icons-round trigger-icon">more_horiz</span>' +
+              '<span class="floating-badge-count">' + actionBtns.length + '</span>' +
+            '</button>' +
+            '<div class="floating-action-tray">' +
+              actionBtns.join('') +
+              '<button type="button" class="btn-floating-close" onclick="closeFloatingMenu(this, event)" title="กดเพื่อเก็บเป็นปุ่มเดียว">' +
+                '<span class="material-icons-round">close</span>' +
+              '</button>' +
+            '</div>' +
+          '</div>';
         }
 
         html += '<tr>' +
           '<td data-label="รหัสเครื่อง"><span class="asset-code-clean">' + eq.assetCode + '</span></td>' +
           '<td class="summary-device-title" data-label=""><div style="font-weight: 700; color: var(--text-main); font-size: 13.5px;">' + eq.name + '</div></td>' +
           '<td data-label="แผนกรับผิดชอบ"><span style="font-weight: 500;">' + deptName + '</span>' + (eq.homeDept !== eq.currentDept ? ' <span style="font-size: 10px; color: #d97706;">(ยืม)</span>' : '') + '</td>' +
-          '<td data-label="สถานะวันนี้">' + statusBadge + '</td>' +
-          '<td data-label="จัดการ" class="btn-action-col no-print" style="text-align: center; white-space: nowrap;">' + actions + '</td>' +
+          '<td data-label="สถานะวันนี้" style="text-align: center;">' + statusBadge + '</td>' +
+          '<td data-label="จัดการ" class="btn-action-col no-print" style="text-align: center; white-space: nowrap;">' + actionsHtml + '</td>' +
         '</tr>';
       });
 
       tbody.innerHTML = html;
     }
+
+    // ---------- FLOATING ACTION BUTTON HANDLERS ----------
+    function handleFloatingEnter(wrapper) {
+      if (wrapper._closeTimer) {
+        clearTimeout(wrapper._closeTimer);
+        wrapper._closeTimer = null;
+      }
+      wrapper.classList.add('open');
+    }
+
+    function handleFloatingLeave(wrapper) {
+      if (wrapper._closeTimer) {
+        clearTimeout(wrapper._closeTimer);
+      }
+      wrapper._closeTimer = setTimeout(function () {
+        wrapper.classList.remove('open');
+        wrapper._closeTimer = null;
+      }, 5000); // Collapse after 5 seconds of mouse leaving
+    }
+
+    function toggleFloatingMenu(btn, e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      var wrapper = btn.closest('.floating-action-wrapper');
+      if (!wrapper) return;
+      if (wrapper._closeTimer) {
+        clearTimeout(wrapper._closeTimer);
+        wrapper._closeTimer = null;
+      }
+      if (wrapper.classList.contains('open')) {
+        wrapper.classList.remove('open');
+      } else {
+        document.querySelectorAll('.floating-action-wrapper.open').forEach(function (w) {
+          if (w !== wrapper) {
+            if (w._closeTimer) clearTimeout(w._closeTimer);
+            w.classList.remove('open');
+          }
+        });
+        wrapper.classList.add('open');
+      }
+    }
+
+    function closeFloatingMenu(btn, e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      var wrapper = btn.closest('.floating-action-wrapper');
+      if (!wrapper) return;
+      if (wrapper._closeTimer) {
+        clearTimeout(wrapper._closeTimer);
+        wrapper._closeTimer = null;
+      }
+      wrapper.classList.remove('open');
+    }
+
+    function closeAllFloatingMenus() {
+      document.querySelectorAll('.floating-action-wrapper.open').forEach(function (w) {
+        if (w._closeTimer) clearTimeout(w._closeTimer);
+        w.classList.remove('open');
+      });
+    }
+
+    // Global listener: clicking outside any open floating action menu collapses it immediately
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('.floating-action-wrapper')) {
+        closeAllFloatingMenus();
+      }
+    });
 
     // ==================== DEVICE SUMMARY VIEW (สรุปรายเครื่อง) ====================
     var currentDeviceHistoryId = null;
@@ -4511,11 +4895,11 @@
       filteredEvals.forEach(function (ev) {
         var deptName = window.PPCH_STORE.getDepartmentName(ev.department || eq.currentDept);
         var sBadge = ev.result === 'normal'
-          ? '<span class="badge-status badge-status-ready"><span class="material-icons-round" style="font-size: 14px;">check_circle</span> พร้อมใช้</span>'
-          : '<span class="badge-status badge-status-abnormal"><span class="material-icons-round" style="font-size: 14px;">error</span> ข้อบกพร่อง</span>';
+          ? '<div class="status-symbol-btn symbol-ready" title="พร้อมใช้งาน"><span class="material-icons-round">check_circle</span></div>'
+          : '<div class="status-symbol-btn symbol-abnormal" title="พบข้อบกพร่อง' + (ev.abnormalNote ? (': ' + ev.abnormalNote) : '') + '"><span class="material-icons-round">cancel</span></div>';
 
         if (ev.isRepairResolution) {
-          sBadge = '<span class="badge-status badge-status-ready" style="color: #047857; background: #ecfdf5; border-color: #a7f3d0;"><span class="material-icons-round" style="font-size: 14px;">task_alt</span> ซ่อมเสร็จ</span>';
+          sBadge = '<div class="status-symbol-btn symbol-ready-repaired" title="พร้อมใช้งาน (ซ่อมเสร็จแล้ว)"><span class="material-icons-round">task_alt</span></div>';
         }
 
         var upsText = '-';
@@ -4532,12 +4916,12 @@
           '<td data-label="วัน-เวลาตรวจ" style="font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--text-main);">' + (ev.evaluatedAt || '-') + '</td>' +
           '<td data-label="แผนกที่ตรวจ"><span style="font-weight: 500;">' + deptName + '</span></td>' +
           '<td data-label="ผู้ตรวจเช็ค" style="font-size: 12px; color: var(--text-main); font-weight: 600;">' + (ev.evaluatedBy || 'ไม่ระบุ') + '</td>' +
-          '<td data-label="ผลการตรวจ">' + sBadge + '</td>' +
+          '<td data-label="ผลการตรวจ" style="text-align: center;">' + sBadge + '</td>' +
           '<td data-label="บันทึก / ปัญหาที่พบ" style="font-size: 12px;">' + noteText + '</td>' +
           '<td data-label="UPS สำรองไฟ" style="font-size: 12px;">' + upsText + '</td>' +
           '<td data-label="สลิป" class="btn-action-col no-print" style="text-align: center;">' +
-            '<button type="button" onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-slip" title="ดูสลิปผลการตรวจแบบละเอียด">' +
-              '<span class="material-icons-round" style="font-size: 13px;">receipt_long</span><span>สลิป</span>' +
+            '<button type="button" onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-icon btn-icon-slip" title="ดูสลิปผลการตรวจแบบละเอียด">' +
+              '<span class="material-icons-round">receipt_long</span>' +
             '</button>' +
           '</td>' +
         '</tr>';
@@ -4777,6 +5161,7 @@
 
     // ==================== DETAIL SLIP MODAL ====================
     function openSlipModal(evalId) {
+      if (typeof closeAllFloatingMenus === 'function') closeAllFloatingMenus();
       var ev = allEvaluations.find(function (e) { return e.id === evalId; });
       if (!ev) return;
       var eq = window.PPCH_STORE.getEquipmentById(ev.deviceId);
