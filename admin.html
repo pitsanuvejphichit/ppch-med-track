@@ -1586,6 +1586,11 @@
                   <select id="settingsFilterDept" class="filter-input" onchange="renderEquipmentSettingsTable()" style="max-width: 200px;">
                     <option value="all">ทุกแผนก</option>
                   </select>
+                  <select id="settingsFilterRisk" class="filter-input" onchange="renderEquipmentSettingsTable()" style="max-width: 180px;">
+                    <option value="all">ทุกระดับความเสี่ยง</option>
+                    <option value="high">⚠️ เสี่ยงมาก (ทุกวัน)</option>
+                    <option value="low">🛡️ เสี่ยงน้อย (เดือนละครั้ง)</option>
+                  </select>
                   <select id="settingsFilterForm" class="filter-input" onchange="renderEquipmentSettingsTable()" style="max-width: 200px;">
                     <option value="all">ทุกแบบฟอร์ม</option>
                   </select>
@@ -1605,6 +1610,7 @@
                       <th>ชื่อเครื่องมือแพทย์</th>
                       <th style="width: 140px;">รุ่น / ยี่ห้อ</th>
                       <th style="width: 120px;">Serial No.</th>
+                      <th style="width: 150px; text-align: center;">ระดับความเสี่ยง</th>
                       <th style="width: 170px;">แบบฟอร์มตรวจ</th>
                       <th style="width: 150px;">แผนกปัจจุบัน</th>
                       <th style="width: 110px; text-align: center;">สถานะ</th>
@@ -1870,7 +1876,7 @@
           </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
           <div>
             <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">
               แผนกสังกัดปัจจุบัน <span style="color: var(--red-abnormal);">*</span>
@@ -1881,13 +1887,23 @@
           </div>
           <div>
             <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">
-              สถานะความพร้อม
+              ระดับความเสี่ยง (ความถี่การตรวจ) <span style="color: var(--red-abnormal);">*</span>
             </label>
-            <select id="modalEquipStatus" class="filter-input" style="width: 100%; font-weight: 600;">
-              <option value="ready">พร้อมใช้งาน (Ready)</option>
-              <option value="abnormal">ไม่พร้อมใช้งาน / ชำรุด (Abnormal)</option>
+            <select id="modalEquipRiskLevel" class="filter-input" style="width: 100%; font-weight: 600;" required>
+              <option value="high">⚠️ เสี่ยงมาก (ประเมินทุกวัน)</option>
+              <option value="low">🛡️ เสี่ยงน้อย (ประเมินเดือนละครั้ง)</option>
             </select>
           </div>
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">
+            สถานะความพร้อม
+          </label>
+          <select id="modalEquipStatus" class="filter-input" style="width: 100%; font-weight: 600;">
+            <option value="ready">พร้อมใช้งาน (Ready)</option>
+            <option value="abnormal">ไม่พร้อมใช้งาน / ชำรุด (Abnormal)</option>
+          </select>
         </div>
 
         <div style="display: flex; gap: 8px; justify-content: flex-end; padding-top: 10px; border-top: 1px solid var(--border-subtle);">
@@ -2585,6 +2601,11 @@
         ? ('ประจำเดือน ' + (selectedMonth ? selectedMonth : 'ปัจจุบัน'))
         : 'ประวัติทั้งหมดตลอดอายุใช้งาน';
 
+      var eqRisk = eq.riskLevel || (eq.frequency === 'monthly' ? 'low' : 'high');
+      var riskBadge = (eqRisk === 'high')
+        ? '<span style="background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; padding: 2px 7px; border-radius: 4px; font-weight: 600; font-size: 11px; display: inline-flex; align-items: center; gap: 3px;"><span class="material-icons-round" style="font-size: 13px;">warning</span>เสี่ยงมาก (ทุกวัน)</span>'
+        : '<span style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; padding: 2px 7px; border-radius: 4px; font-weight: 600; font-size: 11px; display: inline-flex; align-items: center; gap: 3px;"><span class="material-icons-round" style="font-size: 13px;">verified_user</span>เสี่ยงน้อย (เดือนละครั้ง)</span>';
+
       // Render Profile Card
       var profileContainer = document.getElementById('deviceProfileContainer');
       if (profileContainer) {
@@ -2594,6 +2615,7 @@
               '<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;">' +
                 '<span class="asset-code-clean" style="font-size: 13px; font-weight: 700; padding: 3px 8px;">' + eq.assetCode + '</span>' +
                 '<span style="font-size: 12px; font-weight: 600; color: var(--royal-blue); background: #f0f7ff; border: 1px solid #bfdbfe; padding: 2px 8px; border-radius: 4px;">' + (form ? (form.shortName || form.name) : eq.formId) + '</span>' +
+                riskBadge +
                 statusBadge +
               '</div>' +
               '<div style="font-size: 17px; font-weight: 800; color: var(--royal-blue); line-height: 1.3;">' + eq.name + '</div>' +
@@ -3052,6 +3074,11 @@
         ? '<span class="badge-status badge-status-ready"><span class="material-icons-round" style="font-size: 14px;">check_circle</span> พร้อมใช้งาน</span>'
         : '<span class="badge-status badge-status-abnormal"><span class="material-icons-round" style="font-size: 14px;">error</span> พบข้อบกพร่อง</span>';
 
+      var eqRisk = (eq && eq.riskLevel) ? eq.riskLevel : ((eq && eq.frequency === 'monthly') ? 'low' : 'high');
+      var riskBadgeSlip = (eqRisk === 'high')
+        ? '<span style="background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; padding: 2px 7px; border-radius: 4px; font-weight: 600; font-size: 11px; display: inline-flex; align-items: center; gap: 3px;"><span class="material-icons-round" style="font-size: 13px;">warning</span>เสี่ยงมาก (ประเมินทุกวัน)</span>'
+        : '<span style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; padding: 2px 7px; border-radius: 4px; font-weight: 600; font-size: 11px; display: inline-flex; align-items: center; gap: 3px;"><span class="material-icons-round" style="font-size: 13px;">verified_user</span>เสี่ยงน้อย (ประเมินเดือนละครั้ง)</span>';
+
       var html = '<div style="line-height: 1.6;">' +
         // Header Summary Card
         '<div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 14px;">' +
@@ -3066,10 +3093,13 @@
           '</div>' +
           '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; font-size: 12px; border-top: 1px dashed #cbd5e1; padding-top: 10px; margin-top: 6px;">' +
             '<div><span style="color: var(--text-muted);">ประเภทเครื่องมือ:</span> <strong style="color: var(--royal-blue); font-weight: 700;">' + (form ? (form.shortName || form.name) : (ev.formId || '-')) + '</strong></div>' +
+            '<div><span style="color: var(--text-muted);">ระดับความเสี่ยง:</span> ' + riskBadgeSlip + '</div>' +
             '<div><span style="color: var(--text-muted);">แผนกที่ตรวจ:</span> <strong>' + deptName + '</strong>' + (isBorrowed ? ' <span style="font-size: 10px; color: #d97706; font-weight: 700;">(ยืม)</span>' : '') + '</div>' +
             '<div><span style="color: var(--text-muted);">ผู้ตรวจ:</span> <strong style="color: var(--text-main); font-weight: 700;">' + (ev.evaluatedBy || 'ไม่ระบุ') + '</strong></div>' +
-            '<div><span style="color: var(--text-muted);">เวลาตรวจ:</span> <strong style="font-family: var(--font-mono); color: var(--royal-blue); font-weight: 600;">' + (ev.evaluatedAt || '-') + '</strong></div>' +
-            '<div style="grid-column: 1 / -1; display: flex; align-items: center; gap: 6px; padding-top: 4px; border-top: 1px solid #f1f5f9;"><span style="color: var(--text-muted);">ผลการประเมิน:</span> ' + statusBadgeHtml + '</div>' +
+            '<div style="grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 6px; padding-top: 4px; border-top: 1px solid #f1f5f9;">' +
+              '<div><span style="color: var(--text-muted);">เวลาตรวจ:</span> <strong style="font-family: var(--font-mono); color: var(--royal-blue); font-weight: 600;">' + (ev.evaluatedAt || '-') + '</strong></div>' +
+              '<div style="display: flex; align-items: center; gap: 6px;"><span style="color: var(--text-muted);">ผลการประเมิน:</span> ' + statusBadgeHtml + '</div>' +
+            '</div>' +
           '</div>' +
         '</div>' +
         // UPS Box
@@ -3436,6 +3466,7 @@
       var equip = (window.PPCH_STORE && window.PPCH_STORE.getEquipment) ? window.PPCH_STORE.getEquipment() : [];
       var search = (document.getElementById('equipSearchInput') ? document.getElementById('equipSearchInput').value : '').trim().toLowerCase();
       var deptFilter = (document.getElementById('settingsFilterDept') ? document.getElementById('settingsFilterDept').value : 'all');
+      var riskFilter = (document.getElementById('settingsFilterRisk') ? document.getElementById('settingsFilterRisk').value : 'all');
       var formFilter = (document.getElementById('settingsFilterForm') ? document.getElementById('settingsFilterForm').value : 'all');
 
       var filtered = equip.filter(function (eq) {
@@ -3447,6 +3478,10 @@
           if (!sMatch) return false;
         }
         if (deptFilter !== 'all' && eq.currentDept !== deptFilter && eq.homeDept !== deptFilter) return false;
+        if (riskFilter !== 'all') {
+          var eqRisk = eq.riskLevel || (eq.frequency === 'monthly' ? 'low' : 'high');
+          if (eqRisk !== riskFilter) return false;
+        }
         if (formFilter !== 'all' && eq.formId !== formFilter) return false;
         return true;
       });
@@ -3458,7 +3493,7 @@
       if (bEquip) bEquip.innerText = equip.length;
 
       if (filtered.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 30px; color: var(--text-muted); font-size: 13px;">ไม่พบเครื่องมือแพทย์ที่ตรงกับเงื่อนไขการค้นหา</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 30px; color: var(--text-muted); font-size: 13px;">ไม่พบเครื่องมือแพทย์ที่ตรงกับเงื่อนไขการค้นหา</td></tr>';
         return;
       }
 
@@ -3467,6 +3502,11 @@
         var formObj = window.PPCH_STORE ? window.PPCH_STORE.getFormById(eq.formId) : null;
         var formName = formObj ? (formObj.shortName || formObj.name) : (eq.formId || '-');
         var deptName = window.PPCH_STORE ? window.PPCH_STORE.getDepartmentName(eq.currentDept) : (eq.currentDept || '-');
+
+        var eqRisk = eq.riskLevel || (eq.frequency === 'monthly' ? 'low' : 'high');
+        var riskBadge = (eqRisk === 'high')
+          ? '<span style="background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; padding: 2px 7px; border-radius: 4px; font-weight: 600; font-size: 11px; display: inline-flex; align-items: center; gap: 3px;"><span class="material-icons-round" style="font-size: 13px;">warning</span>เสี่ยงมาก (ทุกวัน)</span>'
+          : '<span style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; padding: 2px 7px; border-radius: 4px; font-weight: 600; font-size: 11px; display: inline-flex; align-items: center; gap: 3px;"><span class="material-icons-round" style="font-size: 13px;">verified_user</span>เสี่ยงน้อย (เดือนละครั้ง)</span>';
 
         var isReady = (eq.status === 'ready');
         var statusBadge = isReady
@@ -3479,6 +3519,7 @@
           '<td style="font-weight: 600; color: var(--text-main); font-size: 13px;">' + escapeHtml(eq.name) + '</td>' +
           '<td style="color: var(--text-body); font-size: 12px;">' + escapeHtml(eq.model || '-') + '</td>' +
           '<td style="font-family: var(--font-mono); font-size: 11.5px; color: var(--text-muted);">' + escapeHtml(eq.serialNo || '-') + '</td>' +
+          '<td style="text-align: center;">' + riskBadge + '</td>' +
           '<td><span style="font-size: 11.5px; background: var(--royal-subtle); color: var(--royal-blue); padding: 2px 6px; border-radius: 4px;">' + escapeHtml(formName) + '</span></td>' +
           '<td style="font-weight: 500; font-size: 12.5px; color: var(--text-main);">' + escapeHtml(deptName) + '</td>' +
           '<td style="text-align: center;">' + statusBadge + '</td>' +
@@ -3509,6 +3550,7 @@
       document.getElementById('modalEquipName').value = '';
       document.getElementById('modalEquipModel').value = '';
       document.getElementById('modalEquipSerialNo').value = '';
+      document.getElementById('modalEquipRiskLevel').value = 'high';
       document.getElementById('modalEquipStatus').value = 'ready';
 
       populateFormSelects();
@@ -3531,6 +3573,7 @@
       document.getElementById('modalEquipModel').value = eq.model || '';
       document.getElementById('modalEquipSerialNo').value = eq.serialNo || '';
       document.getElementById('modalEquipFormId').value = eq.formId || 'defibrillator';
+      document.getElementById('modalEquipRiskLevel').value = eq.riskLevel || (eq.frequency === 'monthly' ? 'low' : 'high');
       document.getElementById('modalEquipCurrentDept').value = eq.currentDept || 'CENTRAL';
       document.getElementById('modalEquipStatus').value = eq.status || 'ready';
 
@@ -3551,6 +3594,7 @@
       var model = document.getElementById('modalEquipModel').value.trim();
       var serialNo = document.getElementById('modalEquipSerialNo').value.trim();
       var formId = document.getElementById('modalEquipFormId').value;
+      var riskLevel = document.getElementById('modalEquipRiskLevel').value;
       var currentDept = document.getElementById('modalEquipCurrentDept').value;
       var status = document.getElementById('modalEquipStatus').value;
 
@@ -3562,12 +3606,16 @@
       var btn = document.getElementById('btnSaveEquipment');
       if (btn) btn.disabled = true;
 
+      var frequency = (riskLevel === 'low') ? 'monthly' : 'daily';
+
       var itemPayload = {
         assetCode: assetCode,
         name: name,
         model: model,
         serialNo: serialNo,
         formId: formId,
+        riskLevel: riskLevel,
+        frequency: frequency,
         homeDept: currentDept,
         currentDept: currentDept,
         status: status,

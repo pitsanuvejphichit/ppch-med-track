@@ -75,6 +75,7 @@
       model: r.model || '',
       serialNo: r.serial_no || '',
       frequency: r.frequency || 'daily',
+      riskLevel: r.risk_level || (r.frequency === 'monthly' ? 'low' : 'high'),
       homeDept: r.home_dept || '',
       currentDept: r.current_dept || '',
       status: r.status || 'ready',
@@ -565,6 +566,8 @@
         if (callback) callback({ success: false, message: 'กรุณาระบุรหัสเครื่องและชื่อเครื่องมือแพทย์' });
         return;
       }
+      var riskLevel = itemData.riskLevel || (itemData.frequency === 'monthly' ? 'low' : 'high');
+      var frequency = (riskLevel === 'low' || itemData.frequency === 'monthly') ? 'monthly' : 'daily';
       var eqId = itemData.id || ('EQ-' + Date.now());
       var row = {
         id: eqId,
@@ -573,7 +576,8 @@
         form_id: itemData.formId || 'defibrillator',
         model: itemData.model || '',
         serial_no: itemData.serialNo || '',
-        frequency: itemData.frequency || 'daily',
+        risk_level: riskLevel,
+        frequency: frequency,
         home_dept: itemData.homeDept || itemData.currentDept || 'CENTRAL',
         current_dept: itemData.currentDept || itemData.homeDept || 'CENTRAL',
         status: itemData.status || 'ready',
@@ -595,6 +599,8 @@
             formId: created.formId,
             model: created.model,
             serialNo: created.serialNo,
+            riskLevel: created.riskLevel,
+            frequency: created.frequency,
             homeDept: created.homeDept,
             currentDept: created.currentDept,
             status: created.status
@@ -619,6 +625,13 @@
       if (itemData.formId !== undefined) body.form_id = itemData.formId;
       if (itemData.model !== undefined) body.model = itemData.model;
       if (itemData.serialNo !== undefined) body.serial_no = itemData.serialNo;
+      if (itemData.riskLevel !== undefined) {
+        body.risk_level = itemData.riskLevel;
+        body.frequency = (itemData.riskLevel === 'low') ? 'monthly' : 'daily';
+      } else if (itemData.frequency !== undefined) {
+        body.frequency = itemData.frequency;
+        body.risk_level = (itemData.frequency === 'monthly') ? 'low' : 'high';
+      }
       if (itemData.homeDept !== undefined) body.home_dept = itemData.homeDept;
       if (itemData.currentDept !== undefined) body.current_dept = itemData.currentDept;
       if (itemData.status !== undefined) body.status = itemData.status;
@@ -637,6 +650,8 @@
             formId: itemData.formId,
             model: itemData.model,
             serialNo: itemData.serialNo,
+            riskLevel: itemData.riskLevel,
+            frequency: itemData.frequency,
             homeDept: itemData.homeDept,
             currentDept: itemData.currentDept,
             status: itemData.status

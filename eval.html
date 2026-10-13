@@ -509,7 +509,10 @@
           <span class="material-icons-round" style="color: var(--royal-blue); font-size: 18px;">medical_services</span>
           <span id="formNameHeading">แบบตรวจเช็คเครื่องมือแพทย์</span>
         </div>
-        <span id="badgeCategoryPill" style="font-size: 11px; font-weight: 700; color: var(--royal-blue); background: var(--royal-subtle); padding: 3px 8px; border-radius: 4px; border: 1px solid var(--border-blue-soft);">-</span>
+        <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+          <span id="badgeRiskPill" style="display: none; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px;">-</span>
+          <span id="badgeCategoryPill" style="font-size: 11px; font-weight: 700; color: var(--royal-blue); background: var(--royal-subtle); padding: 3px 8px; border-radius: 4px; border: 1px solid var(--border-blue-soft);">-</span>
+        </div>
       </div>
       <div class="eval-card-body">
         <div style="margin-bottom: 12px;">
@@ -923,8 +926,10 @@
 
     function onDeviceSelected() {
       var devId = document.getElementById('evalDeviceSelect').value;
+      var riskPill = document.getElementById('badgeRiskPill');
       if (!devId) {
         currentDevice = null;
+        if (riskPill) riskPill.style.display = 'none';
         applyRepairLock(false);
         checkExistingEvaluationOnDate();
         return;
@@ -938,6 +943,24 @@
 
       document.getElementById('formNameHeading').innerText = currentForm.name;
       document.getElementById('badgeCategoryPill').innerText = currentForm.category;
+
+      if (riskPill) {
+        var eqRisk = currentDevice.riskLevel || (currentDevice.frequency === 'monthly' ? 'low' : 'high');
+        riskPill.style.display = 'inline-flex';
+        riskPill.style.alignItems = 'center';
+        riskPill.style.gap = '3px';
+        if (eqRisk === 'high') {
+          riskPill.style.background = '#fef2f2';
+          riskPill.style.color = '#dc2626';
+          riskPill.style.border = '1px solid #fecaca';
+          riskPill.innerHTML = '<span class="material-icons-round" style="font-size: 13px;">warning</span> เสี่ยงมาก (ตรวจทุกวัน)';
+        } else {
+          riskPill.style.background = '#eff6ff';
+          riskPill.style.color = '#2563eb';
+          riskPill.style.border = '1px solid #bfdbfe';
+          riskPill.innerHTML = '<span class="material-icons-round" style="font-size: 13px;">verified_user</span> เสี่ยงน้อย (ตรวจเดือนละครั้ง)';
+        }
+      }
 
       // Set department: default to yesterday's / latest evaluation department, or currentDept
       var defaultDept = currentDevice.currentDept;
