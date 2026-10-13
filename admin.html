@@ -1357,6 +1357,24 @@
         display: none !important;
       }
 
+      /* Device Summary Cascade Filters on Mobile */
+      .device-summary-filter-item {
+        width: 100% !important;
+        min-width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+      }
+      .device-summary-filter-item label {
+        min-width: 90px !important;
+        flex-shrink: 0 !important;
+      }
+      .device-summary-filter-item select {
+        flex: 1 !important;
+        min-width: 0 !important;
+        width: 100% !important;
+      }
+
       /* Relocate Sub-view */
       .grid-relocate-container {
         grid-template-columns: 1fr !important;
@@ -1645,13 +1663,24 @@
           <!-- Filter & Device Selector Bar -->
           <div class="page-filter-bar no-print" style="flex-wrap: wrap; gap: 10px;">
             <div class="filter-left-controls" style="flex-wrap: wrap; gap: 10px; width: 100%;">
-              <!-- Equipment Dropdown Selector -->
-              <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; width: 100%;">
-                <label for="historyDeviceSelect" style="font-size: 12px; font-weight: 700; color: var(--royal-blue); white-space: nowrap;">
-                  <span class="material-icons-round" style="font-size: 16px; vertical-align: -3px;">medical_services</span>
-                  เลือกเครื่องมือแพทย์:
+              <!-- 1. Equipment Name Dropdown Selector -->
+              <div class="device-summary-filter-item" style="display: flex; align-items: center; gap: 6px; flex: 1; min-width: 220px;">
+                <label for="historyDeviceNameSelect" style="font-size: 12px; font-weight: 700; color: var(--royal-blue); white-space: nowrap; display: inline-flex; align-items: center; gap: 4px;">
+                  <span class="material-icons-round" style="font-size: 16px;">medical_services</span>
+                  <span>ชื่อเครื่องมือ:</span>
                 </label>
-                <select id="historyDeviceSelect" class="filter-input" style="min-width: 220px; max-width: 100%; flex: 1; font-weight: 600;" onchange="onDeviceSelectChanged()">
+                <select id="historyDeviceNameSelect" class="filter-input" style="width: 100%; min-width: 0; flex: 1; font-weight: 600;" onchange="onDeviceNameSelectChanged()">
+                  <!-- Populated by JavaScript -->
+                </select>
+              </div>
+
+              <!-- 2. Equipment Code Dropdown Selector -->
+              <div class="device-summary-filter-item" style="display: flex; align-items: center; gap: 6px; flex: 1; min-width: 200px;">
+                <label for="historyDeviceSelect" style="font-size: 12px; font-weight: 700; color: var(--royal-blue); white-space: nowrap; display: inline-flex; align-items: center; gap: 4px;">
+                  <span class="material-icons-round" style="font-size: 16px;">tag</span>
+                  <span>รหัสเครื่อง:</span>
+                </label>
+                <select id="historyDeviceSelect" class="filter-input" style="width: 100%; min-width: 0; flex: 1; font-weight: 600;" onchange="onDeviceSelectChanged()">
                   <!-- Populated by JavaScript -->
                 </select>
               </div>
@@ -2950,31 +2979,93 @@
     var deviceHistoryMode = 'month'; // 'month' or 'all'
 
     function populateDeviceHistorySelect() {
-      var sel = document.getElementById('historyDeviceSelect');
-      if (!sel) return;
-      var curVal = sel.value || currentDeviceHistoryId;
-      sel.innerHTML = '';
+      var nameSel = document.getElementById('historyDeviceNameSelect');
+      var codeSel = document.getElementById('historyDeviceSelect');
+      if (!codeSel) return;
 
       if (!allEquipment || allEquipment.length === 0) {
-        sel.innerHTML = '<option value="">-- ไม่พบเครื่องมือแพทย์ --</option>';
+        if (nameSel) nameSel.innerHTML = '<option value="">-- ไม่พบเครื่องมือแพทย์ --</option>';
+        codeSel.innerHTML = '<option value="">-- ไม่พบเครื่องมือแพทย์ --</option>';
         return;
       }
 
+      // 1. Gather unique equipment names preserving order
+      var uniqueNames = [];
       allEquipment.forEach(function (eq) {
+        var n = (eq.name || 'ไม่ระบุชื่อ').trim();
+        if (uniqueNames.indexOf(n) === -1) {
+          uniqueNames.push(n);
+        }
+      });
+
+      // 2. Populate name select
+      if (nameSel) {
+        var currentNameVal = nameSel.value;
+        nameSel.innerHTML = '';
+        uniqueNames.forEach(function (name) {
+          var count = allEquipment.filter(function (e) { return (e.name || 'ไม่ระบุชื่อ').trim() === name; }).length;
+          var opt = document.createElement('option');
+          opt.value = name;
+          opt.innerText = name + (count > 1 ? ' (' + count + ' เครื่อง)' : '');
+          nameSel.appendChild(opt);
+        });
+
+        // Determine active name
+        var activeEq = currentDeviceHistoryId ? allEquipment.find(function (e) { return e.id === currentDeviceHistoryId; }) : null;
+        if (activeEq) {
+          nameSel.value = (activeEq.name || 'ไม่ระบุชื่อ').trim();
+        } else if (currentNameVal && uniqueNames.indexOf(currentNameVal) !== -1) {
+          nameSel.value = currentNameVal;
+        } else {
+          nameSel.value = uniqueNames[0];
+        }
+      }
+
+      // 3. Populate code select based on selected name
+      populateCodeSelectForCurrentName();
+    }
+
+    function populateCodeSelectForCurrentName() {
+      var nameSel = document.getElementById('historyDeviceNameSelect');
+      var codeSel = document.getElementById('historyDeviceSelect');
+      if (!codeSel) return;
+
+      var selectedName = nameSel ? nameSel.value : '';
+      var matchingEqs = allEquipment.filter(function (e) {
+        return !selectedName || (e.name || 'ไม่ระบุชื่อ').trim() === selectedName;
+      });
+
+      if (matchingEqs.length === 0) {
+        codeSel.innerHTML = '<option value="">-- ไม่พบรหัสเครื่อง --</option>';
+        currentDeviceHistoryId = null;
+        return;
+      }
+
+      var prevCodeVal = codeSel.value || currentDeviceHistoryId;
+      codeSel.innerHTML = '';
+      matchingEqs.forEach(function (eq) {
         var opt = document.createElement('option');
         opt.value = eq.id;
         var deptName = window.PPCH_STORE ? window.PPCH_STORE.getDepartmentName(eq.currentDept) : eq.currentDept;
-        opt.innerText = eq.assetCode + ' - ' + eq.name + ' (' + deptName + ')';
-        sel.appendChild(opt);
+        var label = eq.assetCode;
+        if (eq.model) label += ' (รุ่น ' + eq.model + ')';
+        label += ' • ' + deptName;
+        opt.innerText = label;
+        codeSel.appendChild(opt);
       });
 
-      if (curVal && allEquipment.some(function (e) { return e.id === curVal; })) {
-        sel.value = curVal;
-        currentDeviceHistoryId = curVal;
+      if (prevCodeVal && matchingEqs.some(function (e) { return e.id === prevCodeVal; })) {
+        codeSel.value = prevCodeVal;
+        currentDeviceHistoryId = prevCodeVal;
       } else {
-        sel.value = allEquipment[0].id;
-        currentDeviceHistoryId = allEquipment[0].id;
+        codeSel.value = matchingEqs[0].id;
+        currentDeviceHistoryId = matchingEqs[0].id;
       }
+    }
+
+    function onDeviceNameSelectChanged() {
+      populateCodeSelectForCurrentName();
+      renderDeviceSummaryView();
     }
 
     function onDeviceSelectChanged() {
@@ -2982,6 +3073,12 @@
       if (sel) {
         currentDeviceHistoryId = sel.value;
       }
+      renderDeviceSummaryView();
+    }
+
+    function selectDeviceInHistory(devId) {
+      currentDeviceHistoryId = devId;
+      populateDeviceHistorySelect();
       renderDeviceSummaryView();
     }
 
@@ -3012,8 +3109,9 @@
         monthInput.value = y + '-' + m;
       }
 
+      var nameSel = document.getElementById('historyDeviceNameSelect');
       var sel = document.getElementById('historyDeviceSelect');
-      if (!sel || !sel.value) {
+      if (!sel || !sel.value || !nameSel || !nameSel.value) {
         populateDeviceHistorySelect();
       }
       if (!sel || !sel.value) return;
@@ -3022,6 +3120,10 @@
       currentDeviceHistoryId = devId;
       var eq = window.PPCH_STORE.getEquipmentById(devId);
       if (!eq) return;
+
+      if (nameSel && nameSel.value !== (eq.name || 'ไม่ระบุชื่อ').trim()) {
+        nameSel.value = (eq.name || 'ไม่ระบุชื่อ').trim();
+      }
 
       var form = window.PPCH_STORE.getFormById(eq.formId);
       var currentDeptName = window.PPCH_STORE.getDepartmentName(eq.currentDept);
