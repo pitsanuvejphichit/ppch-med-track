@@ -951,6 +951,273 @@
         display: none !important;
       }
     }
+
+    /* ==================== 10. MOBILE & TABLET RESPONSIVE ENGINE ==================== */
+    .btn-sidebar-toggle {
+      display: none;
+    }
+    .sidebar-mobile-header {
+      display: none;
+    }
+    .sidebar-backdrop {
+      display: none;
+    }
+
+    .kpi-strip-4 {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+      width: 100%;
+    }
+
+    .grid-relocate-container {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 991px) {
+      /* Top Header */
+      .app-topbar {
+        padding: 0 12px;
+        height: 52px;
+      }
+      .topbar-left {
+        gap: 8px;
+      }
+      .btn-sidebar-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        border: 1px solid var(--border-main);
+        background: #f8fafc;
+        color: var(--royal-blue);
+        cursor: pointer;
+        transition: all 0.15s ease;
+        flex-shrink: 0;
+      }
+      .btn-sidebar-toggle:hover,
+      .btn-sidebar-toggle:active {
+        background: var(--royal-subtle);
+        border-color: #93c5fd;
+      }
+      .btn-sidebar-toggle .material-icons-round {
+        font-size: 22px;
+      }
+      .brand-logo-img {
+        height: 28px;
+      }
+      .brand-divider {
+        display: none !important;
+      }
+      .topbar-breadcrumbs {
+        display: none !important;
+      }
+      .brand-badge-pill {
+        display: none !important;
+      }
+      .topbar-right {
+        gap: 6px;
+      }
+      .status-realtime-badge {
+        padding: 3px 8px;
+        font-size: 11px;
+      }
+      .admin-profile-pill {
+        padding: 2px 6px;
+        background: transparent;
+        border: none;
+      }
+      .admin-label {
+        display: none !important;
+      }
+
+      /* Body Layout */
+      .app-layout-body {
+        position: relative;
+      }
+
+      /* Off-canvas Mobile Drawer Sidebar */
+      .app-sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        bottom: 0 !important;
+        width: 280px !important;
+        max-width: 85vw !important;
+        height: 100vh !important;
+        z-index: 1050 !important;
+        background: #ffffff !important;
+        box-shadow: 0 10px 35px rgba(0, 46, 110, 0.28) !important;
+        transform: translateX(-100%);
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        overflow-y: auto !important;
+        padding: 16px 14px 24px 14px !important;
+      }
+      .app-sidebar.mobile-open {
+        transform: translateX(0) !important;
+      }
+
+      .sidebar-mobile-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 12px;
+        margin-bottom: 12px;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+      .btn-sidebar-close {
+        border: none;
+        background: #f1f5f9;
+        border-radius: 6px;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted);
+        cursor: pointer;
+      }
+      .btn-sidebar-close:hover {
+        background: #e2e8f0;
+        color: var(--text-main);
+      }
+
+      .sidebar-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.5);
+        backdrop-filter: blur(2px);
+        z-index: 1040;
+        opacity: 1;
+        transition: opacity 0.2s ease;
+      }
+      .sidebar-backdrop.hidden {
+        display: none;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      /* Main Content takes 100% full width */
+      .app-main-content {
+        max-width: 100% !important;
+        width: 100% !important;
+        padding: 12px 10px !important;
+      }
+
+      /* KPI Strip 2 Columns on mobile */
+      .kpi-strip-5 {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px !important;
+      }
+      .kpi-strip-5 .kpi-card:last-child {
+        grid-column: span 2 !important;
+      }
+      .kpi-strip-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px !important;
+      }
+      .kpi-card {
+        padding: 8px 10px !important;
+        gap: 8px !important;
+      }
+      .kpi-icon-box {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 16px !important;
+      }
+      .kpi-val {
+        font-size: 16px !important;
+      }
+      .kpi-label {
+        font-size: 10.5px !important;
+      }
+
+      /* Filter Toolbar on mobile */
+      .page-filter-bar {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 8px !important;
+        padding: 10px !important;
+      }
+      .filter-left-controls {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 8px !important;
+        width: 100% !important;
+      }
+      .search-input-box {
+        min-width: 100% !important;
+        width: 100% !important;
+      }
+      .filter-date-group {
+        width: 100% !important;
+        display: flex !important;
+      }
+      .filter-date-group input {
+        flex: 1 !important;
+      }
+      .filter-input {
+        width: 100% !important;
+        max-width: 100% !important;
+        font-size: 13px !important;
+      }
+      .filter-right-tools {
+        display: flex !important;
+        justify-content: stretch !important;
+        width: 100% !important;
+        gap: 6px !important;
+      }
+      .filter-right-tools .btn-tool {
+        flex: 1 !important;
+        justify-content: center !important;
+      }
+      .filter-sep-desktop {
+        display: none !important;
+      }
+
+      /* Content Panels */
+      .content-panel {
+        border-radius: 10px !important;
+      }
+      .panel-header {
+        padding: 10px 12px !important;
+      }
+
+      /* Tables on Mobile */
+      .table-responsive {
+        -webkit-overflow-scrolling: touch;
+      }
+      .device-table, .data-table-modern {
+        min-width: 650px !important;
+      }
+
+      /* Relocate Sub-view */
+      .grid-relocate-container {
+        grid-template-columns: 1fr !important;
+      }
+
+      /* Modals on Mobile */
+      .modal-box {
+        width: 95vw !important;
+        max-width: 95vw !important;
+        padding: 16px 14px !important;
+        max-height: 90vh !important;
+        overflow-y: auto !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #topStatusText {
+        display: none;
+      }
+    }
   </style>
 </head>
 <body>
@@ -984,6 +1251,9 @@
     <!-- 1. Top Header -->
     <header class="app-topbar no-print">
       <div class="topbar-left">
+        <button type="button" id="btnToggleSidebar" class="btn-sidebar-toggle" onclick="toggleMobileSidebar()" aria-label="เปิดเมนู">
+          <span class="material-icons-round">menu</span>
+        </button>
         <a href="admin.html" class="topbar-brand" title="PPCH Medical Equipment Hub">
           <img src="logo.png" alt="โรงพยาบาลพิษณุเวช" class="brand-logo-img">
           <div class="brand-divider"></div>
@@ -1011,8 +1281,21 @@
     <!-- 2. Body Layout -->
     <div class="app-layout-body">
 
+      <!-- Mobile Backdrop Overlay -->
+      <div id="sidebarBackdrop" class="sidebar-backdrop hidden" onclick="closeMobileSidebar()"></div>
+
       <!-- Left Sidebar -->
       <aside class="app-sidebar no-print">
+        <div class="sidebar-mobile-header">
+          <div style="font-weight: 700; color: var(--royal-blue); font-size: 13.5px; display: flex; align-items: center; gap: 8px;">
+            <img src="logo.png" style="height: 24px;" alt="Logo">
+            <span>เมนูระบบ Med Track</span>
+          </div>
+          <button type="button" onclick="closeMobileSidebar()" class="btn-sidebar-close" aria-label="ปิดเมนู">
+            <span class="material-icons-round">close</span>
+          </button>
+        </div>
+
         <div class="sidebar-section-title">เมนูหลัก</div>
         <nav class="sidebar-nav">
           <button onclick="switchView('summary')" id="navBtn_summary" class="nav-btn active">
@@ -1204,17 +1487,17 @@
           <div class="page-filter-bar no-print" style="flex-wrap: wrap; gap: 10px;">
             <div class="filter-left-controls" style="flex-wrap: wrap; gap: 10px; width: 100%;">
               <!-- Equipment Dropdown Selector -->
-              <div style="display: flex; align-items: center; gap: 6px;">
+              <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; width: 100%;">
                 <label for="historyDeviceSelect" style="font-size: 12px; font-weight: 700; color: var(--royal-blue); white-space: nowrap;">
                   <span class="material-icons-round" style="font-size: 16px; vertical-align: -3px;">medical_services</span>
                   เลือกเครื่องมือแพทย์:
                 </label>
-                <select id="historyDeviceSelect" class="filter-input" style="min-width: 280px; max-width: 440px; font-weight: 600;" onchange="onDeviceSelectChanged()">
+                <select id="historyDeviceSelect" class="filter-input" style="min-width: 220px; max-width: 100%; flex: 1; font-weight: 600;" onchange="onDeviceSelectChanged()">
                   <!-- Populated by JavaScript -->
                 </select>
               </div>
 
-              <div class="sidebar-divider" style="height: 24px; width: 1px; margin: 0 4px;"></div>
+              <div class="sidebar-divider filter-sep-desktop" style="height: 24px; width: 1px; margin: 0 4px;"></div>
 
               <!-- Month & Range Mode Filter -->
               <div class="filter-date-group">
@@ -1268,7 +1551,7 @@
         <!-- ==================== SUB-VIEW 4: เครื่องมือไม่พร้อมใช้งาน ==================== -->
         <section id="viewDefective" style="display: none;">
           <!-- 4-Column KPI Strip for Defects -->
-          <div class="kpi-strip-5 no-print" style="grid-template-columns: repeat(4, minmax(0, 1fr));">
+          <div class="kpi-strip-4 no-print">
             <div class="kpi-card" id="kpiCard_defectTotal">
               <div class="kpi-icon-box kpi-icon-red">
                 <span class="material-icons-round">error</span>
@@ -1369,7 +1652,7 @@
 
         <!-- ==================== SUB-VIEW 3: มอบหมายแผนก ==================== -->
         <section id="viewRelocate" style="display: none;">
-          <div style="display: grid; grid-template-columns: minmax(320px, 1fr) minmax(320px, 1fr); gap: 18px; margin-bottom: 16px;">
+          <div class="grid-relocate-container">
             <!-- Form Card -->
             <div class="content-panel" style="margin-bottom: 0;">
               <div class="panel-header">
@@ -1490,13 +1773,13 @@
         <!-- ==================== SUB-VIEW 5: ตั้งค่าระบบ (SETTINGS) ==================== -->
         <section id="viewSettings" style="display: none;">
           <!-- Settings Navigation Sub-Tabs -->
-          <div style="display: flex; gap: 8px; margin-bottom: 14px; border-bottom: 2px solid var(--border-subtle); padding-bottom: 10px;">
-            <button type="button" id="tabBtn_settings_dept" onclick="switchSettingsTab('departments')" class="btn-tool btn-tool-primary" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-weight: 600;">
+          <div style="display: flex; gap: 8px; margin-bottom: 14px; border-bottom: 2px solid var(--border-subtle); padding-bottom: 10px; flex-wrap: wrap;">
+            <button type="button" id="tabBtn_settings_dept" onclick="switchSettingsTab('departments')" class="btn-tool btn-tool-primary" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 14px; font-weight: 600; flex: 1; min-width: 140px;">
               <span class="material-icons-round" style="font-size: 18px;">corporate_fare</span>
               <span>การจัดการแผนก</span>
               <span id="badgeSettingsDeptCount" class="nav-count-badge" style="background: rgba(255,255,255,0.25); color: #fff; margin-left: 4px;">0</span>
             </button>
-            <button type="button" id="tabBtn_settings_equip" onclick="switchSettingsTab('equipment')" class="btn-tool" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-weight: 600;">
+            <button type="button" id="tabBtn_settings_equip" onclick="switchSettingsTab('equipment')" class="btn-tool" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 14px; font-weight: 600; flex: 1; min-width: 140px;">
               <span class="material-icons-round" style="font-size: 18px;">medical_services</span>
               <span>การจัดการเครื่องมือแพทย์</span>
               <span id="badgeSettingsEquipCount" class="nav-count-badge" style="background: var(--royal-subtle); color: var(--royal-blue); margin-left: 4px;">0</span>
@@ -2046,7 +2329,31 @@
       }
     }
 
+    // ---------- MOBILE SIDEBAR DRAWER ----------
+    function toggleMobileSidebar() {
+      var sb = document.querySelector('.app-sidebar');
+      var bd = document.getElementById('sidebarBackdrop');
+      if (!sb) return;
+      var isOpen = sb.classList.contains('mobile-open');
+      if (isOpen) {
+        closeMobileSidebar();
+      } else {
+        sb.classList.add('mobile-open');
+        if (bd) bd.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeMobileSidebar() {
+      var sb = document.querySelector('.app-sidebar');
+      var bd = document.getElementById('sidebarBackdrop');
+      if (sb) sb.classList.remove('mobile-open');
+      if (bd) bd.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
     function switchView(viewKey) {
+      closeMobileSidebar();
       currentView = viewKey;
       var bread = document.getElementById('breadCurrent');
       var breadMap = {
@@ -2057,7 +2364,7 @@
         directory: 'รายการเครื่อง & QR Code',
         settings: 'ตั้งค่าระบบ'
       };
-      bread.innerText = breadMap[viewKey] || viewKey;
+      if (bread) bread.innerText = breadMap[viewKey] || viewKey;
 
       var viewIds = {
         summary: 'viewSummary',
