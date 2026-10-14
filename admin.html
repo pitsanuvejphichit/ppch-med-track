@@ -1362,6 +1362,35 @@
       width: 90%;
       animation: loaderPop 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
+    .modal-box .filter-input,
+    .modal-box input:not([type="checkbox"]):not([type="radio"]),
+    .modal-box select,
+    .modal-box textarea {
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box;
+      background: #ffffff;
+      border: 1px solid var(--border-main);
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-size: 13px;
+      color: var(--text-body);
+      font-family: inherit;
+      outline: none;
+      transition: all 0.15s ease;
+    }
+    .modal-box input:focus,
+    .modal-box select:focus,
+    .modal-box textarea:focus {
+      border-color: var(--royal-blue);
+      box-shadow: 0 0 0 3px rgba(0, 75, 147, 0.12);
+      background: #ffffff;
+    }
+    .modal-box textarea {
+      min-height: 100px;
+      resize: vertical;
+      line-height: 1.5;
+    }
 
     /* Toast Notification */
     #toastNotice {
@@ -1489,9 +1518,43 @@
     }
 
     .grid-relocate-container {
-      max-width: 680px;
-      margin: 0 auto 16px auto;
       width: 100%;
+      max-width: 100%;
+      margin: 0 0 16px 0;
+    }
+    .relocate-workstation-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .relocate-workstation-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+    }
+    .grid-relocate-container .filter-input,
+    .grid-relocate-container input:not([type="checkbox"]):not([type="radio"]),
+    .grid-relocate-container select,
+    .grid-relocate-container textarea {
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box;
+      background: #ffffff;
+      border: 1px solid var(--border-main);
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-size: 13px;
+      color: var(--text-body);
+      font-family: inherit;
+      outline: none;
+      transition: all 0.15s ease;
+    }
+    .grid-relocate-container select:focus,
+    .grid-relocate-container input:focus {
+      border-color: var(--royal-blue);
+      box-shadow: 0 0 0 3px rgba(0, 75, 147, 0.12);
     }
 
     /* ==================== DASHBOARD EXECUTIVE STYLES ==================== */
@@ -3247,60 +3310,68 @@
                   <span>มอบหมายแผนกรับผิดชอบเครื่องมือแพทย์</span>
                 </div>
               </div>
-              <div style="padding: 18px 20px;">
+              <div style="padding: 20px 24px;">
                 <form id="relocationForm" onsubmit="handleRelocationSubmit(event)">
-                  <div style="margin-bottom: 16px;">
-                    <label style="display: block; font-size: 12.5px; font-weight: 700; color: var(--text-main); margin-bottom: 8px;">
-                      1. เลือกเครื่องมือแพทย์ที่ต้องการมอบหมาย *
-                    </label>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px;">
-                      <div>
-                        <label for="relocateDeviceNameSelect" style="display: block; font-size: 11.5px; font-weight: 600; color: var(--royal-blue); margin-bottom: 4px;">
-                          1.1 เลือกชื่อเครื่องมือแพทย์
+                  <div class="relocate-workstation-grid">
+                    <!-- Column 1: เครื่องมือแพทย์ที่ต้องการมอบหมาย & รายละเอียด -->
+                    <div>
+                      <div style="margin-bottom: 16px;">
+                        <label style="display: block; font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 8px;">
+                          1. เลือกเครื่องมือแพทย์ที่ต้องการมอบหมาย *
                         </label>
-                        <select id="relocateDeviceNameSelect" class="filter-input" style="width: 100%; font-weight: 600;" onchange="onRelocateDeviceNameChanged()" required>
-                          <option value="">-- เลือกชื่อเครื่องมือ --</option>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                          <div>
+                            <label for="relocateDeviceNameSelect" style="display: block; font-size: 11.5px; font-weight: 600; color: var(--royal-blue); margin-bottom: 4px;">
+                              1.1 เลือกชื่อเครื่องมือแพทย์
+                            </label>
+                            <select id="relocateDeviceNameSelect" class="filter-input" style="width: 100% !important; max-width: 100% !important; font-weight: 600; padding: 9px 12px; font-size: 13px;" onchange="onRelocateDeviceNameChanged()" required>
+                              <option value="">-- เลือกชื่อเครื่องมือ --</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label for="relocateDeviceSelect" style="display: block; font-size: 11.5px; font-weight: 600; color: var(--royal-blue); margin-bottom: 4px;">
+                              1.2 เลือกรหัสเครื่อง / ครุภัณฑ์
+                            </label>
+                            <select id="relocateDeviceSelect" class="filter-input" style="width: 100% !important; max-width: 100% !important; font-weight: 600; padding: 9px 12px; font-size: 13px;" onchange="onRelocateDeviceSelected()" required>
+                              <option value="">-- เลือกรหัสเครื่อง --</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Device Current Details Box -->
+                      <div id="relocateDeviceDetailBox" style="background: #f8fafc; border: 1px solid var(--border-main); border-radius: 10px; padding: 14px 16px; margin-bottom: 16px;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                          <div>
+                            <div id="relocateDeviceName" style="font-size: 14px; font-weight: 700; color: var(--royal-blue);">-</div>
+                            <div id="relocateDeviceMeta" style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">รุ่น: - | S/N: -</div>
+                          </div>
+                          <span id="relocateDeviceAsset" class="asset-code-clean" style="font-size: 11.5px;">-</span>
+                        </div>
+                        <div style="border-top: 1px dashed #cbd5e1; padding-top: 10px; margin-top: 8px; font-size: 12.5px;">
+                          <span style="color: var(--text-muted);">แผนกรับผิดชอบปัจจุบัน:</span>
+                          <strong id="relocateCurrentDept" style="color: var(--royal-blue); margin-left: 6px;">-</strong>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Column 2: แผนกใหม่ที่ต้องการย้ายไปรับผิดชอบ & ปุ่มบันทึก -->
+                    <div>
+                      <div style="margin-bottom: 18px;">
+                        <label for="relocateTargetDept" style="display: block; font-size: 13px; font-weight: 700; color: var(--royal-blue); margin-bottom: 8px;">
+                          2. เลือกแผนกใหม่ที่ต้องการย้ายไปรับผิดชอบ *
+                        </label>
+                        <select id="relocateTargetDept" class="filter-input" style="width: 100% !important; max-width: 100% !important; font-size: 13.5px; font-weight: 600; padding: 10px 12px;" required>
+                          <option value="">-- เลือกแผนกปลายทาง --</option>
                         </select>
                       </div>
-                      <div>
-                        <label for="relocateDeviceSelect" style="display: block; font-size: 11.5px; font-weight: 600; color: var(--royal-blue); margin-bottom: 4px;">
-                          1.2 เลือกรหัสเครื่อง / ครุภัณฑ์
-                        </label>
-                        <select id="relocateDeviceSelect" class="filter-input" style="width: 100%; font-weight: 600;" onchange="onRelocateDeviceSelected()" required>
-                          <option value="">-- เลือกรหัสเครื่อง --</option>
-                        </select>
-                      </div>
+
+                      <button type="submit" class="btn-tool btn-tool-primary" style="width: 100%; justify-content: center; padding: 12px 18px; font-size: 14px; font-weight: 700; margin-top: 10px;">
+                        <span class="material-icons-round" style="font-size: 18px;">check_circle</span>
+                        <span>บันทึกการย้ายแผนก</span>
+                      </button>
                     </div>
                   </div>
-
-                  <!-- Device Current Details Box -->
-                  <div id="relocateDeviceDetailBox" style="background: #f8fafc; border: 1px solid var(--border-main); border-radius: 10px; padding: 12px 14px; margin-bottom: 16px;">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
-                      <div>
-                        <div id="relocateDeviceName" style="font-size: 13.5px; font-weight: 700; color: var(--royal-blue);">-</div>
-                        <div id="relocateDeviceMeta" style="font-size: 11.5px; color: var(--text-muted); margin-top: 2px;">รุ่น: - | S/N: -</div>
-                      </div>
-                      <span id="relocateDeviceAsset" class="asset-code-clean" style="font-size: 11px;">-</span>
-                    </div>
-                    <div style="border-top: 1px dashed #cbd5e1; padding-top: 8px; margin-top: 6px; font-size: 12px;">
-                      <span style="color: var(--text-muted);">แผนกรับผิดชอบปัจจุบัน:</span>
-                      <strong id="relocateCurrentDept" style="color: var(--royal-blue); margin-left: 4px;">-</strong>
-                    </div>
-                  </div>
-
-                  <div style="margin-bottom: 18px;">
-                    <label for="relocateTargetDept" style="display: block; font-size: 12px; font-weight: 700; color: var(--royal-blue); margin-bottom: 5px;">
-                      2. เลือกแผนกใหม่ที่ต้องการย้ายไปรับผิดชอบ *
-                    </label>
-                    <select id="relocateTargetDept" class="filter-input" style="width: 100%; font-size: 13.5px; font-weight: 600;" required>
-                      <option value="">-- เลือกแผนกปลายทาง --</option>
-                    </select>
-                  </div>
-
-                  <button type="submit" class="btn-tool btn-tool-primary" style="width: 100%; justify-content: center; padding: 11px; font-size: 13.5px; font-weight: 700;">
-                    <span class="material-icons-round">check_circle</span>
-                    <span>บันทึกการย้ายแผนก</span>
-                  </button>
                 </form>
               </div>
             </div>
@@ -3558,7 +3629,7 @@
 
   <!-- Modal: บันทึกการแก้ไขเครื่องมือแพทย์เสร็จสิ้น -->
   <div id="modalResolveDefect" class="modal-overlay hidden no-print" onclick="if(event.target === this) closeResolveModal()">
-    <div class="modal-box" style="max-width: 500px; text-align: left;">
+    <div class="modal-box" style="max-width: 560px; text-align: left;">
       <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 10px; margin-bottom: 14px;">
         <div style="font-size: 15px; font-weight: 700; color: var(--royal-blue); display: flex; align-items: center; gap: 6px;">
           <span class="material-icons-round" style="color: var(--green-ready); font-size: 20px;">build_circle</span>
@@ -3576,25 +3647,25 @@
       <form id="formResolveDefect" onsubmit="handleResolveSubmit(event)">
         <input type="hidden" id="resolveDeviceId" value="">
 
-        <div style="margin-bottom: 12px;">
-          <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 12.5px; font-weight: 600; color: var(--text-body); margin-bottom: 5px;">
             รายละเอียดการแก้ไข (แก้ไขอะไรไป) *
           </label>
-          <textarea id="resolveActionTaken" class="filter-input" style="width: 100%; height: 75px; resize: vertical;" placeholder="ระบุสิ่งที่ดำเนินการแก้ไข เช่น ตรวจสอบระบบสายไฟ AC เปลี่ยนหัวปลั๊กใหม่ และทดสอบโหลดต่อเนื่อง 1 ชม. ผ่านเกณฑ์ปกติ..." required></textarea>
+          <textarea id="resolveActionTaken" style="width: 100% !important; max-width: 100% !important; min-height: 105px; padding: 10px 12px; font-size: 13px; line-height: 1.5; border-radius: 8px; border: 1px solid var(--border-main); background: #ffffff; box-sizing: border-box; resize: vertical;" placeholder="ระบุสิ่งที่ดำเนินการแก้ไข เช่น ตรวจสอบระบบสายไฟ AC เปลี่ยนหัวปลั๊กใหม่ และทดสอบโหลดต่อเนื่อง 1 ชม. ผ่านเกณฑ์ปกติ..." required></textarea>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
           <div>
             <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">
               วันที่-เวลาที่แก้ไขเสร็จ *
             </label>
-            <input type="datetime-local" id="resolveDateTime" class="filter-input" style="width: 100%;" required>
+            <input type="datetime-local" id="resolveDateTime" style="width: 100% !important; max-width: 100% !important; padding: 8px 10px; font-size: 13px; border-radius: 8px; border: 1px solid var(--border-main); box-sizing: border-box;" required>
           </div>
           <div>
             <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">
               ผู้ดำเนินการแก้ไข (ช่าง/เจ้าหน้าที่) *
             </label>
-            <input type="text" id="resolveTechnician" class="filter-input" style="width: 100%;" placeholder="เช่น อาภากร บุญเกตกูล" value="อาภากร บุญเกตกูล" required>
+            <input type="text" id="resolveTechnician" style="width: 100% !important; max-width: 100% !important; padding: 8px 10px; font-size: 13px; border-radius: 8px; border: 1px solid var(--border-main); box-sizing: border-box;" placeholder="เช่น อาภากร บุญเกตกูล" value="อาภากร บุญเกตกูล" required>
           </div>
         </div>
 
@@ -3602,12 +3673,12 @@
           <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">
             ผลการทดสอบการใช้งานหลังแก้ไข
           </label>
-          <input type="text" id="resolveTestNote" class="filter-input" style="width: 100%;" placeholder="ระบุผลการทดสอบการใช้งานหลังแก้ไข (ให้พนักงานกรอกเอง)">
+          <input type="text" id="resolveTestNote" style="width: 100% !important; max-width: 100% !important; padding: 8px 10px; font-size: 13px; border-radius: 8px; border: 1px solid var(--border-main); box-sizing: border-box;" placeholder="ระบุผลการทดสอบการใช้งานหลังแก้ไข (ให้พนักงานกรอกเอง)">
         </div>
 
         <div style="display: flex; gap: 8px; justify-content: flex-end;">
           <button type="button" onclick="closeResolveModal()" class="btn-tool">ยกเลิก</button>
-          <button type="submit" class="btn-tool btn-tool-primary" style="background: var(--green-ready); border-color: var(--green-ready);">
+          <button type="submit" class="btn-tool btn-tool-primary" style="background: var(--green-ready); border-color: var(--green-ready); padding: 9px 18px; font-weight: 600;">
             <span class="material-icons-round" style="font-size: 16px;">check_circle</span>
             <span>บันทึกเสร็จสิ้น & ปลดล็อกเครื่อง</span>
           </button>
@@ -3618,7 +3689,7 @@
 
   <!-- Modal: อนุญาตให้ใช้งานต่อ (Conditional Use / Waiver) -->
   <div id="modalAllowUse" class="modal-overlay hidden no-print" onclick="if(event.target === this) closeAllowUseModal()">
-    <div class="modal-box" style="max-width: 520px; text-align: left;">
+    <div class="modal-box" style="max-width: 560px; text-align: left;">
       <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 10px; margin-bottom: 14px;">
         <div style="font-size: 15px; font-weight: 700; color: var(--royal-blue); display: flex; align-items: center; gap: 8px;">
           <span class="material-icons-round" style="color: #d97706; font-size: 22px;">published_with_changes</span>
@@ -3636,35 +3707,35 @@
       <form id="formAllowUse" onsubmit="submitAllowUse(event)">
         <input type="hidden" id="allowUseDeviceId" value="">
 
-        <div style="margin-bottom: 12px;">
-          <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 12.5px; font-weight: 600; color: var(--text-body); margin-bottom: 5px;">
             ชื่อเจ้าหน้าที่ / ผู้มีอำนาจอนุญาตให้ใช้งานต่อ <span style="color: var(--red-abnormal);">*</span>
           </label>
-          <input type="text" id="allowUseOfficerName" class="filter-input" style="width: 100%; font-size: 13px; font-weight: 600;" value="อาภากร บุญเกตกูล" placeholder="ระบุชื่อเจ้าหน้าที่" required>
+          <input type="text" id="allowUseOfficerName" style="width: 100% !important; max-width: 100% !important; font-size: 13px; font-weight: 600; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--border-main); box-sizing: border-box;" value="อาภากร บุญเกตกูล" placeholder="ระบุชื่อเจ้าหน้าที่" required>
         </div>
 
-        <div style="margin-bottom: 12px;">
-          <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 12.5px; font-weight: 600; color: var(--text-body); margin-bottom: 5px;">
             เหตุผล / เงื่อนไขการอนุญาตให้ใช้งานต่อ (ถ้ามี)
           </label>
-          <textarea id="allowUseReason" class="filter-input" style="width: 100%; height: 75px; resize: vertical; font-size: 12.5px;" placeholder="ระบุเหตุผล เงื่อนไข หรือข้อควรระวังในการใช้งาน (ไม่บังคับกรอก)..."></textarea>
+          <textarea id="allowUseReason" style="width: 100% !important; max-width: 100% !important; min-height: 105px; resize: vertical; font-size: 13px; line-height: 1.5; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-main); background: #ffffff; box-sizing: border-box;" placeholder="ระบุเหตุผล เงื่อนไข หรือข้อควรระวังในการใช้งาน (ไม่บังคับกรอก)..."></textarea>
         </div>
 
         <div style="margin-bottom: 16px;">
-          <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">
+          <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-body); margin-bottom: 5px;">
             วัน-เวลาที่ทำการอนุญาต
           </label>
-          <input type="datetime-local" id="allowUseDateTime" class="filter-input" style="width: 100%; font-family: var(--font-mono);" required>
+          <input type="datetime-local" id="allowUseDateTime" style="width: 100% !important; max-width: 100% !important; font-family: var(--font-mono); padding: 8px 10px; font-size: 13px; border-radius: 8px; border: 1px solid var(--border-main); box-sizing: border-box;" required>
         </div>
 
-        <div style="display: flex; gap: 8px; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid var(--border-subtle); flex-wrap: wrap;">
+        <div style="display: flex; gap: 8px; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid var(--border-subtle); flex-wrap: wrap;">
           <button type="button" id="btnRevokeAllowUse" onclick="revokeAllowUseAction()" class="btn-tool" style="color: #dc2626; border-color: #fecaca; background: #fef2f2; display: none;">
             <span class="material-icons-round" style="font-size: 14px;">cancel</span>
             <span>ยกเลิกการอนุญาต (เปลี่ยนเป็นไม่พร้อมใช้)</span>
           </button>
           <div style="display: flex; gap: 8px; margin-left: auto;">
             <button type="button" onclick="closeAllowUseModal()" class="btn-tool">ยกเลิก</button>
-            <button type="submit" class="btn-tool" style="background: #d97706; color: #ffffff; border-color: #b45309; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+            <button type="submit" class="btn-tool" style="background: #d97706; color: #ffffff; border-color: #b45309; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px;">
               <span class="material-icons-round" style="font-size: 16px;">check_circle</span>
               <span>บันทึกอนุญาตให้ใช้งานต่อ</span>
             </button>
@@ -4997,7 +5068,7 @@
       wrapper._closeTimer = setTimeout(function () {
         wrapper.classList.remove('open');
         wrapper._closeTimer = null;
-      }, 5000); // Collapse after 5 seconds of mouse leaving
+      }, 1000); // Collapse after 1 second of mouse leaving
     }
 
     function toggleFloatingMenu(btn, e) {
