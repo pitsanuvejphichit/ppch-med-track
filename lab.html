@@ -108,67 +108,28 @@
       will-change: transform, opacity;
     }
 
-    .logo-petal.outer {
-      background: #1e5387;
-      border-radius: 6px;
-    }
+    .logo-petal.outer { background: #1e5387; border-radius: 6px; }
+    .logo-petal.inner { background: #5faee3; border-radius: 5px; }
 
-    .logo-petal.inner {
-      background: #5faee3;
-      border-radius: 5px;
-    }
-
-    .logo-petal.outer.top {
-      top: 0px; left: 30px; width: 20px; height: 24px;
-      animation-delay: 0s;
-    }
-    .logo-petal.inner.top-right {
-      top: 14px; right: 14px; width: 20px; height: 20px;
-      animation-delay: 0.2s;
-    }
-    .logo-petal.outer.right {
-      top: 30px; right: 0px; width: 24px; height: 20px;
-      animation-delay: 0.4s;
-    }
-    .logo-petal.inner.bottom-right {
-      bottom: 14px; right: 14px; width: 20px; height: 20px;
-      animation-delay: 0.6s;
-    }
-    .logo-petal.outer.bottom {
-      bottom: 0px; left: 30px; width: 20px; height: 24px;
-      animation-delay: 0.8s;
-    }
-    .logo-petal.inner.bottom-left {
-      bottom: 14px; left: 14px; width: 20px; height: 20px;
-      animation-delay: 1.0s;
-    }
-    .logo-petal.outer.left {
-      top: 30px; left: 0px; width: 24px; height: 20px;
-      animation-delay: 1.2s;
-    }
-    .logo-petal.inner.top-left {
-      top: 14px; left: 14px; width: 20px; height: 20px;
-      animation-delay: 1.4s;
-    }
+    .logo-petal.outer.top { top: 0px; left: 30px; width: 20px; height: 24px; animation-delay: 0s; }
+    .logo-petal.inner.top-right { top: 14px; right: 14px; width: 20px; height: 20px; animation-delay: 0.2s; }
+    .logo-petal.outer.right { top: 30px; right: 0px; width: 24px; height: 20px; animation-delay: 0.4s; }
+    .logo-petal.inner.bottom-right { bottom: 14px; right: 14px; width: 20px; height: 20px; animation-delay: 0.6s; }
+    .logo-petal.outer.bottom { bottom: 0px; left: 30px; width: 20px; height: 24px; animation-delay: 0.8s; }
+    .logo-petal.inner.bottom-left { bottom: 14px; left: 14px; width: 20px; height: 20px; animation-delay: 1.0s; }
+    .logo-petal.outer.left { top: 30px; left: 0px; width: 24px; height: 20px; animation-delay: 1.2s; }
+    .logo-petal.inner.top-left { top: 14px; left: 14px; width: 20px; height: 20px; animation-delay: 1.4s; }
 
     @keyframes loadingPulse {
-      0%, 100% {
-        transform: scale(1);
-        opacity: 0.35;
-      }
-      50% {
-        transform: scale(1.15);
-        opacity: 1;
-        filter: drop-shadow(0 0 6px rgba(95, 174, 227, 0.8));
-      }
+      0%, 100% { transform: scale(1); opacity: 0.35; }
+      50% { transform: scale(1.15); opacity: 1; filter: drop-shadow(0 0 6px rgba(95, 174, 227, 0.8)); }
     }
-
     @keyframes loaderPop {
       0% { opacity: 0; transform: scale(0.9); }
       100% { opacity: 1; transform: scale(1); }
     }
 
-    /* ==================== 1. TOP HEADER ==================== */
+    /* ==================== 1. TOPBAR ==================== */
     .app-topbar {
       height: 56px;
       background: #ffffff;
@@ -188,6 +149,19 @@
       align-items: center;
       gap: 14px;
     }
+
+    .btn-sidebar-toggle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      color: var(--royal-blue);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 6px;
+    }
+    .btn-sidebar-toggle .material-icons-round { font-size: 24px; }
 
     .topbar-brand {
       display: flex;
@@ -259,7 +233,6 @@
       box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.2);
       animation: pulse-dot 1.8s infinite;
     }
-
     @keyframes pulse-dot {
       0%, 100% { transform: scale(1); opacity: 1; }
       50% { transform: scale(1.3); opacity: 0.7; }
@@ -297,26 +270,79 @@
       display: flex;
       flex: 1;
       min-height: calc(100vh - 56px);
+      align-items: flex-start;
     }
 
-    /* Lean Left Sidebar */
+    /* ==================== KHUN NICK'S SIGNATURE: MINI COLLAPSIBLE STICKY SIDEBAR ==================== */
     .app-sidebar {
-      width: 220px;
-      background: #ffffff;
-      border-right: 1px solid var(--border-main);
-      padding: 14px 10px;
+      width: 68px;
+      background: linear-gradient(180deg, #001f44 0%, #001733 100%);
+      border-right: 1px solid rgba(0, 50, 110, 0.4);
+      padding: 14px 8px;
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
+      position: sticky;
+      top: 56px;
+      height: calc(100vh - 56px);
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 95;
+      align-self: flex-start;
+      transition: width 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+                  margin-right 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+                  box-shadow 0.24s ease;
+    }
+    @media (min-width: 993px) {
+      .app-sidebar:hover {
+        width: 240px;
+        margin-right: -172px; /* 240px - 68px = 172px: preserves layout width, zero twitch! */
+        box-shadow: 10px 0 32px rgba(0, 15, 45, 0.45);
+      }
+    }
+    .app-sidebar::-webkit-scrollbar { width: 4px; }
+    .app-sidebar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.18);
+      border-radius: 4px;
+    }
+
+    .sidebar-mobile-header {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px 14px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 10px;
+    }
+    .btn-sidebar-close {
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
     }
 
     .sidebar-section-title {
-      font-size: 10.5px;
+      font-size: 10px;
       font-weight: 700;
-      color: var(--text-light);
+      color: #64748b;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      padding: 6px 10px 4px 10px;
+      padding: 6px 8px 4px 8px;
+      white-space: nowrap;
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: opacity 0.15s ease, max-height 0.2s ease, padding 0.2s ease;
+    }
+    .app-sidebar:hover .sidebar-section-title,
+    .app-sidebar.mobile-open .sidebar-section-title {
+      opacity: 1;
+      max-height: 30px;
+      padding: 8px 10px 4px 10px;
     }
 
     .sidebar-nav {
@@ -328,84 +354,144 @@
     .nav-btn {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 9px 12px;
+      gap: 12px;
+      padding: 10px 14px;
       border-radius: 8px;
       font-size: 12.5px;
       font-weight: 500;
-      color: var(--text-body);
+      color: #cbd5e1;
       text-decoration: none;
       background: transparent;
       border: none;
       width: 100%;
       text-align: left;
       cursor: pointer;
+      position: relative;
+      white-space: nowrap;
       transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .nav-btn:hover {
-      background: var(--royal-subtle);
-      color: var(--royal-blue);
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
       transform: translateX(2px);
     }
     .nav-btn.active {
-      background: linear-gradient(135deg, var(--royal-blue) 0%, var(--royal-light) 100%) !important;
+      background: linear-gradient(135deg, #0072db 0%, #0284c7 100%) !important;
       color: #ffffff !important;
       font-weight: 600 !important;
-      box-shadow: 0 4px 12px rgba(0, 75, 147, 0.25);
+      box-shadow: 0 4px 14px rgba(0, 114, 219, 0.45);
     }
     .nav-btn .material-icons-round {
-      font-size: 18px;
-      color: var(--text-muted);
+      font-size: 20px;
+      color: #94a3b8;
       transition: color 0.15s;
+      flex-shrink: 0;
+      width: 24px;
+      text-align: center;
     }
-    .nav-btn:hover .material-icons-round {
-      color: var(--royal-blue);
+    .nav-btn:hover .material-icons-round { color: #ffffff; }
+    .nav-btn.active .material-icons-round { color: #ffffff; }
+
+    /* Text labels inside buttons hide when collapsed, expand smoothly on hover */
+    .nav-btn > span:not(.material-icons-round):not(.nav-count-badge) {
+      opacity: 0;
+      max-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      pointer-events: none;
+      transform: translateX(-4px);
+      transition: opacity 0.16s ease, max-width 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.18s ease;
     }
-    .nav-btn.active .material-icons-round {
-      color: #ffffff;
+    .app-sidebar:hover .nav-btn > span:not(.material-icons-round):not(.nav-count-badge),
+    .app-sidebar.mobile-open .nav-btn > span:not(.material-icons-round):not(.nav-count-badge) {
+      opacity: 1;
+      max-width: 170px;
+      pointer-events: auto;
+      transform: translateX(0);
     }
 
     .nav-btn-ext {
-      color: var(--royal-blue);
+      color: #38bdf8;
       font-weight: 600;
     }
+    .nav-btn-ext:hover { color: #7dd3fc; }
+    .nav-btn-ext .material-icons-round { color: #38bdf8; }
+
     .nav-ext-icon {
+      opacity: 0;
       margin-left: auto;
       font-size: 13px !important;
-      color: var(--text-light) !important;
+      color: #94a3b8 !important;
+      transition: opacity 0.15s ease;
+    }
+    .app-sidebar:hover .nav-ext-icon,
+    .app-sidebar.mobile-open .nav-ext-icon {
+      opacity: 1;
     }
 
     .sidebar-divider {
       height: 1px;
-      background: var(--border-subtle);
+      background: rgba(255, 255, 255, 0.1);
       margin: 10px 4px;
     }
 
     .sidebar-bottom-status {
       margin-top: auto;
       padding-top: 12px;
-      border-top: 1px solid var(--border-subtle);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 10px;
       font-size: 11px;
-      color: var(--text-muted);
-      padding-left: 6px;
+      color: #94a3b8;
+      padding-left: 10px;
+      white-space: nowrap;
+      overflow: hidden;
     }
     .sync-dot-live {
-      width: 7px;
-      height: 7px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      background: var(--green-ready);
+      background: #10b981;
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
       flex-shrink: 0;
+    }
+    #syncText {
+      opacity: 0;
+      max-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      transition: opacity 0.15s ease, max-width 0.2s ease;
+    }
+    .app-sidebar:hover #syncText,
+    .app-sidebar.mobile-open #syncText {
+      opacity: 1;
+      max-width: 180px;
+    }
+
+    /* Mobile Backdrop */
+    .sidebar-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 94;
+      opacity: 1;
+      visibility: visible;
+      transition: all 0.25s ease;
+    }
+    .sidebar-backdrop.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
     }
 
     /* ==================== 3. MAIN WORKSTATION ==================== */
     .app-main-content {
       flex: 1;
+      min-width: 0;
       padding: 16px 24px;
-      overflow-y: auto;
-      max-width: calc(100% - 220px);
+      max-width: calc(100% - 68px);
     }
 
     /* Clickable KPI Strip 5 */
@@ -477,29 +563,42 @@
       margin-top: 2px;
     }
 
-    /* On-Page Filter Bar */
+    /* Out of Range Alert Strip */
+    .alert-banner-strip {
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+      border-radius: 8px;
+      padding: 9px 14px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #9f1239;
+      font-size: 12.5px;
+    }
+
+    /* ==================== SINGLE-ROW STREAMLINED FILTER TOOLBAR ==================== */
     .page-filter-bar {
       background: #ffffff;
       border: 1px solid var(--border-main);
       border-radius: 10px;
       padding: 8px 12px;
+      margin-bottom: 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
-      margin-bottom: 12px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
       box-shadow: 0 1px 3px rgba(0, 46, 110, 0.02);
-      flex-wrap: wrap;
     }
-
     .filter-left-controls {
       display: flex;
       align-items: center;
       gap: 8px;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       flex: 1;
     }
-
     .search-input-box {
       display: flex;
       align-items: center;
@@ -507,8 +606,10 @@
       background: #f8fafc;
       border: 1px solid var(--border-main);
       border-radius: 6px;
-      padding: 5px 10px;
-      min-width: 200px;
+      padding: 4px 8px;
+      min-width: 180px;
+      max-width: 260px;
+      flex: 1;
       transition: all 0.15s;
     }
     .search-input-box:focus-within {
@@ -525,7 +626,7 @@
       background: transparent;
       outline: none;
       font-family: inherit;
-      font-size: 12px;
+      font-size: 11.5px;
       color: var(--text-main);
       width: 100%;
     }
@@ -534,18 +635,34 @@
       display: flex;
       align-items: center;
       gap: 4px;
+      flex-shrink: 0;
+    }
+    .filter-date-group input {
+      width: 125px;
+      padding: 4px 6px;
+      font-size: 11.5px;
+    }
+
+    .filter-divider-v {
+      width: 1px;
+      height: 22px;
+      background: #e2e8f0;
+      margin: 0 2px;
+      flex-shrink: 0;
     }
 
     .filter-input {
       background: #f8fafc;
       border: 1px solid var(--border-main);
       border-radius: 6px;
-      padding: 5px 9px;
+      padding: 4px 7px;
       font-family: inherit;
-      font-size: 12px;
+      font-size: 11.5px;
       color: var(--text-body);
       outline: none;
       transition: all 0.15s;
+      max-width: 150px;
+      flex-shrink: 1;
     }
     .filter-input:focus {
       background: #ffffff;
@@ -554,15 +671,17 @@
     }
 
     .btn-pill-date {
-      padding: 4px 9px;
+      padding: 4px 8px;
       border-radius: 6px;
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 500;
       color: var(--text-muted);
       background: #f1f5f9;
       border: 1px solid transparent;
       cursor: pointer;
       transition: all 0.15s;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .btn-pill-date:hover {
       background: #e2e8f0;
@@ -578,14 +697,16 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 30px;
-      height: 30px;
+      width: 28px;
+      height: 28px;
+      min-width: 28px;
       border-radius: 6px;
       border: 1px solid var(--border-main);
       background: #ffffff;
       color: var(--text-muted);
       cursor: pointer;
       transition: all 0.15s;
+      flex-shrink: 0;
     }
     .btn-reset-ghost:hover {
       background: #f1f5f9;
@@ -596,6 +717,7 @@
       display: flex;
       align-items: center;
       gap: 6px;
+      flex-shrink: 0;
     }
 
     .btn-tool {
@@ -618,7 +740,6 @@
       border-color: var(--border-blue-soft);
       color: var(--royal-blue);
     }
-
     .btn-tool-primary {
       background: var(--royal-blue);
       color: #ffffff;
@@ -628,20 +749,6 @@
     .btn-tool-primary:hover {
       background: var(--royal-hover);
       color: #ffffff;
-    }
-
-    /* Out of Range Alert Strip */
-    .alert-banner-strip {
-      background: #fff1f2;
-      border: 1px solid #fecdd3;
-      border-radius: 8px;
-      padding: 8px 14px;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      color: #9f1239;
-      font-size: 12.5px;
     }
 
     /* Content Panel & Tables */
@@ -668,6 +775,9 @@
       font-size: 13.5px;
       font-weight: 700;
       color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
     .panel-badge {
       font-size: 11px;
@@ -720,42 +830,186 @@
       white-space: nowrap;
     }
 
-    .badge-status {
+    /* ==================== SYMBOL-BASED STATUS BUTTONS ==================== */
+    .status-symbol-btn {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      border-radius: 50%;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      font-size: 12px;
-      font-weight: 600;
+      justify-content: center;
+      cursor: pointer;
+      border: 1.5px solid transparent;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      user-select: none;
+      vertical-align: middle;
+    }
+    .status-symbol-btn .material-icons-round { font-size: 20px; }
+    .status-symbol-btn:hover {
+      transform: scale(1.15);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+    }
+    /* Green: พร้อมใช้งาน / ผ่านเกณฑ์ */
+    .status-symbol-btn.symbol-ready {
+      background: #ecfdf5;
+      color: #059669;
+      border-color: #a7f3d0;
+    }
+    /* Red: หลุดเกณฑ์ / ผิดปกติ */
+    .status-symbol-btn.symbol-abnormal {
+      background: #fef2f2;
+      color: #dc2626;
+      border-color: #fecaca;
+    }
+    /* Subtle Grey / Amber: รอตรวจเวรนี้ */
+    .status-symbol-btn.symbol-pending {
+      background: #f8fafc;
+      color: #94a3b8;
+      border-color: #e2e8f0;
+    }
+    .status-symbol-btn.symbol-pending:hover {
+      color: #004b93;
+      border-color: #93c5fd;
+      background: #f0f7ff;
+    }
+
+    /* ==================== FLOATING SPEED DIAL ACTION MENU ==================== */
+    .floating-action-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .device-table tbody tr:has(.floating-action-wrapper.open) {
+      z-index: 30;
+      position: relative;
+    }
+
+    .btn-floating-trigger {
+      position: relative;
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 1.5px solid var(--border-main);
+      color: var(--royal-blue);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0, 46, 110, 0.08);
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 0;
+    }
+    .btn-floating-trigger:hover {
+      background: var(--royal-subtle);
+      border-color: var(--border-blue-soft);
+      transform: scale(1.08);
+      box-shadow: 0 3px 8px rgba(0, 75, 147, 0.18);
+    }
+    .btn-floating-trigger .trigger-icon { font-size: 18px; }
+    .floating-badge-count {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      background: var(--royal-blue);
+      color: #ffffff;
+      font-size: 9.5px;
+      font-weight: 700;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid #ffffff;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .floating-action-tray {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%) scale(0.9);
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 10px 25px -4px rgba(0, 46, 110, 0.22), 0 4px 10px -2px rgba(0, 0, 0, 0.08);
+      border-radius: 20px;
+      padding: 3px 6px;
+      display: none;
+      align-items: center;
+      gap: 5px;
+      z-index: 150;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1), transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
       white-space: nowrap;
     }
-    .badge-status-ready { color: var(--green-ready); }
-    .badge-status-pending { color: var(--amber-pending); }
-    .badge-status-abnormal { color: var(--red-abnormal); }
+    .floating-action-wrapper.open .floating-action-tray {
+      display: inline-flex;
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(-50%) scale(1);
+    }
+    .floating-action-wrapper.open .btn-floating-trigger {
+      opacity: 0;
+      pointer-events: none;
+    }
 
-    .btn-action-eval {
+    .btn-action-icon {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      border-radius: 8px;
       display: inline-flex;
       align-items: center;
-      gap: 3px;
-      padding: 4px 9px;
-      border-radius: 5px;
-      font-size: 11.5px;
-      font-weight: 600;
-      color: var(--royal-blue);
-      background: var(--royal-subtle);
-      border: 1px solid var(--border-blue-soft);
+      justify-content: center;
       cursor: pointer;
-      transition: all 0.15s;
+      border: 1px solid transparent;
+      text-decoration: none;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      padding: 0;
+      flex-shrink: 0;
+      vertical-align: middle;
     }
-    .btn-action-eval:hover {
-      background: #dbeafe;
+    .btn-action-icon .material-icons-round { font-size: 16px; }
+    .btn-action-icon:hover {
+      transform: translateY(-1px) scale(1.08);
+      box-shadow: 0 3px 8px rgba(0, 75, 147, 0.18);
     }
 
-    /* Modal Styling */
+    .btn-floating-close {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: none;
+      background: #f1f5f9;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      margin-left: 2px;
+      transition: all 0.15s;
+      padding: 0;
+    }
+    .btn-floating-close:hover {
+      background: #fee2e2;
+      color: #dc2626;
+      transform: scale(1.1);
+    }
+    .btn-floating-close .material-icons-round { font-size: 14px; }
+
+    /* ==================== SPACIOUS MODAL BOX ==================== */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.45);
-      backdrop-filter: blur(4px);
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(5px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -774,16 +1028,45 @@
       border-radius: 16px;
       box-shadow: 0 20px 40px rgba(0, 46, 110, 0.16);
       border: 1px solid var(--border-main);
-      max-width: 480px;
+      padding: 24px;
+      max-width: 540px;
       width: 90%;
-      overflow: hidden;
       animation: loaderPop 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .modal-box .filter-input,
+    .modal-box input:not([type="checkbox"]):not([type="radio"]),
+    .modal-box select,
+    .modal-box textarea {
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box;
+      background: #ffffff;
+      border: 1px solid var(--border-main);
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-size: 13px;
+      color: var(--text-body);
+      font-family: inherit;
+      outline: none;
+      transition: all 0.15s ease;
+    }
+    .modal-box input:focus,
+    .modal-box select:focus,
+    .modal-box textarea:focus {
+      border-color: var(--royal-blue);
+      box-shadow: 0 0 0 3px rgba(0, 75, 147, 0.12);
+      background: #ffffff;
+    }
+    .modal-box textarea {
+      min-height: 100px;
+      resize: vertical;
+      line-height: 1.5;
     }
 
     .modal-header {
-      padding: 14px 18px;
-      background: #ffffff;
-      border-bottom: 1px solid var(--border-main);
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 10px;
+      margin-bottom: 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -808,53 +1091,36 @@
     }
     .btn-close-modal:hover { color: var(--red-abnormal); background: #fef2f2; }
 
-    .modal-body {
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+    .modal-form-group {
+      margin-bottom: 14px;
     }
     .modal-form-group label {
       display: block;
-      font-size: 12px;
+      font-size: 12.5px;
       font-weight: 600;
       color: var(--text-body);
       margin-bottom: 5px;
-    }
-    .modal-input {
-      width: 100%;
-      padding: 8px 11px;
-      border-radius: 6px;
-      border: 1px solid var(--border-main);
-      font-family: inherit;
-      font-size: 13px;
-      color: var(--text-main);
-      outline: none;
-    }
-    .modal-input:focus {
-      border-color: var(--royal-blue);
-      box-shadow: 0 0 0 2px rgba(0, 75, 147, 0.12);
     }
 
     .temp-feedback-pill {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      padding: 4px 10px;
+      gap: 6px;
+      padding: 5px 12px;
       border-radius: 6px;
-      font-size: 11.5px;
+      font-size: 12px;
       font-weight: 700;
-      margin-top: 4px;
+      margin-top: 6px;
     }
 
     .modal-footer {
-      padding: 12px 18px;
-      background: #f8fafc;
-      border-top: 1px solid var(--border-main);
       display: flex;
       align-items: center;
       justify-content: flex-end;
       gap: 8px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+      margin-top: 16px;
     }
 
     /* Official Form Paper Simulation */
@@ -884,10 +1150,90 @@
       color: #334155;
     }
 
+    /* ==================== MOBILE & TABLET RESPONSIVE ==================== */
+    @media (max-width: 992px) {
+      .app-sidebar {
+        position: fixed;
+        left: -260px;
+        top: 0;
+        bottom: 0;
+        height: 100vh;
+        width: 250px !important;
+        z-index: 1000;
+        box-shadow: none;
+        transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .app-sidebar.mobile-open {
+        left: 0;
+        box-shadow: 10px 0 40px rgba(0, 15, 45, 0.6);
+      }
+      .app-sidebar .sidebar-mobile-header { display: flex; }
+      .app-sidebar .sidebar-section-title {
+        opacity: 1;
+        max-height: 30px;
+        padding: 8px 10px 4px 10px;
+      }
+      .app-sidebar .nav-btn > span:not(.material-icons-round):not(.nav-count-badge) {
+        opacity: 1;
+        max-width: 180px;
+        pointer-events: auto;
+        transform: translateX(0);
+      }
+      .app-sidebar .nav-ext-icon { opacity: 1; }
+      .app-sidebar #syncText { opacity: 1; max-width: 180px; }
+      .app-main-content { max-width: 100% !important; padding: 12px 14px; }
+      .btn-sidebar-toggle { display: inline-flex; }
+    }
+
+    /* Responsive Mobile Cards for Dense Tables */
+    @media (max-width: 768px) {
+      .device-table thead { display: none; }
+      .device-table, .device-table tbody, .device-table tr, .device-table td {
+        display: block;
+        width: 100%;
+      }
+      .device-table tr {
+        margin-bottom: 12px;
+        border: 1px solid var(--border-main);
+        border-radius: 10px;
+        padding: 12px;
+        background: #ffffff;
+        box-shadow: 0 1px 4px rgba(0, 46, 110, 0.04);
+      }
+      .device-table td {
+        padding: 6px 0;
+        border-bottom: 1px dashed #e2e8f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: right;
+      }
+      .device-table td:last-child {
+        border-bottom: none;
+        padding-top: 10px;
+        justify-content: center;
+      }
+      .device-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--text-muted);
+        font-size: 11.5px;
+        text-align: left;
+        padding-right: 10px;
+      }
+      .modal-box {
+        width: 95vw !important;
+        max-width: 95vw !important;
+        padding: 18px 16px !important;
+        max-height: 90vh !important;
+        overflow-y: auto !important;
+      }
+    }
+
     /* Print View */
     @media print {
       body { background: #ffffff !important; }
-      .app-topbar, .app-sidebar, .page-filter-bar, .kpi-strip-5, #pageLoader, .btn-action-col, .no-print {
+      .app-topbar, .app-sidebar, .page-filter-bar, .kpi-strip-5, #pageLoader, .btn-action-col, .no-print, .alert-banner-strip {
         display: none !important;
       }
       .app-main-content { max-width: 100% !important; padding: 0 !important; }
@@ -927,13 +1273,16 @@
     <!-- 1. Top Header -->
     <header class="app-topbar no-print">
       <div class="topbar-left">
+        <button type="button" id="btnToggleSidebar" class="btn-sidebar-toggle" onclick="toggleMobileSidebar()" aria-label="เปิดเมนู">
+          <span class="material-icons-round">menu</span>
+        </button>
         <a href="lab.html" class="topbar-brand" title="PPCH Laboratory Tracking System">
           <img src="logo.png" alt="โรงพยาบาลพิษณุเวช" class="brand-logo-img">
           <div class="brand-divider"></div>
           <div class="brand-badge-pill">LAB HUB</div>
         </a>
         <div class="topbar-breadcrumbs">
-          <span class="bread-parent">ระบบแผนก Laboratory</span>
+          <span class="bread-parent">แผนกห้องปฏิบัติการ (LAB)</span>
           <span class="bread-sep">/</span>
           <span class="bread-current" id="breadCurrent">อุณหภูมิ & ความชื้น (057, 060, 061, 062)</span>
         </div>
@@ -954,23 +1303,35 @@
     <!-- 2. Body Layout -->
     <div class="app-layout-body">
 
-      <!-- Left Sidebar -->
+      <!-- Mobile Backdrop Overlay -->
+      <div id="sidebarBackdrop" class="sidebar-backdrop hidden" onclick="closeMobileSidebar()"></div>
+
+      <!-- Left Sidebar (Mini Collapsible 68px -> 240px with Deep Midnight Navy) -->
       <aside class="app-sidebar no-print">
+        <div class="sidebar-mobile-header">
+          <div style="display: flex; align-items: center;">
+            <img src="logo.png" style="height: 38px; width: auto; object-fit: contain;" alt="โรงพยาบาลพิษณุเวช">
+          </div>
+          <button type="button" onclick="closeMobileSidebar()" class="btn-sidebar-close" aria-label="ปิดเมนู">
+            <span class="material-icons-round">close</span>
+          </button>
+        </div>
+
         <div class="sidebar-section-title">เมนูแผนก LAB</div>
         <nav class="sidebar-nav">
-          <button onclick="switchView('temp')" id="navBtn_temp" class="nav-btn active">
+          <button onclick="switchView('temp')" id="navBtn_temp" class="nav-btn active" title="อุณหภูมิ & ความชื้น">
             <span class="material-icons-round">thermostat</span>
             <span>อุณหภูมิ & ความชื้น</span>
           </button>
-          <button onclick="switchView('maint')" id="navBtn_maint" class="nav-btn">
+          <button onclick="switchView('maint')" id="navBtn_maint" class="nav-btn" title="เครื่องวิเคราะห์ & ดูแลรักษา">
             <span class="material-icons-round">biotech</span>
             <span>เครื่องวิเคราะห์ & ดูแลรักษา</span>
           </button>
-          <button onclick="switchView('ups')" id="navBtn_ups" class="nav-btn">
+          <button onclick="switchView('ups')" id="navBtn_ups" class="nav-btn" title="ทดสอบสำรองไฟ UPS">
             <span class="material-icons-round">battery_charging_full</span>
             <span>ทดสอบสำรองไฟ UPS</span>
           </button>
-          <button onclick="switchView('reports')" id="navBtn_reports" class="nav-btn">
+          <button onclick="switchView('reports')" id="navBtn_reports" class="nav-btn" title="รายงานทางการ (16 แท็บ)">
             <span class="material-icons-round">print</span>
             <span>รายงานทางการ (16 แท็บ)</span>
           </button>
@@ -980,10 +1341,10 @@
 
         <div class="sidebar-section-title">ระบบที่เกี่ยวข้อง</div>
         <nav class="sidebar-nav">
-          <a href="admin.html" class="nav-btn nav-btn-ext" title="กลับหน้าระบบเครื่องมือแพทย์ส่วนกลาง">
+          <a href="admin.html" class="nav-btn nav-btn-ext" title="เปิดระบบเครื่องมือแพทย์ส่วนกลาง (Med Track)">
             <span class="material-icons-round">medical_services</span>
             <span>Admin เครื่องมือแพทย์</span>
-            <span class="material-icons-round nav-ext-icon">arrow_forward</span>
+            <span class="material-icons-round nav-ext-icon">open_in_new</span>
           </a>
           <a href="https://docs.google.com/spreadsheets/d/1pP-f9f8yFabsENOB8VttfLu01hG8q-PG3rJHV-vqgzQ/edit" target="_blank" class="nav-btn" title="เปิดดู Google Sheet ฐานข้อมูล LAB">
             <span class="material-icons-round" style="color: #0284c7;">table_chart</span>
@@ -999,7 +1360,7 @@
 
         <div class="sidebar-bottom-status">
           <span class="sync-dot-live"></span>
-          <span>ระบบฐานข้อมูล LAB พร้อมใช้งาน</span>
+          <span id="syncText">ระบบฐานข้อมูล LAB พร้อมใช้งาน</span>
         </div>
       </aside>
 
@@ -1068,7 +1429,7 @@
           <button onclick="document.getElementById('alertBannerStrip').style.display='none'" style="background: transparent; border: none; color: inherit; cursor: pointer; font-size: 16px;">✕</button>
         </div>
 
-        <!-- On-Page Filter Bar -->
+        <!-- Single-Row Streamlined Filter Toolbar with Floating Export Speed Dial -->
         <div class="page-filter-bar no-print">
           <div class="filter-left-controls">
             <div class="search-input-box">
@@ -1078,9 +1439,11 @@
 
             <div class="filter-date-group">
               <input type="date" id="filterDate" class="filter-input" onchange="applyFilters()">
-              <button onclick="setDateToday()" class="btn-pill-date active" id="btnDateToday">วันนี้</button>
-              <button onclick="setDateYesterday()" class="btn-pill-date" id="btnDateYesterday">เมื่อวาน</button>
+              <button type="button" onclick="setDateToday()" class="btn-pill-date active" id="btnDateToday">วันนี้</button>
+              <button type="button" onclick="setDateYesterday()" class="btn-pill-date" id="btnDateYesterday">เมื่อวาน</button>
             </div>
+
+            <div class="filter-divider-v"></div>
 
             <select id="filterStatus" class="filter-input" onchange="applyFilters()">
               <option value="all">ทุกสถานะ</option>
@@ -1089,33 +1452,45 @@
               <option value="pending">รอตรวจเวรนี้</option>
             </select>
 
-            <button onclick="resetFilters()" class="btn-reset-ghost" title="ล้างตัวกรองทั้งหมด">
+            <button type="button" onclick="resetFilters()" class="btn-reset-ghost" title="ล้างตัวกรองทั้งหมด">
               <span class="material-icons-round" style="font-size: 17px;">refresh</span>
             </button>
           </div>
 
           <div class="filter-right-tools">
-            <button onclick="window.print()" class="btn-tool" title="พิมพ์รายงาน">
-              <span class="material-icons-round" style="font-size: 15px;">print</span>
-              <span>พิมพ์</span>
-            </button>
-            <button onclick="exportCsv()" class="btn-tool" title="ส่งออกข้อมูลเป็น CSV">
-              <span class="material-icons-round" style="font-size: 15px; color: var(--green-ready);">file_download</span>
-              <span>ส่งออก</span>
-            </button>
-            <button onclick="loadOverviewData()" class="btn-tool btn-tool-primary" title="ซิงค์ข้อมูลล่าสุดกับ Google Sheets">
-              <span class="material-icons-round" style="font-size: 15px;">sync</span>
-              <span>ซิงค์</span>
-            </button>
+            <!-- Consolidated Floating Export & Tools Menu (Speed Dial - 1s auto-collapse) -->
+            <div class="floating-action-wrapper" onmouseenter="handleFloatingEnter(this)" onmouseleave="handleFloatingLeave(this)">
+              <button type="button" class="btn-floating-trigger" onclick="toggleFloatingMenu(this, event)" title="เมนูส่งออก, พิมพ์ และซิงค์">
+                <span class="material-icons-round trigger-icon" style="font-size: 16px;">file_download</span>
+                <span class="floating-badge-count">4</span>
+              </button>
+              <div class="floating-action-tray">
+                <button type="button" onclick="exportExcel()" class="btn-action-icon" style="background: #ecfdf5; color: #047857; border-color: #a7f3d0;" title="ส่งออก Excel (.xls)">
+                  <span class="material-icons-round">table_view</span>
+                </button>
+                <button type="button" onclick="exportCsv()" class="btn-action-icon" style="background: #f1f5f9; color: #475569; border-color: #cbd5e1;" title="ส่งออก CSV (UTF-8 BOM)">
+                  <span class="material-icons-round">file_download</span>
+                </button>
+                <button type="button" onclick="window.print()" class="btn-action-icon" style="background: #f8fafc; color: #1e293b; border-color: #cbd5e1;" title="พิมพ์รายงาน A4">
+                  <span class="material-icons-round">print</span>
+                </button>
+                <button type="button" onclick="loadOverviewData()" class="btn-action-icon" style="background: var(--royal-subtle); color: var(--royal-blue); border-color: var(--border-blue-soft);" title="ซิงค์ข้อมูลกับ Google Sheets">
+                  <span class="material-icons-round">sync</span>
+                </button>
+                <button type="button" class="btn-floating-close" onclick="closeFloatingMenu(this, event)" title="กดเพื่อเก็บเป็นปุ่มเดียว">
+                  <span class="material-icons-round">close</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- SUB-VIEW 1: อุณหภูมิและความชื้นประจำเวร (057, 060, 061, 062) -->
+        <!-- ==================== SUB-VIEW 1: อุณหภูมิและความชื้น (057, 060, 061, 062) ==================== -->
         <section id="view_temp" class="content-panel">
           <div class="panel-header">
             <div class="panel-title">
-              <span class="material-icons-round" style="vertical-align: middle; font-size: 18px; color: var(--royal-blue); margin-right: 4px;">thermostat</span>
-              จุดตรวจอุณหภูมิและความชื้นประจำเวร แผนก LAB (12 จุด)
+              <span class="material-icons-round" style="color: var(--royal-blue); font-size: 20px;">thermostat</span>
+              <span>จุดตรวจอุณหภูมิและความชื้นประจำเวร แผนก LAB (12 จุด)</span>
             </div>
             <div class="panel-badge" id="lblCountTemp">แสดง 12 จุดตรวจ</div>
           </div>
@@ -1129,10 +1504,10 @@
                   <th>เกณฑ์ควบคุม</th>
                   <th>อุณหภูมิล่าสุด</th>
                   <th>ความชื้น</th>
-                  <th>สถานะรอบเวร</th>
-                  <th>เวลาตรวจ</th>
+                  <th style="text-align: center; width: 90px;">สถานะ</th>
+                  <th style="width: 90px;">เวลาตรวจ</th>
                   <th>ผู้บันทึก</th>
-                  <th style="text-align: right; width: 100px;">จัดการ</th>
+                  <th class="btn-action-col no-print" style="text-align: center; width: 80px;">จัดการ</th>
                 </tr>
               </thead>
               <tbody id="tableBody_temp">
@@ -1142,12 +1517,12 @@
           </div>
         </section>
 
-        <!-- SUB-VIEW 2: เครื่องมือวิเคราะห์ & บำรุงรักษา (049, 091, 099) -->
+        <!-- ==================== SUB-VIEW 2: เครื่องมือวิเคราะห์ & บำรุงรักษา (049, 091, 099) ==================== -->
         <section id="view_maint" class="content-panel" style="display: none;">
           <div class="panel-header">
             <div class="panel-title">
-              <span class="material-icons-round" style="vertical-align: middle; font-size: 18px; color: var(--royal-blue); margin-right: 4px;">biotech</span>
-              เครื่องวิเคราะห์และบำรุงรักษาประจำวัน แผนก LAB (5 เครื่อง)
+              <span class="material-icons-round" style="color: var(--royal-blue); font-size: 20px;">biotech</span>
+              <span>เครื่องวิเคราะห์และบำรุงรักษาประจำวัน แผนก LAB (5 เครื่อง)</span>
             </div>
             <div class="panel-badge" id="lblCountMaint">แสดง 5 รายการ</div>
           </div>
@@ -1159,10 +1534,10 @@
                   <th>เครื่องมือ / อุปกรณ์</th>
                   <th>หัวข้อการตรวจสอบความพร้อม</th>
                   <th>เกณฑ์มาตรฐาน</th>
-                  <th>สถานะ</th>
-                  <th>เวลาตรวจ</th>
+                  <th style="text-align: center; width: 90px;">สถานะ</th>
+                  <th style="width: 90px;">เวลาตรวจ</th>
                   <th>ผู้บันทึก</th>
-                  <th style="text-align: right; width: 100px;">จัดการ</th>
+                  <th class="btn-action-col no-print" style="text-align: center; width: 80px;">จัดการ</th>
                 </tr>
               </thead>
               <tbody id="tableBody_maint">
@@ -1172,12 +1547,12 @@
           </div>
         </section>
 
-        <!-- SUB-VIEW 3: ทดสอบเครื่องสำรองไฟ UPS (019) -->
+        <!-- ==================== SUB-VIEW 3: ทดสอบเครื่องสำรองไฟ UPS (019) ==================== -->
         <section id="view_ups" class="content-panel" style="display: none;">
           <div class="panel-header">
             <div class="panel-title">
-              <span class="material-icons-round" style="vertical-align: middle; font-size: 18px; color: var(--royal-blue); margin-right: 4px;">battery_charging_full</span>
-              FM-PPCH-LAB-019 • บันทึกการทดสอบเครื่องสำรองไฟ UPS แผนก Lab (6 เครื่อง)
+              <span class="material-icons-round" style="color: var(--royal-blue); font-size: 20px;">battery_charging_full</span>
+              <span>FM-PPCH-LAB-019 • บันทึกการทดสอบเครื่องสำรองไฟ UPS แผนก Lab (6 เครื่อง)</span>
             </div>
             <div class="panel-badge" id="lblCountUps">แสดง 6 เครื่อง</div>
           </div>
@@ -1190,10 +1565,10 @@
                   <th>เครื่องมือที่ต่อพ่วง</th>
                   <th>เกณฑ์สำรองไฟ</th>
                   <th>เวลาสำรองไฟจริง</th>
-                  <th>สถานะ</th>
-                  <th>รอบทดสอบ</th>
+                  <th style="text-align: center; width: 90px;">สถานะ</th>
+                  <th style="width: 100px;">รอบทดสอบ</th>
                   <th>ผู้ตรวจ</th>
-                  <th style="text-align: right; width: 100px;">จัดการ</th>
+                  <th class="btn-action-col no-print" style="text-align: center; width: 80px;">จัดการ</th>
                 </tr>
               </thead>
               <tbody id="tableBody_ups">
@@ -1203,12 +1578,12 @@
           </div>
         </section>
 
-        <!-- SUB-VIEW 4: รายงานและพิมพ์ตามฟอร์มทางการ (16 แท็บ A4) -->
+        <!-- ==================== SUB-VIEW 4: รายงานทางการ 16 แท็บ A4 ==================== -->
         <section id="view_reports" class="content-panel" style="display: none;">
           <div class="panel-header">
             <div class="panel-title">
-              <span class="material-icons-round" style="vertical-align: middle; font-size: 18px; color: var(--royal-blue); margin-right: 4px;">print</span>
-              พิมพ์รายงานและจำลองแบบฟอร์มทางการ 100% (Official Forms)
+              <span class="material-icons-round" style="color: var(--royal-blue); font-size: 20px;">print</span>
+              <span>พิมพ์รายงานและจำลองแบบฟอร์มทางการ 100% (Official Forms)</span>
             </div>
             <div class="panel-badge">16 แท็บมาตรฐาน</div>
           </div>
@@ -1217,7 +1592,7 @@
             <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
               <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
                 <label style="font-size: 12.5px; font-weight: 600;">เลือกแบบฟอร์ม:</label>
-                <select id="reportFormSelect" class="filter-input" onchange="renderSelectedReport()" style="min-width: 320px;">
+                <select id="reportFormSelect" class="filter-input" onchange="renderSelectedReport()" style="min-width: 320px; max-width: 420px;">
                   <option value="057_lab">FM-PPCH-LAB-057: อุณหภูมิห้องแลป (Laboratory กลาง)</option>
                   <option value="057_immu">FM-PPCH-LAB-057: อุณหภูมิห้องแลป (Immunology)</option>
                   <option value="057_blood">FM-PPCH-LAB-057: อุณหภูมิห้องแลป (Blood Bank)</option>
@@ -1241,7 +1616,7 @@
               </div>
 
               <div style="display: flex; align-items: center; gap: 8px;">
-                <button onclick="window.print()" class="btn-tool btn-tool-primary">
+                <button type="button" onclick="window.print()" class="btn-tool btn-tool-primary">
                   <span class="material-icons-round" style="font-size: 15px;">print</span>
                   <span>พิมพ์รายงาน A4</span>
                 </button>
@@ -1265,33 +1640,36 @@
     </div>
   </div>
 
-  <!-- Entry Recording Modal -->
+  <!-- Entry Recording Modal (Spacious Modern Design) -->
   <div id="entryModal" class="modal-overlay hidden" onclick="if(event.target === this) closeModal()">
     <div class="modal-box">
       <div class="modal-header">
-        <h3 id="modalTitle">บันทึกข้อมูลผลการตรวจเช็ค</h3>
-        <button class="btn-close-modal" onclick="closeModal()">✕</button>
+        <h3 id="modalTitle">
+          <span class="material-icons-round" style="color: var(--royal-blue); font-size: 20px;">edit_note</span>
+          <span id="modalTitleText">บันทึกข้อมูลผลการตรวจเช็ค</span>
+        </h3>
+        <button type="button" class="btn-close-modal" onclick="closeModal()">✕</button>
       </div>
       <div class="modal-body">
         <div class="modal-form-group">
           <label>จุดตรวจ / เครื่องมือ:</label>
-          <input type="text" id="modalPointName" class="modal-input" readonly style="background: #f1f5f9; font-weight: 700;">
+          <input type="text" id="modalPointName" readonly style="background: #f1f5f9; font-weight: 700; color: var(--royal-blue);">
         </div>
 
         <div class="modal-form-group" id="grpTemp">
           <label>อุณหภูมิที่วัดได้ (°C):</label>
-          <input type="number" step="0.1" id="modalTempInput" class="modal-input" placeholder="เช่น 25.4 หรือ 4.2" oninput="validateTempLive()">
+          <input type="number" step="0.1" id="modalTempInput" placeholder="เช่น 25.4 หรือ 4.2" oninput="validateTempLive()">
           <div id="tempFeedbackPill" class="temp-feedback-pill" style="display: none;"></div>
         </div>
 
         <div class="modal-form-group" id="grpHumidity">
           <label>ความชื้นสัมพัทธ์ (%RH):</label>
-          <input type="number" step="1" id="modalHumInput" class="modal-input" placeholder="เช่น 55">
+          <input type="number" step="1" id="modalHumInput" placeholder="เช่น 55">
         </div>
 
         <div class="modal-form-group" id="grpChecklist" style="display: none;">
           <label>ผลการตรวจสอบความพร้อม:</label>
-          <select id="modalCheckSelect" class="modal-input">
+          <select id="modalCheckSelect">
             <option value="pass">✓ ปกติ / พร้อมใช้งานสมบูรณ์</option>
             <option value="fail">✗ พบข้อบกพร่อง / ไม่พร้อมใช้</option>
           </select>
@@ -1299,23 +1677,23 @@
 
         <div class="modal-form-group" id="grpUpsMinutes" style="display: none;">
           <label>ระยะเวลาสำรองไฟจริง (นาที):</label>
-          <input type="number" id="modalUpsMinutes" class="modal-input" placeholder="เช่น 25">
+          <input type="number" id="modalUpsMinutes" placeholder="เช่น 25">
         </div>
 
         <div class="modal-form-group">
-          <label>ผู้บันทึกข้อมูล (ชื่อ-สกุล):</label>
-          <input type="text" id="modalRecorder" class="modal-input" placeholder="เช่น ทนพ. สมชาย ใจดี">
+          <label>ผู้บันทึกข้อมูล (ชื่อ-สกุล): <span style="color: var(--red-abnormal);">*</span></label>
+          <input type="text" id="modalRecorder" placeholder="เช่น ทนพ. สมชาย ใจดี" value="ทนพ. สมชาย ใจดี" required>
         </div>
 
         <div class="modal-form-group" id="grpNote">
-          <label>การแก้ไขเมื่อหลุดเกณฑ์ / บันทึกเพิ่มเติม:</label>
-          <textarea id="modalNote" class="modal-input" rows="2" placeholder="ระบุการดำเนินการ เช่น แจ้งช่าง, ปรับแอร์, ละลายน้ำแข็ง"></textarea>
+          <label>การแก้ไขเมื่อหลุดเกณฑ์ / บันทึกเพิ่มเติม (ถ้ามี):</label>
+          <textarea id="modalNote" placeholder="ระบุการดำเนินการ เช่น แจ้งช่าง, ปรับแอร์, ละลายน้ำแข็ง..."></textarea>
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn-tool" onclick="closeModal()">ยกเลิก</button>
-        <button class="btn-tool btn-tool-primary" onclick="saveModalEntry()">
-          <span class="material-icons-round" style="font-size: 15px;">save</span>
+        <button type="button" class="btn-tool" onclick="closeModal()">ยกเลิก</button>
+        <button type="button" class="btn-tool btn-tool-primary" onclick="saveModalEntry()">
+          <span class="material-icons-round" style="font-size: 16px;">save</span>
           <span>บันทึกข้อมูล</span>
         </button>
       </div>
@@ -1395,6 +1773,27 @@
       renderSelectedReport();
     }
 
+    // Mobile Sidebar Toggle
+    function toggleMobileSidebar() {
+      var sb = document.querySelector('.app-sidebar');
+      var bd = document.getElementById('sidebarBackdrop');
+      if (!sb) return;
+      var isOpen = sb.classList.contains('mobile-open');
+      if (isOpen) {
+        closeMobileSidebar();
+      } else {
+        sb.classList.add('mobile-open');
+        if (bd) bd.classList.remove('hidden');
+      }
+    }
+
+    function closeMobileSidebar() {
+      var sb = document.querySelector('.app-sidebar');
+      var bd = document.getElementById('sidebarBackdrop');
+      if (sb) sb.classList.remove('mobile-open');
+      if (bd) bd.classList.add('hidden');
+    }
+
     // View Navigation
     function switchView(viewKey) {
       currentView = viewKey;
@@ -1414,6 +1813,7 @@
         if (sec) sec.style.display = (k === viewKey) ? 'block' : 'none';
       });
 
+      closeMobileSidebar();
       applyFilters();
     }
 
@@ -1516,6 +1916,26 @@
       renderUpsTableView(data);
     }
 
+    // Helper: generate row floating speed dial
+    function createRowFloatingActions(editAction, viewSheetGid) {
+      var actions = [];
+      actions.push('<button type="button" onclick="' + editAction + '" class="btn-action-icon" style="background: linear-gradient(135deg, var(--royal-blue) 0%, var(--royal-light) 100%); color: #ffffff;" title="บันทึกผลการตรวจ"><span class="material-icons-round">edit</span></button>');
+      if (viewSheetGid) {
+        actions.push('<a href="https://docs.google.com/spreadsheets/d/' + TEMPLATE_SHEET_ID + '/edit#gid=' + viewSheetGid + '" target="_blank" class="btn-action-icon" style="background: #ecfdf5; color: #047857; border-color: #a7f3d0;" title="เปิดดูฟอร์มใน Google Sheet"><span class="material-icons-round">description</span></a>');
+      }
+
+      return '<div class="floating-action-wrapper" onmouseenter="handleFloatingEnter(this)" onmouseleave="handleFloatingLeave(this)">' +
+        '<button type="button" class="btn-floating-trigger" onclick="toggleFloatingMenu(this, event)" title="เมนูจัดการ">' +
+          '<span class="material-icons-round trigger-icon">more_horiz</span>' +
+          '<span class="floating-badge-count">' + actions.length + '</span>' +
+        '</button>' +
+        '<div class="floating-action-tray">' +
+          actions.join('') +
+          '<button type="button" class="btn-floating-close" onclick="closeFloatingMenu(this, event)" title="ปิด"><span class="material-icons-round">close</span></button>' +
+        '</div>' +
+      '</div>';
+    }
+
     // Render Table 1: อุณหภูมิและความชื้น (12 จุด)
     function renderTempTableView(data) {
       var tbody = document.getElementById('tableBody_temp');
@@ -1549,32 +1969,31 @@
 
           count++;
           var statusBadge = '';
+          var editFn = 'openEntryModal(\'' + fk + '\', \'' + ik + '\', \'' + it.name.replace(/'/g, "\\'") + '\')';
           if (st === 'ready') {
-            statusBadge = '<span class="badge-status badge-status-ready"><span class="material-icons-round" style="font-size:15px;">check_circle</span> พร้อมใช้</span>';
+            statusBadge = '<div class="status-symbol-btn symbol-ready" title="ปกติ / ผ่านเกณฑ์ (คลิกเพื่อดูหรือแก้ไข)" onclick="' + editFn + '"><span class="material-icons-round">check_circle</span></div>';
           } else if (st === 'abnormal') {
-            statusBadge = '<span class="badge-status badge-status-abnormal"><span class="material-icons-round" style="font-size:15px;">error</span> หลุดเกณฑ์</span>';
+            statusBadge = '<div class="status-symbol-btn symbol-abnormal" title="หลุดเกณฑ์มาตรฐาน! (คลิกเพื่อบันทึกการแก้ไข)" onclick="' + editFn + '"><span class="material-icons-round">cancel</span></div>';
           } else {
-            statusBadge = '<span class="badge-status badge-status-pending"><span class="material-icons-round" style="font-size:15px;">schedule</span> รอตรวจ</span>';
+            statusBadge = '<div class="status-symbol-btn symbol-pending" title="รอตรวจเวรนี้ (คลิกเพื่อบันทึก)" onclick="' + editFn + '"><span class="material-icons-round">schedule</span></div>';
           }
 
           var tempDisplay = (it.lastTemp !== undefined && it.lastTemp !== null) ? '<strong>' + it.lastTemp + ' °C</strong>' : '-';
           var humDisplay = (it.lastHumidity !== undefined && it.lastHumidity !== null) ? it.lastHumidity + ' %RH' : '-';
+          var gid = TEMPLATE_GIDS[ik] || 0;
+          var rowActionHtml = createRowFloatingActions(editFn, gid);
 
           html += '<tr>';
-          html += '  <td><span class="asset-code-clean">' + spec.code + '</span></td>';
-          html += '  <td><strong>' + it.name + '</strong></td>';
-          html += '  <td style="color: var(--text-muted);">' + (spec.cat || '-') + '</td>';
-          html += '  <td><span style="font-size:11.5px; font-weight:600; color:var(--royal-blue);">' + (spec.targetTemp || '-') + '</span></td>';
-          html += '  <td>' + tempDisplay + '</td>';
-          html += '  <td>' + humDisplay + '</td>';
-          html += '  <td>' + statusBadge + '</td>';
-          html += '  <td style="color:var(--text-muted); font-size:11.5px;">' + (it.evaluatedAt || '-') + '</td>';
-          html += '  <td style="color:var(--text-body); font-size:11.5px;">' + (it.evaluatedBy || '-') + '</td>';
-          html += '  <td style="text-align: right;">';
-          html += '    <button class="btn-action-eval" onclick="openEntryModal(\'' + fk + '\', \'' + ik + '\', \'' + it.name + '\')">';
-          html += '      <span class="material-icons-round" style="font-size: 14px;">edit</span> บันทึก';
-          html += '    </button>';
-          html += '  </td>';
+          html += '  <td data-label="รหัสฟอร์ม"><span class="asset-code-clean">' + spec.code + '</span></td>';
+          html += '  <td data-label="จุดตรวจ / อุปกรณ์"><div style="font-weight: 700; color: var(--text-main); font-size: 13.5px;">' + it.name + '</div></td>';
+          html += '  <td data-label="หมวดหมู่"><span style="color: var(--text-muted); font-size: 12px;">' + (spec.cat || '-') + '</span></td>';
+          html += '  <td data-label="เกณฑ์ควบคุม"><span style="font-size:11.5px; font-weight:600; color:var(--royal-blue);">' + (spec.targetTemp || '-') + '</span></td>';
+          html += '  <td data-label="อุณหภูมิล่าสุด">' + tempDisplay + '</td>';
+          html += '  <td data-label="ความชื้น">' + humDisplay + '</td>';
+          html += '  <td data-label="สถานะ" style="text-align: center;">' + statusBadge + '</td>';
+          html += '  <td data-label="เวลาตรวจ" style="color:var(--text-muted); font-size:11.5px; font-family:var(--font-mono);">' + (it.evaluatedAt || '-') + '</td>';
+          html += '  <td data-label="ผู้บันทึก" style="color:var(--text-body); font-size:12px; font-weight:500;">' + (it.evaluatedBy || '-') + '</td>';
+          html += '  <td data-label="จัดการ" class="btn-action-col no-print" style="text-align: center; white-space: nowrap;">' + rowActionHtml + '</td>';
           html += '</tr>';
         }
       });
@@ -1618,23 +2037,24 @@
           if (query && textMatch.indexOf(query) === -1) return;
 
           count++;
+          var editFn = 'openEntryModal(\'' + fk + '\', \'' + ik + '\', \'' + it.name.replace(/'/g, "\\'") + '\')';
           var statusBadge = (st === 'ready') 
-            ? '<span class="badge-status badge-status-ready"><span class="material-icons-round" style="font-size:15px;">check_circle</span> ปกติ</span>'
-            : '<span class="badge-status badge-status-pending"><span class="material-icons-round" style="font-size:15px;">schedule</span> รอตรวจ</span>';
+            ? '<div class="status-symbol-btn symbol-ready" title="ปกติ / พร้อมใช้งาน (คลิกเพื่อแก้ไข)" onclick="' + editFn + '"><span class="material-icons-round">check_circle</span></div>'
+            : '<div class="status-symbol-btn symbol-pending" title="รอตรวจเวรนี้ (คลิกเพื่อบันทึก)" onclick="' + editFn + '"><span class="material-icons-round">schedule</span></div>';
+
+          var gidKey = fk === 'lab_049' ? '049' : (fk === 'lab_091' ? '091' : '099');
+          var gid = TEMPLATE_GIDS[gidKey] || 0;
+          var rowActionHtml = createRowFloatingActions(editFn, gid);
 
           html += '<tr>';
-          html += '  <td><span class="asset-code-clean">' + spec.code + '</span></td>';
-          html += '  <td><strong>' + it.name + '</strong></td>';
-          html += '  <td style="color:var(--text-body); font-size:12px;">' + (spec.targetCheck || 'ตรวจเช็คตามแบบฟอร์ม') + '</td>';
-          html += '  <td><span style="font-size:11.5px; font-weight:600; color:var(--green-ready);">พร้อมใช้สมบูรณ์</span></td>';
-          html += '  <td>' + statusBadge + '</td>';
-          html += '  <td style="color:var(--text-muted); font-size:11.5px;">' + (it.evaluatedAt || '-') + '</td>';
-          html += '  <td style="color:var(--text-body); font-size:11.5px;">' + (it.evaluatedBy || '-') + '</td>';
-          html += '  <td style="text-align: right;">';
-          html += '    <button class="btn-action-eval" onclick="openEntryModal(\'' + fk + '\', \'' + ik + '\', \'' + it.name + '\')">';
-          html += '      <span class="material-icons-round" style="font-size: 14px;">checklist</span> ตรวจ';
-          html += '    </button>';
-          html += '  </td>';
+          html += '  <td data-label="รหัสฟอร์ม"><span class="asset-code-clean">' + spec.code + '</span></td>';
+          html += '  <td data-label="เครื่องมือ / อุปกรณ์"><div style="font-weight: 700; color: var(--text-main); font-size: 13.5px;">' + it.name + '</div></td>';
+          html += '  <td data-label="หัวข้อการตรวจ"><span style="color:var(--text-body); font-size:12px;">' + (spec.targetCheck || 'ตรวจเช็คตามแบบฟอร์ม') + '</span></td>';
+          html += '  <td data-label="เกณฑ์มาตรฐาน"><span style="font-size:11.5px; font-weight:600; color:var(--green-ready);">พร้อมใช้สมบูรณ์</span></td>';
+          html += '  <td data-label="สถานะ" style="text-align: center;">' + statusBadge + '</td>';
+          html += '  <td data-label="เวลาตรวจ" style="color:var(--text-muted); font-size:11.5px; font-family:var(--font-mono);">' + (it.evaluatedAt || '-') + '</td>';
+          html += '  <td data-label="ผู้บันทึก" style="color:var(--text-body); font-size:12px; font-weight:500;">' + (it.evaluatedBy || '-') + '</td>';
+          html += '  <td data-label="จัดการ" class="btn-action-col no-print" style="text-align: center; white-space: nowrap;">' + rowActionHtml + '</td>';
           html += '</tr>';
         }
       });
@@ -1677,24 +2097,24 @@
         if (query && textMatch.indexOf(query) === -1) return;
 
         count++;
+        var editFn = 'openEntryModal(\'lab_019\', \'' + ik + '\', \'' + it.name.replace(/'/g, "\\'") + '\')';
         var statusBadge = (st === 'ready') 
-          ? '<span class="badge-status badge-status-ready"><span class="material-icons-round" style="font-size:15px;">check_circle</span> สำรองไฟปกติ</span>'
-          : '<span class="badge-status badge-status-pending"><span class="material-icons-round" style="font-size:15px;">schedule</span> รอตรวจรอบนี้</span>';
+          ? '<div class="status-symbol-btn symbol-ready" title="สำรองไฟปกติ (คลิกเพื่อแก้ไข)" onclick="' + editFn + '"><span class="material-icons-round">check_circle</span></div>'
+          : '<div class="status-symbol-btn symbol-pending" title="รอตรวจรอบนี้ (คลิกเพื่อบันทึก)" onclick="' + editFn + '"><span class="material-icons-round">schedule</span></div>';
+
+        var gid = TEMPLATE_GIDS['019'] || 0;
+        var rowActionHtml = createRowFloatingActions(editFn, gid);
 
         html += '<tr>';
-        html += '  <td><span class="asset-code-clean">' + it.id.toUpperCase() + '</span></td>';
-        html += '  <td><strong>' + it.name + '</strong></td>';
-        html += '  <td style="color:var(--royal-blue); font-weight:600;">' + (it.loadDevice || '-') + '</td>';
-        html += '  <td style="color:var(--text-muted); font-size:12px;">' + (spec.targetCheck || '≥ 15 นาที') + '</td>';
-        html += '  <td><strong>' + (it.runtimeMin ? it.runtimeMin + ' นาที' : '-') + '</strong></td>';
-        html += '  <td>' + statusBadge + '</td>';
-        html += '  <td style="color:var(--text-muted); font-size:11.5px;">' + (it.cycleDate || 'รอบ ต.ค. 69') + '</td>';
-        html += '  <td style="color:var(--text-body); font-size:11.5px;">' + (it.evaluatedBy || '-') + '</td>';
-        html += '  <td style="text-align: right;">';
-        html += '    <button class="btn-action-eval" onclick="openEntryModal(\'lab_019\', \'' + ik + '\', \'' + it.name + '\')">';
-        html += '      <span class="material-icons-round" style="font-size: 14px;">battery_charging_full</span> ทดสอบ';
-        html += '    </button>';
-        html += '  </td>';
+        html += '  <td data-label="รหัส UPS"><span class="asset-code-clean">' + it.id.toUpperCase() + '</span></td>';
+        html += '  <td data-label="เครื่องสำรองไฟ"><div style="font-weight: 700; color: var(--text-main); font-size: 13.5px;">' + it.name + '</div></td>';
+        html += '  <td data-label="เครื่องมือที่ต่อพ่วง"><span style="color:var(--royal-blue); font-weight:600;">' + (it.loadDevice || '-') + '</span></td>';
+        html += '  <td data-label="เกณฑ์สำรองไฟ"><span style="color:var(--text-muted); font-size:12px;">' + (spec.targetCheck || '≥ 15 นาที') + '</span></td>';
+        html += '  <td data-label="เวลาสำรองไฟจริง"><strong>' + (it.runtimeMin ? it.runtimeMin + ' นาที' : '-') + '</strong></td>';
+        html += '  <td data-label="สถานะ" style="text-align: center;">' + statusBadge + '</td>';
+        html += '  <td data-label="รอบทดสอบ" style="color:var(--text-muted); font-size:11.5px;">' + (it.cycleDate || 'รอบ ต.ค. 69') + '</td>';
+        html += '  <td data-label="ผู้ตรวจ" style="color:var(--text-body); font-size:12px; font-weight:500;">' + (it.evaluatedBy || '-') + '</td>';
+        html += '  <td data-label="จัดการ" class="btn-action-col no-print" style="text-align: center; white-space: nowrap;">' + rowActionHtml + '</td>';
         html += '</tr>';
       }
 
@@ -1706,12 +2126,82 @@
       if (lbl) lbl.innerText = 'แสดง ' + count + ' เครื่อง';
     }
 
+    // ---------- FLOATING ACTION BUTTON HANDLERS (1s Collapse Delay) ----------
+    function handleFloatingEnter(wrapper) {
+      if (wrapper._closeTimer) {
+        clearTimeout(wrapper._closeTimer);
+        wrapper._closeTimer = null;
+      }
+      wrapper.classList.add('open');
+    }
+
+    function handleFloatingLeave(wrapper) {
+      if (wrapper._closeTimer) {
+        clearTimeout(wrapper._closeTimer);
+      }
+      wrapper._closeTimer = setTimeout(function () {
+        wrapper.classList.remove('open');
+        wrapper._closeTimer = null;
+      }, 1000); // Collapse after 1 second of mouse leaving
+    }
+
+    function toggleFloatingMenu(btn, e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      var wrapper = btn.closest('.floating-action-wrapper');
+      if (!wrapper) return;
+      if (wrapper._closeTimer) {
+        clearTimeout(wrapper._closeTimer);
+        wrapper._closeTimer = null;
+      }
+      if (wrapper.classList.contains('open')) {
+        wrapper.classList.remove('open');
+      } else {
+        document.querySelectorAll('.floating-action-wrapper.open').forEach(function (w) {
+          if (w !== wrapper) {
+            if (w._closeTimer) clearTimeout(w._closeTimer);
+            w.classList.remove('open');
+          }
+        });
+        wrapper.classList.add('open');
+      }
+    }
+
+    function closeFloatingMenu(btn, e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      var wrapper = btn.closest('.floating-action-wrapper');
+      if (!wrapper) return;
+      if (wrapper._closeTimer) {
+        clearTimeout(wrapper._closeTimer);
+        wrapper._closeTimer = null;
+      }
+      wrapper.classList.remove('open');
+    }
+
+    function closeAllFloatingMenus() {
+      document.querySelectorAll('.floating-action-wrapper.open').forEach(function (w) {
+        if (w._closeTimer) clearTimeout(w._closeTimer);
+        w.classList.remove('open');
+      });
+    }
+
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('.floating-action-wrapper')) {
+        closeAllFloatingMenus();
+      }
+    });
+
     // Modal Control
     function openEntryModal(formKey, itemId, itemName) {
       activeFormKey = formKey;
       activeModalItem = { id: itemId, name: itemName };
 
-      document.getElementById('modalTitle').innerText = 'บันทึกข้อมูล: ' + itemName;
+      document.getElementById('modalTitleText').innerText = 'บันทึกข้อมูล: ' + itemName;
       document.getElementById('modalPointName').value = itemName;
       document.getElementById('modalTempInput').value = '';
       document.getElementById('modalHumInput').value = '';
@@ -1765,11 +2255,13 @@
       if (isValid) {
         pill.style.background = 'var(--green-bg)';
         pill.style.color = 'var(--green-ready)';
-        pill.innerHTML = '<span class="material-icons-round" style="font-size:14px;">check_circle</span> ผ่านเกณฑ์ (' + targetText + ')';
+        pill.style.border = '1px solid var(--green-border)';
+        pill.innerHTML = '<span class="material-icons-round" style="font-size:15px;">check_circle</span> ผ่านเกณฑ์มาตรฐาน (' + targetText + ')';
       } else {
         pill.style.background = 'var(--red-bg)';
         pill.style.color = 'var(--red-abnormal)';
-        pill.innerHTML = '<span class="material-icons-round" style="font-size:14px;">warning</span> หลุดเกณฑ์ (' + targetText + ')';
+        pill.style.border = '1px solid var(--red-border)';
+        pill.innerHTML = '<span class="material-icons-round" style="font-size:15px;">warning</span> หลุดเกณฑ์ควบคุม! (' + targetText + ')';
       }
     }
 
@@ -1818,7 +2310,6 @@
       updateDashboardKPIs(labData);
       applyFilters();
       closeModal();
-      alert('บันทึกข้อมูลเรียบร้อยแล้วค่ะ');
     }
 
     // Filter controls
@@ -1861,7 +2352,7 @@
       else if (currentView === 'ups') renderUpsTableView(labData);
     }
 
-    // CSV Export
+    // CSV Export with UTF-8 BOM (\uFEFF)
     function exportCsv() {
       if (!labData) return;
       var csv = '\uFEFFรหัสฟอร์ม,จุดตรวจ/เครื่องมือ,หมวดหมู่,สถานะ,อุณหภูมิวัดได้,เวลาตรวจ,ผู้ตรวจ\n';
@@ -1879,6 +2370,33 @@
       var link = document.createElement('a');
       link.href = url;
       link.download = 'PPCH_LAB_TRACK_' + (document.getElementById('filterDate').value) + '.csv';
+      link.click();
+    }
+
+    // Excel Export with UTF-8 BOM (\uFEFF)
+    function exportExcel() {
+      if (!labData) return;
+      var tableHtml = '\uFEFF<html><head><meta charset="utf-8"></head><body><table border="1">';
+      tableHtml += '<tr style="background:#004b93;color:#ffffff;font-weight:bold;"><th>รหัสฟอร์ม</th><th>จุดตรวจ/เครื่องมือ</th><th>หมวดหมู่</th><th>เกณฑ์ควบคุม</th><th>ค่าล่าสุด</th><th>สถานะ</th><th>เวลาตรวจ</th><th>ผู้บันทึก</th></tr>';
+      
+      var forms = labData.forms || {};
+      for (var fk in forms) {
+        var spec = forms[fk].spec;
+        var items = forms[fk].items || {};
+        for (var ik in items) {
+          var it = items[ik];
+          var val = it.lastTemp ? (it.lastTemp + ' °C') : (it.runtimeMin ? (it.runtimeMin + ' นาที') : '-');
+          var st = it.status === 'ready' ? 'ปกติ' : (it.status === 'abnormal' ? 'หลุดเกณฑ์' : 'รอตรวจ');
+          tableHtml += '<tr><td>' + spec.code + '</td><td>' + it.name + '</td><td>' + (spec.cat || '-') + '</td><td>' + (spec.targetTemp || spec.targetCheck || '-') + '</td><td>' + val + '</td><td>' + st + '</td><td>' + (it.evaluatedAt || '-') + '</td><td>' + (it.evaluatedBy || '-') + '</td></tr>';
+        }
+      }
+      tableHtml += '</table></body></html>';
+
+      var blob = new Blob([tableHtml], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+      var url = URL.createObjectURL(blob);
+      var link = document.createElement('a');
+      link.href = url;
+      link.download = 'PPCH_LAB_EXPORT_' + (document.getElementById('filterDate').value) + '.xls';
       link.click();
     }
 
