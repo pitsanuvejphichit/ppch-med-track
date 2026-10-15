@@ -693,10 +693,9 @@
     }
 
     .sheet-shift-block {
-      border: 1.5px solid #000000;
-      border-radius: 4px;
+      border: 1px solid #000000;
       overflow: hidden;
-      margin-bottom: 14px;
+      margin-bottom: 22px;
       background: #ffffff;
       transition: box-shadow 0.2s, border-color 0.2s;
     }
@@ -707,13 +706,13 @@
 
     .sheet-grid-layer-relative {
       position: relative;
-      width: 940px;
-      height: 240px;
+      width: 738px;
+      height: 200px;
     }
 
     .sheet-grid-table {
-      width: 940px;
-      min-width: 940px;
+      width: 738px;
+      min-width: 738px;
       table-layout: fixed;
       border-collapse: collapse;
       background: #ffffff;
@@ -726,52 +725,54 @@
       margin: 0;
       text-align: center;
       vertical-align: middle;
-      font-size: 11px;
+      font-size: 10px;
       user-select: none;
       box-sizing: border-box;
     }
 
     .sheet-cell-shift {
-      width: 36px;
+      width: 28px;
       background: #ffffff;
-      font-weight: 800;
-      color: #000000;
-      border-right: 1.5px solid #000000 !important;
-      border-left: 1.5px solid #000000 !important;
+      border-right: 1px solid #000000 !important;
       position: sticky;
       left: 0;
       z-index: 10;
     }
 
     .shift-vertical-label {
-      writing-mode: vertical-rl;
-      text-orientation: upright;
-      letter-spacing: 6px;
-      font-size: 13.5px;
-      font-weight: 800;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      font-weight: 700;
+      font-size: 12px;
+      line-height: 1;
+      color: #000000;
+      user-select: none;
       margin: 0 auto;
     }
 
     .sheet-scale-cell {
-      width: 36px;
-      height: 12px;
-      max-height: 12px;
-      font-size: 10.5px;
+      width: 28px;
+      height: 10px;
+      max-height: 10px;
+      font-size: 9.5px;
       font-weight: 700;
       font-family: var(--font-mono);
       color: #000000;
       background: #ffffff;
-      border-right: 1.5px solid #000000 !important;
+      border-right: 1px solid #000000 !important;
       position: sticky;
-      left: 36px;
+      left: 28px;
       z-index: 10;
-      line-height: 12px;
+      line-height: 10px;
     }
 
     .sheet-grid-cell {
-      width: 28px;
-      height: 12px;
-      max-height: 12px;
+      width: 22px;
+      height: 10px;
+      max-height: 10px;
       cursor: pointer;
       border: 1px solid #d4d4d8 !important;
       background: #ffffff;
@@ -779,57 +780,46 @@
     }
 
     .sheet-grid-cell:hover {
-      background: rgba(0, 75, 147, 0.1);
+      background: rgba(0, 75, 147, 0.12);
     }
 
     .sheet-grid-cell.active-col {
       background: rgba(0, 75, 147, 0.08) !important;
-      border-left: 1.5px solid #004b93 !important;
-      border-right: 1.5px solid #004b93 !important;
-    }
-
-    .safe-zone-row td.sheet-grid-cell {
-      background: rgba(16, 185, 129, 0.03);
-    }
-
-    .safe-zone-top td.sheet-grid-cell {
-      border-top: 1.5px solid #059669 !important;
-    }
-
-    .safe-zone-bottom td.sheet-grid-cell {
-      border-bottom: 1.5px solid #059669 !important;
+      border-left: 1px solid #004b93 !important;
+      border-right: 1px solid #004b93 !important;
     }
 
     .sheet-bottom-table {
-      border-top: 1.5px solid #000000;
-      border-bottom: 1.5px solid #000000;
+      border-top: 1px solid #000000;
+      border-bottom: 1px solid #000000;
     }
 
     .sheet-bottom-table td {
-      height: 25px;
+      height: 20px;
     }
 
     .sheet-day-row {
       background: #ffffff;
       font-weight: 700;
-      border-bottom: 1px solid #000000;
+      border-bottom: 1px solid #d4d4d8;
     }
 
     .sheet-day-hdr {
+      width: 56px;
       font-weight: 800;
       color: #000000;
       background: #ffffff;
-      font-size: 11.5px;
+      font-size: 10.5px;
       position: sticky;
       left: 0;
       z-index: 10;
-      border-right: 1.5px solid #000000 !important;
-      border-left: 1.5px solid #000000 !important;
+      border-right: 1px solid #000000 !important;
     }
 
     .sheet-day-num {
+      width: 22px;
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 9.5px;
       font-weight: 700;
       color: #0f172a;
       cursor: pointer;
@@ -847,24 +837,25 @@
     }
 
     .sheet-staff-hdr {
+      width: 56px;
       font-weight: 800;
       color: #000000;
       background: #ffffff;
-      font-size: 11.5px;
+      font-size: 10.5px;
       position: sticky;
       left: 0;
       z-index: 10;
-      border-right: 1.5px solid #000000 !important;
-      border-left: 1.5px solid #000000 !important;
+      border-right: 1px solid #000000 !important;
     }
 
     .sheet-staff-cell {
-      font-size: 9.5px;
+      width: 22px;
+      font-size: 8.5px;
       color: #1e293b;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 28px;
+      max-width: 22px;
       cursor: pointer;
       border: 1px solid #d4d4d8 !important;
     }
@@ -873,8 +864,8 @@
       position: absolute;
       top: 0;
       left: 0;
-      width: 940px;
-      height: 240px;
+      width: 738px;
+      height: 200px;
       pointer-events: none;
       overflow: visible;
       z-index: 5;
@@ -1282,7 +1273,7 @@
           <div class="sheet-main-title" id="sheetTitleText">แบบบันทึกอุณหภูมิห้องปฏิบัติการ</div>
           <div class="sheet-subtitle-row">
             <div class="sheet-sub-left">
-              <span class="sheet-sub-bold">แผนกบันทึกอุณหภูมิห้อง:</span>
+              <span class="sheet-sub-bold">แยกบันทึกอุณหภูมิห้อง:</span>
               <span id="sheetRoomNameText" style="color: var(--royal-blue); font-weight: 700;">Laboratory (ห้องปฏิบัติการกลาง)</span>
             </div>
             <div class="sheet-sub-center">
@@ -1311,26 +1302,21 @@
               </table>
 
               <!-- SVG Graph Overlay for Morning Shift -->
-              <svg class="sheet-svg-graph" id="svgMorning" viewBox="0 0 940 240" preserveAspectRatio="none">
-                <!-- Safe Target Zone Band (24-28 °C, Y=48 to Y=156) -->
-                <rect id="safeBandMorning" x="72" y="48" width="868" height="108" fill="rgba(16, 185, 129, 0.05)" stroke="none" />
-                <line id="safeLineTopMorning" x1="72" y1="48" x2="940" y2="48" stroke="#059669" stroke-width="1.5" stroke-dasharray="4,2" />
-                <line id="safeLineBotMorning" x1="72" y1="156" x2="940" y2="156" stroke="#059669" stroke-width="1.5" stroke-dasharray="4,2" />
-                
+              <svg class="sheet-svg-graph" id="svgMorning" viewBox="0 0 738 200" preserveAspectRatio="none">
                 <!-- Polyline connecting days -->
-                <polyline id="polyMorning" points="" fill="none" stroke="#004b93" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                <polyline id="polyMorning" points="" fill="none" stroke="#004b93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 
                 <!-- Static dots for recorded days -->
                 <g id="dotsMorning"></g>
                 
                 <!-- Active Live Marker & Pulse & Tooltip -->
                 <g id="liveMarkerMorning" style="display: none;">
-                  <circle id="livePulseMorning" cx="0" cy="0" r="14" fill="none" stroke="#0284c7" stroke-width="2" class="marker-pulse" />
-                  <circle id="liveDotMorning" cx="0" cy="0" r="6" fill="#004b93" stroke="#ffffff" stroke-width="2" />
-                  <g id="liveTooltipMorning" transform="translate(0, -14)">
-                    <rect x="-24" y="-20" width="48" height="18" rx="4" fill="#002e6e" />
-                    <polygon points="-4,-2 4,-2 0,2" fill="#002e6e" />
-                    <text x="0" y="-8" fill="#ffffff" font-size="10.5" font-weight="700" text-anchor="middle" id="liveTooltipTextMorning">25.4°</text>
+                  <circle id="livePulseMorning" cx="0" cy="0" r="10" fill="none" stroke="#0284c7" stroke-width="2" class="marker-pulse" />
+                  <circle id="liveDotMorning" cx="0" cy="0" r="4.5" fill="#004b93" stroke="#ffffff" stroke-width="1.5" />
+                  <g id="liveTooltipMorning" transform="translate(0, -12)">
+                    <rect x="-22" y="-18" width="44" height="17" rx="3" fill="#002e6e" />
+                    <polygon points="-4,-1 4,-1 0,3" fill="#002e6e" />
+                    <text x="0" y="-6" fill="#ffffff" font-size="10" font-weight="700" text-anchor="middle" id="liveTooltipTextMorning">25.4°</text>
                   </g>
                 </g>
               </svg>
@@ -1340,11 +1326,11 @@
             <table class="sheet-grid-table sheet-bottom-table">
               <tbody>
                 <tr class="sheet-day-row" id="rowDayMorning">
-                  <td class="sheet-day-hdr" style="width: 72px;">วันที่ (Day)</td>
+                  <td class="sheet-day-hdr" style="width: 56px;">วันที่ (Day)</td>
                   <!-- 31 Day numbers -->
                 </tr>
                 <tr class="sheet-staff-row" id="rowStaffMorning">
-                  <td class="sheet-staff-hdr" style="width: 72px;">ผู้บันทึก</td>
+                  <td class="sheet-staff-hdr" style="width: 56px;">ผู้บันทึก</td>
                   <!-- 31 cells -->
                 </tr>
               </tbody>
@@ -1361,26 +1347,21 @@
               </table>
 
               <!-- SVG Graph Overlay for Afternoon Shift -->
-              <svg class="sheet-svg-graph" id="svgAfternoon" viewBox="0 0 940 240" preserveAspectRatio="none">
-                <!-- Safe Target Zone Band -->
-                <rect id="safeBandAfternoon" x="72" y="48" width="868" height="108" fill="rgba(16, 185, 129, 0.05)" stroke="none" />
-                <line id="safeLineTopAfternoon" x1="72" y1="48" x2="940" y2="48" stroke="#059669" stroke-width="1.5" stroke-dasharray="4,2" />
-                <line id="safeLineBotAfternoon" x1="72" y1="156" x2="940" y2="156" stroke="#059669" stroke-width="1.5" stroke-dasharray="4,2" />
-                
+              <svg class="sheet-svg-graph" id="svgAfternoon" viewBox="0 0 738 200" preserveAspectRatio="none">
                 <!-- Polyline connecting days -->
-                <polyline id="polyAfternoon" points="" fill="none" stroke="#0284c7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                <polyline id="polyAfternoon" points="" fill="none" stroke="#004b93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 
                 <!-- Static dots for recorded days -->
                 <g id="dotsAfternoon"></g>
                 
                 <!-- Active Live Marker & Pulse & Tooltip -->
                 <g id="liveMarkerAfternoon" style="display: none;">
-                  <circle id="livePulseAfternoon" cx="0" cy="0" r="14" fill="none" stroke="#0284c7" stroke-width="2" class="marker-pulse" />
-                  <circle id="liveDotAfternoon" cx="0" cy="0" r="6" fill="#004b93" stroke="#ffffff" stroke-width="2" />
-                  <g id="liveTooltipAfternoon" transform="translate(0, -14)">
-                    <rect x="-24" y="-20" width="48" height="18" rx="4" fill="#002e6e" />
-                    <polygon points="-4,-2 4,-2 0,2" fill="#002e6e" />
-                    <text x="0" y="-8" fill="#ffffff" font-size="10.5" font-weight="700" text-anchor="middle" id="liveTooltipTextAfternoon">25.8°</text>
+                  <circle id="livePulseAfternoon" cx="0" cy="0" r="10" fill="none" stroke="#0284c7" stroke-width="2" class="marker-pulse" />
+                  <circle id="liveDotAfternoon" cx="0" cy="0" r="4.5" fill="#004b93" stroke="#ffffff" stroke-width="1.5" />
+                  <g id="liveTooltipAfternoon" transform="translate(0, -12)">
+                    <rect x="-22" y="-18" width="44" height="17" rx="3" fill="#002e6e" />
+                    <polygon points="-4,-1 4,-1 0,3" fill="#002e6e" />
+                    <text x="0" y="-6" fill="#ffffff" font-size="10" font-weight="700" text-anchor="middle" id="liveTooltipTextAfternoon">25.8°</text>
                   </g>
                 </g>
               </svg>
@@ -1390,11 +1371,56 @@
             <table class="sheet-grid-table sheet-bottom-table">
               <tbody>
                 <tr class="sheet-day-row" id="rowDayAfternoon">
-                  <td class="sheet-day-hdr" style="width: 72px;">วันที่ (Day)</td>
+                  <td class="sheet-day-hdr" style="width: 56px;">วันที่ (Day)</td>
                   <!-- 31 Day numbers -->
                 </tr>
                 <tr class="sheet-staff-row" id="rowStaffAfternoon">
-                  <td class="sheet-staff-hdr" style="width: 72px;">ผู้บันทึก</td>
+                  <td class="sheet-staff-hdr" style="width: 56px;">ผู้บันทึก</td>
+                  <!-- 31 cells -->
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Shift Block 3: เย็น (Evening) -->
+          <div class="sheet-shift-block" id="blockEvening">
+            <div class="sheet-grid-layer-relative">
+              <table class="sheet-grid-table" id="tableEvening">
+                <tbody id="tbodyEvening">
+                  <!-- Populated by JS: 20 fine scale rows with 31 cells each -->
+                </tbody>
+              </table>
+
+              <!-- SVG Graph Overlay for Evening Shift -->
+              <svg class="sheet-svg-graph" id="svgEvening" viewBox="0 0 738 200" preserveAspectRatio="none">
+                <!-- Polyline connecting days -->
+                <polyline id="polyEvening" points="" fill="none" stroke="#004b93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                
+                <!-- Static dots for recorded days -->
+                <g id="dotsEvening"></g>
+                
+                <!-- Active Live Marker & Pulse & Tooltip -->
+                <g id="liveMarkerEvening" style="display: none;">
+                  <circle id="livePulseEvening" cx="0" cy="0" r="10" fill="none" stroke="#0284c7" stroke-width="2" class="marker-pulse" />
+                  <circle id="liveDotEvening" cx="0" cy="0" r="4.5" fill="#004b93" stroke="#ffffff" stroke-width="1.5" />
+                  <g id="liveTooltipEvening" transform="translate(0, -12)">
+                    <rect x="-22" y="-18" width="44" height="17" rx="3" fill="#002e6e" />
+                    <polygon points="-4,-1 4,-1 0,3" fill="#002e6e" />
+                    <text x="0" y="-6" fill="#ffffff" font-size="10" font-weight="700" text-anchor="middle" id="liveTooltipTextEvening">25.0°</text>
+                  </g>
+                </g>
+              </svg>
+            </div>
+
+            <!-- Bottom Table of Evening Block (Day, Staff) -->
+            <table class="sheet-grid-table sheet-bottom-table">
+              <tbody>
+                <tr class="sheet-day-row" id="rowDayEvening">
+                  <td class="sheet-day-hdr" style="width: 56px;">วันที่ (Day)</td>
+                  <!-- 31 Day numbers -->
+                </tr>
+                <tr class="sheet-staff-row" id="rowStaffEvening">
+                  <td class="sheet-staff-hdr" style="width: 56px;">ผู้บันทึก</td>
                   <!-- 31 cells -->
                 </tr>
               </tbody>
@@ -1417,15 +1443,19 @@
         <div class="dock-body">
           <!-- Shift & Day Toolbar -->
           <div class="dock-toolbar-row">
-            <!-- Shift Selector -->
+            <!-- Shift Selector (3 Shifts: เช้า, บ่าย, เย็น) -->
             <div class="dock-shift-toggle">
               <button type="button" class="dock-shift-btn active" id="dockShiftMorning" onclick="switchActiveShift('morning')">
-                <span class="material-icons-round" style="font-size: 16px;">wb_sunny</span>
+                <span class="material-icons-round" style="font-size: 15px;">wb_sunny</span>
                 <span>เวรเช้า (08:00 - 16:00)</span>
               </button>
               <button type="button" class="dock-shift-btn" id="dockShiftAfternoon" onclick="switchActiveShift('afternoon')">
-                <span class="material-icons-round" style="font-size: 16px;">wb_twilight</span>
+                <span class="material-icons-round" style="font-size: 15px;">wb_twilight</span>
                 <span>เวรบ่าย (16:00 - 24:00)</span>
+              </button>
+              <button type="button" class="dock-shift-btn" id="dockShiftEvening" onclick="switchActiveShift('evening')">
+                <span class="material-icons-round" style="font-size: 15px;">bedtime</span>
+                <span>เวรเย็น (24:00 - 08:00)</span>
               </button>
             </div>
 
@@ -1723,13 +1753,14 @@
     };
 
     var currentItem = null;
-    var currentShift = 'morning'; // 'morning' | 'afternoon'
+    var currentShift = 'morning'; // 'morning' | 'afternoon' | 'evening'
     var activeYear = 2569;
     var activeMonth = 10; // 1 to 12 (October)
     var activeDay = new Date().getDate(); // 1 to 31
     var monthSheetData = {
       morning: {},
-      afternoon: {}
+      afternoon: {},
+      evening: {}
     };
     var analyzerChecklistState = {};
 
@@ -1771,7 +1802,7 @@
       } else if (hours >= 16 && hours < 24) {
         currentShift = 'afternoon';
       } else {
-        currentShift = 'morning'; // Default lab dual shifts morning/afternoon
+        currentShift = 'evening'; // 24:00 - 08:00 (เวรดึก/เย็น)
       }
 
       // 3. Pre-fill staff from localStorage if remembered
@@ -1940,19 +1971,19 @@
       }
     }
 
-    // Coordinate Math for 940 x 240 SVG viewBox
+    // Coordinate Math for 738 x 200 SVG viewBox
     function getSvgX(d) {
-      // Shift Col (36px) + Scale Col (36px) = 72px left offset
-      // Day cols: 28px wide
-      return 72 + (d - 0.5) * 28;
+      // Shift Col (28px) + Scale Col (28px) = 56px left offset
+      // Day cols: 22px wide
+      return 56 + (d - 0.5) * 22;
     }
 
     function getSvgY(t, config) {
       var span = config.scaleMax - config.scaleMin;
       if (span === 0) span = 10;
       var ratio = (config.scaleMax - t) / span;
-      var y = ratio * 240;
-      return Math.max(3, Math.min(237, y));
+      var y = ratio * 200;
+      return Math.max(3, Math.min(197, y));
     }
 
     // Build Sheet Table DOM (Header, 31 Columns, 20 Fine Scale Rows)
@@ -1996,28 +2027,31 @@
 
       var totalRows = config.totalRows || 20;
 
-      // Build Table Bodies for Morning & Afternoon Blocks
-      ['morning', 'afternoon'].forEach(function(shift) {
-        var isMorning = (shift === 'morning');
-        var Shift = isMorning ? 'Morning' : 'Afternoon';
-        var shiftLabel = isMorning ? 'เช้า' : 'บ่าย';
+      // Build Table Bodies for Morning, Afternoon & Evening Blocks
+      ['morning', 'afternoon', 'evening'].forEach(function(shift) {
+        var Shift = shift.charAt(0).toUpperCase() + shift.slice(1);
+        var shiftLabelHtml = '';
+        if (shift === 'morning') {
+          shiftLabelHtml = '<span>เ</span><span>ช้</span><span>า</span>';
+        } else if (shift === 'afternoon') {
+          shiftLabelHtml = '<span>บ่</span><span>า</span><span>ย</span>';
+        } else {
+          shiftLabelHtml = '<span>เ</span><span>ย็</span><span>น</span>';
+        }
+
         var tbody = document.getElementById('tbody' + Shift);
+        if (!tbody) return;
         tbody.innerHTML = '';
 
         for (var rIdx = 0; rIdx < totalRows; rIdx++) {
           var tr = document.createElement('tr');
-          
-          // Safe zone check (Row 4 is 28.0°C down to Row 11 which is 24.0°C)
-          if (rIdx >= 4 && rIdx <= 11) tr.classList.add('safe-zone-row');
-          if (rIdx === 4) tr.classList.add('safe-zone-top');
-          if (rIdx === 11) tr.classList.add('safe-zone-bottom');
 
           // Left shift cell (only on top row with rowspan=20)
           if (rIdx === 0) {
             var tdShift = document.createElement('td');
             tdShift.rowSpan = totalRows;
             tdShift.className = 'sheet-cell-shift';
-            tdShift.innerHTML = '<div class="shift-vertical-label">' + shiftLabel + '</div>';
+            tdShift.innerHTML = '<div class="shift-vertical-label">' + shiftLabelHtml + '</div>';
             tr.appendChild(tdShift);
           }
 
@@ -2052,52 +2086,27 @@
         var rowDay = document.getElementById('rowDay' + Shift);
         var rowStaff = document.getElementById('rowStaff' + Shift);
 
-        // Clear previous day cells, keeping only header cell
-        while (rowDay.children.length > 1) rowDay.removeChild(rowDay.lastChild);
-        while (rowStaff.children.length > 1) rowStaff.removeChild(rowStaff.lastChild);
-
-        for (var d = 1; d <= 31; d++) {
-          // Day number cell
-          var tdDay = document.createElement('td');
-          tdDay.className = 'sheet-day-num col-day-' + d;
-          tdDay.id = 'dayHdr_' + shift + '_' + d;
-          tdDay.innerText = d;
-          tdDay.onclick = (function(dayNum) { return function() { selectDay(dayNum); }; })(d);
-          rowDay.appendChild(tdDay);
-
-          // Staff cell
-          var tdStaff = document.createElement('td');
-          tdStaff.className = 'sheet-staff-cell col-day-' + d;
-          tdStaff.id = 'cellStaff_' + shift + '_' + d;
-          tdStaff.onclick = (function(dayNum) { return function() { selectDay(dayNum); }; })(d);
-          rowStaff.appendChild(tdStaff);
+        if (rowDay) {
+          while (rowDay.children.length > 1) rowDay.removeChild(rowDay.lastChild);
+          for (var d = 1; d <= 31; d++) {
+            var tdDay = document.createElement('td');
+            tdDay.className = 'sheet-day-num col-day-' + d;
+            tdDay.id = 'dayHdr_' + shift + '_' + d;
+            tdDay.innerText = d;
+            tdDay.onclick = (function(dayNum) { return function() { selectDay(dayNum); }; })(d);
+            rowDay.appendChild(tdDay);
+          }
         }
 
-        // Configure Safe Target Band in SVG
-        var yTop = getSvgY(config.safeMax, config);
-        var yBot = getSvgY(config.safeMin, config);
-        var bandH = Math.max(8, yBot - yTop);
-
-        var safeBand = document.getElementById('safeBand' + Shift);
-        if (safeBand) {
-          safeBand.setAttribute('x', '72');
-          safeBand.setAttribute('width', '868');
-          safeBand.setAttribute('y', yTop.toFixed(1));
-          safeBand.setAttribute('height', bandH.toFixed(1));
-        }
-        var lineTop = document.getElementById('safeLineTop' + Shift);
-        if (lineTop) {
-          lineTop.setAttribute('x1', '72');
-          lineTop.setAttribute('x2', '940');
-          lineTop.setAttribute('y1', yTop.toFixed(1));
-          lineTop.setAttribute('y2', yTop.toFixed(1));
-        }
-        var lineBot = document.getElementById('safeLineBot' + Shift);
-        if (lineBot) {
-          lineBot.setAttribute('x1', '72');
-          lineBot.setAttribute('x2', '940');
-          lineBot.setAttribute('y1', yBot.toFixed(1));
-          lineBot.setAttribute('y2', yBot.toFixed(1));
+        if (rowStaff) {
+          while (rowStaff.children.length > 1) rowStaff.removeChild(rowStaff.lastChild);
+          for (var d = 1; d <= 31; d++) {
+            var tdStaff = document.createElement('td');
+            tdStaff.className = 'sheet-staff-cell col-day-' + d;
+            tdStaff.id = 'cellStaff_' + shift + '_' + d;
+            tdStaff.onclick = (function(dayNum) { return function() { selectDay(dayNum); }; })(d);
+            rowStaff.appendChild(tdStaff);
+          }
         }
       });
     }
@@ -2112,12 +2121,13 @@
           monthSheetData = JSON.parse(raw);
           if (!monthSheetData.morning) monthSheetData.morning = {};
           if (!monthSheetData.afternoon) monthSheetData.afternoon = {};
+          if (!monthSheetData.evening) monthSheetData.evening = {};
         } catch (e) {
-          monthSheetData = { morning: {}, afternoon: {} };
+          monthSheetData = { morning: {}, afternoon: {}, evening: {} };
         }
       } else {
         // Seed realistic historical data up to activeDay - 1
-        monthSheetData = { morning: {}, afternoon: {} };
+        monthSheetData = { morning: {}, afternoon: {}, evening: {} };
         var defT = (currentItem && currentItem.defaultTemp !== undefined) ? currentItem.defaultTemp : 25.4;
         var staffInit = localStorage.getItem('PPCH_LAST_STAFF_NAME') || '000023';
 
@@ -2125,8 +2135,10 @@
         for (var d = 1; d <= pastDays; d++) {
           var varianceM = (Math.sin(d * 1.5) * 0.4);
           var varianceA = (Math.cos(d * 1.2) * 0.5) + 0.3;
+          var varianceE = (Math.sin(d * 0.8) * 0.3) - 0.2;
           var mTemp = parseFloat((defT + varianceM).toFixed(1));
           var aTemp = parseFloat((defT + varianceA).toFixed(1));
+          var eTemp = parseFloat((defT + varianceE).toFixed(1));
 
           monthSheetData.morning[d] = {
             temp: mTemp,
@@ -2139,9 +2151,16 @@
             staff: staffInit,
             time: '17:00'
           };
+
+          monthSheetData.evening[d] = {
+            temp: eTemp,
+            staff: staffInit,
+            time: '01:00'
+          };
         }
 
         // Seed initial values for today if empty
+        if (!monthSheetData[currentShift]) monthSheetData[currentShift] = {};
         if (!monthSheetData[currentShift][activeDay]) {
           monthSheetData[currentShift][activeDay] = {
             temp: defT,
@@ -2153,6 +2172,7 @@
 
       renderFullShift('morning');
       renderFullShift('afternoon');
+      renderFullShift('evening');
       selectDay(activeDay);
     }
 
@@ -2160,8 +2180,7 @@
     function renderFullShift(shift) {
       if (!currentItem) return;
       var config = getScaleConfig(currentItem);
-      var isMorning = (shift === 'morning');
-      var Shift = isMorning ? 'Morning' : 'Afternoon';
+      var Shift = shift.charAt(0).toUpperCase() + shift.slice(1);
       var shiftData = monthSheetData[shift] || {};
 
       var dotsGroup = document.getElementById('dots' + Shift);
@@ -2185,10 +2204,10 @@
           var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
           circle.setAttribute('cx', x.toFixed(1));
           circle.setAttribute('cy', y.toFixed(1));
-          circle.setAttribute('r', '4');
+          circle.setAttribute('r', '3.5');
           circle.setAttribute('fill', dotColor);
           circle.setAttribute('stroke', '#ffffff');
-          circle.setAttribute('stroke-width', '1.5');
+          circle.setAttribute('stroke-width', '1.2');
           circle.setAttribute('id', 'dot_' + shift + '_' + d);
           circle.style.cursor = 'pointer';
           circle.onclick = (function(dayNum) { return function() { selectDay(dayNum); }; })(d);
@@ -2226,8 +2245,10 @@
 
       var dayHdrM = document.getElementById('dayHdr_morning_' + activeDay);
       var dayHdrA = document.getElementById('dayHdr_afternoon_' + activeDay);
+      var dayHdrE = document.getElementById('dayHdr_evening_' + activeDay);
       if (dayHdrM) dayHdrM.classList.add('active-day');
       if (dayHdrA) dayHdrA.classList.add('active-day');
+      if (dayHdrE) dayHdrE.classList.add('active-day');
 
       // Populate Input Dock with Day d values for currentShift
       var rec = (monthSheetData[currentShift] && monthSheetData[currentShift][activeDay]) ? monthSheetData[currentShift][activeDay] : null;
@@ -2269,13 +2290,16 @@
     function updateActiveMarkerLive() {
       if (!currentItem) return;
       var config = getScaleConfig(currentItem);
-      var isMorning = (currentShift === 'morning');
-      var Shift = isMorning ? 'Morning' : 'Afternoon';
-      var otherShift = isMorning ? 'Afternoon' : 'Morning';
+      var Shift = currentShift.charAt(0).toUpperCase() + currentShift.slice(1);
 
-      // Hide marker on inactive shift
-      var otherMarker = document.getElementById('liveMarker' + otherShift);
-      if (otherMarker) otherMarker.style.display = 'none';
+      // Hide marker on inactive shifts
+      ['morning', 'afternoon', 'evening'].forEach(function(s) {
+        if (s !== currentShift) {
+          var sCap = s.charAt(0).toUpperCase() + s.slice(1);
+          var otherMarker = document.getElementById('liveMarker' + sCap);
+          if (otherMarker) otherMarker.style.display = 'none';
+        }
+      });
 
       var liveMarker = document.getElementById('liveMarker' + Shift);
       var livePulse = document.getElementById('livePulse' + Shift);
@@ -2363,11 +2387,14 @@
     // Shift Switcher
     function switchActiveShift(shift) {
       currentShift = shift;
-      var isM = (shift === 'morning');
-      document.getElementById('dockShiftMorning').classList.toggle('active', isM);
-      document.getElementById('dockShiftAfternoon').classList.toggle('active', !isM);
-      document.getElementById('blockMorning').classList.toggle('active-block', isM);
-      document.getElementById('blockAfternoon').classList.toggle('active-block', !isM);
+      ['morning', 'afternoon', 'evening'].forEach(function(s) {
+        var sCap = s.charAt(0).toUpperCase() + s.slice(1);
+        var btn = document.getElementById('dockShift' + sCap);
+        var block = document.getElementById('block' + sCap);
+        var isActive = (s === shift);
+        if (btn) btn.classList.toggle('active', isActive);
+        if (block) block.classList.toggle('active-block', isActive);
+      });
       selectDay(activeDay);
     }
 
@@ -2402,7 +2429,8 @@
 
     // Clear Day Data
     function clearDayData() {
-      if (!confirm('ยืนยันล้างข้อมูลวันที่ ' + activeDay + ' (' + (currentShift === 'morning' ? 'เวรเช้า' : 'เวรบ่าย') + ') หรือไม่?')) return;
+      var shiftNameTh = currentShift === 'morning' ? 'เวรเช้า' : (currentShift === 'afternoon' ? 'เวรบ่าย' : 'เวรเย็น');
+      if (!confirm('ยืนยันล้างข้อมูลวันที่ ' + activeDay + ' (' + shiftNameTh + ') หรือไม่?')) return;
       if (monthSheetData[currentShift] && monthSheetData[currentShift][activeDay]) {
         delete monthSheetData[currentShift][activeDay];
       }
@@ -2749,7 +2777,11 @@
       document.getElementById('slipItemName').innerText = data.itemName;
       document.getElementById('slipFormCode').innerText = data.formCode;
 
-      var shiftNames = { morning: 'เวรเช้า (08:00 - 16:00)', afternoon: 'เวรบ่าย (16:00 - 24:00)' };
+      var shiftNames = { 
+        morning: 'เวรเช้า (08:00 - 16:00)', 
+        afternoon: 'เวรบ่าย (16:00 - 24:00)',
+        evening: 'เวรเย็น (24:00 - 08:00)'
+      };
       document.getElementById('slipDateTime').innerText = data.date + ' ' + data.time + ' น. • ' + (shiftNames[data.shift] || data.shift);
 
       // Temperature row
