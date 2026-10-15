@@ -650,38 +650,37 @@
       color: #000000;
     }
 
-    .month-pill-list {
+    .month-text-list {
       display: inline-flex;
-      gap: 3px;
+      gap: 5px;
       align-items: center;
-      background: #f1f5f9;
-      padding: 3px 5px;
-      border-radius: 6px;
-      border: 1px solid #cbd5e1;
+      flex-wrap: wrap;
     }
 
-    .month-pill-btn {
+    .month-text-btn {
       border: none;
       background: transparent;
-      padding: 2px 7px;
-      border-radius: 4px;
-      font-size: 11px;
+      padding: 1px 7px;
+      border-radius: 9999px;
+      font-size: 12px;
       font-weight: 600;
-      color: #475569;
+      color: #334155;
       cursor: pointer;
-      transition: all 0.15s;
+      transition: all 0.15s ease;
+      user-select: none;
     }
 
-    .month-pill-btn:hover {
-      background: #e2e8f0;
+    .month-text-btn:hover {
+      background: #f1f5f9;
       color: #0f172a;
     }
 
-    .month-pill-btn.active {
-      background: var(--royal-blue);
-      color: #ffffff;
-      font-weight: 700;
-      box-shadow: 0 1px 4px rgba(0, 75, 147, 0.3);
+    .month-text-btn.active {
+      color: #002e6e;
+      font-weight: 800;
+      border: 1.8px solid #004b93;
+      background: rgba(0, 75, 147, 0.08);
+      box-shadow: 0 0 0 1px rgba(0, 75, 147, 0.2);
     }
 
     .sheet-table-scroll-container {
@@ -708,13 +707,13 @@
 
     .sheet-grid-layer-relative {
       position: relative;
-      width: 946px;
-      height: 140px;
+      width: 940px;
+      height: 240px;
     }
 
     .sheet-grid-table {
-      width: 946px;
-      min-width: 946px;
+      width: 940px;
+      min-width: 940px;
       table-layout: fixed;
       border-collapse: collapse;
       background: #ffffff;
@@ -722,21 +721,23 @@
     }
 
     .sheet-grid-table th, .sheet-grid-table td {
-      border: 1px solid #94a3b8;
+      border: 1px solid #d4d4d8;
       padding: 0;
       margin: 0;
       text-align: center;
       vertical-align: middle;
-      font-size: 11.5px;
+      font-size: 11px;
       user-select: none;
+      box-sizing: border-box;
     }
 
     .sheet-cell-shift {
-      width: 42px;
-      background: #e2e8f0;
+      width: 36px;
+      background: #ffffff;
       font-weight: 800;
       color: #000000;
-      border: 1.5px solid #000000 !important;
+      border-right: 1.5px solid #000000 !important;
+      border-left: 1.5px solid #000000 !important;
       position: sticky;
       left: 0;
       z-index: 10;
@@ -745,85 +746,94 @@
     .shift-vertical-label {
       writing-mode: vertical-rl;
       text-orientation: upright;
-      letter-spacing: 5px;
-      font-size: 14px;
+      letter-spacing: 6px;
+      font-size: 13.5px;
       font-weight: 800;
       margin: 0 auto;
     }
 
     .sheet-scale-cell {
       width: 36px;
-      height: 28px;
-      font-size: 11.5px;
+      height: 12px;
+      max-height: 12px;
+      font-size: 10.5px;
       font-weight: 700;
       font-family: var(--font-mono);
       color: #000000;
-      background: #f8fafc;
+      background: #ffffff;
       border-right: 1.5px solid #000000 !important;
       position: sticky;
-      left: 42px;
+      left: 36px;
       z-index: 10;
+      line-height: 12px;
     }
 
     .sheet-grid-cell {
       width: 28px;
-      height: 28px;
+      height: 12px;
+      max-height: 12px;
       cursor: pointer;
+      border: 1px solid #d4d4d8 !important;
+      background: #ffffff;
       transition: background 0.1s;
     }
 
     .sheet-grid-cell:hover {
-      background: rgba(0, 75, 147, 0.08);
+      background: rgba(0, 75, 147, 0.1);
     }
 
     .sheet-grid-cell.active-col {
       background: rgba(0, 75, 147, 0.08) !important;
-      border-left: 2px solid #004b93 !important;
-      border-right: 2px solid #004b93 !important;
+      border-left: 1.5px solid #004b93 !important;
+      border-right: 1.5px solid #004b93 !important;
     }
 
-    .safe-zone-row {
-      background: rgba(16, 185, 129, 0.04);
+    .safe-zone-row td.sheet-grid-cell {
+      background: rgba(16, 185, 129, 0.03);
     }
 
-    .safe-zone-top td {
-      border-top: 2px solid #059669 !important;
+    .safe-zone-top td.sheet-grid-cell {
+      border-top: 1.5px solid #059669 !important;
     }
 
-    .safe-zone-bottom td {
-      border-bottom: 2px solid #059669 !important;
+    .safe-zone-bottom td.sheet-grid-cell {
+      border-bottom: 1.5px solid #059669 !important;
     }
 
     .sheet-bottom-table {
-      border-top: 2px solid #000000;
+      border-top: 1.5px solid #000000;
+      border-bottom: 1.5px solid #000000;
     }
 
     .sheet-bottom-table td {
-      height: 26px;
+      height: 25px;
     }
 
     .sheet-day-row {
-      background: #f1f5f9;
+      background: #ffffff;
       font-weight: 700;
+      border-bottom: 1px solid #000000;
     }
 
     .sheet-day-hdr {
       font-weight: 800;
       color: #000000;
-      background: #e2e8f0;
+      background: #ffffff;
       font-size: 11.5px;
       position: sticky;
       left: 0;
       z-index: 10;
       border-right: 1.5px solid #000000 !important;
+      border-left: 1.5px solid #000000 !important;
     }
 
     .sheet-day-num {
       font-family: var(--font-mono);
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 700;
       color: #0f172a;
       cursor: pointer;
+      border: 1px solid #d4d4d8 !important;
     }
 
     .sheet-day-num:hover, .sheet-day-num.active-day {
@@ -832,74 +842,41 @@
       font-weight: 800;
     }
 
-    .sheet-hum-gt60-hdr {
-      font-weight: 800;
-      color: #dc2626;
-      background: #fef2f2;
-      font-size: 11px;
-      position: sticky;
-      left: 0;
-      z-index: 10;
-      border-right: 1.5px solid #000000 !important;
-    }
-
-    .sheet-hum-lt60-hdr {
-      font-weight: 800;
-      color: #2563eb;
-      background: #eff6ff;
-      font-size: 11px;
-      position: sticky;
-      left: 0;
-      z-index: 10;
-      border-right: 1.5px solid #000000 !important;
-    }
-
-    .sheet-hum-cell {
-      font-size: 10px;
-      font-family: var(--font-mono);
-      cursor: pointer;
-    }
-
-    .sheet-hum-cell.gt60-active {
-      color: #dc2626;
-      font-weight: 800;
-      background: #fee2e2;
-    }
-
-    .sheet-hum-cell.lt60-active {
-      color: #2563eb;
-      font-weight: 800;
-      background: #dbeafe;
+    .sheet-staff-row {
+      background: #ffffff;
     }
 
     .sheet-staff-hdr {
       font-weight: 800;
       color: #000000;
-      background: #e2e8f0;
+      background: #ffffff;
       font-size: 11.5px;
       position: sticky;
       left: 0;
       z-index: 10;
       border-right: 1.5px solid #000000 !important;
+      border-left: 1.5px solid #000000 !important;
     }
 
     .sheet-staff-cell {
-      font-size: 9px;
+      font-size: 9.5px;
       color: #1e293b;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       max-width: 28px;
       cursor: pointer;
+      border: 1px solid #d4d4d8 !important;
     }
 
     .sheet-svg-graph {
       position: absolute;
       top: 0;
       left: 0;
-      width: 946px;
-      height: 140px;
+      width: 940px;
+      height: 240px;
       pointer-events: none;
+      overflow: visible;
       z-index: 5;
     }
 
@@ -1274,7 +1251,7 @@
           <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">1. เลือกหมวดหมู่งาน LAB *</label>
           <select id="selectCategory" class="form-control-select" onchange="onCategoryChanged()">
             <option value="">-- กรุณาเลือกหมวดหมู่ --</option>
-            <option value="cat_room">อุณหภูมิและความชื้นห้องแลป (FM-PPCH-LAB-057)</option>
+            <option value="cat_room">อุณหภูมิห้องแลป (FM-PPCH-LAB-057)</option>
             <option value="cat_freezer">ตู้แช่แข็ง FFP & Control (FM-PPCH-LAB-060)</option>
             <option value="cat_wb">Water bath อ่างควบคุมอุณหภูมิ (FM-PPCH-LAB-061)</option>
             <option value="cat_ref">ตู้เย็นแช่น้ำยา & สิ่งส่งตรวจ (FM-PPCH-LAB-062)</option>
@@ -1310,7 +1287,7 @@
             </div>
             <div class="sheet-sub-center">
               <span class="sheet-sub-bold" style="margin-right: 6px;">ประจำเดือน:</span>
-              <div class="month-pill-list" id="monthPillList">
+              <div class="month-text-list" id="monthPillList">
                 <!-- 12 Months pills generated by JS -->
               </div>
             </div>
@@ -1329,16 +1306,16 @@
             <div class="sheet-grid-layer-relative">
               <table class="sheet-grid-table" id="tableMorning">
                 <tbody id="tbodyMorning">
-                  <!-- Populated by JS: 5 scale rows with 31 cells each -->
+                  <!-- Populated by JS: 20 fine scale rows with 31 cells each -->
                 </tbody>
               </table>
 
               <!-- SVG Graph Overlay for Morning Shift -->
-              <svg class="sheet-svg-graph" id="svgMorning" viewBox="0 0 946 140" preserveAspectRatio="none">
-                <!-- Safe Target Zone Band (e.g. 24-28 °C, Y=42 to Y=98) -->
-                <rect id="safeBandMorning" x="78" y="42" width="868" height="56" fill="rgba(16, 185, 129, 0.08)" stroke="none" />
-                <line id="safeLineTopMorning" x1="78" y1="42" x2="946" y2="42" stroke="#059669" stroke-width="1.5" stroke-dasharray="4,2" />
-                <line id="safeLineBotMorning" x1="78" y1="98" x2="946" y2="98" stroke="#059669" stroke-width="1.5" stroke-dasharray="4,2" />
+              <svg class="sheet-svg-graph" id="svgMorning" viewBox="0 0 940 240" preserveAspectRatio="none">
+                <!-- Safe Target Zone Band (24-28 °C, Y=48 to Y=156) -->
+                <rect id="safeBandMorning" x="72" y="48" width="868" height="108" fill="rgba(16, 185, 129, 0.05)" stroke="none" />
+                <line id="safeLineTopMorning" x1="72" y1="48" x2="940" y2="48" stroke="#059669" stroke-width="1.5" stroke-dasharray="4,2" />
+                <line id="safeLineBotMorning" x1="72" y1="156" x2="940" y2="156" stroke="#059669" stroke-width="1.5" stroke-dasharray="4,2" />
                 
                 <!-- Polyline connecting days -->
                 <polyline id="polyMorning" points="" fill="none" stroke="#004b93" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
@@ -1359,23 +1336,15 @@
               </svg>
             </div>
 
-            <!-- Bottom Table of Morning Block (Day, >60%, <60%, Staff) -->
+            <!-- Bottom Table of Morning Block (Day, Staff) -->
             <table class="sheet-grid-table sheet-bottom-table">
               <tbody>
                 <tr class="sheet-day-row" id="rowDayMorning">
-                  <td class="sheet-day-hdr" style="width: 78px;">วันที่ (Day)</td>
+                  <td class="sheet-day-hdr" style="width: 72px;">วันที่ (Day)</td>
                   <!-- 31 Day numbers -->
                 </tr>
-                <tr class="sheet-hum-gt60-row" id="rowHumGt60Morning">
-                  <td class="sheet-hum-gt60-hdr" style="width: 78px;">> 60% ■</td>
-                  <!-- 31 cells -->
-                </tr>
-                <tr class="sheet-hum-lt60-row" id="rowHumLt60Morning">
-                  <td class="sheet-hum-lt60-hdr" style="width: 78px;">< 60% ■</td>
-                  <!-- 31 cells -->
-                </tr>
                 <tr class="sheet-staff-row" id="rowStaffMorning">
-                  <td class="sheet-staff-hdr" style="width: 78px;">ผู้บันทึก</td>
+                  <td class="sheet-staff-hdr" style="width: 72px;">ผู้บันทึก</td>
                   <!-- 31 cells -->
                 </tr>
               </tbody>
@@ -1387,16 +1356,16 @@
             <div class="sheet-grid-layer-relative">
               <table class="sheet-grid-table" id="tableAfternoon">
                 <tbody id="tbodyAfternoon">
-                  <!-- Populated by JS: 5 scale rows with 31 cells each -->
+                  <!-- Populated by JS: 20 fine scale rows with 31 cells each -->
                 </tbody>
               </table>
 
               <!-- SVG Graph Overlay for Afternoon Shift -->
-              <svg class="sheet-svg-graph" id="svgAfternoon" viewBox="0 0 946 140" preserveAspectRatio="none">
+              <svg class="sheet-svg-graph" id="svgAfternoon" viewBox="0 0 940 240" preserveAspectRatio="none">
                 <!-- Safe Target Zone Band -->
-                <rect id="safeBandAfternoon" x="78" y="42" width="868" height="56" fill="rgba(16, 185, 129, 0.08)" stroke="none" />
-                <line id="safeLineTopAfternoon" x1="78" y1="42" x2="946" y2="42" stroke="#059669" stroke-width="1.5" stroke-dasharray="4,2" />
-                <line id="safeLineBotAfternoon" x1="78" y1="98" x2="946" y2="98" stroke="#059669" stroke-width="1.5" stroke-dasharray="4,2" />
+                <rect id="safeBandAfternoon" x="72" y="48" width="868" height="108" fill="rgba(16, 185, 129, 0.05)" stroke="none" />
+                <line id="safeLineTopAfternoon" x1="72" y1="48" x2="940" y2="48" stroke="#059669" stroke-width="1.5" stroke-dasharray="4,2" />
+                <line id="safeLineBotAfternoon" x1="72" y1="156" x2="940" y2="156" stroke="#059669" stroke-width="1.5" stroke-dasharray="4,2" />
                 
                 <!-- Polyline connecting days -->
                 <polyline id="polyAfternoon" points="" fill="none" stroke="#0284c7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
@@ -1417,23 +1386,15 @@
               </svg>
             </div>
 
-            <!-- Bottom Table of Afternoon Block (Day, >60%, <60%, Staff) -->
+            <!-- Bottom Table of Afternoon Block (Day, Staff) -->
             <table class="sheet-grid-table sheet-bottom-table">
               <tbody>
                 <tr class="sheet-day-row" id="rowDayAfternoon">
-                  <td class="sheet-day-hdr" style="width: 78px;">วันที่ (Day)</td>
+                  <td class="sheet-day-hdr" style="width: 72px;">วันที่ (Day)</td>
                   <!-- 31 Day numbers -->
                 </tr>
-                <tr class="sheet-hum-gt60-row" id="rowHumGt60Afternoon">
-                  <td class="sheet-hum-gt60-hdr" style="width: 78px;">> 60% ■</td>
-                  <!-- 31 cells -->
-                </tr>
-                <tr class="sheet-hum-lt60-row" id="rowHumLt60Afternoon">
-                  <td class="sheet-hum-lt60-hdr" style="width: 78px;">< 60% ■</td>
-                  <!-- 31 cells -->
-                </tr>
                 <tr class="sheet-staff-row" id="rowStaffAfternoon">
-                  <td class="sheet-staff-hdr" style="width: 78px;">ผู้บันทึก</td>
+                  <td class="sheet-staff-hdr" style="width: 72px;">ผู้บันทึก</td>
                   <!-- 31 cells -->
                 </tr>
               </tbody>
@@ -1488,10 +1449,10 @@
             </div>
           </div>
 
-          <!-- Inputs Grid: Temperature & Humidity -->
-          <div class="dock-inputs-grid">
+          <!-- Inputs Grid: Temperature Only -->
+          <div class="dock-inputs-grid" style="grid-template-columns: 1fr;">
             <!-- Temperature Input -->
-            <div class="dock-input-box">
+            <div class="dock-input-box" style="max-width: 580px; margin: 0 auto; width: 100%;">
               <div class="dock-box-header">
                 <label class="dock-box-label">
                   <span class="material-icons-round" style="font-size: 18px; color: #ef4444;">thermostat</span>
@@ -1513,30 +1474,6 @@
                 <span id="dockTempFeedbackText">ปกติในเกณฑ์มาตรฐาน</span>
               </div>
             </div>
-
-            <!-- Humidity Input (Visible if checkpoint has humidity) -->
-            <div class="dock-input-box" id="dockHumBox">
-              <div class="dock-box-header">
-                <label class="dock-box-label">
-                  <span class="material-icons-round" style="font-size: 18px; color: #0284c7;">water_drop</span>
-                  <span>ค่าความชื้นสัมพัทธ์ (%RH) *</span>
-                </label>
-                <span class="dock-spec-tag" style="color: #dc2626; border-color: #fecaca; background: #fef2f2;">เกณฑ์: ≤ 60 %RH</span>
-              </div>
-
-              <div class="numeric-entry-box">
-                <button type="button" class="btn-stepper" onclick="stepLiveHum(-5)">-5</button>
-                <button type="button" class="btn-stepper" onclick="stepLiveHum(-1)">-1</button>
-                <input type="number" id="inputHumidity" class="numeric-entry-input" step="1" placeholder="50" oninput="onLiveHumInput()" onkeyup="onLiveHumInput()">
-                <button type="button" class="btn-stepper" onclick="stepLiveHum(1)">+1</button>
-                <button type="button" class="btn-stepper" onclick="stepLiveHum(5)">+5</button>
-              </div>
-
-              <div id="dockHumFeedback" class="status-feedback-pill normal" style="margin-top: 8px;">
-                <span class="material-icons-round" style="font-size: 15px;">check_circle</span>
-                <span id="dockHumFeedbackText">ความชื้นปกติ (≤ 60 %RH)</span>
-              </div>
-            </div>
           </div>
 
           <!-- Staff ID & Name -->
@@ -1554,7 +1491,7 @@
                 <span>หมายเหตุ / การแก้ไขกรณีพบปัญหา (ถ้ามี)</span>
                 <span style="font-weight: 400; color: var(--text-light);">(ไม่บังคับกรอก)</span>
               </label>
-              <textarea id="evalNote" class="form-control-textarea" rows="2" placeholder="ระบุการปรับเครื่องปรับอากาศ เติมน้ำกลั่น หรือทำความสะอาด (ถ้ามี)..."></textarea>
+              <textarea id="evalNote" class="form-control-textarea" rows="3" placeholder="ระบุการปรับเครื่องปรับอากาศ หรือการแก้ไขกรณีอุณหภูมิหลุดเกณฑ์ (ถ้ามี)..."></textarea>
             </div>
           </div>
 
@@ -1746,11 +1683,11 @@
     // 23 Checkpoints Database
     var LAB_ITEMS = {
       // 1. FM-PPCH-LAB-057: อุณหภูมิห้องแลป (5 จุด)
-      '057_lab': { id: '057_lab', name: 'Laboratory (ห้องปฏิบัติการกลาง)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิและความชื้นห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: true, defaultTemp: 25.4, defaultHum: 52 },
-      '057_immu': { id: '057_immu', name: 'ห้อง Immunology', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิและความชื้นห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: true, defaultTemp: 24.8, defaultHum: 50 },
-      '057_blood': { id: '057_blood', name: 'Blood bank (ธนาคารเลือด)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิและความชื้นห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: true, defaultTemp: 25.1, defaultHum: 54 },
-      '057_bac': { id: '057_bac', name: 'Bacteria (จุลชีววิทยา)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิและความชื้นห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: true, defaultTemp: 25.6, defaultHum: 55 },
-      '057_store': { id: '057_store', name: 'Storage (คลังเก็บน้ำยา/เวชภัณฑ์)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิและความชื้นห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: true, defaultTemp: 24.5, defaultHum: 49 },
+      '057_lab': { id: '057_lab', name: 'Laboratory (ห้องปฏิบัติการกลาง)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: false, defaultTemp: 25.4 },
+      '057_immu': { id: '057_immu', name: 'ห้อง Immunology', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: false, defaultTemp: 24.8 },
+      '057_blood': { id: '057_blood', name: 'Blood bank (ธนาคารเลือด)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: false, defaultTemp: 25.1 },
+      '057_bac': { id: '057_bac', name: 'Bacteria (จุลชีววิทยา)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: false, defaultTemp: 25.6 },
+      '057_store': { id: '057_store', name: 'Storage (คลังเก็บน้ำยา/เวชภัณฑ์)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: false, defaultTemp: 24.5 },
 
       // 2. FM-PPCH-LAB-060: ตู้แช่แข็ง FFP & Control (2 จุด)
       '060_ffp': { id: '060_ffp', name: 'ตู้แช่แข็ง FFP (ควบคุม ≤ -18 °C)', code: 'FM-PPCH-LAB-060', cat: 'cat_freezer', catName: 'ตู้แช่แข็ง', type: 'temp_freezer', targetTemp: '≤ -18.0 °C', tempMin: -40.0, tempMax: -18.0, hasHumidity: false, defaultTemp: -20.2 },
@@ -1946,7 +1883,6 @@
       var secSheet = document.getElementById('sheetGridSection');
       var secDock = document.getElementById('realtimeDockSection');
       var secStandard = document.getElementById('standardFormSection');
-      var boxHum = document.getElementById('dockHumBox');
 
       if (item.type.indexOf('temp_') === 0) {
         // TEMPERATURE CHECKPOINT: Show Exact Google Sheets Grid & Realtime Dock
@@ -1956,13 +1892,6 @@
 
         // Set target text
         document.getElementById('dockTempTarget').innerText = 'เกณฑ์: ' + item.targetTemp;
-        
-        // Humidity box visibility
-        if (item.hasHumidity) {
-          boxHum.style.display = 'block';
-        } else {
-          boxHum.style.display = 'none';
-        }
 
         // Build Table DOM & Load Data
         buildSheetDom(item);
@@ -1999,34 +1928,34 @@
 
     // Scale Configuration by Equipment Type
     function getScaleConfig(item) {
-      if (!item) return { scaleMin: 22, scaleMax: 30, ticks: [30, 28, 26, 24, 22], safeMin: 24, safeMax: 28 };
+      if (!item) return { scaleMin: 20, scaleMax: 30, ticks: [30, 28, 26, 24, 22], safeMin: 24, safeMax: 28, totalRows: 20 };
       if (item.cat === 'cat_freezer' || item.type === 'temp_freezer') {
-        return { scaleMin: -22, scaleMax: -14, ticks: [-14, -16, -18, -20, -22], safeMin: -40, safeMax: -18 };
+        return { scaleMin: -24, scaleMax: -14, ticks: [-14, -16, -18, -20, -22], safeMin: -40, safeMax: -18, totalRows: 20 };
       } else if (item.cat === 'cat_ref' || item.type === 'temp_refrigerator') {
-        return { scaleMin: 2, scaleMax: 10, ticks: [10, 8, 6, 4, 2], safeMin: 2, safeMax: 8 };
+        return { scaleMin: 0, scaleMax: 10, ticks: [10, 8, 6, 4, 2], safeMin: 2, safeMax: 8, totalRows: 20 };
       } else if (item.cat === 'cat_wb' || item.type === 'temp_waterbath') {
-        return { scaleMin: 35, scaleMax: 39, ticks: [39, 38, 37, 36, 35], safeMin: 36.5, safeMax: 37.5 };
+        return { scaleMin: 34, scaleMax: 39, ticks: [39, 38, 37, 36, 35], safeMin: 36.5, safeMax: 37.5, totalRows: 20 };
       } else {
-        return { scaleMin: 22, scaleMax: 30, ticks: [30, 28, 26, 24, 22], safeMin: 24, safeMax: 28 };
+        return { scaleMin: 20, scaleMax: 30, ticks: [30, 28, 26, 24, 22], safeMin: 24, safeMax: 28, totalRows: 20 };
       }
     }
 
-    // Coordinate Math for 946 x 140 SVG viewBox
+    // Coordinate Math for 940 x 240 SVG viewBox
     function getSvgX(d) {
-      // Shift Col (42px) + Scale Col (36px) = 78px
+      // Shift Col (36px) + Scale Col (36px) = 72px left offset
       // Day cols: 28px wide
-      return 78 + (d - 0.5) * 28;
+      return 72 + (d - 0.5) * 28;
     }
 
     function getSvgY(t, config) {
       var span = config.scaleMax - config.scaleMin;
-      if (span === 0) span = 8;
+      if (span === 0) span = 10;
       var ratio = (config.scaleMax - t) / span;
-      var y = 14 + ratio * 112; // 14px padding at top and bottom (140px total)
-      return Math.max(4, Math.min(136, y));
+      var y = ratio * 240;
+      return Math.max(3, Math.min(237, y));
     }
 
-    // Build Sheet Table DOM (Header, 31 Columns, Scale Rows)
+    // Build Sheet Table DOM (Header, 31 Columns, 20 Fine Scale Rows)
     function buildSheetDom(item) {
       var config = getScaleConfig(item);
       
@@ -2039,14 +1968,15 @@
       document.getElementById('sheetRoomNameText').innerText = item.name + ' (' + item.code + ')';
       document.getElementById('sheetYearText').innerText = activeYear;
 
-      // Build Month Pills (Jan - Dec)
+      // Build Month Text List (Jan - Dec)
       var monthList = document.getElementById('monthPillList');
+      monthList.className = 'month-text-list';
       monthList.innerHTML = '';
       THAI_MONTHS_SHORT.forEach(function(mName, idx) {
         var mNum = idx + 1;
         var btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'month-pill-btn' + (mNum === activeMonth ? ' active' : '');
+        btn.className = 'month-text-btn' + (mNum === activeMonth ? ' active' : '');
         btn.innerText = mName;
         btn.onclick = function() { switchMonth(mNum); };
         monthList.appendChild(btn);
@@ -2064,6 +1994,8 @@
       }
       document.getElementById('dockMonthYearText').innerText = THAI_MONTHS_SHORT[activeMonth - 1] + ' ' + activeYear;
 
+      var totalRows = config.totalRows || 20;
+
       // Build Table Bodies for Morning & Afternoon Blocks
       ['morning', 'afternoon'].forEach(function(shift) {
         var isMorning = (shift === 'morning');
@@ -2072,30 +2004,35 @@
         var tbody = document.getElementById('tbody' + Shift);
         tbody.innerHTML = '';
 
-        config.ticks.forEach(function(tickVal, rIdx) {
+        for (var rIdx = 0; rIdx < totalRows; rIdx++) {
           var tr = document.createElement('tr');
           
-          var isSafeZone = (tickVal >= config.safeMin && tickVal <= config.safeMax);
-          if (isSafeZone) tr.classList.add('safe-zone-row');
-          if (tickVal === config.safeMax) tr.classList.add('safe-zone-top');
-          if (tickVal === config.safeMin) tr.classList.add('safe-zone-bottom');
+          // Safe zone check (Row 4 is 28.0°C down to Row 11 which is 24.0°C)
+          if (rIdx >= 4 && rIdx <= 11) tr.classList.add('safe-zone-row');
+          if (rIdx === 4) tr.classList.add('safe-zone-top');
+          if (rIdx === 11) tr.classList.add('safe-zone-bottom');
 
-          // Left shift cell (only on top row with rowspan=5)
+          // Left shift cell (only on top row with rowspan=20)
           if (rIdx === 0) {
             var tdShift = document.createElement('td');
-            tdShift.rowSpan = 5;
+            tdShift.rowSpan = totalRows;
             tdShift.className = 'sheet-cell-shift';
             tdShift.innerHTML = '<div class="shift-vertical-label">' + shiftLabel + '</div>';
             tr.appendChild(tdShift);
           }
 
-          // Scale label cell
+          // Scale label cell (Major ticks at row 0, 4, 8, 12, 16)
           var tdScale = document.createElement('td');
           tdScale.className = 'sheet-scale-cell';
-          tdScale.innerText = tickVal;
+          if (rIdx % 4 === 0) {
+            var tickIdx = rIdx / 4;
+            tdScale.innerText = config.ticks[tickIdx] !== undefined ? config.ticks[tickIdx] : '';
+          } else {
+            tdScale.innerText = '';
+          }
           tr.appendChild(tdScale);
 
-          // 31 Grid Cells
+          // 31 Fine Grid Cells
           for (var d = 1; d <= 31; d++) {
             var td = document.createElement('td');
             td.className = 'sheet-grid-cell col-day-' + d;
@@ -2109,18 +2046,14 @@
           }
 
           tbody.appendChild(tr);
-        });
+        }
 
-        // Bottom Table Rows
+        // Bottom Table Rows (Day, Staff) - NO HUMIDITY!
         var rowDay = document.getElementById('rowDay' + Shift);
-        var rowHumGt60 = document.getElementById('rowHumGt60' + Shift);
-        var rowHumLt60 = document.getElementById('rowHumLt60' + Shift);
         var rowStaff = document.getElementById('rowStaff' + Shift);
 
         // Clear previous day cells, keeping only header cell
         while (rowDay.children.length > 1) rowDay.removeChild(rowDay.lastChild);
-        while (rowHumGt60.children.length > 1) rowHumGt60.removeChild(rowHumGt60.lastChild);
-        while (rowHumLt60.children.length > 1) rowHumLt60.removeChild(rowHumLt60.lastChild);
         while (rowStaff.children.length > 1) rowStaff.removeChild(rowStaff.lastChild);
 
         for (var d = 1; d <= 31; d++) {
@@ -2131,20 +2064,6 @@
           tdDay.innerText = d;
           tdDay.onclick = (function(dayNum) { return function() { selectDay(dayNum); }; })(d);
           rowDay.appendChild(tdDay);
-
-          // >60% cell
-          var tdGt = document.createElement('td');
-          tdGt.className = 'sheet-hum-cell col-day-' + d;
-          tdGt.id = 'cellGt60_' + shift + '_' + d;
-          tdGt.onclick = (function(dayNum) { return function() { selectDay(dayNum); }; })(d);
-          rowHumGt60.appendChild(tdGt);
-
-          // <60% cell
-          var tdLt = document.createElement('td');
-          tdLt.className = 'sheet-hum-cell col-day-' + d;
-          tdLt.id = 'cellLt60_' + shift + '_' + d;
-          tdLt.onclick = (function(dayNum) { return function() { selectDay(dayNum); }; })(d);
-          rowHumLt60.appendChild(tdLt);
 
           // Staff cell
           var tdStaff = document.createElement('td');
@@ -2161,16 +2080,22 @@
 
         var safeBand = document.getElementById('safeBand' + Shift);
         if (safeBand) {
+          safeBand.setAttribute('x', '72');
+          safeBand.setAttribute('width', '868');
           safeBand.setAttribute('y', yTop.toFixed(1));
           safeBand.setAttribute('height', bandH.toFixed(1));
         }
         var lineTop = document.getElementById('safeLineTop' + Shift);
         if (lineTop) {
+          lineTop.setAttribute('x1', '72');
+          lineTop.setAttribute('x2', '940');
           lineTop.setAttribute('y1', yTop.toFixed(1));
           lineTop.setAttribute('y2', yTop.toFixed(1));
         }
         var lineBot = document.getElementById('safeLineBot' + Shift);
         if (lineBot) {
+          lineBot.setAttribute('x1', '72');
+          lineBot.setAttribute('x2', '940');
           lineBot.setAttribute('y1', yBot.toFixed(1));
           lineBot.setAttribute('y2', yBot.toFixed(1));
         }
@@ -2194,7 +2119,6 @@
         // Seed realistic historical data up to activeDay - 1
         monthSheetData = { morning: {}, afternoon: {} };
         var defT = (currentItem && currentItem.defaultTemp !== undefined) ? currentItem.defaultTemp : 25.4;
-        var defH = (currentItem && currentItem.defaultHum !== undefined) ? currentItem.defaultHum : 52;
         var staffInit = localStorage.getItem('PPCH_LAST_STAFF_NAME') || '000023';
 
         var pastDays = Math.min(activeDay - 1, 28);
@@ -2203,19 +2127,15 @@
           var varianceA = (Math.cos(d * 1.2) * 0.5) + 0.3;
           var mTemp = parseFloat((defT + varianceM).toFixed(1));
           var aTemp = parseFloat((defT + varianceA).toFixed(1));
-          var mHum = Math.round(defH + Math.sin(d) * 4);
-          var aHum = Math.round(defH + Math.cos(d) * 3);
 
           monthSheetData.morning[d] = {
             temp: mTemp,
-            hum: mHum,
             staff: staffInit,
             time: '09:00'
           };
 
           monthSheetData.afternoon[d] = {
             temp: aTemp,
-            hum: aHum,
             staff: staffInit,
             time: '17:00'
           };
@@ -2225,7 +2145,6 @@
         if (!monthSheetData[currentShift][activeDay]) {
           monthSheetData[currentShift][activeDay] = {
             temp: defT,
-            hum: defH,
             staff: staffInit,
             time: new Date().toTimeString().slice(0, 5)
           };
@@ -2253,8 +2172,6 @@
 
       for (var d = 1; d <= 31; d++) {
         var dayRecord = shiftData[d];
-        var cellGt = document.getElementById('cellGt60_' + shift + '_' + d);
-        var cellLt = document.getElementById('cellLt60_' + shift + '_' + d);
         var cellStaff = document.getElementById('cellStaff_' + shift + '_' + d);
 
         if (dayRecord && dayRecord.temp !== undefined && !isNaN(dayRecord.temp)) {
@@ -2276,29 +2193,6 @@
           circle.style.cursor = 'pointer';
           circle.onclick = (function(dayNum) { return function() { selectDay(dayNum); }; })(d);
           if (dotsGroup) dotsGroup.appendChild(circle);
-        }
-
-        // Humidity Cells
-        if (cellGt && cellLt) {
-          if (dayRecord && dayRecord.hum !== undefined) {
-            var humVal = parseInt(dayRecord.hum);
-            if (humVal > 60) {
-              cellGt.innerText = '■ ' + humVal + '%';
-              cellGt.className = 'sheet-hum-cell gt60-active col-day-' + d;
-              cellLt.innerText = '';
-              cellLt.className = 'sheet-hum-cell col-day-' + d;
-            } else {
-              cellLt.innerText = '■ ' + humVal + '%';
-              cellLt.className = 'sheet-hum-cell lt60-active col-day-' + d;
-              cellGt.innerText = '';
-              cellGt.className = 'sheet-hum-cell col-day-' + d;
-            }
-          } else {
-            cellGt.innerText = '';
-            cellGt.className = 'sheet-hum-cell col-day-' + d;
-            cellLt.innerText = '';
-            cellLt.className = 'sheet-hum-cell col-day-' + d;
-          }
         }
 
         // Staff Cell
@@ -2338,14 +2232,11 @@
       // Populate Input Dock with Day d values for currentShift
       var rec = (monthSheetData[currentShift] && monthSheetData[currentShift][activeDay]) ? monthSheetData[currentShift][activeDay] : null;
       var inputTemp = document.getElementById('inputTemp');
-      var inputHum = document.getElementById('inputHumidity');
 
       if (rec) {
         if (inputTemp) inputTemp.value = (rec.temp !== undefined) ? rec.temp : '';
-        if (inputHum) inputHum.value = (rec.hum !== undefined) ? rec.hum : '';
       } else {
         if (inputTemp) inputTemp.value = (currentItem && currentItem.defaultTemp !== undefined) ? currentItem.defaultTemp : '';
-        if (inputHum) inputHum.value = (currentItem && currentItem.defaultHum !== undefined) ? currentItem.defaultHum : '';
       }
 
       // Update Live Marker
@@ -2443,48 +2334,6 @@
       }
     }
 
-    // REAL-TIME HUMIDITY INPUT
-    function onLiveHumInput() {
-      if (!currentItem) return;
-      var el = document.getElementById('inputHumidity');
-      var val = parseInt(el.value);
-      if (isNaN(val)) return;
-
-      if (!monthSheetData[currentShift]) monthSheetData[currentShift] = {};
-      if (!monthSheetData[currentShift][activeDay]) monthSheetData[currentShift][activeDay] = {};
-      monthSheetData[currentShift][activeDay].hum = val;
-
-      // Update Table Cell live
-      var cellGt = document.getElementById('cellGt60_' + currentShift + '_' + activeDay);
-      var cellLt = document.getElementById('cellLt60_' + currentShift + '_' + activeDay);
-      if (cellGt && cellLt) {
-        if (val > 60) {
-          cellGt.innerText = '■ ' + val + '%';
-          cellGt.className = 'sheet-hum-cell gt60-active col-day-' + activeDay + ' active-col';
-          cellLt.innerText = '';
-          cellLt.className = 'sheet-hum-cell col-day-' + activeDay + ' active-col';
-        } else {
-          cellLt.innerText = '■ ' + val + '%';
-          cellLt.className = 'sheet-hum-cell lt60-active col-day-' + activeDay + ' active-col';
-          cellGt.innerText = '';
-          cellGt.className = 'sheet-hum-cell col-day-' + activeDay + ' active-col';
-        }
-      }
-
-      // Feedback pill
-      var fb = document.getElementById('dockHumFeedback');
-      var fbText = document.getElementById('dockHumFeedbackText');
-      if (fb && fbText) {
-        if (val <= 60) {
-          fb.className = 'status-feedback-pill normal';
-          fb.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">check_circle</span> <span>ความชื้นปกติ (≤ 60 %RH)</span>';
-        } else {
-          fb.className = 'status-feedback-pill abnormal';
-          fb.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">warning</span> <span>ความชื้นเกินเกณฑ์มาตรฐาน (> 60 %RH)</span>';
-        }
-      }
-    }
-
     // REAL-TIME STAFF INPUT
     function onLiveStaffInput() {
       var staffId = (document.getElementById('staffId').value || '').trim();
@@ -2509,14 +2358,6 @@
       if (isNaN(val)) val = (currentItem && currentItem.defaultTemp !== undefined) ? currentItem.defaultTemp : 25.0;
       el.value = (val + delta).toFixed(1);
       onLiveTempInput();
-    }
-
-    function stepLiveHum(delta) {
-      var el = document.getElementById('inputHumidity');
-      var val = parseInt(el.value);
-      if (isNaN(val)) val = 50;
-      el.value = Math.max(0, Math.min(100, val + delta));
-      onLiveHumInput();
     }
 
     // Shift Switcher
@@ -2550,7 +2391,7 @@
     // Month Switcher
     function switchMonth(m) {
       activeMonth = m;
-      document.querySelectorAll('.month-pill-btn').forEach(function(b, idx) {
+      document.querySelectorAll('.month-text-btn').forEach(function(b, idx) {
         b.classList.toggle('active', (idx + 1) === m);
       });
       document.getElementById('dockMonthYearText').innerText = THAI_MONTHS_SHORT[activeMonth - 1] + ' ' + activeYear;
@@ -2639,25 +2480,14 @@
       }
 
       var humVal = null;
-      if (currentItem.hasHumidity) {
-        humVal = parseInt(document.getElementById('inputHumidity').value);
-        if (isNaN(humVal)) {
-          alert('กรุณากรอกค่าความชื้นสัมพัทธ์');
-          document.getElementById('inputHumidity').focus();
-          return;
-        }
-      }
-
       var note = document.getElementById('evalNote').value.trim();
       var config = getScaleConfig(currentItem);
       var isPass = (tempVal >= config.safeMin && tempVal <= config.safeMax);
-      if (humVal !== null && humVal > 60) isPass = false;
 
       // Update in-memory monthSheetData
       if (!monthSheetData[currentShift]) monthSheetData[currentShift] = {};
       monthSheetData[currentShift][activeDay] = {
         temp: tempVal,
-        hum: humVal !== null ? humVal : undefined,
         staff: staffName + ' (' + staffId + ')',
         note: note,
         time: new Date().toTimeString().slice(0, 5)
