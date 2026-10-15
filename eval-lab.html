@@ -610,264 +610,512 @@
       font-size: 12px;
     }
 
-    /* ==================== GOOGLE SHEETS TEMPLATE & GRAPH STYLES ==================== */
-    .sheet-grid-wrapper {
-      background: #ffffff;
-      border: 1.5px solid #000000;
-      box-shadow: 0 4px 16px rgba(0, 46, 110, 0.06);
-      border-radius: 4px;
+    /* ==================== SMART CLINICAL LAB MONITOR STYLES ==================== */
+    /* Checkpoint Hero & Clinical KPI Strip */
+    .smart-hero-card {
+      background: linear-gradient(135deg, #002e6e 0%, #004b93 100%);
+      color: #ffffff;
+      border-radius: 14px;
+      padding: 18px 22px;
+      margin-bottom: 16px;
+      box-shadow: 0 6px 20px rgba(0, 46, 110, 0.15);
+      position: relative;
       overflow: hidden;
-      margin-bottom: 18px;
     }
-
-    /* Google Sheet Top Banners (Row 1 & Row 2) */
-    .sheet-title-box {
-      background: #ffffff;
-      border-bottom: 1px solid #000000;
-      text-align: center;
-      font-size: 17px;
+    .smart-hero-card::after {
+      content: "";
+      position: absolute;
+      right: -30px;
+      bottom: -30px;
+      width: 160px;
+      height: 160px;
+      background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .smart-hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .smart-hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      backdrop-filter: blur(4px);
+    }
+    .smart-hero-title {
+      font-size: 19px;
       font-weight: 800;
-      color: #000000;
-      padding: 7px 12px;
       letter-spacing: -0.2px;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .smart-hero-spec {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 800;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+    .smart-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    @media (max-width: 768px) {
+      .smart-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    .smart-kpi-pill {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      padding: 8px 12px;
+      backdrop-filter: blur(4px);
+    }
+    .smart-kpi-label {
+      font-size: 10.5px;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 600;
+    }
+    .smart-kpi-val {
+      font-size: 16px;
+      font-weight: 800;
+      margin-top: 2px;
+      font-family: var(--font-mono);
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
 
-    .sheet-sub-box {
+    /* Speed Entry Console */
+    .speed-entry-card {
       background: #ffffff;
-      border-bottom: 1.5px solid #000000;
+      border: 1.5px solid var(--border-main);
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 16px rgba(0, 46, 110, 0.05);
+    }
+    .speed-entry-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .speed-shift-group {
+      display: inline-flex;
+      background: #f1f5f9;
+      padding: 3px;
+      border-radius: 10px;
+      gap: 4px;
+    }
+    .speed-shift-btn {
+      border: none;
+      background: transparent;
+      padding: 7px 14px;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #64748b;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .speed-shift-btn:hover { color: #0f172a; }
+    .speed-shift-btn.active {
+      background: #004b93;
+      color: #ffffff;
+      font-weight: 700;
+      box-shadow: 0 2px 6px rgba(0, 75, 147, 0.25);
+    }
+    .speed-date-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .speed-btn-nav {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid var(--border-main);
+      background: #f8fafc;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #475569;
+      transition: all 0.15s;
+    }
+    .speed-btn-nav:hover { background: #e2e8f0; }
+
+    /* Big Dial Input with Dynamic Aura */
+    .speed-dial-center {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 16px 20px;
+      text-align: center;
+      margin-bottom: 16px;
+      transition: all 0.25s ease;
+    }
+    .speed-dial-center.status-normal {
+      border-color: #10b981;
+      background: #f0fdf4;
+      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.12);
+    }
+    .speed-dial-center.status-abnormal {
+      border-color: #ef4444;
+      background: #fef2f2;
+      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
+    }
+    .speed-dial-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .speed-temp-input {
+      font-family: var(--font-mono);
+      font-size: 40px;
+      font-weight: 800;
+      width: 140px;
+      text-align: center;
+      border: none;
+      background: transparent;
+      color: #0f172a;
+      outline: none;
+      line-height: 1;
+    }
+    .speed-temp-unit {
+      font-size: 24px;
+      font-weight: 800;
+      color: #64748b;
+      margin-left: -6px;
+    }
+    .speed-stepper-btn {
+      width: 44px;
+      height: 40px;
+      border-radius: 8px;
+      border: 1px solid var(--border-main);
+      background: #ffffff;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.15s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .speed-stepper-btn:hover {
+      background: #004b93;
+      color: #ffffff;
+      border-color: #004b93;
+      transform: translateY(-1px);
+    }
+    .speed-stepper-btn:active { transform: translateY(0); }
+    .speed-status-banner {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 10px;
+    }
+    .speed-status-banner.normal {
+      background: #dcfce7;
+      color: #15803d;
+      border: 1px solid #bbf7d0;
+    }
+    .speed-status-banner.abnormal {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+      animation: alertPulse 1.2s infinite alternate;
+    }
+    @keyframes alertPulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.02); box-shadow: 0 0 10px rgba(239, 68, 68, 0.3); }
+    }
+
+    /* Staff & Action Row */
+    .speed-staff-row {
+      display: grid;
+      grid-template-columns: 160px 1fr 1.5fr;
+      gap: 12px;
+      align-items: flex-end;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 768px) {
+      .speed-staff-row { grid-template-columns: 1fr; }
+    }
+    .speed-action-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .btn-speed-save {
+      flex: 2;
+      min-width: 180px;
+      height: 46px;
+      background: linear-gradient(135deg, #004b93 0%, #0284c7 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(0, 75, 147, 0.25);
+      transition: all 0.15s;
+    }
+    .btn-speed-save:hover {
+      background: linear-gradient(135deg, #003882 0%, #0070ba 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(0, 75, 147, 0.35);
+    }
+    .btn-speed-sub {
+      height: 46px;
+      padding: 0 14px;
+      background: #ffffff;
+      border: 1px solid var(--border-main);
+      border-radius: 10px;
+      color: #475569;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+    .btn-speed-sub:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+      color: #0f172a;
+    }
+
+    /* Trend Chart Card */
+    .trend-chart-card {
+      background: #ffffff;
+      border: 1px solid var(--border-main);
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 16px rgba(0, 46, 110, 0.04);
+    }
+    .trend-header-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 12px;
-      padding: 6px 14px;
-      font-size: 12.5px;
-      color: #000000;
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f1f5f9;
     }
-
-    .sheet-sub-bold {
-      font-weight: 700;
-      color: #000000;
-    }
-
-    .month-text-list {
-      display: inline-flex;
-      gap: 5px;
+    .trend-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--royal-dark);
+      display: flex;
       align-items: center;
-      flex-wrap: wrap;
+      gap: 8px;
     }
-
-    .month-text-btn {
+    .trend-filter-pills {
+      display: inline-flex;
+      background: #f1f5f9;
+      padding: 3px;
+      border-radius: 8px;
+      gap: 4px;
+    }
+    .trend-pill-btn {
       border: none;
       background: transparent;
-      padding: 1px 7px;
-      border-radius: 9999px;
-      font-size: 12px;
+      padding: 5px 11px;
+      border-radius: 6px;
+      font-size: 11.5px;
       font-weight: 600;
-      color: #334155;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      user-select: none;
-    }
-
-    .month-text-btn:hover {
-      background: #f1f5f9;
-      color: #0f172a;
-    }
-
-    .month-text-btn.active {
-      color: #002e6e;
-      font-weight: 800;
-      border: 1.8px solid #004b93;
-      background: rgba(0, 75, 147, 0.08);
-      box-shadow: 0 0 0 1px rgba(0, 75, 147, 0.2);
-    }
-
-    .sheet-table-scroll-container {
-      overflow-x: auto;
-      position: relative;
-      background: #ffffff;
-      padding: 12px;
-      scrollbar-width: thin;
-      scrollbar-color: #cbd5e1 #f8fafc;
-    }
-
-    /* Shift Block (Frame) */
-    .sheet-shift-block {
-      border: 1.5px solid #000000;
-      position: relative;
-      margin-bottom: 20px;
-      background: #ffffff;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    .sheet-shift-block.active-block {
-      border: 2px solid #004b93;
-      box-shadow: 0 2px 12px rgba(0, 75, 147, 0.15);
-    }
-
-    /* Unified Table (Spans 100% of the block without dead space) */
-    .sheet-grid-table {
-      width: 100%;
-      min-width: 960px;
-      table-layout: fixed;
-      border-collapse: collapse;
-      background: #ffffff;
-      font-family: var(--font-sans);
-    }
-
-    .sheet-grid-table th, .sheet-grid-table td {
-      border: 1px solid #d4d4d8;
-      padding: 0;
-      margin: 0;
-      text-align: center;
-      vertical-align: middle;
-      box-sizing: border-box;
-      user-select: none;
-    }
-
-    /* Shift Column (Col 1) */
-    .sheet-cell-shift {
-      width: 36px;
-      min-width: 36px;
-      max-width: 36px;
-      background: #ffffff;
-      border-right: 1.5px solid #000000 !important;
-      position: sticky;
-      left: 0;
-      z-index: 10;
-    }
-
-    .shift-vertical-label {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      font-weight: 700;
-      font-size: 14px;
-      line-height: 1.1;
-      color: #000000;
-      user-select: none;
-      margin: 0 auto;
-    }
-
-    /* Scale Column (Col 2) */
-    .sheet-scale-cell {
-      width: 44px;
-      min-width: 44px;
-      max-width: 44px;
-      height: 14px;
-      max-height: 14px;
-      font-size: 10px;
-      font-weight: 700;
-      font-family: var(--font-mono);
-      color: #000000;
-      background: #ffffff;
-      border-right: 1.5px solid #000000 !important;
-      position: sticky;
-      left: 36px;
-      z-index: 10;
-      line-height: 14px;
-    }
-
-    /* 31 Day Grid Cells */
-    .sheet-grid-cell {
-      height: 14px;
-      max-height: 14px;
-      cursor: pointer;
-      border: 1px solid #d4d4d8 !important;
-      background: #ffffff;
-      transition: background 0.1s;
-    }
-
-    .sheet-grid-cell:hover {
-      background: rgba(0, 75, 147, 0.1);
-    }
-
-    .sheet-grid-table td.active-col {
-      background: rgba(0, 75, 147, 0.07) !important;
-    }
-
-    /* Bottom Rows Header (Cols 1 & 2 Merged) */
-    .sheet-bottom-hdr {
-      width: 80px;
-      min-width: 80px;
-      max-width: 80px;
-      font-weight: 700;
-      font-size: 11px;
-      color: #000000;
-      background: #ffffff;
-      position: sticky;
-      left: 0;
-      z-index: 10;
-      border-right: 1.5px solid #000000 !important;
-      border-left: none !important;
-    }
-
-    /* Row 21: วันที่ (Day) */
-    .sheet-day-row td {
-      height: 22px;
-      border-top: 1.5px solid #000000 !important;
-      border-bottom: 1px solid #d4d4d8 !important;
-    }
-
-    .sheet-day-num {
-      font-family: var(--font-mono);
-      font-size: 10.5px;
-      font-weight: 700;
-      color: #000000;
-      cursor: pointer;
-    }
-
-    .sheet-day-num:hover, .sheet-day-num.active-day {
-      background: #004b93 !important;
-      color: #ffffff !important;
-      font-weight: 800;
-    }
-
-    /* Row 22: 60% Red & Row 23: 60% Blue */
-    .sheet-row-red td {
-      height: 18px;
-      border-bottom: 1px solid #d4d4d8 !important;
-    }
-    .sheet-row-blue td {
-      height: 18px;
-      border-bottom: 1px solid #d4d4d8 !important;
-    }
-    .sheet-empty-cell {
-      font-size: 9px;
       color: #64748b;
       cursor: pointer;
+      transition: all 0.15s;
+    }
+    .trend-pill-btn.active {
+      background: #ffffff;
+      color: #002e6e;
+      font-weight: 700;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    }
+    .trend-svg-container {
+      position: relative;
+      width: 100%;
+      height: 260px;
+      background: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
     }
 
-    /* Row 24: ผู้บันทึก (Staff) */
-    .sheet-staff-row td {
-      height: 22px;
-      border-bottom: none !important;
+    /* Monthly Matrix Table */
+    .matrix-card {
+      background: #ffffff;
+      border: 1px solid var(--border-main);
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 16px rgba(0, 46, 110, 0.04);
     }
-
-    .sheet-staff-cell {
-      font-size: 9.5px;
-      color: #1e293b;
+    .matrix-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .matrix-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--royal-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .matrix-scroll-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border-main);
+      border-radius: 10px;
+      scrollbar-width: thin;
+    }
+    .matrix-table {
+      width: 100%;
+      min-width: 980px;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 12px;
+    }
+    .matrix-table th, .matrix-table td {
+      border: 1px solid #e2e8f0;
+      padding: 6px 4px;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .matrix-th-title {
+      width: 130px;
+      min-width: 130px;
+      background: #f8fafc;
+      font-weight: 700;
+      color: #334155;
+      text-align: left !important;
+      padding-left: 10px !important;
+      position: sticky;
+      left: 0;
+      z-index: 5;
+    }
+    .matrix-day-hdr {
+      background: #f1f5f9;
+      font-weight: 700;
+      color: #475569;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .matrix-day-hdr.today-col {
+      background: #004b93;
+      color: #ffffff;
+      font-weight: 800;
+    }
+    .matrix-temp-chip {
+      display: inline-block;
+      padding: 2px 5px;
+      border-radius: 5px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.1s;
+    }
+    .matrix-temp-chip.normal {
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #a7f3d0;
+    }
+    .matrix-temp-chip.abnormal {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+      font-weight: 800;
+    }
+    .matrix-temp-chip.empty {
+      color: #cbd5e1;
+      font-weight: 400;
+    }
+    .matrix-staff-text {
+      font-size: 9px;
+      color: #64748b;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      cursor: pointer;
+      max-width: 32px;
       font-family: var(--font-mono);
+      cursor: pointer;
+    }
+    .matrix-table td.active-col {
+      background: rgba(0, 75, 147, 0.08) !important;
     }
 
-    /* Responsive SVG Graph Overlay covering ONLY the 31 Days */
-    .sheet-svg-graph {
-      position: absolute;
-      top: 0;
-      left: 80px;
-      right: 0;
-      width: calc(100% - 80px);
-      height: 280px;
-      pointer-events: none;
-      overflow: visible;
-      z-index: 5;
+    /* Month Selector Pill Bar */
+    .month-text-list {
+      display: inline-flex;
+      gap: 4px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .month-text-btn {
+      border: none;
+      background: transparent;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #475569;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .month-text-btn:hover { background: #f1f5f9; color: #0f172a; }
+    .month-text-btn.active {
+      color: #002e6e;
+      font-weight: 800;
+      background: rgba(0, 75, 147, 0.1);
+      border: 1px solid #004b93;
     }
 
     @keyframes markerPulseAnim {
@@ -875,273 +1123,21 @@
       50% { r: 12px; opacity: 0.25; }
       100% { r: 5px; opacity: 1; }
     }
-
     .marker-pulse {
       animation: markerPulseAnim 1.6s ease-in-out infinite;
       transform-origin: center;
     }
 
-    /* ==================== REALTIME DOCK STYLES ==================== */
-    .realtime-dock-card {
-      background: #ffffff;
-      border: 1.5px solid var(--royal-blue);
-      border-radius: 12px;
-      box-shadow: 0 4px 16px rgba(0, 75, 147, 0.08);
-      overflow: hidden;
-      margin-top: 14px;
-    }
-
-    .dock-header {
-      background: linear-gradient(135deg, #002e6e 0%, #004b93 100%);
-      color: #ffffff;
-      padding: 10px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .dock-title {
-      font-size: 13.5px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .dock-badge {
-      background: rgba(255, 255, 255, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      padding: 2px 8px;
-      border-radius: 9999px;
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.5px;
-    }
-
-    .dock-body {
-      padding: 16px 18px;
-      background: #ffffff;
-    }
-
-    .dock-toolbar-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 16px;
-      padding-bottom: 14px;
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    .dock-shift-toggle {
-      display: inline-flex;
-      background: #f1f5f9;
-      padding: 3px;
-      border-radius: 8px;
-      gap: 4px;
-    }
-
-    .dock-shift-btn {
-      border: none;
-      background: transparent;
-      padding: 8px 14px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      color: #475569;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.15s;
-    }
-
-    .dock-shift-btn.active {
-      background: var(--royal-blue);
-      color: #ffffff;
-      font-weight: 700;
-      box-shadow: 0 2px 6px rgba(0, 75, 147, 0.25);
-    }
-
-    .dock-day-selector {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .btn-day-nav {
-      width: 34px;
-      height: 34px;
-      background: #f1f5f9;
-      border: 1px solid var(--border-main);
-      border-radius: 6px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-body);
-      transition: all 0.1s;
-    }
-    .btn-day-nav:hover { background: #e2e8f0; }
-
-    .dock-day-display {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: #f8fafc;
-      border: 1px solid var(--border-blue-soft);
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--royal-dark);
-    }
-
-    .dock-day-dropdown {
-      border: none;
-      background: transparent;
-      font-family: var(--font-mono);
-      font-size: 14px;
-      font-weight: 800;
-      color: var(--royal-blue);
-      outline: none;
-      cursor: pointer;
-    }
-
-    .btn-day-today {
-      padding: 6px 10px;
-      background: var(--royal-subtle);
-      border: 1px solid var(--border-blue-soft);
-      color: var(--royal-blue);
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .dock-inputs-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-bottom: 16px;
-    }
-
-    @media (max-width: 640px) {
-      .dock-inputs-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .dock-input-box {
-      background: #f8fafc;
-      border: 1px solid var(--border-main);
-      border-radius: 10px;
-      padding: 12px 14px;
-    }
-
-    .dock-box-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 8px;
-    }
-
-    .dock-box-label {
-      font-size: 12.5px;
-      font-weight: 700;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .dock-spec-tag {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--royal-blue);
-      background: var(--royal-subtle);
-      border: 1px solid var(--border-blue-soft);
-      padding: 2px 6px;
-      border-radius: 4px;
-    }
-
-    .dock-staff-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 16px;
-      padding-top: 12px;
-      border-top: 1px solid var(--border-subtle);
-    }
-
-    .dock-field-label {
-      display: block;
-      font-size: 11.5px;
-      font-weight: 600;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-    }
-
-    .dock-actions-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .btn-dock-save {
-      flex: 2;
-      min-width: 180px;
-      height: 44px;
-      background: linear-gradient(135deg, #004b93 0%, #0284c7 100%);
-      color: #ffffff;
-      border: none;
-      border-radius: 8px;
-      font-family: inherit;
-      font-size: 13.5px;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      box-shadow: 0 4px 12px rgba(0, 75, 147, 0.25);
-      transition: all 0.15s;
-    }
-    .btn-dock-save:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(0, 75, 147, 0.35);
-    }
-
-    .btn-dock-secondary {
-      height: 44px;
-      padding: 0 14px;
-      background: #ffffff;
-      border: 1px solid var(--border-main);
-      border-radius: 8px;
-      color: var(--text-body);
-      font-size: 12.5px;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.1s;
-    }
-    .btn-dock-secondary:hover {
-      background: #f1f5f9;
-      border-color: #cbd5e1;
-    }
-
     /* Print styles */
     @media print {
       body { background: #ffffff; font-size: 10pt; }
-      .app-topbar, .eval-stepper-bar, .no-print, .realtime-dock-card, .checkpoint-hero { display: none !important; }
-      .sheet-grid-wrapper { box-shadow: none; border: 1.5px solid #000; margin: 0; width: 100%; }
-      .sheet-grid-table { width: 100% !important; min-width: 0 !important; }
-      .sheet-svg-graph { width: calc(100% - 80px) !important; left: 80px !important; }
+      .app-topbar, .eval-stepper-bar, .no-print, .speed-entry-card, .checkpoint-hero { display: none !important; }
+      .smart-hero-card { box-shadow: none !important; border: 1.5px solid #000 !important; color: #000 !important; background: #fff !important; }
+      .smart-hero-card * { color: #000 !important; }
+      .smart-kpi-pill { border: 1px solid #ccc !important; background: #fff !important; }
+      .trend-chart-card, .matrix-card { box-shadow: none !important; border: 1.5px solid #000 !important; page-break-inside: avoid; }
+      .matrix-scroll-wrap { overflow: visible !important; border: none !important; }
+      .matrix-table { width: 100% !important; min-width: 0 !important; font-size: 8pt !important; }
       .slip-overlay { position: static; background: transparent; backdrop-filter: none; padding: 0; }
       .slip-card { box-shadow: none; border: 1px solid #000000; max-width: 100%; border-radius: 0; }
       .slip-header { background: #ffffff !important; color: #000000 !important; border-bottom: 2px solid #000000; }
@@ -1265,300 +1261,242 @@
     <!-- Step 2 Card: Main Evaluation Form -->
     <section class="eval-card" id="cardForm" style="display: none; background: transparent; border: none; box-shadow: none; padding: 0;">
       
-      <!-- ==================== A. GOOGLE SHEETS TEMPERATURE GRID (EXACT FORM FORMAT) ==================== -->
-      <div id="sheetGridSection" class="sheet-grid-wrapper" style="display: none;">
-        <!-- Sheet Header Bar (Row 1 & Row 2 identical to Google Sheet) -->
-        <div class="sheet-title-box" id="sheetTitleText">แบบบันทึกอุณหภูมิห้องปฏิบัติการ</div>
-        <div class="sheet-sub-box">
-          <div class="sheet-sub-left">
-            <span class="sheet-sub-bold">แยกบันทึกอุณหภูมิห้อง:</span>
-            <span id="sheetRoomNameText" style="color: var(--royal-blue); font-weight: 700;">Laboratory (ห้องปฏิบัติการกลาง)</span>
-          </div>
-          <div class="sheet-sub-center">
-            <span class="sheet-sub-bold" style="margin-right: 6px;">ประจำเดือน:</span>
-            <div class="month-text-list" id="monthPillList">
-              <!-- 12 Months pills generated by JS -->
+      <!-- ==================== A. SMART CLINICAL LAB MONITOR SYSTEM ==================== -->
+      
+      <!-- 1. HERO CHECKPOINT & LIVE CLINICAL KPI STRIP -->
+      <div id="smartHeroSection" class="smart-hero-card" style="display: none;">
+        <div class="smart-hero-top">
+          <div>
+            <div class="smart-hero-badge">
+              <span class="material-icons-round" style="font-size: 14px;">verified</span>
+              <span id="smartFormCode">FM-PPCH-LAB-057</span>
+              <span>•</span>
+              <span id="smartCatName">อุณหภูมิห้องแลป</span>
+            </div>
+            <div class="smart-hero-title">
+              <span class="material-icons-round" id="smartHeroIcon" style="font-size: 24px; color: #60a5fa;">thermostat</span>
+              <span id="smartItemName">Laboratory (ห้องปฏิบัติการกลาง)</span>
             </div>
           </div>
-          <div class="sheet-sub-right">
-            <span class="sheet-sub-bold">ปี</span>
-            <span id="sheetYearText" style="font-weight: 700;">2569</span>
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <div class="smart-hero-spec" id="smartSpecBadge">
+              <span class="material-icons-round" style="font-size: 16px;">tune</span>
+              <span id="smartTargetSpecText">เกณฑ์มาตรฐาน: 24.0 – 28.0 °C</span>
+            </div>
+            <button type="button" onclick="toggleSelectorDrawer()" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+              <span class="material-icons-round" style="font-size: 14px;">swap_horiz</span>
+              <span>เปลี่ยนจุดตรวจ</span>
+            </button>
           </div>
         </div>
 
-        <!-- Scrollable Table Container (31 Days) -->
-        <div class="sheet-table-scroll-container" id="sheetScrollContainer">
-          
-          <!-- Shift Block 1: เช้า (Morning) -->
-          <div class="sheet-shift-block active-block" id="blockMorning">
-            <table class="sheet-grid-table" id="tableMorning">
-              <colgroup>
-                <col style="width: 36px;">
-                <col style="width: 44px;">
-              </colgroup>
-              <tbody id="tbodyMorning">
-                <!-- Populated by JS: 20 fine scale rows with 31 cells each -->
-              </tbody>
-              <tfoot>
-                <tr class="sheet-day-row" id="rowDayMorning">
-                  <td colspan="2" class="sheet-bottom-hdr">วันที่ (Day)</td>
-                  <!-- 31 Day numbers populated by JS -->
-                </tr>
-                <tr class="sheet-row-red" id="rowRedMorning">
-                  <td colspan="2" class="sheet-bottom-hdr"><span style="color: #dc2626; font-weight: 700;">60%</span></td>
-                  <!-- 31 cells populated by JS -->
-                </tr>
-                <tr class="sheet-row-blue" id="rowBlueMorning">
-                  <td colspan="2" class="sheet-bottom-hdr"><span style="color: #2563eb; font-weight: 700;">60%</span></td>
-                  <!-- 31 cells populated by JS -->
-                </tr>
-                <tr class="sheet-staff-row" id="rowStaffMorning">
-                  <td colspan="2" class="sheet-bottom-hdr">ผู้บันทึก</td>
-                  <!-- 31 staff cells populated by JS -->
-                </tr>
-              </tfoot>
-            </table>
-
-            <!-- SVG Graph Overlay for Morning Shift (spans exactly over the 31 day columns) -->
-            <svg class="sheet-svg-graph" id="svgMorning" viewBox="0 0 310 280" preserveAspectRatio="none">
-              <!-- Polyline connecting days -->
-              <polyline id="polyMorning" points="" fill="none" stroke="#004b93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-              
-              <!-- Static dots for recorded days -->
-              <g id="dotsMorning"></g>
-              
-              <!-- Active Live Marker & Pulse & Tooltip -->
-              <g id="liveMarkerMorning" style="display: none;">
-                <circle id="livePulseMorning" cx="0" cy="0" r="10" fill="none" stroke="#0284c7" stroke-width="2" class="marker-pulse" />
-                <circle id="liveDotMorning" cx="0" cy="0" r="4.5" fill="#004b93" stroke="#ffffff" stroke-width="1.5" />
-                <g id="liveTooltipMorning" transform="translate(0, -12)">
-                  <rect x="-18" y="-17" width="36" height="16" rx="3" fill="#002e6e" />
-                  <polygon points="-4,-1 4,-1 0,3" fill="#002e6e" />
-                  <text x="0" y="-5" fill="#ffffff" font-size="9.5" font-weight="700" text-anchor="middle" id="liveTooltipTextMorning">25.4°</text>
-                </g>
-              </g>
-            </svg>
+        <!-- 4 LIVE CLINICAL KPI PILLS -->
+        <div class="smart-kpi-grid">
+          <div class="smart-kpi-pill">
+            <div class="smart-kpi-label">ค่าล่าสุดที่บันทึก (Latest Temp)</div>
+            <div class="smart-kpi-val" id="kpiLatestTemp">--.- °C</div>
           </div>
-
-          <!-- Shift Block 2: บ่าย (Afternoon) -->
-          <div class="sheet-shift-block" id="blockAfternoon">
-            <table class="sheet-grid-table" id="tableAfternoon">
-              <colgroup>
-                <col style="width: 36px;">
-                <col style="width: 44px;">
-              </colgroup>
-              <tbody id="tbodyAfternoon">
-                <!-- Populated by JS: 20 fine scale rows with 31 cells each -->
-              </tbody>
-              <tfoot>
-                <tr class="sheet-day-row" id="rowDayAfternoon">
-                  <td colspan="2" class="sheet-bottom-hdr">วันที่ (Day)</td>
-                  <!-- 31 Day numbers populated by JS -->
-                </tr>
-                <tr class="sheet-row-red" id="rowRedAfternoon">
-                  <td colspan="2" class="sheet-bottom-hdr"><span style="color: #dc2626; font-weight: 700;">60%</span></td>
-                  <!-- 31 cells populated by JS -->
-                </tr>
-                <tr class="sheet-row-blue" id="rowBlueAfternoon">
-                  <td colspan="2" class="sheet-bottom-hdr"><span style="color: #2563eb; font-weight: 700;">60%</span></td>
-                  <!-- 31 cells populated by JS -->
-                </tr>
-                <tr class="sheet-staff-row" id="rowStaffAfternoon">
-                  <td colspan="2" class="sheet-bottom-hdr">ผู้บันทึก</td>
-                  <!-- 31 staff cells populated by JS -->
-                </tr>
-              </tfoot>
-            </table>
-
-            <!-- SVG Graph Overlay for Afternoon Shift -->
-            <svg class="sheet-svg-graph" id="svgAfternoon" viewBox="0 0 310 280" preserveAspectRatio="none">
-              <!-- Polyline connecting days -->
-              <polyline id="polyAfternoon" points="" fill="none" stroke="#004b93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-              
-              <!-- Static dots for recorded days -->
-              <g id="dotsAfternoon"></g>
-              
-              <!-- Active Live Marker & Pulse & Tooltip -->
-              <g id="liveMarkerAfternoon" style="display: none;">
-                <circle id="livePulseAfternoon" cx="0" cy="0" r="10" fill="none" stroke="#0284c7" stroke-width="2" class="marker-pulse" />
-                <circle id="liveDotAfternoon" cx="0" cy="0" r="4.5" fill="#004b93" stroke="#ffffff" stroke-width="1.5" />
-                <g id="liveTooltipAfternoon" transform="translate(0, -12)">
-                  <rect x="-18" y="-17" width="36" height="16" rx="3" fill="#002e6e" />
-                  <polygon points="-4,-1 4,-1 0,3" fill="#002e6e" />
-                  <text x="0" y="-5" fill="#ffffff" font-size="9.5" font-weight="700" text-anchor="middle" id="liveTooltipTextAfternoon">25.8°</text>
-                </g>
-              </g>
-            </svg>
+          <div class="smart-kpi-pill">
+            <div class="smart-kpi-label">เฉลี่ยประจำเดือน (Month Avg)</div>
+            <div class="smart-kpi-val" id="kpiMonthAvg">--.- °C</div>
           </div>
-
-          <!-- Shift Block 3: เย็น (Evening) -->
-          <div class="sheet-shift-block" id="blockEvening">
-            <table class="sheet-grid-table" id="tableEvening">
-              <colgroup>
-                <col style="width: 36px;">
-                <col style="width: 44px;">
-              </colgroup>
-              <tbody id="tbodyEvening">
-                <!-- Populated by JS: 20 fine scale rows with 31 cells each -->
-              </tbody>
-              <tfoot>
-                <tr class="sheet-day-row" id="rowDayEvening">
-                  <td colspan="2" class="sheet-bottom-hdr">วันที่ (Day)</td>
-                  <!-- 31 Day numbers populated by JS -->
-                </tr>
-                <tr class="sheet-row-red" id="rowRedEvening">
-                  <td colspan="2" class="sheet-bottom-hdr"><span style="color: #dc2626; font-weight: 700;">60%</span></td>
-                  <!-- 31 cells populated by JS -->
-                </tr>
-                <tr class="sheet-row-blue" id="rowBlueEvening">
-                  <td colspan="2" class="sheet-bottom-hdr"><span style="color: #2563eb; font-weight: 700;">60%</span></td>
-                  <!-- 31 cells populated by JS -->
-                </tr>
-                <tr class="sheet-staff-row" id="rowStaffEvening">
-                  <td colspan="2" class="sheet-bottom-hdr">ผู้บันทึก</td>
-                  <!-- 31 staff cells populated by JS -->
-                </tr>
-              </tfoot>
-            </table>
-
-            <!-- SVG Graph Overlay for Evening Shift -->
-            <svg class="sheet-svg-graph" id="svgEvening" viewBox="0 0 310 280" preserveAspectRatio="none">
-              <!-- Polyline connecting days -->
-              <polyline id="polyEvening" points="" fill="none" stroke="#004b93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-              
-              <!-- Static dots for recorded days -->
-              <g id="dotsEvening"></g>
-              
-              <!-- Active Live Marker & Pulse & Tooltip -->
-              <g id="liveMarkerEvening" style="display: none;">
-                <circle id="livePulseEvening" cx="0" cy="0" r="10" fill="none" stroke="#0284c7" stroke-width="2" class="marker-pulse" />
-                <circle id="liveDotEvening" cx="0" cy="0" r="4.5" fill="#004b93" stroke="#ffffff" stroke-width="1.5" />
-                <g id="liveTooltipEvening" transform="translate(0, -12)">
-                  <rect x="-18" y="-17" width="36" height="16" rx="3" fill="#002e6e" />
-                  <polygon points="-4,-1 4,-1 0,3" fill="#002e6e" />
-                  <text x="0" y="-5" fill="#ffffff" font-size="9.5" font-weight="700" text-anchor="middle" id="liveTooltipTextEvening">25.0°</text>
-                </g>
-              </g>
-            </svg>
+          <div class="smart-kpi-pill">
+            <div class="smart-kpi-label">ต่ำสุด / สูงสุด (Min / Max)</div>
+            <div class="smart-kpi-val" id="kpiMinMax">-- / --</div>
           </div>
-
+          <div class="smart-kpi-pill">
+            <div class="smart-kpi-label">อัตราผ่านเกณฑ์ (Compliance Rate)</div>
+            <div class="smart-kpi-val" id="kpiCompliance">100%</div>
+          </div>
         </div>
       </div>
 
-      <!-- ==================== B. REAL-TIME INPUT DOCK (DIRECTLY BELOW TABLE) ==================== -->
-      <div id="realtimeDockSection" class="realtime-dock-card" style="display: none;">
-        <div class="dock-header">
-          <div class="dock-title">
-            <span class="material-icons-round" style="color: #60a5fa; font-size: 20px;">speed</span>
-            <span>ช่องกรอกข้อมูล (ใส่ตัวเลขเสร็จ กราฟพล็อตบนตารางแบบเรียลไทม์ทันที)</span>
+      <!-- 2. HIGH-EFFICIENCY SPEED LOGGING CONSOLE -->
+      <div id="speedEntrySection" class="speed-entry-card" style="display: none;">
+        <!-- Header with 3 Shifts & Date Navigation -->
+        <div class="speed-entry-header">
+          <!-- 3-Shift Selector -->
+          <div class="speed-shift-group">
+            <button type="button" class="speed-shift-btn active" id="btnShiftMorning" onclick="switchActiveShift('morning')">
+              <span class="material-icons-round" style="font-size: 15px;">wb_sunny</span>
+              <span>เวรเช้า (08:00)</span>
+            </button>
+            <button type="button" class="speed-shift-btn" id="btnShiftAfternoon" onclick="switchActiveShift('afternoon')">
+              <span class="material-icons-round" style="font-size: 15px;">wb_twilight</span>
+              <span>เวรบ่าย (16:00)</span>
+            </button>
+            <button type="button" class="speed-shift-btn" id="btnShiftEvening" onclick="switchActiveShift('evening')">
+              <span class="material-icons-round" style="font-size: 15px;">bedtime</span>
+              <span>เวรดึก (24:00)</span>
+            </button>
           </div>
-          <span class="dock-badge">REAL-TIME PLOTTING</span>
+
+          <!-- Date Navigation -->
+          <div class="speed-date-nav">
+            <button type="button" class="speed-btn-nav" onclick="navDay(-1)" title="วันก่อนหน้า">
+              <span class="material-icons-round" style="font-size: 18px;">chevron_left</span>
+            </button>
+            <div style="display: inline-flex; align-items: center; gap: 6px; background: #f8fafc; border: 1px solid var(--border-main); padding: 4px 10px; border-radius: 8px;">
+              <span class="material-icons-round" style="font-size: 16px; color: var(--royal-blue);">calendar_today</span>
+              <span style="font-size: 12px; font-weight: 700; color: #334155;">วันที่</span>
+              <select id="speedDaySelect" onchange="onDayDropdownChanged()" style="border: none; background: transparent; font-size: 14px; font-weight: 800; color: #004b93; font-family: var(--font-mono); outline: none; cursor: pointer;">
+                <!-- 1 to 31 options -->
+              </select>
+              <span id="speedMonthYearText" style="font-size: 12px; font-weight: 600; color: #64748b;">ต.ค. 2569</span>
+            </div>
+            <button type="button" class="speed-btn-nav" onclick="navDay(1)" title="วันถัดไป">
+              <span class="material-icons-round" style="font-size: 18px;">chevron_right</span>
+            </button>
+            <button type="button" class="speed-btn-nav" onclick="navToday()" style="width: auto; padding: 0 10px; font-size: 12px; font-weight: 700; color: #004b93;" title="ไปยังวันนี้">วันนี้</button>
+          </div>
         </div>
 
-        <div class="dock-body">
-          <!-- Shift & Day Toolbar -->
-          <div class="dock-toolbar-row">
-            <!-- Shift Selector (3 Shifts: เช้า, บ่าย, เย็น) -->
-            <div class="dock-shift-toggle">
-              <button type="button" class="dock-shift-btn active" id="dockShiftMorning" onclick="switchActiveShift('morning')">
-                <span class="material-icons-round" style="font-size: 15px;">wb_sunny</span>
-                <span>เวรเช้า (08:00 - 16:00)</span>
-              </button>
-              <button type="button" class="dock-shift-btn" id="dockShiftAfternoon" onclick="switchActiveShift('afternoon')">
-                <span class="material-icons-round" style="font-size: 15px;">wb_twilight</span>
-                <span>เวรบ่าย (16:00 - 24:00)</span>
-              </button>
-              <button type="button" class="dock-shift-btn" id="dockShiftEvening" onclick="switchActiveShift('evening')">
-                <span class="material-icons-round" style="font-size: 15px;">bedtime</span>
-                <span>เวรเย็น (24:00 - 08:00)</span>
-              </button>
-            </div>
-
-            <!-- Day Selector -->
-            <div class="dock-day-selector">
-              <button type="button" class="btn-day-nav" onclick="navDay(-1)" title="วันก่อนหน้า">
-                <span class="material-icons-round">chevron_left</span>
-              </button>
-              <div class="dock-day-display">
-                <span class="material-icons-round" style="font-size: 16px; color: var(--royal-blue);">calendar_today</span>
-                <span>วันที่</span>
-                <select id="dockDaySelect" class="dock-day-dropdown" onchange="onDayDropdownChanged()">
-                  <!-- 1 to 31 options -->
-                </select>
-                <span id="dockMonthYearText" style="font-size: 12px; color: var(--text-muted); font-weight: 600;">ต.ค. 2569</span>
-              </div>
-              <button type="button" class="btn-day-nav" onclick="navDay(1)" title="วันถัดไป">
-                <span class="material-icons-round">chevron_right</span>
-              </button>
-              <button type="button" class="btn-day-today" onclick="navToday()">วันนี้</button>
-            </div>
+        <!-- Center Dial Input with Dynamic Aura & Steppers -->
+        <div class="speed-dial-center status-normal" id="speedDialBox">
+          <div style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 8px; display: flex; justify-content: center; align-items: center; gap: 6px;">
+            <span class="material-icons-round" style="font-size: 16px; color: #dc2626;">thermostat</span>
+            <span>กรอกอุณหภูมิที่ตรวจวัดได้ (ใส่ตัวเลขเสร็จ กราฟและสถิติอัปเดตแบบเรียลไทม์)</span>
           </div>
 
-          <!-- Inputs Grid: Temperature Only -->
-          <div class="dock-inputs-grid" style="grid-template-columns: 1fr;">
-            <!-- Temperature Input -->
-            <div class="dock-input-box" style="max-width: 580px; margin: 0 auto; width: 100%;">
-              <div class="dock-box-header">
-                <label class="dock-box-label">
-                  <span class="material-icons-round" style="font-size: 18px; color: #ef4444;">thermostat</span>
-                  <span>ค่าอุณหภูมิที่วัดได้ (°C) *</span>
-                </label>
-                <span id="dockTempTarget" class="dock-spec-tag">เกณฑ์: 24.0 - 28.0 °C</span>
-              </div>
-              
-              <div class="numeric-entry-box">
-                <button type="button" class="btn-stepper" onclick="stepLiveTemp(-0.5)">-0.5</button>
-                <button type="button" class="btn-stepper" onclick="stepLiveTemp(-0.1)">-0.1</button>
-                <input type="number" id="inputTemp" class="numeric-entry-input" step="0.1" placeholder="00.0" oninput="onLiveTempInput()" onkeyup="onLiveTempInput()">
-                <button type="button" class="btn-stepper" onclick="stepLiveTemp(0.1)">+0.1</button>
-                <button type="button" class="btn-stepper" onclick="stepLiveTemp(0.5)">+0.5</button>
-              </div>
-
-              <div id="dockTempFeedback" class="status-feedback-pill normal" style="margin-top: 8px;">
-                <span class="material-icons-round" style="font-size: 15px;">check_circle</span>
-                <span id="dockTempFeedbackText">ปกติในเกณฑ์มาตรฐาน</span>
-              </div>
+          <div class="speed-dial-row">
+            <button type="button" class="speed-stepper-btn" onclick="stepLiveTemp(-1.0)">-1.0</button>
+            <button type="button" class="speed-stepper-btn" onclick="stepLiveTemp(-0.1)">-0.1</button>
+            <div style="display: inline-flex; align-items: baseline; background: #ffffff; border: 1.5px solid var(--border-main); border-radius: 12px; padding: 4px 16px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.04);">
+              <input type="number" id="inputTemp" class="speed-temp-input" step="0.1" placeholder="00.0" oninput="onLiveTempInput()" onkeyup="onLiveTempInput()">
+              <span class="speed-temp-unit">°C</span>
             </div>
+            <button type="button" class="speed-stepper-btn" onclick="stepLiveTemp(0.1)">+0.1</button>
+            <button type="button" class="speed-stepper-btn" onclick="stepLiveTemp(1.0)">+1.0</button>
           </div>
 
-          <!-- Staff ID & Name -->
-          <div class="dock-staff-grid">
-            <div>
-              <label class="dock-field-label">รหัสพนักงานผู้ตรวจ (6 หลัก) *</label>
-              <input type="text" id="staffId" class="form-control-input" placeholder="เช่น 000023" maxlength="6" onblur="formatStaffId(this); onLiveStaffInput();" oninput="onLiveStaffInput()" style="font-family: var(--font-mono); font-weight: 700;">
+          <div>
+            <div class="speed-status-banner normal" id="speedStatusBanner">
+              <span class="material-icons-round" style="font-size: 16px;">check_circle</span>
+              <span id="speedStatusText">อยู่ในเกณฑ์มาตรฐาน (24.0 – 28.0 °C)</span>
             </div>
-            <div>
-              <label class="dock-field-label">ชื่อ-สกุล ผู้ตรวจเช็ค *</label>
-              <input type="text" id="staffName" class="form-control-input" placeholder="เช่น ทนพ. สมชาย ใจดี" oninput="onLiveStaffInput()">
-            </div>
-            <div style="grid-column: 1 / -1;">
-              <label class="dock-field-label" style="display: flex; justify-content: space-between;">
-                <span>หมายเหตุ / การแก้ไขกรณีพบปัญหา (ถ้ามี)</span>
-                <span style="font-weight: 400; color: var(--text-light);">(ไม่บังคับกรอก)</span>
-              </label>
-              <textarea id="evalNote" class="form-control-textarea" rows="3" placeholder="ระบุการปรับเครื่องปรับอากาศ หรือการแก้ไขกรณีอุณหภูมิหลุดเกณฑ์ (ถ้ามี)..."></textarea>
-            </div>
+          </div>
+        </div>
+
+        <!-- Staff & Optional Note Row -->
+        <div class="speed-staff-row">
+          <div>
+            <label class="dock-field-label">รหัสพนักงาน (6 หลัก) *</label>
+            <input type="text" id="staffId" class="form-control-input" placeholder="000023" maxlength="6" onblur="formatStaffId(this); onLiveStaffInput();" oninput="onLiveStaffInput()" style="font-family: var(--font-mono); font-weight: 700;">
+          </div>
+          <div>
+            <label class="dock-field-label">ชื่อ-สกุล ผู้ตรวจเช็ค *</label>
+            <input type="text" id="staffName" class="form-control-input" placeholder="เช่น ทนพ. สมชาย ใจดี" oninput="onLiveStaffInput()">
+          </div>
+          <div>
+            <label class="dock-field-label" style="display: flex; justify-content: space-between;">
+              <span>หมายเหตุ / การแก้ไข (ถ้ามี)</span>
+              <span style="font-weight: 400; color: #94a3b8;">(ไม่บังคับกรอก)</span>
+            </label>
+            <input type="text" id="evalNote" class="form-control-input" placeholder="ระบุการปรับอุณหภูมิแอร์หรือการแก้ไข...">
+          </div>
+        </div>
+
+        <!-- Speed Action Buttons Bar -->
+        <div class="speed-action-bar">
+          <button type="button" id="btnSubmitEval" onclick="submitEvaluation()" class="btn-speed-save">
+            <span class="material-icons-round">save</span>
+            <span>บันทึกผลการตรวจเช็ค (Save Record)</span>
+          </button>
+          <button type="button" onclick="clearDayData()" class="btn-speed-sub" title="ล้างค่าของวันที่เลือก">
+            <span class="material-icons-round" style="font-size: 16px;">backspace</span>
+            <span>ล้างค่า</span>
+          </button>
+          <button type="button" onclick="window.print()" class="btn-speed-sub" title="พิมพ์รายงานตรวจเช็ค A4">
+            <span class="material-icons-round" style="font-size: 16px;">print</span>
+            <span>พิมพ์ A4</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. CLINICAL INTERACTIVE TREND CHART (SVG) -->
+      <div id="trendChartSection" class="trend-chart-card" style="display: none;">
+        <div class="trend-header-row">
+          <div class="trend-title">
+            <span class="material-icons-round" style="color: #004b93; font-size: 20px;">show_chart</span>
+            <span>กราฟแนวโน้มอุณหภูมิประจำเดือน (Monthly Temperature Trend)</span>
+          </div>
+          
+          <!-- Shift Filter Pills -->
+          <div class="trend-filter-pills">
+            <button type="button" class="trend-pill-btn active" id="btnChartAll" onclick="switchChartFilter('all')">
+              <span>แสดงทั้งหมด (3 เวร)</span>
+            </button>
+            <button type="button" class="trend-pill-btn" id="btnChartMorning" onclick="switchChartFilter('morning')">
+              <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #0284c7; margin-right: 4px;"></span>
+              <span>เวรเช้า</span>
+            </button>
+            <button type="button" class="trend-pill-btn" id="btnChartAfternoon" onclick="switchChartFilter('afternoon')">
+              <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #f59e0b; margin-right: 4px;"></span>
+              <span>เวรบ่าย</span>
+            </button>
+            <button type="button" class="trend-pill-btn" id="btnChartEvening" onclick="switchChartFilter('evening')">
+              <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #8b5cf6; margin-right: 4px;"></span>
+              <span>เวรดึก</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Responsive SVG Trend Canvas -->
+        <div class="trend-svg-container" id="trendChartContainer">
+          <svg id="trendSvg" viewBox="0 0 1000 240" style="width: 100%; height: 100%; display: block;" preserveAspectRatio="none">
+            <!-- Dynamic SVG elements generated by JS -->
+          </svg>
+        </div>
+
+        <!-- Legend Footer -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 10px; padding-top: 8px; border-top: 1px solid #f1f5f9; font-size: 11.5px; color: #64748b;">
+          <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
+            <span style="display: inline-flex; align-items: center; gap: 5px;">
+              <span style="width: 12px; height: 12px; background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; border-radius: 3px;"></span>
+              <span>ช่วงเกณฑ์ปกติ (Safe Range)</span>
+            </span>
+            <span style="display: inline-flex; align-items: center; gap: 5px;">
+              <span style="width: 14px; height: 3px; background: #0284c7; border-radius: 2px;"></span>
+              <span>เวรเช้า (Morning)</span>
+            </span>
+            <span style="display: inline-flex; align-items: center; gap: 5px;">
+              <span style="width: 14px; height: 3px; background: #f59e0b; border-radius: 2px;"></span>
+              <span>เวรบ่าย (Afternoon)</span>
+            </span>
+            <span style="display: inline-flex; align-items: center; gap: 5px;">
+              <span style="width: 14px; height: 3px; background: #8b5cf6; border-radius: 2px;"></span>
+              <span>เวรดึก (Night)</span>
+            </span>
+          </div>
+          <div style="font-size: 11px; color: #94a3b8;">
+            คลิกที่จุดบนกราฟหรือวันที่เพื่อเลือกแก้ไข
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. MODERN MONTHLY SHIFT MATRIX TABLE -->
+      <div id="matrixSection" class="matrix-card" style="display: none;">
+        <div class="matrix-header-row">
+          <div class="matrix-title">
+            <span class="material-icons-round" style="color: #004b93; font-size: 20px;">table_chart</span>
+            <span>ตารางสรุปบันทึกอุณหภูมิ 3 เวรประจำเดือน (31 Days Matrix)</span>
           </div>
 
-          <!-- Action Buttons Bar -->
-          <div class="dock-actions-bar">
-            <button type="button" id="btnSubmitEval" onclick="submitEvaluation()" class="btn-dock-save">
-              <span class="material-icons-round">save</span>
-              <span>บันทึกผลลงชีท (Save to Sheet)</span>
-            </button>
-            <button type="button" onclick="clearDayData()" class="btn-dock-secondary" title="ล้างค่าวันที่เลือก">
-              <span class="material-icons-round">backspace</span>
-              <span>ล้างค่า</span>
-            </button>
-            <button type="button" onclick="window.print()" class="btn-dock-secondary" title="พิมพ์แบบฟอร์ม">
-              <span class="material-icons-round">print</span>
-              <span>พิมพ์</span>
-            </button>
-            <button type="button" onclick="toggleSelectorDrawer()" class="btn-dock-secondary" title="เปลี่ยนจุดตรวจ">
-              <span class="material-icons-round">swap_horiz</span>
-              <span>เปลี่ยนจุด</span>
-            </button>
+          <!-- Month Selector Pills -->
+          <div class="month-text-list" id="monthPillList">
+            <!-- Populated by JS -->
           </div>
+        </div>
+
+        <div class="matrix-scroll-wrap" id="matrixScrollContainer">
+          <table class="matrix-table" id="matrixTable">
+            <thead id="matrixThead">
+              <!-- Header row with Day 1 to 31 -->
+            </thead>
+            <tbody id="matrixTbody">
+              <!-- 6 Rows: Morning Temp, Morning Staff, Afternoon Temp, Afternoon Staff, Evening Temp, Evening Staff -->
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -1924,47 +1862,52 @@
       }
     }
 
+    // Active Chart Filter
+    var activeChartFilter = 'all'; // 'all' | 'morning' | 'afternoon' | 'evening'
+
     // Dynamic Form Switcher
     function setupDynamicForm(item) {
-      var secSheet = document.getElementById('sheetGridSection');
-      var secDock = document.getElementById('realtimeDockSection');
+      var secHero = document.getElementById('smartHeroSection');
+      var secEntry = document.getElementById('speedEntrySection');
+      var secChart = document.getElementById('trendChartSection');
+      var secMatrix = document.getElementById('matrixSection');
       var secStandard = document.getElementById('standardFormSection');
 
       if (item.type.indexOf('temp_') === 0) {
-        // TEMPERATURE CHECKPOINT: Show Exact Google Sheets Grid & Realtime Dock
-        secSheet.style.display = 'block';
-        secDock.style.display = 'block';
-        secStandard.style.display = 'none';
+        // TEMPERATURE CHECKPOINT: Show Smart Clinical Lab System
+        if (secHero) secHero.style.display = 'block';
+        if (secEntry) secEntry.style.display = 'block';
+        if (secChart) secChart.style.display = 'block';
+        if (secMatrix) secMatrix.style.display = 'block';
+        if (secStandard) secStandard.style.display = 'none';
 
-        // Set target text
-        document.getElementById('dockTempTarget').innerText = 'เกณฑ์: ' + item.targetTemp;
-
-        // Build Table DOM & Load Data
-        buildSheetDom(item);
+        // Render Smart Dashboard & Data
+        renderSmartDashboard(item);
         loadMonthSheetData(item.id, activeYear, activeMonth);
-
-        // Switch to detected shift
         switchActiveShift(currentShift);
 
       } else {
         // NON-TEMPERATURE CHECKPOINT (Analyzer or UPS)
-        secSheet.style.display = 'none';
-        secDock.style.display = 'none';
-        secStandard.style.display = 'block';
+        if (secHero) secHero.style.display = 'none';
+        if (secEntry) secEntry.style.display = 'none';
+        if (secChart) secChart.style.display = 'none';
+        if (secMatrix) secMatrix.style.display = 'none';
+        if (secStandard) secStandard.style.display = 'block';
 
         var secAnalyzer = document.getElementById('sectionAnalyzer');
         var secUps = document.getElementById('sectionUps');
-        document.getElementById('stdTargetSpecPill').innerText = item.targetCheck || item.code;
+        var stdSpecPill = document.getElementById('stdTargetSpecPill');
+        if (stdSpecPill) stdSpecPill.innerText = item.targetCheck || item.code;
 
         if (item.type.indexOf('analyzer_') === 0) {
-          secAnalyzer.style.display = 'block';
-          secUps.style.display = 'none';
+          if (secAnalyzer) secAnalyzer.style.display = 'block';
+          if (secUps) secUps.style.display = 'none';
           renderAnalyzerChecklist(item.checklist || []);
         } else if (item.type === 'ups_battery') {
-          secAnalyzer.style.display = 'none';
-          secUps.style.display = 'block';
+          if (secAnalyzer) secAnalyzer.style.display = 'none';
+          if (secUps) secUps.style.display = 'block';
           var inputUps = document.getElementById('inputUpsRuntime');
-          if (!inputUps.value && item.defaultRuntime !== undefined) {
+          if (inputUps && !inputUps.value && item.defaultRuntime !== undefined) {
             inputUps.value = item.defaultRuntime;
           }
           validateUpsLive();
@@ -1974,190 +1917,74 @@
 
     // Scale Configuration by Equipment Type
     function getScaleConfig(item) {
-      if (!item) return { scaleMin: 20, scaleMax: 30, ticks: [30, 28, 26, 24, 22], safeMin: 24, safeMax: 28, totalRows: 20 };
+      if (!item) return { scaleMin: 20, scaleMax: 30, ticks: [30, 28, 26, 24, 22, 20], safeMin: 24, safeMax: 28 };
       if (item.cat === 'cat_freezer' || item.type === 'temp_freezer') {
-        return { scaleMin: -24, scaleMax: -14, ticks: [-14, -16, -18, -20, -22], safeMin: -40, safeMax: -18, totalRows: 20 };
+        return { scaleMin: -26, scaleMax: -14, ticks: [-14, -16, -18, -20, -22, -24, -26], safeMin: -40, safeMax: -18 };
       } else if (item.cat === 'cat_ref' || item.type === 'temp_refrigerator') {
-        return { scaleMin: 0, scaleMax: 10, ticks: [10, 8, 6, 4, 2], safeMin: 2, safeMax: 8, totalRows: 20 };
+        return { scaleMin: 0, scaleMax: 10, ticks: [10, 8, 6, 4, 2, 0], safeMin: 2, safeMax: 8 };
       } else if (item.cat === 'cat_wb' || item.type === 'temp_waterbath') {
-        return { scaleMin: 34, scaleMax: 39, ticks: [39, 38, 37, 36, 35], safeMin: 36.5, safeMax: 37.5, totalRows: 20 };
+        return { scaleMin: 35, scaleMax: 39, ticks: [39, 38, 37, 36, 35], safeMin: 36.5, safeMax: 37.5 };
       } else {
-        return { scaleMin: 20, scaleMax: 30, ticks: [30, 28, 26, 24, 22], safeMin: 24, safeMax: 28, totalRows: 20 };
+        return { scaleMin: 20, scaleMax: 30, ticks: [30, 28, 26, 24, 22, 20], safeMin: 24, safeMax: 28 };
       }
     }
 
-    // Coordinate Math for SVG viewBox 0 0 310 280 covering ONLY the 31 Days (left: 80px)
-    function getSvgX(d) {
-      // 31 columns: each column is 10 units wide in viewBox 0 to 310
-      return (d - 0.5) * 10;
-    }
+    // Render Smart Dashboard UI (Hero, Month Bar, Day Selector)
+    function renderSmartDashboard(item) {
+      if (!item) return;
+      var elCode = document.getElementById('smartFormCode');
+      var elCat = document.getElementById('smartCatName');
+      var elTitle = document.getElementById('smartItemName');
+      var elSpec = document.getElementById('smartTargetSpecText');
+      var elIcon = document.getElementById('smartHeroIcon');
 
-    function getSvgY(t, config) {
-      var span = config.scaleMax - config.scaleMin;
-      if (span === 0) span = 10;
-      var ratio = (config.scaleMax - t) / span;
-      var y = ratio * 280;
-      return Math.max(4, Math.min(276, y));
-    }
+      if (elCode) elCode.innerText = item.code;
+      if (elCat) elCat.innerText = item.catName;
+      if (elTitle) elTitle.innerText = item.name;
+      if (elSpec) elSpec.innerText = 'เกณฑ์มาตรฐาน: ' + (item.targetTemp || '-');
 
-    // Build Sheet Table DOM (Header, 31 Columns, 20 Fine Scale Rows, 4 Bottom Rows)
-    function buildSheetDom(item) {
-      var config = getScaleConfig(item);
-      
-      // Update Title & Room Name
-      var titleText = 'แบบบันทึกอุณหภูมิห้องปฏิบัติการ';
-      if (item.cat === 'cat_ref') titleText = 'แบบบันทึกอุณหภูมิตู้เย็นแช่น้ำยา & สิ่งส่งตรวจ';
-      else if (item.cat === 'cat_freezer') titleText = 'แบบบันทึกอุณหภูมิตู้แช่แข็ง FFP & Control';
-      else if (item.cat === 'cat_wb') titleText = 'แบบบันทึกอุณหภูมิ Water Bath อ่างควบคุมอุณหภูมิ';
-      document.getElementById('sheetTitleText').innerText = titleText;
-      document.getElementById('sheetRoomNameText').innerText = item.name + ' (' + item.code + ')';
-      document.getElementById('sheetYearText').innerText = activeYear;
+      var icon = 'thermostat';
+      if (item.cat === 'cat_freezer') icon = 'ac_unit';
+      else if (item.cat === 'cat_wb') icon = 'waves';
+      else if (item.cat === 'cat_ref') icon = 'kitchen';
+      if (elIcon) elIcon.innerText = icon;
 
-      // Build Month Text List (Jan - Dec)
+      // Month Buttons
       var monthList = document.getElementById('monthPillList');
-      monthList.className = 'month-text-list';
-      monthList.innerHTML = '';
-      THAI_MONTHS_SHORT.forEach(function(mName, idx) {
-        var mNum = idx + 1;
-        var btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'month-text-btn' + (mNum === activeMonth ? ' active' : '');
-        btn.innerText = mName;
-        btn.onclick = function() { switchMonth(mNum); };
-        monthList.appendChild(btn);
-      });
+      if (monthList) {
+        monthList.innerHTML = '';
+        THAI_MONTHS_SHORT.forEach(function(mName, idx) {
+          var mNum = idx + 1;
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'month-text-btn' + (mNum === activeMonth ? ' active' : '');
+          btn.innerText = mName;
+          btn.onclick = function() { switchMonth(mNum); };
+          monthList.appendChild(btn);
+        });
+      }
 
       // Populate Day Dropdown
-      var daySelect = document.getElementById('dockDaySelect');
-      daySelect.innerHTML = '';
-      for (var d = 1; d <= 31; d++) {
-        var opt = document.createElement('option');
-        opt.value = d;
-        opt.textContent = String(d).padStart(2, '0');
-        if (d === activeDay) opt.selected = true;
-        daySelect.appendChild(opt);
+      var daySelect = document.getElementById('speedDaySelect');
+      if (daySelect) {
+        daySelect.innerHTML = '';
+        for (var d = 1; d <= 31; d++) {
+          var opt = document.createElement('option');
+          opt.value = d;
+          opt.textContent = String(d).padStart(2, '0');
+          if (d === activeDay) opt.selected = true;
+          daySelect.appendChild(opt);
+        }
       }
-      document.getElementById('dockMonthYearText').innerText = THAI_MONTHS_SHORT[activeMonth - 1] + ' ' + activeYear;
-
-      var totalRows = config.totalRows || 20;
-
-      // Build Table Bodies for Morning, Afternoon & Evening Blocks
-      ['morning', 'afternoon', 'evening'].forEach(function(shift) {
-        var Shift = shift.charAt(0).toUpperCase() + shift.slice(1);
-        var shiftLabelHtml = '';
-        if (shift === 'morning') {
-          shiftLabelHtml = '<span>เ</span><span>ช้</span><span>า</span>';
-        } else if (shift === 'afternoon') {
-          shiftLabelHtml = '<span>บ่</span><span>า</span><span>ย</span>';
-        } else {
-          shiftLabelHtml = '<span>เ</span><span>ย็</span><span>น</span>';
-        }
-
-        var tbody = document.getElementById('tbody' + Shift);
-        if (!tbody) return;
-        tbody.innerHTML = '';
-
-        for (var rIdx = 0; rIdx < totalRows; rIdx++) {
-          var tr = document.createElement('tr');
-
-          // Left shift cell (only on top row with rowspan=20)
-          if (rIdx === 0) {
-            var tdShift = document.createElement('td');
-            tdShift.rowSpan = totalRows;
-            tdShift.className = 'sheet-cell-shift';
-            tdShift.innerHTML = '<div class="shift-vertical-label">' + shiftLabelHtml + '</div>';
-            tr.appendChild(tdShift);
-          }
-
-          // Scale label cell (Major ticks at row 0, 4, 8, 12, 16)
-          var tdScale = document.createElement('td');
-          tdScale.className = 'sheet-scale-cell';
-          if (rIdx % 4 === 0) {
-            var tickIdx = rIdx / 4;
-            tdScale.innerText = config.ticks[tickIdx] !== undefined ? config.ticks[tickIdx] : '';
-          } else {
-            tdScale.innerText = '';
-          }
-          tr.appendChild(tdScale);
-
-          // 31 Fine Grid Cells
-          for (var d = 1; d <= 31; d++) {
-            var td = document.createElement('td');
-            td.className = 'sheet-grid-cell col-day-' + d;
-            td.id = 'gridCell_' + shift + '_' + rIdx + '_' + d;
-            td.dataset.day = d;
-            td.dataset.shift = shift;
-            td.onclick = (function(dayNum) {
-              return function() { selectDay(dayNum); };
-            })(d);
-            tr.appendChild(td);
-          }
-
-          tbody.appendChild(tr);
-        }
-
-        // Bottom Table Rows: Day, 60% Red, 60% Blue, Staff
-        var rowDay = document.getElementById('rowDay' + Shift);
-        var rowRed = document.getElementById('rowRed' + Shift);
-        var rowBlue = document.getElementById('rowBlue' + Shift);
-        var rowStaff = document.getElementById('rowStaff' + Shift);
-
-        // Day numbers
-        if (rowDay) {
-          while (rowDay.children.length > 1) rowDay.removeChild(rowDay.lastChild);
-          for (var d = 1; d <= 31; d++) {
-            var tdDay = document.createElement('td');
-            tdDay.className = 'sheet-day-num col-day-' + d;
-            tdDay.id = 'dayHdr_' + shift + '_' + d;
-            tdDay.innerText = d;
-            tdDay.onclick = (function(dayNum) { return function() { selectDay(dayNum); }; })(d);
-            rowDay.appendChild(tdDay);
-          }
-        }
-
-        // 60% Red row cells
-        if (rowRed) {
-          while (rowRed.children.length > 1) rowRed.removeChild(rowRed.lastChild);
-          for (var d = 1; d <= 31; d++) {
-            var tdRed = document.createElement('td');
-            tdRed.className = 'sheet-empty-cell col-day-' + d;
-            tdRed.id = 'cellRed_' + shift + '_' + d;
-            tdRed.onclick = (function(dayNum) { return function() { selectDay(dayNum); }; })(d);
-            rowRed.appendChild(tdRed);
-          }
-        }
-
-        // 60% Blue row cells
-        if (rowBlue) {
-          while (rowBlue.children.length > 1) rowBlue.removeChild(rowBlue.lastChild);
-          for (var d = 1; d <= 31; d++) {
-            var tdBlue = document.createElement('td');
-            tdBlue.className = 'sheet-empty-cell col-day-' + d;
-            tdBlue.id = 'cellBlue_' + shift + '_' + d;
-            tdBlue.onclick = (function(dayNum) { return function() { selectDay(dayNum); }; })(d);
-            rowBlue.appendChild(tdBlue);
-          }
-        }
-
-        // Staff cells
-        if (rowStaff) {
-          while (rowStaff.children.length > 1) rowStaff.removeChild(rowStaff.lastChild);
-          for (var d = 1; d <= 31; d++) {
-            var tdStaff = document.createElement('td');
-            tdStaff.className = 'sheet-staff-cell col-day-' + d;
-            tdStaff.id = 'cellStaff_' + shift + '_' + d;
-            tdStaff.onclick = (function(dayNum) { return function() { selectDay(dayNum); }; })(d);
-            rowStaff.appendChild(tdStaff);
-          }
-        }
-      });
+      var elMY = document.getElementById('speedMonthYearText');
+      if (elMY) elMY.innerText = THAI_MONTHS_SHORT[activeMonth - 1] + ' ' + activeYear;
     }
 
-    // Load Monthly Data from localStorage or Seed Realistic Past Days
+    // Load Month Sheet Data
     function loadMonthSheetData(itemId, year, month) {
       var storageKey = 'PPCH_LAB_SHEET_DATA_' + itemId + '_' + year + '_' + month;
       var raw = localStorage.getItem(storageKey);
-      
+
       if (raw) {
         try {
           monthSheetData = JSON.parse(raw);
@@ -2168,12 +1995,12 @@
           monthSheetData = { morning: {}, afternoon: {}, evening: {} };
         }
       } else {
-        // Seed realistic historical data up to activeDay - 1
+        // Seed realistic historical data up to activeDay
         monthSheetData = { morning: {}, afternoon: {}, evening: {} };
         var defT = (currentItem && currentItem.defaultTemp !== undefined) ? currentItem.defaultTemp : 25.4;
         var staffInit = localStorage.getItem('PPCH_LAST_STAFF_NAME') || '000023';
 
-        var pastDays = Math.min(activeDay - 1, 28);
+        var pastDays = Math.min(activeDay, 28);
         for (var d = 1; d <= pastDays; d++) {
           var varianceM = (Math.sin(d * 1.5) * 0.4);
           var varianceA = (Math.cos(d * 1.2) * 0.5) + 0.3;
@@ -2200,127 +2027,283 @@
             time: '01:00'
           };
         }
-
-        // Seed initial values for today if empty
-        if (!monthSheetData[currentShift]) monthSheetData[currentShift] = {};
-        if (!monthSheetData[currentShift][activeDay]) {
-          monthSheetData[currentShift][activeDay] = {
-            temp: defT,
-            staff: staffInit,
-            time: new Date().toTimeString().slice(0, 5)
-          };
-        }
       }
 
-      renderFullShift('morning');
-      renderFullShift('afternoon');
-      renderFullShift('evening');
+      updateKpiSummary();
+      renderTrendSvg();
+      renderMonthlyMatrix();
       selectDay(activeDay);
     }
 
-    // Render Static SVG Dots, Lines, and Bottom Cells for a Shift
-    function renderFullShift(shift) {
+    // Update KPI Summary Strip
+    function updateKpiSummary() {
       if (!currentItem) return;
       var config = getScaleConfig(currentItem);
-      var Shift = shift.charAt(0).toUpperCase() + shift.slice(1);
-      var shiftData = monthSheetData[shift] || {};
+      var allTemps = [];
+      var passCount = 0;
+      var latestRec = null;
 
-      var dotsGroup = document.getElementById('dots' + Shift);
-      if (dotsGroup) dotsGroup.innerHTML = '';
-
-      var polyline = document.getElementById('poly' + Shift);
-      var points = [];
-
+      var shifts = ['morning', 'afternoon', 'evening'];
       for (var d = 1; d <= 31; d++) {
-        var dayRecord = shiftData[d];
-        var cellStaff = document.getElementById('cellStaff_' + shift + '_' + d);
-
-        if (dayRecord && dayRecord.temp !== undefined && !isNaN(dayRecord.temp)) {
-          var x = getSvgX(d);
-          var y = getSvgY(dayRecord.temp, config);
-          points.push(x.toFixed(1) + ',' + y.toFixed(1));
-
-          var isPass = (dayRecord.temp >= config.safeMin && dayRecord.temp <= config.safeMax);
-          var dotColor = isPass ? '#059669' : '#dc2626';
-
-          var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-          circle.setAttribute('cx', x.toFixed(1));
-          circle.setAttribute('cy', y.toFixed(1));
-          circle.setAttribute('r', '3.5');
-          circle.setAttribute('fill', dotColor);
-          circle.setAttribute('stroke', '#ffffff');
-          circle.setAttribute('stroke-width', '1.2');
-          circle.setAttribute('id', 'dot_' + shift + '_' + d);
-          circle.style.cursor = 'pointer';
-          circle.onclick = (function(dayNum) { return function() { selectDay(dayNum); }; })(d);
-          if (dotsGroup) dotsGroup.appendChild(circle);
-        }
-
-        // Staff Cell
-        if (cellStaff) {
-          if (dayRecord && dayRecord.staff) {
-            cellStaff.innerText = dayRecord.staff;
-            cellStaff.title = dayRecord.staff;
-          } else {
-            cellStaff.innerText = '';
+        for (var sIdx = 0; sIdx < shifts.length; sIdx++) {
+          var s = shifts[sIdx];
+          if (monthSheetData[s] && monthSheetData[s][d] && monthSheetData[s][d].temp !== undefined) {
+            var t = parseFloat(monthSheetData[s][d].temp);
+            if (!isNaN(t)) {
+              allTemps.push(t);
+              var isPass = (t >= config.safeMin && t <= config.safeMax);
+              if (isPass) passCount++;
+              latestRec = { day: d, shift: s, temp: t, time: monthSheetData[s][d].time };
+            }
           }
         }
       }
 
-      if (polyline) {
-        polyline.setAttribute('points', points.join(' '));
+      var elLatest = document.getElementById('kpiLatestTemp');
+      var elAvg = document.getElementById('kpiMonthAvg');
+      var elMinMax = document.getElementById('kpiMinMax');
+      var elComp = document.getElementById('kpiCompliance');
+
+      if (allTemps.length > 0) {
+        var sum = allTemps.reduce(function(a, b) { return a + b; }, 0);
+        var avg = (sum / allTemps.length).toFixed(1);
+        var min = Math.min.apply(null, allTemps).toFixed(1);
+        var max = Math.max.apply(null, allTemps).toFixed(1);
+        var rate = Math.round((passCount / allTemps.length) * 100);
+
+        if (elLatest && latestRec) {
+          var sTh = latestRec.shift === 'morning' ? 'เช้า' : (latestRec.shift === 'afternoon' ? 'บ่าย' : 'ดึก');
+          elLatest.innerHTML = latestRec.temp.toFixed(1) + ' °C <span style="font-size: 11px; font-weight: 600; opacity: 0.85; margin-left: 4px;">(ว.' + latestRec.day + ' ' + sTh + ')</span>';
+        }
+        if (elAvg) elAvg.innerText = avg + ' °C';
+        if (elMinMax) elMinMax.innerText = min + '° / ' + max + '°';
+        if (elComp) {
+          elComp.innerHTML = rate + '% <span style="font-size: 11px; font-weight: 600; opacity: 0.85;">(' + passCount + '/' + allTemps.length + ')</span>';
+          elComp.style.color = rate >= 95 ? '#6ee7b7' : (rate >= 80 ? '#fde047' : '#fca5a5');
+        }
+      } else {
+        if (elLatest) elLatest.innerText = '--.- °C';
+        if (elAvg) elAvg.innerText = '--.- °C';
+        if (elMinMax) elMinMax.innerText = '-- / --';
+        if (elComp) elComp.innerText = '100%';
       }
     }
 
-    // Select Active Day (1 - 31)
+    // Render Clinical Interactive Trend Chart (SVG)
+    function renderTrendSvg() {
+      if (!currentItem) return;
+      var config = getScaleConfig(currentItem);
+      var svg = document.getElementById('trendSvg');
+      if (!svg) return;
+
+      var svgW = 1000;
+      var svgH = 240;
+      var padL = 55;
+      var padR = 25;
+      var padT = 20;
+      var padB = 30;
+      var chartW = svgW - padL - padR; // 920
+      var chartH = svgH - padT - padB; // 190
+
+      function getX(d) {
+        return padL + (d - 1) * (chartW / 30);
+      }
+      function getY(t) {
+        var span = config.scaleMax - config.scaleMin;
+        if (span === 0) span = 10;
+        var ratio = (config.scaleMax - t) / span;
+        var y = padT + (ratio * chartH);
+        return Math.max(padT - 5, Math.min(padT + chartH + 5, y));
+      }
+
+      var html = [];
+
+      // 1. Safe Zone Background Rect
+      var ySafeMin = getY(config.safeMin);
+      var ySafeMax = getY(config.safeMax);
+      var safeTop = Math.min(ySafeMin, ySafeMax);
+      var safeH = Math.abs(ySafeMin - ySafeMax);
+      html.push('<rect x="' + padL + '" y="' + safeTop.toFixed(1) + '" width="' + chartW + '" height="' + safeH.toFixed(1) + '" fill="rgba(16, 185, 129, 0.12)" stroke="rgba(16, 185, 129, 0.45)" stroke-width="1" stroke-dasharray="4 3" />');
+      html.push('<text x="' + (padL + 8) + '" y="' + (safeTop + 14).toFixed(1) + '" fill="#059669" font-size="10" font-weight="700">เกณฑ์มาตรฐาน: ' + (currentItem.targetTemp || '') + '</text>');
+
+      // 2. Horizontal Tick Lines & Y-axis labels
+      config.ticks.forEach(function(tickVal) {
+        var yPos = getY(tickVal);
+        html.push('<line x1="' + padL + '" y1="' + yPos.toFixed(1) + '" x2="' + (padL + chartW) + '" y2="' + yPos.toFixed(1) + '" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="2 2" />');
+        html.push('<text x="' + (padL - 8) + '" y="' + (yPos + 3.5).toFixed(1) + '" fill="#64748b" font-size="10.5" font-weight="600" text-anchor="end" font-family="var(--font-mono)">' + tickVal + '°</text>');
+      });
+
+      // 3. Vertical Grid Lines & Day labels (Days: 1, 5, 10, 15, 20, 25, 31)
+      var labelDays = [1, 5, 10, 15, 20, 25, 31];
+      for (var d = 1; d <= 31; d++) {
+        var xPos = getX(d);
+        if (labelDays.indexOf(d) >= 0) {
+          html.push('<line x1="' + xPos.toFixed(1) + '" y1="' + padT + '" x2="' + xPos.toFixed(1) + '" y2="' + (padT + chartH) + '" stroke="#f1f5f9" stroke-width="1" />');
+          html.push('<text x="' + xPos.toFixed(1) + '" y="' + (svgH - 12) + '" fill="#64748b" font-size="10" font-weight="700" text-anchor="middle" font-family="var(--font-mono)">ว.' + d + '</text>');
+        }
+      }
+
+      // 4. Active Day Vertical Highlight Line
+      var xActive = getX(activeDay);
+      html.push('<line x1="' + xActive.toFixed(1) + '" y1="' + padT + '" x2="' + xActive.toFixed(1) + '" y2="' + (padT + chartH) + '" stroke="#004b93" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.6" />');
+
+      // 5. Shift Curves & Dots
+      var shiftConfigs = [
+        { key: 'morning', name: 'เวรเช้า', color: '#0284c7' },
+        { key: 'afternoon', name: 'เวรบ่าย', color: '#f59e0b' },
+        { key: 'evening', name: 'เวรดึก', color: '#8b5cf6' }
+      ];
+
+      shiftConfigs.forEach(function(sc) {
+        if (activeChartFilter !== 'all' && activeChartFilter !== sc.key) return;
+
+        var shiftData = monthSheetData[sc.key] || {};
+        var points = [];
+        var dotsHtml = [];
+
+        for (var dayNum = 1; dayNum <= 31; dayNum++) {
+          var rec = shiftData[dayNum];
+          if (rec && rec.temp !== undefined && !isNaN(rec.temp)) {
+            var px = getX(dayNum);
+            var py = getY(rec.temp);
+            points.push(px.toFixed(1) + ',' + py.toFixed(1));
+
+            var inSpec = (rec.temp >= config.safeMin && rec.temp <= config.safeMax);
+            var dotFill = inSpec ? sc.color : '#dc2626';
+            var dotRadius = (dayNum === activeDay && currentShift === sc.key) ? 6 : 4;
+
+            dotsHtml.push('<circle cx="' + px.toFixed(1) + '" cy="' + py.toFixed(1) + '" r="' + dotRadius + '" fill="' + dotFill + '" stroke="#ffffff" stroke-width="1.5" style="cursor: pointer;" onclick="selectShiftAndDay(\'' + sc.key + '\', ' + dayNum + ')"><title>วันที่ ' + dayNum + ' (' + sc.name + '): ' + rec.temp.toFixed(1) + ' °C</title></circle>');
+          }
+        }
+
+        if (points.length > 0) {
+          html.push('<polyline points="' + points.join(' ') + '" fill="none" stroke="' + sc.color + '" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />');
+          html.push(dotsHtml.join(''));
+        }
+      });
+
+      // 6. Active Live Marker with Pulse Animation
+      var currRec = (monthSheetData[currentShift] && monthSheetData[currentShift][activeDay]) ? monthSheetData[currentShift][activeDay] : null;
+      if (currRec && currRec.temp !== undefined && !isNaN(currRec.temp)) {
+        var ax = getX(activeDay);
+        var ay = getY(currRec.temp);
+        var inSpec = (currRec.temp >= config.safeMin && currRec.temp <= config.safeMax);
+        var pulseColor = inSpec ? '#004b93' : '#ef4444';
+
+        html.push('<circle cx="' + ax.toFixed(1) + '" cy="' + ay.toFixed(1) + '" r="11" fill="none" stroke="' + pulseColor + '" stroke-width="2" class="marker-pulse" />');
+        html.push('<circle cx="' + ax.toFixed(1) + '" cy="' + ay.toFixed(1) + '" r="5.5" fill="' + pulseColor + '" stroke="#ffffff" stroke-width="2" />');
+        
+        // Tooltip pill above marker
+        var tooltipY = ay - 14;
+        html.push('<g transform="translate(' + ax.toFixed(1) + ',' + tooltipY.toFixed(1) + ')">');
+        html.push('<rect x="-24" y="-18" width="48" height="18" rx="4" fill="#002e6e" />');
+        html.push('<polygon points="-4,0 4,0 0,4" fill="#002e6e" />');
+        html.push('<text x="0" y="-5" fill="#ffffff" font-size="10" font-weight="800" text-anchor="middle" font-family="var(--font-mono)">' + currRec.temp.toFixed(1) + '°C</text>');
+        html.push('</g>');
+      }
+
+      svg.innerHTML = html.join('');
+    }
+
+    // Render Modern Monthly Shift Matrix Table
+    function renderMonthlyMatrix() {
+      if (!currentItem) return;
+      var config = getScaleConfig(currentItem);
+      var thead = document.getElementById('matrixThead');
+      var tbody = document.getElementById('matrixTbody');
+      if (!thead || !tbody) return;
+
+      // Header row with 31 days
+      var thHtml = '<tr><th class="matrix-th-title">เวร / วันที่</th>';
+      for (var d = 1; d <= 31; d++) {
+        var isAct = (d === activeDay) ? ' active-col' : '';
+        thHtml += '<th class="matrix-day-hdr' + isAct + '" onclick="selectDay(' + d + ')">' + d + '</th>';
+      }
+      thHtml += '</tr>';
+      thead.innerHTML = thHtml;
+
+      // 6 Rows: 3 shifts x (Temp Chip + Staff Label)
+      var shifts = [
+        { key: 'morning', label: '☀️ เวรเช้า', color: '#0284c7' },
+        { key: 'afternoon', label: '⛅ เวรบ่าย', color: '#f59e0b' },
+        { key: 'evening', label: '🌙 เวรดึก', color: '#8b5cf6' }
+      ];
+
+      var tbHtml = '';
+      shifts.forEach(function(s) {
+        var sData = monthSheetData[s.key] || {};
+        
+        // Temperature Row
+        tbHtml += '<tr><td class="matrix-th-title" style="color: ' + s.color + '; font-weight: 700;">' + s.label + ' (°C)</td>';
+        for (var dayNum = 1; dayNum <= 31; dayNum++) {
+          var rec = sData[dayNum];
+          var isAct = (dayNum === activeDay) ? ' active-col' : '';
+          var chipHtml = '<span class="matrix-temp-chip empty">-</span>';
+
+          if (rec && rec.temp !== undefined && !isNaN(rec.temp)) {
+            var inSpec = (rec.temp >= config.safeMin && rec.temp <= config.safeMax);
+            var cls = inSpec ? 'normal' : 'abnormal';
+            chipHtml = '<span class="matrix-temp-chip ' + cls + '">' + rec.temp.toFixed(1) + '</span>';
+          }
+          tbHtml += '<td class="col-day-' + dayNum + isAct + '" onclick="selectShiftAndDay(\'' + s.key + '\', ' + dayNum + ')">' + chipHtml + '</td>';
+        }
+        tbHtml += '</tr>';
+
+        // Staff Row
+        tbHtml += '<tr><td class="matrix-th-title" style="color: #64748b; font-size: 11px;">ผู้ตรวจ (' + s.label.replace(/^[^\s]+\s*/, '') + ')</td>';
+        for (var dayNum = 1; dayNum <= 31; dayNum++) {
+          var rec = sData[dayNum];
+          var isAct = (dayNum === activeDay) ? ' active-col' : '';
+          var staffLabel = (rec && rec.staff) ? rec.staff : '-';
+          tbHtml += '<td class="col-day-' + dayNum + isAct + '" onclick="selectShiftAndDay(\'' + s.key + '\', ' + dayNum + ')"><div class="matrix-staff-text" title="' + staffLabel + '">' + staffLabel + '</div></td>';
+        }
+        tbHtml += '</tr>';
+      });
+
+      tbody.innerHTML = tbHtml;
+    }
+
+    // Select Shift & Day simultaneously
+    function selectShiftAndDay(shift, d) {
+      if (currentShift !== shift) {
+        switchActiveShift(shift);
+      }
+      selectDay(d);
+    }
+
+    // Select Active Day (1 to 31)
     function selectDay(d) {
       activeDay = Math.max(1, Math.min(31, d));
-      
-      // Update Dropdown
-      var daySelect = document.getElementById('dockDaySelect');
+
+      // Update speedDaySelect
+      var daySelect = document.getElementById('speedDaySelect');
       if (daySelect) daySelect.value = activeDay;
 
-      // Highlight active column in tables
+      // Highlight active column in matrix table
       document.querySelectorAll('.active-col').forEach(function(el) { el.classList.remove('active-col'); });
-      document.querySelectorAll('.active-day').forEach(function(el) { el.classList.remove('active-day'); });
       document.querySelectorAll('.col-day-' + activeDay).forEach(function(el) { el.classList.add('active-col'); });
 
-      var dayHdrM = document.getElementById('dayHdr_morning_' + activeDay);
-      var dayHdrA = document.getElementById('dayHdr_afternoon_' + activeDay);
-      var dayHdrE = document.getElementById('dayHdr_evening_' + activeDay);
-      if (dayHdrM) dayHdrM.classList.add('active-day');
-      if (dayHdrA) dayHdrA.classList.add('active-day');
-      if (dayHdrE) dayHdrE.classList.add('active-day');
-
-      // Populate Input Dock with Day d values for currentShift
+      // Populate Dial Input
       var rec = (monthSheetData[currentShift] && monthSheetData[currentShift][activeDay]) ? monthSheetData[currentShift][activeDay] : null;
       var inputTemp = document.getElementById('inputTemp');
+      var evalNote = document.getElementById('evalNote');
 
       if (rec) {
         if (inputTemp) inputTemp.value = (rec.temp !== undefined) ? rec.temp : '';
+        if (evalNote) evalNote.value = rec.note || '';
       } else {
         if (inputTemp) inputTemp.value = (currentItem && currentItem.defaultTemp !== undefined) ? currentItem.defaultTemp : '';
+        if (evalNote) evalNote.value = '';
       }
 
-      // Update Live Marker
       updateActiveMarkerLive();
-
-      // Smooth scroll table to center active day if overflowing
-      var scrollContainer = document.getElementById('sheetScrollContainer');
-      if (scrollContainer && scrollContainer.scrollWidth > scrollContainer.clientWidth) {
-        var dayHdr = document.getElementById('dayHdr_' + currentShift + '_' + activeDay);
-        if (dayHdr) {
-          var targetScroll = dayHdr.offsetLeft - (scrollContainer.clientWidth / 2);
-          scrollContainer.scrollTo({ left: Math.max(0, targetScroll), behavior: 'smooth' });
-        }
-      }
     }
 
-    // REAL-TIME PLOTTING AS USER TYPES TEMPERATURE
+    // Real-Time Temperature Input Handling
     function onLiveTempInput() {
       if (!currentItem) return;
-      var el = document.getElementById('inputTemp');
-      var val = parseFloat(el.value);
+      var inputEl = document.getElementById('inputTemp');
+      var val = parseFloat(inputEl.value);
       if (isNaN(val)) return;
 
       if (!monthSheetData[currentShift]) monthSheetData[currentShift] = {};
@@ -2328,81 +2311,49 @@
       monthSheetData[currentShift][activeDay].temp = val;
 
       updateActiveMarkerLive();
+      renderTrendSvg();
+      renderMonthlyMatrix();
+      updateKpiSummary();
     }
 
-    // Dynamic SVG Marker & Connecting Line Update
+    // Update Dial Glow & Banner Feedback
     function updateActiveMarkerLive() {
       if (!currentItem) return;
       var config = getScaleConfig(currentItem);
-      var Shift = currentShift.charAt(0).toUpperCase() + currentShift.slice(1);
-
-      // Hide marker on inactive shifts
-      ['morning', 'afternoon', 'evening'].forEach(function(s) {
-        if (s !== currentShift) {
-          var sCap = s.charAt(0).toUpperCase() + s.slice(1);
-          var otherMarker = document.getElementById('liveMarker' + sCap);
-          if (otherMarker) otherMarker.style.display = 'none';
-        }
-      });
-
-      var liveMarker = document.getElementById('liveMarker' + Shift);
-      var livePulse = document.getElementById('livePulse' + Shift);
-      var liveDot = document.getElementById('liveDot' + Shift);
-      var liveTooltip = document.getElementById('liveTooltip' + Shift);
-      var liveTooltipText = document.getElementById('liveTooltipText' + Shift);
-
       var inputTemp = document.getElementById('inputTemp');
       var val = parseFloat(inputTemp.value);
 
+      var dialBox = document.getElementById('speedDialBox');
+      var banner = document.getElementById('speedStatusBanner');
+      var bannerText = document.getElementById('speedStatusText');
+
       if (isNaN(val)) {
-        if (liveMarker) liveMarker.style.display = 'none';
+        if (dialBox) dialBox.className = 'speed-dial-center status-normal';
+        if (banner) {
+          banner.className = 'speed-status-banner normal';
+          banner.innerHTML = '<span class="material-icons-round" style="font-size: 16px;">info</span> <span>กรุณาระบุตัวเลขเพื่อตรวจสอบเกณฑ์มาตรฐาน</span>';
+        }
         return;
       }
 
-      var x = getSvgX(activeDay);
-      var y = getSvgY(val, config);
-
       var isPass = (val >= config.safeMin && val <= config.safeMax);
-      var dotColor = isPass ? '#059669' : '#dc2626';
 
-      if (livePulse) {
-        livePulse.setAttribute('cx', x.toFixed(1));
-        livePulse.setAttribute('cy', y.toFixed(1));
-        livePulse.setAttribute('stroke', isPass ? '#0284c7' : '#ef4444');
-      }
-      if (liveDot) {
-        liveDot.setAttribute('cx', x.toFixed(1));
-        liveDot.setAttribute('cy', y.toFixed(1));
-        liveDot.setAttribute('fill', dotColor);
-      }
-      if (liveTooltip) {
-        liveTooltip.setAttribute('transform', 'translate(' + x.toFixed(1) + ',' + y.toFixed(1) + ')');
-      }
-      if (liveTooltipText) {
-        liveTooltipText.textContent = val.toFixed(1) + '°';
-      }
-      if (liveMarker) {
-        liveMarker.style.display = 'block';
+      if (dialBox) {
+        dialBox.className = 'speed-dial-center ' + (isPass ? 'status-normal' : 'status-abnormal');
       }
 
-      // Re-render polyline & dots for current shift
-      renderFullShift(currentShift);
-
-      // Feedback Badge below input
-      var fb = document.getElementById('dockTempFeedback');
-      var fbText = document.getElementById('dockTempFeedbackText');
-      if (fb && fbText) {
+      if (banner) {
         if (isPass) {
-          fb.className = 'status-feedback-pill normal';
-          fb.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">check_circle</span> <span>ปกติในเกณฑ์มาตรฐาน (' + val.toFixed(1) + ' °C)</span>';
+          banner.className = 'speed-status-banner normal';
+          banner.innerHTML = '<span class="material-icons-round" style="font-size: 16px;">check_circle</span> <span>อยู่ในเกณฑ์มาตรฐาน (' + val.toFixed(1) + ' °C • มาตรฐาน ' + (currentItem.targetTemp || '') + ')</span>';
         } else {
-          fb.className = 'status-feedback-pill abnormal';
-          fb.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">warning</span> <span>หลุดเกณฑ์มาตรฐาน! (' + val.toFixed(1) + ' °C เกณฑ์ ' + currentItem.targetTemp + ')</span>';
+          banner.className = 'speed-status-banner abnormal';
+          banner.innerHTML = '<span class="material-icons-round" style="font-size: 16px;">warning</span> <span>หลุดเกณฑ์มาตรฐาน! (' + val.toFixed(1) + ' °C • เกณฑ์ ' + (currentItem.targetTemp || '') + ')</span>';
         }
       }
     }
 
-    // REAL-TIME STAFF INPUT
+    // Real-Time Staff Input
     function onLiveStaffInput() {
       var staffId = (document.getElementById('staffId').value || '').trim();
       var staffName = (document.getElementById('staffName').value || '').trim();
@@ -2412,14 +2363,10 @@
       if (!monthSheetData[currentShift][activeDay]) monthSheetData[currentShift][activeDay] = {};
       monthSheetData[currentShift][activeDay].staff = label;
 
-      var cellStaff = document.getElementById('cellStaff_' + currentShift + '_' + activeDay);
-      if (cellStaff) {
-        cellStaff.innerText = label;
-        cellStaff.title = label;
-      }
+      renderMonthlyMatrix();
     }
 
-    // Micro-Steppers
+    // Micro-Steppers for Speed Dial
     function stepLiveTemp(delta) {
       var el = document.getElementById('inputTemp');
       var val = parseFloat(el.value);
@@ -2431,15 +2378,32 @@
     // Shift Switcher
     function switchActiveShift(shift) {
       currentShift = shift;
-      ['morning', 'afternoon', 'evening'].forEach(function(s) {
-        var sCap = s.charAt(0).toUpperCase() + s.slice(1);
-        var btn = document.getElementById('dockShift' + sCap);
-        var block = document.getElementById('block' + sCap);
-        var isActive = (s === shift);
-        if (btn) btn.classList.toggle('active', isActive);
-        if (block) block.classList.toggle('active-block', isActive);
-      });
+      var btnM = document.getElementById('btnShiftMorning');
+      var btnA = document.getElementById('btnShiftAfternoon');
+      var btnE = document.getElementById('btnShiftEvening');
+
+      if (btnM) btnM.classList.toggle('active', shift === 'morning');
+      if (btnA) btnA.classList.toggle('active', shift === 'afternoon');
+      if (btnE) btnE.classList.toggle('active', shift === 'evening');
+
       selectDay(activeDay);
+      renderTrendSvg();
+    }
+
+    // Chart Filter Switcher
+    function switchChartFilter(filter) {
+      activeChartFilter = filter;
+      var bAll = document.getElementById('btnChartAll');
+      var bM = document.getElementById('btnChartMorning');
+      var bA = document.getElementById('btnChartAfternoon');
+      var bE = document.getElementById('btnChartEvening');
+
+      if (bAll) bAll.classList.toggle('active', filter === 'all');
+      if (bM) bM.classList.toggle('active', filter === 'morning');
+      if (bA) bA.classList.toggle('active', filter === 'afternoon');
+      if (bE) bE.classList.toggle('active', filter === 'evening');
+
+      renderTrendSvg();
     }
 
     // Day Navigation
@@ -2455,7 +2419,7 @@
     }
 
     function onDayDropdownChanged() {
-      var val = parseInt(document.getElementById('dockDaySelect').value);
+      var val = parseInt(document.getElementById('speedDaySelect').value);
       if (!isNaN(val)) selectDay(val);
     }
 
@@ -2465,7 +2429,8 @@
       document.querySelectorAll('.month-text-btn').forEach(function(b, idx) {
         b.classList.toggle('active', (idx + 1) === m);
       });
-      document.getElementById('dockMonthYearText').innerText = THAI_MONTHS_SHORT[activeMonth - 1] + ' ' + activeYear;
+      var elMY = document.getElementById('speedMonthYearText');
+      if (elMY) elMY.innerText = THAI_MONTHS_SHORT[activeMonth - 1] + ' ' + activeYear;
       if (currentItem) {
         loadMonthSheetData(currentItem.id, activeYear, activeMonth);
       }
@@ -2473,12 +2438,14 @@
 
     // Clear Day Data
     function clearDayData() {
-      var shiftNameTh = currentShift === 'morning' ? 'เวรเช้า' : (currentShift === 'afternoon' ? 'เวรบ่าย' : 'เวรเย็น');
+      var shiftNameTh = currentShift === 'morning' ? 'เวรเช้า' : (currentShift === 'afternoon' ? 'เวรบ่าย' : 'เวรดึก');
       if (!confirm('ยืนยันล้างข้อมูลวันที่ ' + activeDay + ' (' + shiftNameTh + ') หรือไม่?')) return;
       if (monthSheetData[currentShift] && monthSheetData[currentShift][activeDay]) {
         delete monthSheetData[currentShift][activeDay];
       }
-      renderFullShift(currentShift);
+      renderTrendSvg();
+      renderMonthlyMatrix();
+      updateKpiSummary();
       selectDay(activeDay);
     }
 
@@ -2521,7 +2488,7 @@
       }
     }
 
-    // SUBMIT EVALUATION FROM REAL-TIME DOCK (SHEET MODE)
+    // SUBMIT EVALUATION (SPEED CONSOLE)
     function submitEvaluation() {
       if (!currentItem) {
         alert('กรุณาเลือกจุดตรวจก่อนบันทึกข้อมูล');
@@ -2573,8 +2540,10 @@
         localStorage.setItem('PPCH_LAST_STAFF_NAME', staffName);
       } catch (e) {}
 
-      // Re-render
-      renderFullShift(currentShift);
+      // Re-render UI
+      updateKpiSummary();
+      renderTrendSvg();
+      renderMonthlyMatrix();
       selectDay(activeDay);
 
       // Create evaluation event payload
