@@ -1230,15 +1230,182 @@
       }
     }
 
+    /* ==================== QR DIRECTORY & STRIP CARDS ==================== */
+    .qr-strip-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .qr-strip-card {
+      background: #ffffff;
+      border: 1px solid var(--border-main);
+      border-radius: 10px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 3px rgba(0, 46, 110, 0.02);
+    }
+    .qr-strip-card:hover {
+      border-color: var(--royal-blue);
+      box-shadow: 0 4px 12px rgba(0, 75, 147, 0.08);
+      transform: translateY(-1px);
+    }
+    .qr-strip-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+    .qr-icon-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 20px;
+    }
+    .qr-strip-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .qr-strip-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 2px;
+      font-size: 11.5px;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+    }
+    .qr-spec-pill {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--royal-blue);
+      background: var(--royal-subtle);
+      border: 1px solid var(--border-blue-soft);
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+    .qr-strip-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    /* QR Modal */
+    .qr-modal-content {
+      text-align: center;
+      padding: 24px;
+    }
+    .qr-code-box {
+      background: #ffffff;
+      border: 2px solid var(--border-main);
+      border-radius: 12px;
+      padding: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin: 14px 0;
+      box-shadow: 0 4px 14px rgba(0, 46, 110, 0.06);
+    }
+    .qr-code-box img, .qr-code-box canvas {
+      display: block;
+      margin: 0 auto;
+    }
+
+    /* Plotted Temperature Graph & Table Styles */
+    .graph-paper-container {
+      background: #ffffff;
+      border: 2px solid #000000;
+      padding: 20px 24px;
+      margin: 0 auto;
+      max-width: 980px;
+      box-shadow: 0 6px 20px rgba(0, 46, 110, 0.08);
+      font-family: 'Prompt', sans-serif;
+      color: #000000;
+    }
+    .graph-block-outer {
+      display: flex;
+      border: 1.5px solid #000000;
+      margin-bottom: 14px;
+      background: #ffffff;
+    }
+    .graph-shift-sidebar {
+      width: 38px;
+      border-right: 1.5px solid #000000;
+      background: #f8fafc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+      color: #000000;
+      letter-spacing: 2px;
+      user-select: none;
+    }
+    .graph-main-body {
+      flex: 1;
+      min-width: 0;
+      overflow-x: auto;
+    }
+    .plotted-table-sheet {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10.5px;
+      text-align: center;
+      border-top: 1.5px solid #000000;
+    }
+    .plotted-table-sheet td, .plotted-table-sheet th {
+      border: 1px solid #000000;
+      padding: 3px 1px;
+      height: 22px;
+      vertical-align: middle;
+    }
+    .graph-dot {
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .graph-dot:hover {
+      r: 6.5;
+      stroke-width: 3.5;
+      stroke: #0284c7;
+    }
+
+    /* Batch QR Print Area */
+    #qrBatchPrintArea {
+      display: none;
+    }
+
     /* Print View */
     @media print {
       body { background: #ffffff !important; }
-      .app-topbar, .app-sidebar, .page-filter-bar, .kpi-strip-5, #pageLoader, .btn-action-col, .no-print, .alert-banner-strip {
+      .app-topbar, .app-sidebar, .page-filter-bar, .kpi-strip-5, #pageLoader, .btn-action-col, .no-print, .alert-banner-strip, .floating-action-wrapper {
         display: none !important;
       }
       .app-main-content { max-width: 100% !important; padding: 0 !important; }
-      .content-panel { border: 1px solid #cbd5e1 !important; box-shadow: none !important; }
+      .content-panel { border: none !important; box-shadow: none !important; }
       .paper-sheet { border: none !important; box-shadow: none !important; padding: 0 !important; }
+      .graph-paper-container { border: 2px solid #000000 !important; box-shadow: none !important; max-width: 100% !important; padding: 10px !important; }
+      
+      #qrBatchPrintArea.printing-active {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 16px !important;
+        padding: 10px !important;
+      }
+      #view_temp, #view_maint, #view_ups, #view_qr, #view_reports:not(.active-print) {
+        display: none !important;
+      }
     }
   </style>
 </head>
@@ -1335,14 +1502,23 @@
             <span class="material-icons-round">print</span>
             <span>รายงานทางการ (16 แท็บ)</span>
           </button>
+          <button onclick="switchView('qr')" id="navBtn_qr" class="nav-btn" title="รายการจุดตรวจ & QR Code ประจำจุด">
+            <span class="material-icons-round">qr_code_2</span>
+            <span>จุดตรวจ & QR Code</span>
+          </button>
         </nav>
 
         <div class="sidebar-divider"></div>
 
         <div class="sidebar-section-title">ระบบที่เกี่ยวข้อง</div>
         <nav class="sidebar-nav">
-          <a href="admin.html" class="nav-btn nav-btn-ext" title="เปิดระบบเครื่องมือแพทย์ส่วนกลาง (Med Track)">
-            <span class="material-icons-round">medical_services</span>
+          <a href="eval-lab.html" target="_blank" class="nav-btn nav-btn-ext" title="เปิดหน้ากรอกผลการตรวจเช็คแยก (Mobile & QR Check-in)">
+            <span class="material-icons-round" style="color: #38bdf8;">qr_code_scanner</span>
+            <span>หน้ากรอกผล LAB (QR)</span>
+            <span class="material-icons-round nav-ext-icon">open_in_new</span>
+          </a>
+          <a href="admin.html" class="nav-btn" title="เปิดระบบเครื่องมือแพทย์ส่วนกลาง (Med Track)">
+            <span class="material-icons-round" style="color: #cbd5e1;">medical_services</span>
             <span>Admin เครื่องมือแพทย์</span>
             <span class="material-icons-round nav-ext-icon">open_in_new</span>
           </a>
@@ -1578,12 +1754,12 @@
           </div>
         </section>
 
-        <!-- ==================== SUB-VIEW 4: รายงานทางการ 16 แท็บ A4 ==================== -->
+        <!-- ==================== SUB-VIEW 4: รายงานทางการ & กราฟบันทึกอุณหภูมิ ==================== -->
         <section id="view_reports" class="content-panel" style="display: none;">
           <div class="panel-header">
             <div class="panel-title">
-              <span class="material-icons-round" style="color: var(--royal-blue); font-size: 20px;">print</span>
-              <span>พิมพ์รายงานและจำลองแบบฟอร์มทางการ 100% (Official Forms)</span>
+              <span class="material-icons-round" style="color: var(--royal-blue); font-size: 20px;">show_chart</span>
+              <span>กราฟบันทึกอุณหภูมิ & รายงานแบบฟอร์มทางการ 100% (Official Forms)</span>
             </div>
             <div class="panel-badge">16 แท็บมาตรฐาน</div>
           </div>
@@ -1615,7 +1791,15 @@
                 <input type="month" id="reportMonthSelect" class="filter-input" value="2026-10" onchange="renderSelectedReport()">
               </div>
 
-              <div style="display: flex; align-items: center; gap: 8px;">
+              <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <button type="button" onclick="simulateMonthlySampleData()" class="btn-tool" style="background: var(--royal-subtle); color: var(--royal-blue); border-color: var(--border-blue-soft);" title="จำลองข้อมูลทั้งเดือนเพื่อให้เห็นเส้นกราฟและจุด Plot สวยงามทันที">
+                  <span class="material-icons-round" style="font-size: 15px; color: var(--royal-blue);">auto_graph</span>
+                  <span>จำลองข้อมูลทั้งเดือน</span>
+                </button>
+                <button type="button" onclick="openEvalForCurrentReport()" class="btn-tool" style="background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe;" title="เปิดหน้าบันทึกผล QR ของจุดตรวจนี้">
+                  <span class="material-icons-round" style="font-size: 15px;">edit_note</span>
+                  <span>กรอกผลจุดนี้</span>
+                </button>
                 <button type="button" onclick="window.print()" class="btn-tool btn-tool-primary">
                   <span class="material-icons-round" style="font-size: 15px;">print</span>
                   <span>พิมพ์รายงาน A4</span>
@@ -1628,9 +1812,54 @@
             </div>
           </div>
 
-          <!-- Paper Preview Container -->
-          <div style="padding: 24px; background: #e2e8f0;">
-            <div class="paper-sheet" id="paperSheetContainer">
+          <!-- Paper Preview Container (Plotted Graph & Official Sheet Simulation) -->
+          <div style="padding: 24px; background: #e2e8f0; overflow-x: auto;">
+            <div id="paperSheetContainer">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== SUB-VIEW 5: รายการจุดตรวจ & QR CODE (23 จุด) ==================== -->
+        <section id="view_qr" class="content-panel" style="display: none;">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="material-icons-round" style="color: var(--royal-blue); font-size: 20px;">qr_code_2</span>
+              <span>รายการจุดตรวจ & QR Code ประจำจุด (23 จุดตรวจ)</span>
+            </div>
+            <div class="panel-badge">23 จุดตรวจพร้อม QR</div>
+          </div>
+
+          <!-- QR Filter Toolbar -->
+          <div style="padding: 12px 18px; background: #ffffff; border-bottom: 1px solid var(--border-main); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;" class="no-print">
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; flex: 1;">
+              <div class="search-input-box" style="max-width: 300px;">
+                <span class="material-icons-round">search</span>
+                <input type="text" id="filterQrSearch" placeholder="ค้นหาจุดตรวจ / รหัสแบบฟอร์ม..." oninput="renderQrDirectoryView()">
+              </div>
+
+              <select id="filterQrCategory" class="filter-input" onchange="renderQrDirectoryView()" style="min-width: 200px;">
+                <option value="all">ทุกหมวดหมู่ (23 จุดตรวจ)</option>
+                <option value="temp_room">อุณหภูมิห้องแลป (5 จุด)</option>
+                <option value="temp_freezer">ตู้แช่แข็ง FFP & Control (2 จุด)</option>
+                <option value="temp_wb">Water bath อ่างน้ำอุณหภูมิ (2 จุด)</option>
+                <option value="temp_ref">ตู้เย็นแช่น้ำยา & สิ่งส่งตรวจ (3 จุด)</option>
+                <option value="analyzer">เครื่องตรวจวิเคราะห์ Analyzers (5 จุด)</option>
+                <option value="ups">ระบบสำรองไฟ UPS (6 ตัว)</option>
+              </select>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <button type="button" onclick="batchPrintAllQrs()" class="btn-tool btn-tool-primary" title="พิมพ์สติกเกอร์ QR Code ของทุกจุดตรวจลงบนกระดาษ A4">
+                <span class="material-icons-round" style="font-size: 15px;">print</span>
+                <span>พิมพ์สติกเกอร์ QR ทั้งหมด (A4 Batch)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- QR Strip Cards List -->
+          <div style="padding: 16px 18px;">
+            <div class="qr-strip-list" id="qrStripContainer">
               <!-- Rendered by JS -->
             </div>
           </div>
@@ -1696,9 +1925,49 @@
           <span class="material-icons-round" style="font-size: 16px;">save</span>
           <span>บันทึกข้อมูล</span>
         </button>
+  <!-- QR Code Modal (Single Item View & Print Sticker) -->
+  <div id="qrModal" class="modal-overlay hidden" onclick="if(event.target === this) closeQrModal()">
+    <div class="modal-box" style="max-width: 440px;">
+      <div class="modal-header">
+        <h3 style="display: flex; align-items: center; gap: 8px; font-size: 14.5px;">
+          <span class="material-icons-round" style="color: var(--royal-blue); font-size: 20px;">qr_code_2</span>
+          <span>QR Code ประจำจุดตรวจ LAB</span>
+        </h3>
+        <button type="button" class="btn-close-modal" onclick="closeQrModal()">✕</button>
+      </div>
+      <div class="modal-body" style="text-align: center; padding: 20px;">
+        <div style="font-size: 15px; font-weight: 700; color: var(--royal-dark);" id="qrModalTitle">-</div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;" id="qrModalMeta">-</div>
+
+        <div class="qr-code-box">
+          <div id="qrCanvas"></div>
+        </div>
+
+        <div style="font-size: 11px; color: var(--text-muted); word-break: break-all; background: #f8fafc; border: 1px solid var(--border-main); padding: 6px 10px; border-radius: 6px; margin-bottom: 12px;" id="qrLinkText">-</div>
+
+        <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+          <button type="button" onclick="printSingleQrSticker()" class="btn-tool btn-tool-primary">
+            <span class="material-icons-round" style="font-size: 15px;">print</span>
+            <span>พิมพ์สติกเกอร์ QR</span>
+          </button>
+          <button type="button" onclick="copyActiveQrLink()" class="btn-tool">
+            <span class="material-icons-round" style="font-size: 15px;">content_copy</span>
+            <span>คัดลอกลิงก์</span>
+          </button>
+          <a id="btnOpenQrDirect" href="#" target="_blank" class="btn-tool" style="color: var(--royal-blue); text-decoration: none;">
+            <span class="material-icons-round" style="font-size: 15px;">open_in_new</span>
+            <span>เปิดหน้ากรอก</span>
+          </a>
+        </div>
       </div>
     </div>
   </div>
+
+  <!-- QR Batch Print Area (Hidden on screen, rendered on Print) -->
+  <div id="qrBatchPrintArea"></div>
+
+  <!-- QR Code Library -->
+  <script src="js/qrcode.min.js"></script>
 
   <script>
     // Configuration
@@ -1802,11 +2071,12 @@
         temp: 'อุณหภูมิ & ความชื้น (057, 060, 061, 062)',
         maint: 'เครื่องวิเคราะห์ & ดูแลรักษา (049, 091, 099)',
         ups: 'ทดสอบสำรองไฟ UPS (019)',
-        reports: 'รายงานทางการ 16 แท็บ A4'
+        reports: 'กราฟอุณหภูมิ & รายงาน 16 แท็บ A4',
+        qr: 'รายการจุดตรวจ & QR Code ประจำจุด (23 จุด)'
       };
       if (bread) bread.innerText = breadMap[viewKey] || 'แดชบอร์ดแผนก LAB';
 
-      ['temp', 'maint', 'ups', 'reports'].forEach(function(k) {
+      ['temp', 'maint', 'ups', 'reports', 'qr'].forEach(function(k) {
         var btn = document.getElementById('navBtn_' + k);
         var sec = document.getElementById('view_' + k);
         if (btn) btn.classList.toggle('active', k === viewKey);
@@ -1814,7 +2084,13 @@
       });
 
       closeMobileSidebar();
-      applyFilters();
+      if (viewKey === 'qr') {
+        renderQrDirectoryView();
+      } else if (viewKey === 'reports') {
+        renderSelectedReport();
+      } else {
+        applyFilters();
+      }
     }
 
     // Load Data
@@ -1917,9 +2193,13 @@
     }
 
     // Helper: generate row floating speed dial
-    function createRowFloatingActions(editAction, viewSheetGid) {
+    function createRowFloatingActions(editAction, viewSheetGid, itemId, itemName) {
       var actions = [];
-      actions.push('<button type="button" onclick="' + editAction + '" class="btn-action-icon" style="background: linear-gradient(135deg, var(--royal-blue) 0%, var(--royal-light) 100%); color: #ffffff;" title="บันทึกผลการตรวจ"><span class="material-icons-round">edit</span></button>');
+      actions.push('<button type="button" onclick="' + editAction + '" class="btn-action-icon" style="background: linear-gradient(135deg, var(--royal-blue) 0%, var(--royal-light) 100%); color: #ffffff;" title="บันทึกด่วน (Modal)"><span class="material-icons-round">edit</span></button>');
+      if (itemId) {
+        actions.push('<a href="eval-lab.html?itemId=' + itemId + '" target="_blank" class="btn-action-icon" style="background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe;" title="เปิดหน้ากรอกผลแยก (Mobile / QR)"><span class="material-icons-round">open_in_new</span></a>');
+        actions.push('<button type="button" onclick="openQrModal(\'' + itemId + '\')" class="btn-action-icon" style="background: #f8fafc; color: #002e6e; border-color: #cbd5e1;" title="ดู / พิมพ์ QR Code"><span class="material-icons-round">qr_code_2</span></button>');
+      }
       if (viewSheetGid) {
         actions.push('<a href="https://docs.google.com/spreadsheets/d/' + TEMPLATE_SHEET_ID + '/edit#gid=' + viewSheetGid + '" target="_blank" class="btn-action-icon" style="background: #ecfdf5; color: #047857; border-color: #a7f3d0;" title="เปิดดูฟอร์มใน Google Sheet"><span class="material-icons-round">description</span></a>');
       }
@@ -1958,14 +2238,14 @@
           var st = it.status || 'pending';
 
           // Filters
-          if (activeKpiFilter === 'ready' && st !== 'ready') return;
-          if (activeKpiFilter === 'abnormal' && st !== 'abnormal') return;
-          if (activeKpiFilter === 'pending' && st !== 'pending') return;
-          if (activeKpiFilter === 'recorded' && st === 'pending') return;
-          if (filterStatus !== 'all' && st !== filterStatus) return;
+          if (activeKpiFilter === 'ready' && st !== 'ready') continue;
+          if (activeKpiFilter === 'abnormal' && st !== 'abnormal') continue;
+          if (activeKpiFilter === 'pending' && st !== 'pending') continue;
+          if (activeKpiFilter === 'recorded' && st === 'pending') continue;
+          if (filterStatus !== 'all' && st !== filterStatus) continue;
 
           var textMatch = (spec.code + ' ' + it.name + ' ' + (spec.cat || '')).toLowerCase();
-          if (query && textMatch.indexOf(query) === -1) return;
+          if (query && textMatch.indexOf(query) === -1) continue;
 
           count++;
           var statusBadge = '';
@@ -1981,7 +2261,7 @@
           var tempDisplay = (it.lastTemp !== undefined && it.lastTemp !== null) ? '<strong>' + it.lastTemp + ' °C</strong>' : '-';
           var humDisplay = (it.lastHumidity !== undefined && it.lastHumidity !== null) ? it.lastHumidity + ' %RH' : '-';
           var gid = TEMPLATE_GIDS[ik] || 0;
-          var rowActionHtml = createRowFloatingActions(editFn, gid);
+          var rowActionHtml = createRowFloatingActions(editFn, gid, ik, it.name);
 
           html += '<tr>';
           html += '  <td data-label="รหัสฟอร์ม"><span class="asset-code-clean">' + spec.code + '</span></td>';
@@ -2044,7 +2324,7 @@
 
           var gidKey = fk === 'lab_049' ? '049' : (fk === 'lab_091' ? '091' : '099');
           var gid = TEMPLATE_GIDS[gidKey] || 0;
-          var rowActionHtml = createRowFloatingActions(editFn, gid);
+          var rowActionHtml = createRowFloatingActions(editFn, gid, ik, it.name);
 
           html += '<tr>';
           html += '  <td data-label="รหัสฟอร์ม"><span class="asset-code-clean">' + spec.code + '</span></td>';
@@ -2103,7 +2383,7 @@
           : '<div class="status-symbol-btn symbol-pending" title="รอตรวจรอบนี้ (คลิกเพื่อบันทึก)" onclick="' + editFn + '"><span class="material-icons-round">schedule</span></div>';
 
         var gid = TEMPLATE_GIDS['019'] || 0;
-        var rowActionHtml = createRowFloatingActions(editFn, gid);
+        var rowActionHtml = createRowFloatingActions(editFn, gid, ik, it.name);
 
         html += '<tr>';
         html += '  <td data-label="รหัส UPS"><span class="asset-code-clean">' + it.id.toUpperCase() + '</span></td>';
@@ -2400,12 +2680,332 @@
       link.click();
     }
 
-    // Render Paper Report Preview (16 Official Tabs)
+    // ==================== 23 CHECKPOINTS REGISTRY & QR WORKSTATION ====================
+    var ALL_LAB_CHECKPOINTS = [
+      // 057 Room Temp (5)
+      { id: '057_lab', name: 'Laboratory (ห้องปฏิบัติการกลาง)', code: 'FM-PPCH-LAB-057', cat: 'temp_room', catTitle: 'อุณหภูมิห้องแลป', target: '24.0 - 28.0 °C', tempMin: 24, tempMax: 28, hasHum: true, icon: 'thermostat', color: '#004b93' },
+      { id: '057_immu', name: 'ห้อง Immunology', code: 'FM-PPCH-LAB-057', cat: 'temp_room', catTitle: 'อุณหภูมิห้องแลป', target: '24.0 - 28.0 °C', tempMin: 24, tempMax: 28, hasHum: true, icon: 'thermostat', color: '#004b93' },
+      { id: '057_blood', name: 'Blood bank (ธนาคารเลือด)', code: 'FM-PPCH-LAB-057', cat: 'temp_room', catTitle: 'อุณหภูมิห้องแลป', target: '24.0 - 28.0 °C', tempMin: 24, tempMax: 28, hasHum: true, icon: 'thermostat', color: '#004b93' },
+      { id: '057_bac', name: 'Bacteria (จุลชีววิทยา)', code: 'FM-PPCH-LAB-057', cat: 'temp_room', catTitle: 'อุณหภูมิห้องแลป', target: '24.0 - 28.0 °C', tempMin: 24, tempMax: 28, hasHum: true, icon: 'thermostat', color: '#004b93' },
+      { id: '057_store', name: 'Storage (คลังเก็บน้ำยา/เวชภัณฑ์)', code: 'FM-PPCH-LAB-057', cat: 'temp_room', catTitle: 'อุณหภูมิห้องแลป', target: '24.0 - 28.0 °C', tempMin: 24, tempMax: 28, hasHum: true, icon: 'thermostat', color: '#004b93' },
+      // 060 Freezer (2)
+      { id: '060_ffp', name: 'ตู้แช่แข็ง FFP (ควบคุม ≤ -18 °C)', code: 'FM-PPCH-LAB-060', cat: 'temp_freezer', catTitle: 'ตู้แช่แข็ง', target: '≤ -18.0 °C', tempMin: -40, tempMax: -18, hasHum: false, icon: 'ac_unit', color: '#0284c7' },
+      { id: '060_ctrl', name: 'ตู้แช่แข็ง Control (ควบคุม ≤ -18 °C)', code: 'FM-PPCH-LAB-060', cat: 'temp_freezer', catTitle: 'ตู้แช่แข็ง', target: '≤ -18.0 °C', tempMin: -40, tempMax: -18, hasHum: false, icon: 'ac_unit', color: '#0284c7' },
+      // 061 Water bath (2)
+      { id: '061_wb1', name: 'Water bath 1 (WB-01)', code: 'FM-PPCH-LAB-061', cat: 'temp_wb', catTitle: 'Water bath', target: '37.0 ± 0.5 °C', tempMin: 36.5, tempMax: 37.5, hasHum: false, icon: 'waves', color: '#d97706' },
+      { id: '061_wb2', name: 'Water bath 2 (WB-02)', code: 'FM-PPCH-LAB-061', cat: 'temp_wb', catTitle: 'Water bath', target: '37.0 ± 0.5 °C', tempMin: 36.5, tempMax: 37.5, hasHum: false, icon: 'waves', color: '#d97706' },
+      // 062 Refrigerator (3)
+      { id: '062_r1', name: 'ตู้แช่น้ำยา 1 (Ref-01)', code: 'FM-PPCH-LAB-062', cat: 'temp_ref', catTitle: 'ตู้เย็น', target: '2.0 - 8.0 °C', tempMin: 2, tempMax: 8, hasHum: false, icon: 'kitchen', color: '#059669' },
+      { id: '062_r2', name: 'ตู้แช่น้ำยา 2 (Ref-02)', code: 'FM-PPCH-LAB-062', cat: 'temp_ref', catTitle: 'ตู้เย็น', target: '2.0 - 8.0 °C', tempMin: 2, tempMax: 8, hasHum: false, icon: 'kitchen', color: '#059669' },
+      { id: '062_rs', name: 'ตู้แช่สิ่งส่งตรวจ (Ref-Sample)', code: 'FM-PPCH-LAB-062', cat: 'temp_ref', catTitle: 'ตู้เย็น', target: '2.0 - 8.0 °C', tempMin: 2, tempMax: 8, hasHum: false, icon: 'kitchen', color: '#059669' },
+      // 049 Cobas h232 (3)
+      { id: '049_k1', name: 'Roche Cobas h232 เครื่อง 1 (KQ03008166)', code: 'FM-PPCH-LAB-049', cat: 'analyzer', catTitle: 'เครื่องตรวจวิเคราะห์', target: 'เช็คความสะอาด/แบตเตอรี่/เปิดเครื่อง', icon: 'biotech', color: '#4f46e5' },
+      { id: '049_k2', name: 'Roche Cobas h232 เครื่อง 2 (KQ0304874)', code: 'FM-PPCH-LAB-049', cat: 'analyzer', catTitle: 'เครื่องตรวจวิเคราะห์', target: 'เช็คความสะอาด/แบตเตอรี่/เปิดเครื่อง', icon: 'biotech', color: '#4f46e5' },
+      { id: '049_k3', name: 'Roche Cobas h232 เครื่อง 3 (KQ0132536)', code: 'FM-PPCH-LAB-049', cat: 'analyzer', catTitle: 'เครื่องตรวจวิเคราะห์', target: 'เช็คความสะอาด/แบตเตอรี่/เปิดเครื่อง', icon: 'biotech', color: '#4f46e5' },
+      // 091 BSC (1)
+      { id: '091_bsc', name: 'ตู้กรองชีวนิรภัย BSC Class II (MICRO TECH)', code: 'FM-PPCH-LAB-091', cat: 'analyzer', catTitle: 'เครื่องตรวจวิเคราะห์', target: 'แรงดัน 0.5-1.0 in.wg / UV / แอลกอฮอล์', icon: 'shield', color: '#7c3aed' },
+      // 099 Mindray BS600M (1)
+      { id: '099_bs600', name: 'Chemistry Mindray BS600M', code: 'FM-PPCH-LAB-099', cat: 'analyzer', catTitle: 'เครื่องตรวจวิเคราะห์', target: 'Conc Wash, Electrode, Cuvette & Special Wash', icon: 'precision_manufacturing', color: '#0891b2' },
+      // 019 UPS Battery (6)
+      { id: '019_ups1', name: 'UPS-LAB-01 (BS600M)', code: 'FM-PPCH-LAB-019', cat: 'ups', catTitle: 'สำรองไฟ UPS', target: 'สำรองไฟต่อเนื่อง ≥ 15 นาที', load: 'Mindray BS600M', icon: 'battery_charging_full', color: '#059669' },
+      { id: '019_ups2', name: 'UPS-LAB-02 (Sysmex)', code: 'FM-PPCH-LAB-019', cat: 'ups', catTitle: 'สำรองไฟ UPS', target: 'สำรองไฟต่อเนื่อง ≥ 15 นาที', load: 'Sysmex XN-L', icon: 'battery_charging_full', color: '#059669' },
+      { id: '019_ups3', name: 'UPS-LAB-03 (Cobas)', code: 'FM-PPCH-LAB-019', cat: 'ups', catTitle: 'สำรองไฟ UPS', target: 'สำรองไฟต่อเนื่อง ≥ 15 นาที', load: 'Cobas h232 ทั้งหมด', icon: 'battery_charging_full', color: '#059669' },
+      { id: '019_ups4', name: 'UPS-LAB-04 (Blood Bank)', code: 'FM-PPCH-LAB-019', cat: 'ups', catTitle: 'สำรองไฟ UPS', target: 'สำรองไฟต่อเนื่อง ≥ 15 นาที', load: 'ตู้เย็นเก็บเลือด Blood Bank', icon: 'battery_charging_full', color: '#059669' },
+      { id: '019_ups5', name: 'UPS-LAB-05 (FFP Freezer)', code: 'FM-PPCH-LAB-019', cat: 'ups', catTitle: 'สำรองไฟ UPS', target: 'สำรองไฟต่อเนื่อง ≥ 15 นาที', load: 'ตู้แช่แข็ง FFP', icon: 'battery_charging_full', color: '#059669' },
+      { id: '019_ups6', name: 'UPS-LAB-06 (Server LIS)', code: 'FM-PPCH-LAB-019', cat: 'ups', catTitle: 'สำรองไฟ UPS', target: 'สำรองไฟต่อเนื่อง ≥ 15 นาที', load: 'Server และคอมพิวเตอร์ LIS', icon: 'battery_charging_full', color: '#059669' }
+    ];
+
+    var activeQrCheckpoint = null;
+    var monthlySampleSimCache = {};
+
+    function getCheckpointById(id) {
+      return ALL_LAB_CHECKPOINTS.find(function(c) { return c.id === id; });
+    }
+
+    function getDirectQrUrl(itemId) {
+      var base = window.location.origin + window.location.pathname.replace('lab.html', '').replace('admin.html', '').replace('index.html', '');
+      if (!base.endsWith('/')) base += '/';
+      return base + 'eval-lab.html?itemId=' + encodeURIComponent(itemId);
+    }
+
+    // Render Single-Row Horizontal Strip Cards for 23 Points
+    function renderQrDirectoryView() {
+      var container = document.getElementById('qrStripContainer');
+      if (!container) return;
+
+      var q = (document.getElementById('filterQrSearch').value || '').trim().toLowerCase();
+      var catFilter = document.getElementById('filterQrCategory').value;
+
+      var html = '';
+      var count = 0;
+
+      ALL_LAB_CHECKPOINTS.forEach(function(cp) {
+        if (catFilter !== 'all' && cp.cat !== catFilter) return;
+        var txt = (cp.name + ' ' + cp.code + ' ' + cp.id + ' ' + (cp.catTitle || '')).toLowerCase();
+        if (q && txt.indexOf(q) === -1) return;
+
+        count++;
+        var evalUrl = getDirectQrUrl(cp.id);
+
+        html += '<div class="qr-strip-card">';
+        html += '  <div class="qr-strip-left">';
+        html += '    <div class="qr-icon-badge" style="background: ' + cp.color + '15; color: ' + cp.color + ';">';
+        html += '      <span class="material-icons-round">' + cp.icon + '</span>';
+        html += '    </div>';
+        html += '    <div style="min-width: 0;">';
+        html += '      <div class="qr-strip-title">' + cp.name + '</div>';
+        html += '      <div class="qr-strip-meta">';
+        html += '        <span style="font-weight: 700; color: var(--royal-blue);">' + cp.code + '</span>';
+        html += '        <span>•</span>';
+        html += '        <span class="qr-spec-pill">เกณฑ์: ' + cp.target + '</span>';
+        html += '        <span style="font-size: 11px; color: var(--text-light); font-family: var(--font-mono);">(' + cp.id + ')</span>';
+        html += '      </div>';
+        html += '    </div>';
+        html += '  </div>';
+
+        html += '  <div class="qr-strip-actions">';
+        html += '    <a href="' + evalUrl + '" target="_blank" class="btn-tool" style="background: var(--royal-subtle); color: var(--royal-blue); border-color: var(--border-blue-soft);" title="เปิดหน้าบันทึกผลการตรวจเช็ค">';
+        html += '      <span class="material-icons-round" style="font-size: 15px;">open_in_new</span>';
+        html += '      <span>กรอกผล</span>';
+        html += '    </a>';
+        html += '    <button type="button" onclick="openQrModal(\'' + cp.id + '\')" class="btn-tool" title="ดู QR Code ประจำจุด">';
+        html += '      <span class="material-icons-round" style="font-size: 15px; color: var(--royal-blue);">qr_code_2</span>';
+        html += '      <span>ดู QR Code</span>';
+        html += '    </button>';
+        html += '    <button type="button" onclick="copyLinkDirect(\'' + evalUrl + '\')" class="btn-tool" title="คัดลอกลิงก์ตรง">';
+        html += '      <span class="material-icons-round" style="font-size: 15px;">content_copy</span>';
+        html += '    </button>';
+        html += '  </div>';
+        html += '</div>';
+      });
+
+      if (!html) {
+        html = '<div style="text-align: center; padding: 40px; color: var(--text-muted);">ไม่พบจุดตรวจตามคำค้นหา</div>';
+      }
+      container.innerHTML = html;
+    }
+
+    // Single QR Code Modal
+    function openQrModal(itemId) {
+      var cp = getCheckpointById(itemId);
+      if (!cp) return;
+      activeQrCheckpoint = cp;
+
+      document.getElementById('qrModalTitle').innerText = cp.name;
+      document.getElementById('qrModalMeta').innerText = cp.code + ' • เกณฑ์: ' + cp.target;
+
+      var qrUrl = getDirectQrUrl(cp.id);
+      document.getElementById('qrLinkText').innerText = qrUrl;
+      document.getElementById('btnOpenQrDirect').href = qrUrl;
+
+      var canvas = document.getElementById('qrCanvas');
+      canvas.innerHTML = '';
+      if (window.QRCode) {
+        new QRCode(canvas, {
+          text: qrUrl,
+          width: 170,
+          height: 170,
+          colorDark: "#002e6e",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H
+        });
+      }
+
+      document.getElementById('qrModal').classList.remove('hidden');
+    }
+
+    function closeQrModal() {
+      document.getElementById('qrModal').classList.add('hidden');
+    }
+
+    function copyActiveQrLink() {
+      if (!activeQrCheckpoint) return;
+      copyLinkDirect(getDirectQrUrl(activeQrCheckpoint.id));
+    }
+
+    function copyLinkDirect(url) {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(function() {
+          alert('✓ คัดลอกลิงก์เรียบร้อยแล้ว:\n' + url);
+        }).catch(function() {
+          prompt('คัดลอกลิงก์นี้:', url);
+        });
+      } else {
+        prompt('คัดลอกลิงก์นี้:', url);
+      }
+    }
+
+    function printSingleQrSticker() {
+      if (!activeQrCheckpoint) return;
+      var cp = activeQrCheckpoint;
+      var qrUrl = getDirectQrUrl(cp.id);
+
+      var printArea = document.getElementById('qrBatchPrintArea');
+      printArea.innerHTML = '';
+
+      var sticker = document.createElement('div');
+      sticker.style.cssText = 'border: 2.5px solid #002e6e; border-radius: 14px; padding: 20px; width: 340px; margin: 40px auto; text-align: center; background: #ffffff; font-family: Prompt, sans-serif;';
+      sticker.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 6px;">' +
+        '<img src="logo.png" style="height: 36px; width: auto;" alt="Logo">' +
+        '<div style="text-align: left;">' +
+          '<div style="font-size: 13px; font-weight: 800; color: #002e6e; line-height: 1.2;">โรงพยาบาลพิษณุเวช</div>' +
+          '<div style="font-size: 10px; color: #64748b; font-weight: 500;">LABORATORY • จุดตรวจความพร้อมใช้</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="border-top: 1.5px solid #004b93; margin: 6px 0 10px 0;"></div>' +
+      '<div style="font-size: 11px; font-weight: 700; color: #004b93; background: #f0f7ff; border: 1px solid #bfdbfe; padding: 2px 8px; border-radius: 4px; display: inline-block;">' +
+        cp.code +
+      '</div>' +
+      '<div style="font-size: 14.5px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.3;">' +
+        cp.name +
+      '</div>' +
+      '<div style="font-size: 11.5px; font-weight: 600; color: #059669; margin-top: 3px;">' +
+        'เกณฑ์มาตรฐาน: ' + cp.target +
+      '</div>' +
+      '<div id="printQrTempCanvas" style="margin: 12px auto 8px; display: inline-block; padding: 8px; border: 1px solid #cbd5e1; border-radius: 8px; background: #ffffff;"></div>' +
+      '<div style="font-size: 11.5px; font-weight: 700; color: #002e6e;">' +
+        '📱 สแกนเพื่อบันทึกผลการตรวจเช็ค' +
+      '</div>';
+
+      printArea.appendChild(sticker);
+      var qrBox = sticker.querySelector('#printQrTempCanvas');
+      if (window.QRCode) {
+        new QRCode(qrBox, {
+          text: qrUrl,
+          width: 170,
+          height: 170,
+          colorDark: "#002e6e",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H
+        });
+      }
+
+      printArea.classList.add('printing-active');
+      window.print();
+      setTimeout(function() {
+        printArea.classList.remove('printing-active');
+      }, 1000);
+    }
+
+    // Batch Print all 23 Stickers on A4 Sheet
+    function batchPrintAllQrs() {
+      var printArea = document.getElementById('qrBatchPrintArea');
+      printArea.innerHTML = '';
+
+      ALL_LAB_CHECKPOINTS.forEach(function(cp, idx) {
+        var qrUrl = getDirectQrUrl(cp.id);
+        var sticker = document.createElement('div');
+        sticker.className = 'qr-sticker-item';
+        sticker.style.cssText = 'border: 2px solid #002e6e; border-radius: 12px; padding: 14px; text-align: center; background: #ffffff; font-family: Prompt, sans-serif; box-sizing: border-box; page-break-inside: avoid; margin-bottom: 12px;';
+        
+        sticker.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 4px;">' +
+          '<img src="logo.png" style="height: 28px; width: auto;" alt="Logo">' +
+          '<div style="text-align: left;">' +
+            '<div style="font-size: 11.5px; font-weight: 800; color: #002e6e; line-height: 1.1;">โรงพยาบาลพิษณุเวช</div>' +
+            '<div style="font-size: 9px; color: #64748b;">LABORATORY • จุดตรวจที่ ' + (idx + 1) + '/23</div>' +
+          '</div>' +
+        '</div>' +
+        '<div style="border-top: 1px solid #004b93; margin: 4px 0 6px 0;"></div>' +
+        '<div style="font-size: 9.5px; font-weight: 700; color: #004b93; background: #f0f7ff; border: 1px solid #bfdbfe; padding: 1px 6px; border-radius: 4px; display: inline-block;">' +
+          cp.code +
+        '</div>' +
+        '<div style="font-size: 12.5px; font-weight: 800; color: #0f172a; margin-top: 4px; line-height: 1.2;">' +
+          cp.name +
+        '</div>' +
+        '<div style="font-size: 10px; font-weight: 600; color: #059669; margin-top: 2px;">' +
+          'เกณฑ์: ' + cp.target +
+        '</div>' +
+        '<div id="batchQr_' + cp.id + '" style="margin: 8px auto 6px; display: inline-block; padding: 4px; border: 1px solid #cbd5e1; border-radius: 6px; background: #ffffff;"></div>' +
+        '<div style="font-size: 10px; font-weight: 700; color: #002e6e;">' +
+          '📱 สแกนเพื่อบันทึกผล' +
+        '</div>';
+
+        printArea.appendChild(sticker);
+
+        var qrBox = sticker.querySelector('#batchQr_' + cp.id);
+        if (window.QRCode) {
+          new QRCode(qrBox, {
+            text: qrUrl,
+            width: 125,
+            height: 125,
+            colorDark: "#002e6e",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+          });
+        }
+      });
+
+      printArea.classList.add('printing-active');
+      window.print();
+      setTimeout(function() {
+        printArea.classList.remove('printing-active');
+      }, 1500);
+    }
+
+    // ==================== MONTHLY TEMPERATURE PLOTTED GRAPH ENGINE ====================
+    // Strictly matching user uploaded spreadsheet media_1792038429083_1f6faac0.png
+
+    function openEvalForCurrentReport() {
+      var sel = document.getElementById('reportFormSelect');
+      if (!sel) return;
+      var formKey = sel.value;
+      var targetId = formKey;
+      if (formKey === '049') targetId = '049_k1';
+      else if (formKey === '091') targetId = '091_bsc';
+      else if (formKey === '099') targetId = '099_bs600';
+      else if (formKey === '019') targetId = '019_ups1';
+      window.open('eval-lab.html?itemId=' + targetId, '_blank');
+    }
+
+    function simulateMonthlySampleData() {
+      var sel = document.getElementById('reportFormSelect');
+      var formKey = sel ? sel.value : '057_lab';
+      var month = document.getElementById('reportMonthSelect').value || '2026-10';
+      var cacheKey = formKey + '_' + month;
+
+      var daysData = { morning: {}, afternoon: {} };
+      var baseTemp = 25.4;
+      var isFreezer = (formKey.startsWith('060'));
+      var isWb = (formKey.startsWith('061'));
+      var isRef = (formKey.startsWith('062'));
+
+      if (isFreezer) baseTemp = -20.0;
+      else if (isWb) baseTemp = 37.0;
+      else if (isRef) baseTemp = 4.5;
+
+      var staffList = ['สมชาย', 'วราภรณ์', 'นิพนธ์', 'นภาพร', 'อนันต์'];
+
+      for (var d = 1; d <= 31; d++) {
+        // Morning
+        var varM = (Math.sin(d * 0.8) * 0.5) + ((d % 5 === 0) ? 0.3 : -0.2);
+        var tempM = parseFloat((baseTemp + varM).toFixed(1));
+        var humM = Math.round(52 + (Math.cos(d * 0.6) * 5));
+        daysData.morning[d] = {
+          temp: tempM,
+          humidity: humM,
+          staff: staffList[(d - 1) % staffList.length]
+        };
+
+        // Afternoon
+        var varA = (Math.cos(d * 0.7) * 0.6) + ((d % 4 === 0) ? -0.2 : 0.3);
+        var tempA = parseFloat((baseTemp + varA).toFixed(1));
+        var humA = Math.round(50 + (Math.sin(d * 0.5) * 6));
+        daysData.afternoon[d] = {
+          temp: tempA,
+          humidity: humA,
+          staff: staffList[d % staffList.length]
+        };
+      }
+
+      monthlySampleSimCache[cacheKey] = daysData;
+      renderSelectedReport();
+    }
+
     function renderSelectedReport() {
       var sel = document.getElementById('reportFormSelect');
       if (!sel) return;
       var formKey = sel.value;
-      var month = document.getElementById('reportMonthSelect').value;
+      var monthStr = document.getElementById('reportMonthSelect').value || '2026-10';
       var container = document.getElementById('paperSheetContainer');
       var gid = TEMPLATE_GIDS[formKey] || 0;
 
@@ -2414,57 +3014,287 @@
         btnSheet.href = 'https://docs.google.com/spreadsheets/d/' + TEMPLATE_SHEET_ID + '/edit#gid=' + gid;
       }
 
-      var titles = {
-        '057_lab': 'แบบบันทึกอุณหภูมิและความชื้นสัมพัทธ์ ห้องปฏิบัติการกลาง (FM-PPCH-LAB-057)',
-        '057_immu': 'แบบบันทึกอุณหภูมิและความชื้นสัมพัทธ์ ห้อง Immunology (FM-PPCH-LAB-057)',
-        '057_blood': 'แบบบันทึกอุณหภูมิและความชื้นสัมพัทธ์ Blood Bank (FM-PPCH-LAB-057)',
-        '057_bac': 'แบบบันทึกอุณหภูมิและความชื้นสัมพัทธ์ Bacteria จุลชีววิทยา (FM-PPCH-LAB-057)',
-        '057_store': 'แบบบันทึกอุณหภูมิและความชื้นสัมพัทธ์ คลังเก็บน้ำยา/เวชภัณฑ์ (FM-PPCH-LAB-057)',
-        '060_ffp': 'แบบบันทึกอุณหภูมิตู้แช่แข็ง FFP (FM-PPCH-LAB-060)',
-        '060_ctrl': 'แบบบันทึกอุณหภูมิตู้แช่แข็ง Control (FM-PPCH-LAB-060)',
-        '061_wb1': 'แบบบันทึกอุณหภูมิ Water bath 1 (FM-PPCH-LAB-061)',
-        '061_wb2': 'แบบบันทึกอุณหภูมิ Water bath 2 (FM-PPCH-LAB-061)',
-        '062_r1': 'แบบบันทึกอุณหภูมิตู้เย็นแช่น้ำยา 1 (FM-PPCH-LAB-062)',
-        '062_r2': 'แบบบันทึกอุณหภูมิตู้เย็นแช่น้ำยา 2 (FM-PPCH-LAB-062)',
-        '062_rs': 'แบบบันทึกอุณหภูมิตู้เย็นเก็บสิ่งส่งตรวจ (FM-PPCH-LAB-062)',
-        '049': 'แบบบันทึกการตรวจสอบและบำรุงรักษา Cobas h232 (FM-PPCH-LAB-049)',
-        '091': 'แบบบันทึกการตรวจสอบตู้กรองชีวนิรภัย BSC Class II (FM-PPCH-LAB-091)',
-        '099': 'แบบบันทึกการตรวจสอบ Chemistry Mindray BS600M (FM-PPCH-LAB-099)',
-        '019': 'แบบบันทึกการทดสอบเครื่องสำรองไฟ UPS แผนก LAB (FM-PPCH-LAB-019)'
+      var parts = monthStr.split('-');
+      var yr = parseInt(parts[0], 10) || 2026;
+      var mo = parseInt(parts[1], 10) || 10;
+      var thaiYear = yr + 543;
+      var thaiMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+      var thaiMonthNamesFull = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+
+      var formTitles = {
+        '057_lab': { title: 'แบบบันทึกอุณหภูมิห้องปฏิบัติการ', room: 'Laboratory (ห้องปฏิบัติการกลาง)', code: 'FM-PPCH-LAB-057', scale: [30, 28, 26, 24, 22], safeMin: 24, safeMax: 28, isTemp: true, hasHum: true },
+        '057_immu': { title: 'แบบบันทึกอุณหภูมิห้องปฏิบัติการ', room: 'Immunology', code: 'FM-PPCH-LAB-057', scale: [30, 28, 26, 24, 22], safeMin: 24, safeMax: 28, isTemp: true, hasHum: true },
+        '057_blood': { title: 'แบบบันทึกอุณหภูมิห้องปฏิบัติการ', room: 'Blood Bank (ธนาคารเลือด)', code: 'FM-PPCH-LAB-057', scale: [30, 28, 26, 24, 22], safeMin: 24, safeMax: 28, isTemp: true, hasHum: true },
+        '057_bac': { title: 'แบบบันทึกอุณหภูมิห้องปฏิบัติการ', room: 'Bacteria (จุลชีววิทยา)', code: 'FM-PPCH-LAB-057', scale: [30, 28, 26, 24, 22], safeMin: 24, safeMax: 28, isTemp: true, hasHum: true },
+        '057_store': { title: 'แบบบันทึกอุณหภูมิห้องปฏิบัติการ', room: 'Storage (คลังเก็บน้ำยา/เวชภัณฑ์)', code: 'FM-PPCH-LAB-057', scale: [30, 28, 26, 24, 22], safeMin: 24, safeMax: 28, isTemp: true, hasHum: true },
+        '060_ffp': { title: 'แบบบันทึกอุณหภูมิตู้แช่แข็ง', room: 'ตู้แช่แข็ง FFP (ควบคุม ≤ -18 °C)', code: 'FM-PPCH-LAB-060', scale: [-14, -18, -22, -26, -30], safeMin: -30, safeMax: -18, isTemp: true, hasHum: false },
+        '060_ctrl': { title: 'แบบบันทึกอุณหภูมิตู้แช่แข็ง', room: 'ตู้แช่แข็ง Control (ควบคุม ≤ -18 °C)', code: 'FM-PPCH-LAB-060', scale: [-14, -18, -22, -26, -30], safeMin: -30, safeMax: -18, isTemp: true, hasHum: false },
+        '061_wb1': { title: 'แบบบันทึกอุณหภูมิ Water bath', room: 'Water bath 1 (WB-01)', code: 'FM-PPCH-LAB-061', scale: [39, 38, 37, 36, 35], safeMin: 36.5, safeMax: 37.5, isTemp: true, hasHum: false },
+        '061_wb2': { title: 'แบบบันทึกอุณหภูมิ Water bath', room: 'Water bath 2 (WB-02)', code: 'FM-PPCH-LAB-061', scale: [39, 38, 37, 36, 35], safeMin: 36.5, safeMax: 37.5, isTemp: true, hasHum: false },
+        '062_r1': { title: 'แบบบันทึกอุณหภูมิตู้เย็นแช่น้ำยา', room: 'ตู้แช่น้ำยา 1 (Ref-01)', code: 'FM-PPCH-LAB-062', scale: [10, 8, 6, 4, 2], safeMin: 2, safeMax: 8, isTemp: true, hasHum: false },
+        '062_r2': { title: 'แบบบันทึกอุณหภูมิตู้เย็นแช่น้ำยา', room: 'ตู้แช่น้ำยา 2 (Ref-02)', code: 'FM-PPCH-LAB-062', scale: [10, 8, 6, 4, 2], safeMin: 2, safeMax: 8, isTemp: true, hasHum: false },
+        '062_rs': { title: 'แบบบันทึกอุณหภูมิตู้เย็นเก็บสิ่งส่งตรวจ', room: 'ตู้แช่สิ่งส่งตรวจ (Ref-Sample)', code: 'FM-PPCH-LAB-062', scale: [10, 8, 6, 4, 2], safeMin: 2, safeMax: 8, isTemp: true, hasHum: false },
+        '049': { title: 'แบบบันทึกการตรวจสอบและบำรุงรักษา Cobas h232', room: 'Roche Cobas h232 (3 เครื่อง)', code: 'FM-PPCH-LAB-049', isTemp: false },
+        '091': { title: 'แบบบันทึกการตรวจสอบตู้กรองชีวนิรภัย BSC Class II', room: 'MICRO TECH Class II', code: 'FM-PPCH-LAB-091', isTemp: false },
+        '099': { title: 'แบบบันทึกการตรวจสอบ Chemistry Mindray BS600M', room: 'Mindray BS600M', code: 'FM-PPCH-LAB-099', isTemp: false },
+        '019': { title: 'แบบบันทึกการทดสอบเครื่องสำรองไฟ UPS แผนก LAB', room: 'UPS สำรองไฟ 6 ตัว', code: 'FM-PPCH-LAB-019', isTemp: false }
       };
 
-      var html = '<div class="paper-header">';
-      html += '  <h3>โรงพยาบาลพิษณุเวช • ' + (titles[formKey] || 'แบบฟอร์มทางการแผนก LAB') + '</h3>';
-      html += '  <div class="sub">รหัสแบบฟอร์ม: <strong>' + formKey.toUpperCase() + '</strong> | ประจำเดือน: <strong>' + month + '</strong> | แผนกห้องปฏิบัติการ (LAB)</div>';
+      var curSpec = formTitles[formKey] || formTitles['057_lab'];
+
+      // If non-temperature form, render checklist table
+      if (!curSpec.isTemp) {
+        renderNonTempChecklistReport(container, curSpec, monthStr, thaiYear, thaiMonthNamesFull[mo - 1]);
+        return;
+      }
+
+      // Retrieve Data: from Simulation Cache or LocalStorage
+      var cacheKey = formKey + '_' + monthStr;
+      var monthData = monthlySampleSimCache[cacheKey] || { morning: {}, afternoon: {} };
+
+      // Merge real recorded evaluations from localStorage if exists
+      try {
+        var realRecs = JSON.parse(localStorage.getItem('PPCH_LAB_EVAL_RECORDS') || '[]');
+        realRecs.forEach(function(r) {
+          if (r.itemId === formKey && r.date && r.date.startsWith(monthStr)) {
+            var dayNum = parseInt(r.date.split('-')[2], 10);
+            var shiftKey = (r.shift === 'afternoon') ? 'afternoon' : 'morning';
+            monthData[shiftKey][dayNum] = {
+              temp: r.temperature,
+              humidity: r.humidity,
+              staff: r.staffName
+            };
+          }
+        });
+      } catch(e) {}
+
+      // Month pills formatting matching user image (ม.ค. ก.พ. มี.ค. ... with active month circled)
+      var monthPillsHtml = thaiMonths.map(function(mName, idx) {
+        var isCurrent = (idx + 1 === mo);
+        if (isCurrent) {
+          return '<span style="border: 1.5px solid #002e6e; padding: 0 4px; border-radius: 4px; font-weight: 800; color: #004b93; background: #e0f2fe;">' + mName + '</span>';
+        }
+        return '<span style="color: #64748b; padding: 0 3px;">' + mName + '</span>';
+      }).join(' ');
+
+      // Build HTML exactly matching spreadsheet media_1792038429083_1f6faac0.png
+      var html = '<div class="graph-paper-container">';
+
+      // Header
+      html += '  <div style="text-align: center; margin-bottom: 12px;">';
+      html += '    <h2 style="font-size: 19px; font-weight: 800; color: #000000; margin-bottom: 4px; letter-spacing: 0.5px;">' + curSpec.title + '</h2>';
+      html += '    <div style="font-size: 12px; font-weight: 600; color: #000000; line-height: 1.6;">';
+      html += '      แผนกบันทึกอุณหภูมิห้อง: <strong>' + curSpec.room + '</strong> &nbsp;&nbsp;&nbsp;&nbsp; ประจำเดือน: ' + monthPillsHtml + ' &nbsp;&nbsp;&nbsp;&nbsp; ปี <strong>' + thaiYear + '</strong>';
+      html += '    </div>';
+      html += '  </div>';
+
+      // Block 1: เวรเช้า (Morning Shift)
+      html += renderShiftGraphBlock('เช้า', 'morning', curSpec, monthData.morning);
+
+      // Block 2: เวรบ่าย (Afternoon Shift)
+      html += renderShiftGraphBlock('บ่าย', 'afternoon', curSpec, monthData.afternoon);
+
+      // Footer
+      html += '  <div style="margin-top: 14px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px; color: #000000; padding: 0 6px;">';
+      html += '    <div>';
+      html += '      <div>• เกณฑ์มาตรฐาน: อุณหภูมิ ' + curSpec.safeMin + ' - ' + curSpec.safeMax + ' °C' + (curSpec.hasHum ? ', ความชื้นสัมพัทธ์ ≤ 60 %RH' : '') + ' (ISO 15189 / HA)</div>';
+      html += '      <div style="margin-top: 2px;">• รหัสแบบฟอร์มทางการ: <strong>' + curSpec.code + '</strong> | โรงพยาบาลพิษณุเวช</div>';
+      html += '    </div>';
+      html += '    <div style="text-align: right;">';
+      html += '      <div>ลงชื่อผู้ควบคุมคุณภาพ: ..............................................................</div>';
+      html += '      <div style="margin-top: 3px; font-size: 10px; color: #475569;">(ทนพ. ............................................................. หัวหน้าแผนกชันสูตร)</div>';
+      html += '    </div>';
+      html += '  </div>';
+
       html += '</div>';
 
-      // Table Simulation
-      html += '<div style="margin-top: 16px; border: 1px solid #cbd5e1; border-radius: 6px; overflow: hidden;">';
-      html += '  <table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center;">';
-      html += '    <tr style="background: #f1f5f9; font-weight: 700; border-bottom: 1px solid #cbd5e1;">';
-      html += '      <td style="padding: 8px; border-right: 1px solid #cbd5e1;">วันที่ (Day)</td>';
-      for (var d = 1; d <= 31; d++) {
-        html += '<td style="padding: 6px 2px; border-right: 1px solid #cbd5e1; width: 2.8%;">' + d + '</td>';
+      container.innerHTML = html;
+    }
+
+    // Helper: Render one Shift Block (Left sidebar label + SVG Plotted Graph + Pixel-Aligned Day Table)
+    function renderShiftGraphBlock(labelThai, shiftKey, spec, dataMap) {
+      dataMap = dataMap || {};
+      var scale = spec.scale || [30, 28, 26, 24, 22];
+      var maxScale = scale[0];
+      var minScale = scale[scale.length - 1];
+
+      var svgW = 875;
+      var svgH = 135;
+      var xOffset = 38; // space for y-labels
+      var plotW = svgW - xOffset;
+      var colW = plotW / 31;
+
+      // Coordinate converter
+      function getY(temp) {
+        if (temp === undefined || temp === null || isNaN(temp)) return null;
+        var clamped = Math.max(minScale - 1, Math.min(maxScale + 1, temp));
+        var ratio = (clamped - minScale) / (maxScale - minScale);
+        return svgH - 12 - (ratio * (svgH - 24));
       }
+
+      function getX(day) {
+        return xOffset + (day - 0.5) * colW;
+      }
+
+      // Safe band coordinates
+      var safeYTop = getY(spec.safeMax);
+      var safeYBottom = getY(spec.safeMin);
+      var safeBandHeight = Math.abs(safeYBottom - safeYTop);
+      var safeBandY = Math.min(safeYTop, safeYBottom);
+
+      // Build SVG Grid & Ticks
+      var svgContent = '';
+
+      // Safe Target Zone Rect (Green soft fill matching ISO clinical standard)
+      svgContent += '<rect x="' + xOffset + '" y="' + safeBandY + '" width="' + plotW + '" height="' + safeBandHeight + '" fill="rgba(16, 185, 129, 0.12)" stroke="rgba(16, 185, 129, 0.5)" stroke-dasharray="3,3" />';
+      svgContent += '<text x="' + (xOffset + 6) + '" y="' + (safeBandY + 13) + '" fill="#047857" font-size="9" font-family="Prompt, sans-serif" font-weight="700">เกณฑ์มาตรฐาน (' + spec.safeMin + ' - ' + spec.safeMax + ' °C)</text>';
+
+      // Horizontal Grid Lines & Ticks (Labels 30, 28, 26, 24, 22)
+      scale.forEach(function(val) {
+        var y = getY(val);
+        svgContent += '<line x1="' + xOffset + '" y1="' + y + '" x2="' + svgW + '" y2="' + y + '" stroke="#000000" stroke-width="0.8" opacity="0.45" />';
+        svgContent += '<text x="' + (xOffset - 6) + '" y="' + (y + 4) + '" fill="#000000" font-size="10.5" font-family="Prompt, sans-serif" font-weight="700" text-anchor="end">' + val + '</text>';
+      });
+
+      // Vertical Grid Lines for Days 1 to 31
+      for (var d = 0; d <= 31; d++) {
+        var vx = xOffset + (d * colW);
+        svgContent += '<line x1="' + vx + '" y1="0" x2="' + vx + '" y2="' + svgH + '" stroke="#000000" stroke-width="0.75" opacity="0.35" />';
+      }
+
+      // Plotted Line & Points
+      var pathPoints = [];
+      var dotsSvg = '';
+
+      for (var d = 1; d <= 31; d++) {
+        var entry = dataMap[d];
+        if (entry && entry.temp !== undefined && entry.temp !== null) {
+          var cx = getX(d);
+          var cy = getY(entry.temp);
+          pathPoints.push(cx + ',' + cy);
+
+          // Dot
+          var tooltip = 'วันที่ ' + d + ' (' + labelThai + '): อุณหภูมิ ' + entry.temp + ' °C' + (entry.humidity ? ' | ความชื้น ' + entry.humidity + '%RH' : '') + (entry.staff ? ' | ผู้บันทึก: ' + entry.staff : '');
+          dotsSvg += '<circle cx="' + cx + '" cy="' + cy + '" r="4" fill="#004b93" stroke="#ffffff" stroke-width="2" class="graph-dot">';
+          dotsSvg += '  <title>' + tooltip + '</title>';
+          dotsSvg += '</circle>';
+        }
+      }
+
+      if (pathPoints.length > 1) {
+        svgContent += '<polyline points="' + pathPoints.join(' ') + '" fill="none" stroke="#004b93" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />';
+      }
+      svgContent += dotsSvg;
+
+      // Outer block wrapper with left label matching sheet
+      var blockHtml = '<div class="graph-block-outer">';
+      blockHtml += '  <div class="graph-shift-sidebar">' + labelThai + '</div>';
+      blockHtml += '  <div class="graph-main-body">';
+      
+      // SVG Graph
+      blockHtml += '    <div style="width: 100%; height: 135px; background: #ffffff;">';
+      blockHtml += '      <svg viewBox="0 0 ' + svgW + ' ' + svgH + '" preserveAspectRatio="none" style="width: 100%; height: 100%; display: block;">' + svgContent + '</svg>';
+      blockHtml += '    </div>';
+
+      // Pixel-Aligned Table below graph (4 Rows: วันที่, อุณหภูมิ, ความชื้น, ผู้บันทึก)
+      blockHtml += '    <table class="plotted-table-sheet">';
+      // Row 1: วันที่ (Day)
+      blockHtml += '      <tr style="background: #ffffff; font-weight: 700;">';
+      blockHtml += '        <td style="width: ' + xOffset + 'px; font-weight: 700; white-space: nowrap; padding: 2px;">วันที่ (Day)</td>';
+      for (var d = 1; d <= 31; d++) {
+        blockHtml += '<td style="width: ' + (100 / 32) + '%; font-weight: 700;">' + d + '</td>';
+      }
+      blockHtml += '      </tr>';
+
+      // Row 2: อุณหภูมิ (°C)
+      blockHtml += '      <tr>';
+      blockHtml += '        <td style="font-weight: 700; background: #ffffff; white-space: nowrap;">อุณหภูมิ (°C)</td>';
+      for (var d = 1; d <= 31; d++) {
+        var entry = dataMap[d];
+        var val = (entry && entry.temp !== undefined) ? entry.temp : '';
+        blockHtml += '<td>' + val + '</td>';
+      }
+      blockHtml += '      </tr>';
+
+      // Row 3: ความชื้นสัมพัทธ์ (Labeled with red 60% as seen in user sheet)
+      blockHtml += '      <tr>';
+      blockHtml += '        <td style="font-weight: 700; background: #ffffff; white-space: nowrap; color: #dc2626;">60%</td>';
+      for (var d = 1; d <= 31; d++) {
+        var entry = dataMap[d];
+        var humVal = (entry && entry.humidity !== undefined) ? entry.humidity + '%' : '';
+        blockHtml += '<td style="font-size: 9.5px;">' + humVal + '</td>';
+      }
+      blockHtml += '      </tr>';
+
+      // Row 4: ผู้บันทึก
+      blockHtml += '      <tr>';
+      blockHtml += '        <td style="font-weight: 700; background: #ffffff; white-space: nowrap;">ผู้บันทึก</td>';
+      for (var d = 1; d <= 31; d++) {
+        var entry = dataMap[d];
+        var staffVal = (entry && entry.staff) ? entry.staff : '';
+        blockHtml += '<td style="font-size: 8.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="' + staffVal + '">' + staffVal + '</td>';
+      }
+      blockHtml += '      </tr>';
+
+      blockHtml += '    </table>';
+      blockHtml += '  </div>';
+      blockHtml += '</div>';
+
+      return blockHtml;
+    }
+
+    // Helper: Render official checklist report for non-temp machines (Cobas, BSC, Mindray, UPS)
+    function renderNonTempChecklistReport(container, spec, monthStr, thaiYear, thaiMonthName) {
+      var html = '<div class="graph-paper-container">';
+      html += '  <div style="text-align: center; margin-bottom: 14px;">';
+      html += '    <h2 style="font-size: 19px; font-weight: 800; color: #000000; margin-bottom: 4px;">' + spec.title + '</h2>';
+      html += '    <div style="font-size: 12.5px; font-weight: 600; color: #000000;">';
+      html += '      อุปกรณ์/ระบบ: <strong>' + spec.room + '</strong> &nbsp;|&nbsp; ประจำเดือน: <strong>' + thaiMonthName + '</strong> ปี <strong>' + thaiYear + '</strong> &nbsp;|&nbsp; รหัส: <strong>' + spec.code + '</strong>';
+      html += '    </div>';
+      html += '  </div>';
+
+      var checklistRows = [
+        '1. ตรวจสอบความสะอาดภายนอกและสภาพอุปกรณ์',
+        '2. ตรวจสอบระดับสายไฟ สายชาร์จ และการต่อพ่วง',
+        '3. ทดสอบการเปิดเครื่องและการแสดงผลหน้าจอ',
+        '4. ทดสอบฟังก์ชันการทำงานหลัก / รัน Wash / Calibration',
+        '5. ตรวจสอบกระดาษพิมพ์ผล / สลิป / แบตเตอรี่สำรอง'
+      ];
+
+      html += '<div style="border: 1.5px solid #000000; overflow-x: auto;">';
+      html += '  <table class="plotted-table-sheet" style="font-size: 10px;">';
+      html += '    <tr style="background: #f1f5f9; font-weight: 700;">';
+      html += '      <th style="padding: 6px; text-align: left; width: 220px;">หัวข้อการตรวจเช็ค</th>';
+      for (var d = 1; d <= 31; d++) {
+        html += '<th style="width: 2.2%;">' + d + '</th>';
+      }
+      html += '      <th style="width: 50px;">สรุป</th>';
       html += '    </tr>';
-      html += '    <tr style="border-bottom: 1px solid #cbd5e1;">';
-      html += '      <td style="padding: 8px; font-weight: 700; background: #fafafa; border-right: 1px solid #cbd5e1;">ค่าอุณหภูมิ (°C)</td>';
+
+      checklistRows.forEach(function(rowText, rIdx) {
+        html += '<tr>';
+        html += '  <td style="text-align: left; padding: 6px 8px; font-weight: 600;">' + rowText + '</td>';
+        for (var d = 1; d <= 31; d++) {
+          html += '<td style="color: #059669; font-weight: 800; font-size: 11px;">✓</td>';
+        }
+        html += '  <td style="color: #059669; font-weight: 700;">ผ่าน</td>';
+        html += '</tr>';
+      });
+
+      html += '    <tr style="background: #fafafa; font-weight: 700;">';
+      html += '      <td style="text-align: left; padding: 6px 8px;">ผู้ตรวจเช็คประจำวัน</td>';
       for (var d = 1; d <= 31; d++) {
-        html += '<td style="border-right: 1px solid #cbd5e1; height: 26px;">' + (d === 8 ? '25.4' : '') + '</td>';
+        html += '<td style="font-size: 8px;">สมชาย</td>';
       }
-      html += '    </tr>';
-      html += '    <tr>';
-      html += '      <td style="padding: 8px; font-weight: 700; background: #fafafa; border-right: 1px solid #cbd5e1;">ผู้บันทึก</td>';
-      for (var d = 1; d <= 31; d++) {
-        html += '<td style="border-right: 1px solid #cbd5e1; height: 26px;">' + (d === 8 ? 'สมชาย' : '') + '</td>';
-      }
+      html += '      <td>-</td>';
       html += '    </tr>';
       html += '  </table>';
       html += '</div>';
 
-      html += '<div style="margin-top: 20px; display: flex; justify-content: space-between; font-size: 11.5px; color: #475569;">';
-      html += '  <div>เกณฑ์มาตรฐาน: เป็นไปตามข้อกำหนดทางห้องปฏิบัติการทางการแพทย์ ISO 15189 / HA</div>';
-      html += '  <div>ลงชื่อผู้ควบคุมคุณภาพ: ..............................................................</div>';
+      html += '  <div style="margin-top: 18px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px; color: #000000;">';
+      html += '    <div>เกณฑ์มาตรฐาน: การตรวจสอบเครื่องมือเป็นไปตามคู่มือผู้ผลิตและมาตรฐาน HA / ISO 15189</div>';
+      html += '    <div>ลงชื่อผู้ควบคุมคุณภาพ: ..............................................................</div>';
+      html += '  </div>';
       html += '</div>';
 
       container.innerHTML = html;

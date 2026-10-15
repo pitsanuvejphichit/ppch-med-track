@@ -1,0 +1,1600 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>PPCH ระบบบันทึกผลการตรวจเช็ค LAB (QR Check-in) | โรงพยาบาลพิษณุเวช</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <style>
+    /* ==================== PPCH DEEP ROYAL BLUE THEME ==================== */
+    :root {
+      --royal-dark: #002e6e;
+      --royal-blue: #004b93;
+      --royal-hover: #003a73;
+      --royal-light: #0284c7;
+      --royal-subtle: #f0f7ff;
+      --royal-glow: rgba(0, 75, 147, 0.16);
+
+      --canvas-bg: #f4f7fb;
+      --surface-white: #ffffff;
+      --border-main: #e2e8f0;
+      --border-subtle: #edf2f7;
+      --border-focus: #004b93;
+      --border-blue-soft: #bfdbfe;
+
+      --text-main: #0f172a;
+      --text-body: #334155;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+
+      --green-ready: #059669;
+      --green-bg: #ecfdf5;
+      --green-border: #a7f3d0;
+
+      --amber-pending: #d97706;
+      --amber-bg: #fffbeb;
+      --amber-border: #fde68a;
+
+      --red-abnormal: #dc2626;
+      --red-bg: #fef2f2;
+      --red-border: #fecaca;
+
+      --font-sans: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'Inter', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--canvas-bg);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* CSS Loader */
+    #pageLoader {
+      position: fixed;
+      inset: 0;
+      background: rgba(244, 247, 251, 0.95);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    #pageLoader.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loader-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 38px 46px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 46, 110, 0.08);
+      min-width: 290px;
+      animation: loaderPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .css-logo-loader {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      margin: 10px auto 30px;
+      transform: scale(1.4);
+      transform-origin: center;
+    }
+
+    .logo-petal {
+      position: absolute;
+      animation: loadingPulse 1.6s ease-in-out infinite;
+      will-change: transform, opacity;
+    }
+    .logo-petal.outer { background: #1e5387; border-radius: 6px; }
+    .logo-petal.inner { background: #5faee3; border-radius: 5px; }
+
+    .logo-petal.outer.top { top: 0px; left: 30px; width: 20px; height: 24px; animation-delay: 0s; }
+    .logo-petal.inner.top-right { top: 14px; right: 14px; width: 20px; height: 20px; animation-delay: 0.2s; }
+    .logo-petal.outer.right { top: 30px; right: 0px; width: 24px; height: 20px; animation-delay: 0.4s; }
+    .logo-petal.inner.bottom-right { bottom: 14px; right: 14px; width: 20px; height: 20px; animation-delay: 0.6s; }
+    .logo-petal.outer.bottom { bottom: 0px; left: 30px; width: 20px; height: 24px; animation-delay: 0.8s; }
+    .logo-petal.inner.bottom-left { bottom: 14px; left: 14px; width: 20px; height: 20px; animation-delay: 1.0s; }
+    .logo-petal.outer.left { top: 30px; left: 0px; width: 24px; height: 20px; animation-delay: 1.2s; }
+    .logo-petal.inner.top-left { top: 14px; left: 14px; width: 20px; height: 20px; animation-delay: 1.4s; }
+
+    @keyframes loadingPulse {
+      0%, 100% { transform: scale(1); opacity: 0.35; }
+      50% { transform: scale(1.15); opacity: 1; }
+    }
+    @keyframes loaderPop {
+      0% { transform: scale(0.9); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Top Bar */
+    .app-topbar {
+      height: 56px;
+      background: #ffffff;
+      border-bottom: 2px solid var(--royal-blue);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0, 46, 110, 0.05);
+    }
+
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .brand-logo-img { height: 36px; width: auto; object-fit: contain; }
+    .brand-divider { width: 1px; height: 22px; background: var(--border-main); }
+    .brand-badge-pill {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--royal-blue);
+      background: var(--royal-subtle);
+      border: 1px solid var(--border-blue-soft);
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-topbar-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--royal-blue);
+      background: var(--royal-subtle);
+      border: 1px solid var(--border-blue-soft);
+      padding: 6px 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .btn-topbar-link:hover {
+      background: #e0f2fe;
+      transform: translateY(-1px);
+    }
+
+    /* Main Container */
+    .eval-container {
+      max-width: 680px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 16px 16px 40px;
+      flex: 1;
+    }
+
+    /* Stepper Bar */
+    .eval-stepper-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding: 10px 16px;
+      background: #ffffff;
+      border: 1px solid var(--border-main);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 46, 110, 0.03);
+    }
+    .stepper-step {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+    }
+    .stepper-step.active {
+      color: var(--royal-blue);
+      font-weight: 700;
+    }
+    .stepper-step.done {
+      color: var(--green-ready);
+      font-weight: 700;
+    }
+    .stepper-step .step-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      background: #f1f5f9;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+    }
+    .stepper-step.active .step-num {
+      background: var(--royal-blue);
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(0, 75, 147, 0.3);
+    }
+    .stepper-step.done .step-num {
+      background: var(--green-ready);
+      color: #ffffff;
+    }
+    .stepper-line {
+      flex: 1;
+      height: 2px;
+      background: #e2e8f0;
+      margin: 0 10px;
+      border-radius: 9999px;
+      transition: background 0.2s ease;
+    }
+    .stepper-line.done { background: var(--green-ready); }
+
+    /* Cards */
+    .eval-card {
+      background: #ffffff;
+      border: 1px solid var(--border-main);
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(0, 46, 110, 0.04);
+      margin-bottom: 16px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .eval-card-header {
+      padding: 12px 18px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border-main);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .eval-card-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .eval-card-body {
+      padding: 18px;
+    }
+
+    .form-control-select, .form-control-input, .form-control-textarea {
+      width: 100%;
+      background: #f8fafc;
+      border: 1px solid var(--border-main);
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-family: inherit;
+      font-size: 13px;
+      color: var(--text-main);
+      outline: none;
+      transition: all 0.15s;
+    }
+    .form-control-select:focus, .form-control-input:focus, .form-control-textarea:focus {
+      background: #ffffff;
+      border-color: var(--royal-blue);
+      box-shadow: 0 0 0 2px rgba(0, 75, 147, 0.12);
+    }
+
+    /* Active Checkpoint Hero Banner */
+    .checkpoint-hero {
+      background: linear-gradient(135deg, #f0f7ff 0%, #e0f2fe 100%);
+      border: 1.5px solid #bfdbfe;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .checkpoint-hero-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--royal-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .checkpoint-hero-sub {
+      font-size: 12px;
+      color: var(--royal-hover);
+      margin-top: 3px;
+    }
+
+    /* Shift Selector Pills */
+    .shift-pill-group {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .shift-pill-btn {
+      padding: 9px 6px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border-main);
+      background: #ffffff;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      transition: all 0.15s ease;
+    }
+    .shift-pill-btn .shift-time {
+      font-size: 10px;
+      color: var(--text-light);
+      font-weight: 400;
+    }
+    .shift-pill-btn:hover {
+      border-color: var(--royal-light);
+      background: var(--royal-subtle);
+    }
+    .shift-pill-btn.active {
+      border-color: var(--royal-blue);
+      background: linear-gradient(135deg, #004b93 0%, #0284c7 100%);
+      color: #ffffff;
+      box-shadow: 0 3px 10px rgba(0, 75, 147, 0.25);
+    }
+    .shift-pill-btn.active .shift-time {
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    /* Live Status Pill */
+    .status-feedback-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 700;
+      transition: all 0.2s ease;
+      margin-top: 6px;
+    }
+    .status-feedback-pill.normal {
+      background: var(--green-bg);
+      border: 1px solid var(--green-border);
+      color: var(--green-ready);
+    }
+    .status-feedback-pill.abnormal {
+      background: var(--red-bg);
+      border: 1px solid var(--red-border);
+      color: var(--red-abnormal);
+      animation: alertPulse 1.2s infinite;
+    }
+    @keyframes alertPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
+    /* Big Numeric Entry with Micro-Steppers */
+    .numeric-entry-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .numeric-entry-input {
+      flex: 1;
+      height: 48px;
+      font-family: var(--font-mono);
+      font-size: 24px;
+      font-weight: 700;
+      text-align: center;
+      color: var(--royal-dark);
+      background: #ffffff;
+      border: 2px solid var(--border-blue-soft);
+      border-radius: 10px;
+      outline: none;
+      transition: all 0.15s;
+    }
+    .numeric-entry-input:focus {
+      border-color: var(--royal-blue);
+      box-shadow: 0 0 0 3px rgba(0, 75, 147, 0.15);
+    }
+    .btn-stepper {
+      width: 44px;
+      height: 48px;
+      background: #f1f5f9;
+      border: 1px solid var(--border-main);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-body);
+      user-select: none;
+      transition: all 0.1s;
+    }
+    .btn-stepper:active {
+      background: #e2e8f0;
+      transform: scale(0.95);
+    }
+
+    /* Checklist Items for Analyzers */
+    .checklist-item {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      transition: background 0.1s;
+    }
+    .checklist-item:last-child { border-bottom: none; }
+    .checklist-item:hover { background: #f8fafc; }
+    .item-text {
+      font-size: 13px;
+      color: var(--text-body);
+      flex: 1;
+      line-height: 1.4;
+    }
+    .item-btn-group {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .btn-check-choice {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border-main);
+      background: #ffffff;
+      color: var(--text-muted);
+      transition: all 0.15s;
+    }
+    .btn-check-choice.active-pass {
+      background: var(--green-ready);
+      border-color: var(--green-ready);
+      color: #ffffff;
+    }
+    .btn-check-choice.active-fail {
+      background: var(--red-abnormal);
+      border-color: var(--red-abnormal);
+      color: #ffffff;
+    }
+    .btn-quick-pass {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 11px;
+      border-radius: 9999px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #047857;
+      background: #ecfdf5;
+      border: 1.5px solid #a7f3d0;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .btn-quick-pass:hover {
+      background: #d1fae5;
+      border-color: #6ee7b7;
+      transform: translateY(-1px);
+    }
+
+    /* Submit CTA */
+    .btn-submit-main {
+      width: 100%;
+      height: 48px;
+      padding: 0 20px;
+      background: linear-gradient(135deg, #004b93 0%, #002e6e 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(0, 46, 110, 0.25);
+      transition: all 0.15s ease;
+    }
+    .btn-submit-main:hover {
+      background: linear-gradient(135deg, #005bb5 0%, #003882 100%);
+      box-shadow: 0 6px 18px rgba(0, 46, 110, 0.35);
+      transform: translateY(-1px);
+    }
+    .btn-submit-main:active { transform: scale(0.99); }
+    .btn-submit-main:disabled {
+      background: #cbd5e1;
+      box-shadow: none;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Success Confirmation Slip Modal */
+    .slip-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 1;
+      visibility: visible;
+      transition: all 0.25s ease;
+    }
+    .slip-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .slip-card {
+      background: #ffffff;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 480px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 45px rgba(0, 46, 110, 0.2);
+      border: 1px solid #e2e8f0;
+      animation: loaderPop 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .slip-header {
+      padding: 20px 24px;
+      background: linear-gradient(135deg, #002e6e 0%, #004b93 100%);
+      color: #ffffff;
+      text-align: center;
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+      position: relative;
+    }
+    .slip-body {
+      padding: 24px;
+    }
+    .slip-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px dashed #e2e8f0;
+      font-size: 13px;
+    }
+    .slip-row:last-child { border-bottom: none; }
+    .slip-label { color: var(--text-muted); }
+    .slip-val { font-weight: 600; color: var(--text-main); text-align: right; }
+    .slip-badge-pass {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      background: #ecfdf5;
+      color: #059669;
+      border: 1.5px solid #a7f3d0;
+      font-weight: 700;
+      font-size: 12px;
+    }
+    .slip-badge-fail {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1.5px solid #fecaca;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    /* Print styles */
+    @media print {
+      body { background: #ffffff; font-size: 11pt; }
+      .app-topbar, .eval-stepper-bar, .no-print { display: none !important; }
+      .slip-overlay { position: static; background: transparent; backdrop-filter: none; padding: 0; }
+      .slip-card { box-shadow: none; border: 1px solid #000000; max-width: 100%; border-radius: 0; }
+      .slip-header { background: #ffffff !important; color: #000000 !important; border-bottom: 2px solid #000000; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading Screen -->
+  <div id="pageLoader">
+    <div class="loader-card">
+      <div class="css-logo-loader">
+        <div class="logo-petal outer top"></div>
+        <div class="logo-petal inner top-right"></div>
+        <div class="logo-petal outer right"></div>
+        <div class="logo-petal inner bottom-right"></div>
+        <div class="logo-petal outer bottom"></div>
+        <div class="logo-petal inner bottom-left"></div>
+        <div class="logo-petal outer left"></div>
+        <div class="logo-petal inner top-left"></div>
+      </div>
+      <div style="margin-top: 14px;">
+        <div style="font-size: 16px; font-weight: 700; color: #004b93; margin-bottom: 4px;">
+          ระบบบันทึกผลการตรวจเช็ค LAB
+        </div>
+        <div style="font-size: 12px; font-weight: 500; color: #64748b;">
+          โรงพยาบาลพิษณุเวช • Laboratory
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Bar -->
+  <header class="app-topbar">
+    <div class="topbar-brand">
+      <img src="logo.png" alt="โรงพยาบาลพิษณุเวช" class="brand-logo-img">
+      <div class="brand-divider"></div>
+      <div class="brand-badge-pill">LAB QR Check-in</div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <a href="lab.html" class="btn-topbar-link" title="กลับสู่แดชบอร์ดหลัก">
+        <span class="material-icons-round" style="font-size: 16px;">dashboard</span>
+        <span>แดชบอร์ด LAB</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="eval-container">
+
+    <!-- Stepper Bar -->
+    <div class="eval-stepper-bar">
+      <div class="stepper-step active" id="step1">
+        <div class="step-num">1</div>
+        <div class="step-label">เลือกจุดตรวจ</div>
+      </div>
+      <div class="stepper-line" id="line1"></div>
+      <div class="stepper-step" id="step2">
+        <div class="step-num">2</div>
+        <div class="step-label">บันทึกผลการตรวจ</div>
+      </div>
+      <div class="stepper-line" id="line2"></div>
+      <div class="stepper-step" id="step3">
+        <div class="step-num">3</div>
+        <div class="step-label">ยืนยัน & สลิป</div>
+      </div>
+    </div>
+
+    <!-- Active Checkpoint Hero Banner -->
+    <div class="checkpoint-hero" id="checkpointHero">
+      <div>
+        <div class="checkpoint-hero-title">
+          <span class="material-icons-round" id="heroIcon" style="color: var(--royal-blue); font-size: 22px;">thermostat</span>
+          <span id="heroTitle">กรุณาเลือกจุดตรวจ LAB</span>
+        </div>
+        <div class="checkpoint-hero-sub" id="heroSub">
+          รหัสแบบฟอร์ม: - | มาตรฐาน: -
+        </div>
+      </div>
+      <button type="button" id="btnChangeCheckpoint" onclick="toggleSelectorDrawer()" style="background: #ffffff; border: 1px solid var(--border-blue-soft); color: var(--royal-blue); padding: 5px 10px; border-radius: 6px; font-size: 11.5px; font-weight: 600; cursor: pointer; display: none;">
+        เปลี่ยนจุด
+      </button>
+    </div>
+
+    <!-- Step 1 Card: 2-Step Cascade Checkpoint Selector (Hidden if pre-selected via QR) -->
+    <section class="eval-card" id="cardSelector">
+      <div class="eval-card-header">
+        <div class="eval-card-title">
+          <span class="material-icons-round" style="color: var(--royal-blue); font-size: 18px;">qr_code_scanner</span>
+          <span>เลือกจุดตรวจ / อุปกรณ์แผนก LAB</span>
+        </div>
+        <span style="font-size: 11px; color: var(--royal-blue); font-weight: 600; background: var(--royal-subtle); padding: 2px 8px; border-radius: 4px;">2-Step Selector</span>
+      </div>
+      <div class="eval-card-body">
+        <!-- Step 1: หมวดหมู่งาน -->
+        <div style="margin-bottom: 12px;">
+          <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">1. เลือกหมวดหมู่งาน LAB *</label>
+          <select id="selectCategory" class="form-control-select" onchange="onCategoryChanged()">
+            <option value="">-- กรุณาเลือกหมวดหมู่ --</option>
+            <option value="cat_room">อุณหภูมิและความชื้นห้องแลป (FM-PPCH-LAB-057)</option>
+            <option value="cat_freezer">ตู้แช่แข็ง FFP & Control (FM-PPCH-LAB-060)</option>
+            <option value="cat_wb">Water bath อ่างควบคุมอุณหภูมิ (FM-PPCH-LAB-061)</option>
+            <option value="cat_ref">ตู้เย็นแช่น้ำยา & สิ่งส่งตรวจ (FM-PPCH-LAB-062)</option>
+            <option value="cat_cobas">เครื่องตรวจวิเคราะห์ Cobas h232 (FM-PPCH-LAB-049)</option>
+            <option value="cat_bsc">ตู้กรองชีวนิรภัย BSC Class II (FM-PPCH-LAB-091)</option>
+            <option value="cat_mindray">Chemistry Analyzer Mindray BS600M (FM-PPCH-LAB-099)</option>
+            <option value="cat_ups">แบตเตอรี่สำรองไฟ UPS 6 ตัว (FM-PPCH-LAB-019)</option>
+          </select>
+        </div>
+
+        <!-- Step 2: จุดตรวจ / เครื่องมือ -->
+        <div>
+          <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">2. เลือกรหัสจุดตรวจ / อุปกรณ์ *</label>
+          <select id="selectItem" class="form-control-select" onchange="onItemSelected()" disabled>
+            <option value="">-- กรุณาเลือกหมวดหมู่ก่อน --</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Step 2 Card: Main Evaluation Form -->
+    <section class="eval-card" id="cardForm" style="display: none;">
+      <div class="eval-card-header">
+        <div class="eval-card-title">
+          <span class="material-icons-round" style="color: var(--royal-blue); font-size: 18px;">edit_note</span>
+          <span>บันทึกผลการตรวจเช็ค</span>
+        </div>
+        <div id="targetSpecPill" style="font-size: 11px; font-weight: 700; color: var(--royal-blue); background: var(--royal-subtle); padding: 3px 8px; border-radius: 4px; border: 1px solid var(--border-blue-soft);">-</div>
+      </div>
+      <div class="eval-card-body">
+
+        <!-- Date Time & Shift -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+          <div>
+            <label style="display: block; font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 3px;">วันที่บันทึก</label>
+            <input type="date" id="evalDate" class="form-control-input" style="font-family: var(--font-mono); font-weight: 600;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 3px;">เวลาบันทึก</label>
+            <input type="time" id="evalTime" class="form-control-input" style="font-family: var(--font-mono); font-weight: 600;">
+          </div>
+        </div>
+
+        <!-- Shift Selector -->
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px;">เวรปฏิบัติการ (ตรวจจับอัตโนมัติตามเวลาปัจจุบัน)</label>
+          <div class="shift-pill-group">
+            <button type="button" class="shift-pill-btn active" id="btnShiftMorning" onclick="setShift('morning')">
+              <span>เวรเช้า</span>
+              <span class="shift-time">08:00 - 16:00</span>
+            </button>
+            <button type="button" class="shift-pill-btn" id="btnShiftAfternoon" onclick="setShift('afternoon')">
+              <span>เวรบ่าย</span>
+              <span class="shift-time">16:00 - 24:00</span>
+            </button>
+            <button type="button" class="shift-pill-btn" id="btnShiftNight" onclick="setShift('night')">
+              <span>เวรดึก</span>
+              <span class="shift-time">00:00 - 08:00</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Dynamic Section A: Temperature & Humidity -->
+        <div id="sectionTemp" style="display: none;">
+          <!-- Temperature Input -->
+          <div style="margin-bottom: 16px; background: #f8fafc; border: 1px solid var(--border-main); padding: 14px; border-radius: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <label style="font-size: 13px; font-weight: 700; color: var(--text-main);">
+                ค่าอุณหภูมิที่วัดได้ (°C) *
+              </label>
+              <span id="tempTargetBadge" style="font-size: 11px; color: var(--royal-blue); font-weight: 600;">เกณฑ์: -</span>
+            </div>
+            
+            <div class="numeric-entry-box">
+              <button type="button" class="btn-stepper" onclick="stepTemp(-0.5)">-0.5</button>
+              <button type="button" class="btn-stepper" onclick="stepTemp(-0.1)">-0.1</button>
+              <input type="number" id="inputTemp" class="numeric-entry-input" step="0.1" placeholder="00.0" oninput="validateTempLive()">
+              <button type="button" class="btn-stepper" onclick="stepTemp(0.1)">+0.1</button>
+              <button type="button" class="btn-stepper" onclick="stepTemp(0.5)">+0.5</button>
+            </div>
+
+            <div id="tempStatusFeedback" class="status-feedback-pill normal" style="display: none;">
+              <span class="material-icons-round" style="font-size: 15px;">check_circle</span>
+              <span id="tempStatusText">ปกติในเกณฑ์มาตรฐาน</span>
+            </div>
+          </div>
+
+          <!-- Humidity Input (Only if applicable) -->
+          <div id="boxHumidity" style="margin-bottom: 16px; background: #f8fafc; border: 1px solid var(--border-main); padding: 14px; border-radius: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <label style="font-size: 13px; font-weight: 700; color: var(--text-main);">
+                ค่าความชื้นสัมพัทธ์ (%RH) *
+              </label>
+              <span style="font-size: 11px; color: #dc2626; font-weight: 700;">เกณฑ์: ≤ 60 %RH</span>
+            </div>
+
+            <div class="numeric-entry-box">
+              <button type="button" class="btn-stepper" onclick="stepHum(-5)">-5</button>
+              <button type="button" class="btn-stepper" onclick="stepHum(-1)">-1</button>
+              <input type="number" id="inputHumidity" class="numeric-entry-input" step="1" placeholder="50" oninput="validateHumLive()">
+              <button type="button" class="btn-stepper" onclick="stepHum(1)">+1</button>
+              <button type="button" class="btn-stepper" onclick="stepHum(5)">+5</button>
+            </div>
+
+            <div id="humStatusFeedback" class="status-feedback-pill normal" style="display: none;">
+              <span class="material-icons-round" style="font-size: 15px;">check_circle</span>
+              <span id="humStatusText">ความชื้นปกติ (≤ 60 %RH)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Section B: Analyzer Checklist -->
+        <div id="sectionAnalyzer" style="display: none; margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <label style="font-size: 13px; font-weight: 700; color: var(--text-main);">รายการตรวจเช็คประจำวัน</label>
+            <button type="button" class="btn-quick-pass" onclick="quickPassChecklist()">
+              <span class="material-icons-round" style="font-size: 14px;">done_all</span>
+              <span>ผ่านทั้งหมด (Quick Pass)</span>
+            </button>
+          </div>
+          <div id="analyzerChecklistContainer" style="border: 1px solid var(--border-main); border-radius: 10px; overflow: hidden; background: #ffffff;">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Dynamic Section C: UPS Battery Test -->
+        <div id="sectionUps" style="display: none; margin-bottom: 16px;">
+          <div style="background: #f8fafc; border: 1px solid var(--border-main); padding: 14px; border-radius: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <label style="font-size: 13px; font-weight: 700; color: var(--text-main);">ระยะเวลาสำรองไฟเมื่อตัดไฟ (นาที) *</label>
+              <span style="font-size: 11px; color: var(--green-ready); font-weight: 700;">เกณฑ์: ≥ 15 นาที</span>
+            </div>
+
+            <div class="numeric-entry-box">
+              <button type="button" class="btn-stepper" onclick="stepUps(-5)">-5</button>
+              <button type="button" class="btn-stepper" onclick="stepUps(-1)">-1</button>
+              <input type="number" id="inputUpsRuntime" class="numeric-entry-input" step="1" placeholder="25" oninput="validateUpsLive()">
+              <button type="button" class="btn-stepper" onclick="stepUps(1)">+1</button>
+              <button type="button" class="btn-stepper" onclick="stepUps(5)">+5</button>
+            </div>
+
+            <div id="upsStatusFeedback" class="status-feedback-pill normal" style="display: none;">
+              <span class="material-icons-round" style="font-size: 15px;">check_circle</span>
+              <span id="upsStatusText">สำรองไฟปกติ (≥ 15 นาที)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Staff & Remarks Section -->
+        <div style="border-top: 1px solid var(--border-subtle); padding-top: 14px; margin-top: 14px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+            <div>
+              <label style="display: block; font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 3px;">
+                รหัสพนักงานผู้ตรวจ (6 หลัก) *
+              </label>
+              <input type="text" id="staffId" class="form-control-input" placeholder="เช่น 000023" maxlength="6" onblur="formatStaffId(this)" style="font-family: var(--font-mono); font-weight: 700;">
+            </div>
+            <div>
+              <label style="display: block; font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 3px;">
+                ชื่อ-สกุล ผู้ตรวจเช็ค *
+              </label>
+              <input type="text" id="staffName" class="form-control-input" placeholder="เช่น ทนพ. สมชาย ใจดี">
+            </div>
+          </div>
+
+          <!-- Optional Free-text Remark (Strict Rule: Optional Free-Text) -->
+          <div style="margin-bottom: 16px;">
+            <label style="display: flex; justify-content: space-between; font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 3px;">
+              <span>หมายเหตุ / การแก้ไขกรณีพบปัญหา (ถ้ามี)</span>
+              <span style="font-weight: 400; color: var(--text-light);">(ไม่บังคับกรอก)</span>
+            </label>
+            <textarea id="evalNote" class="form-control-textarea" rows="2" placeholder="ระบุการปรับเครื่องปรับอากาศ เติมน้ำกลั่น หรือทำความสะอาด (ถ้ามี)..."></textarea>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="button" id="btnSubmitEval" onclick="submitEvaluation()" class="btn-submit-main">
+            <span class="material-icons-round">send</span>
+            <span>บันทึกผลการตรวจเช็ค</span>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Success Confirmation Slip Modal -->
+  <div id="slipOverlay" class="slip-overlay hidden" onclick="if(event.target === this) closeSlipModal()">
+    <div class="slip-card">
+      <div class="slip-header">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 4px;">
+          <img src="logo.png" alt="PPCH" style="height: 28px; background: #ffffff; border-radius: 4px; padding: 2px;">
+          <span style="font-size: 15px; font-weight: 700;">โรงพยาบาลพิษณุเวช</span>
+        </div>
+        <div style="font-size: 12px; opacity: 0.9;">ใบยืนยันผลการตรวจเช็คจุดปฏิบัติการ LAB</div>
+        <div style="font-size: 10px; opacity: 0.75; margin-top: 2px; font-family: var(--font-mono);" id="slipDocNo">DOC: LAB-REC-20261015-001</div>
+      </div>
+
+      <div class="slip-body">
+        <div style="text-align: center; margin-bottom: 16px;">
+          <div id="slipStatusBadge" class="slip-badge-pass">✓ ผ่านเกณฑ์มาตรฐาน (PASSED)</div>
+        </div>
+
+        <div class="slip-row">
+          <span class="slip-label">จุดตรวจ / อุปกรณ์</span>
+          <span class="slip-val" id="slipItemName">-</span>
+        </div>
+        <div class="slip-row">
+          <span class="slip-label">รหัสแบบฟอร์ม</span>
+          <span class="slip-val" id="slipFormCode">-</span>
+        </div>
+        <div class="slip-row">
+          <span class="slip-label">วัน-เวลา / เวร</span>
+          <span class="slip-val" id="slipDateTime">-</span>
+        </div>
+        <div class="slip-row" id="slipRowTemp">
+          <span class="slip-label">อุณหภูมิที่วัดได้</span>
+          <span class="slip-val" id="slipTempVal" style="color: var(--royal-blue); font-weight: 700;">-</span>
+        </div>
+        <div class="slip-row" id="slipRowHum">
+          <span class="slip-label">ความชื้นสัมพัทธ์</span>
+          <span class="slip-val" id="slipHumVal">-</span>
+        </div>
+        <div class="slip-row" id="slipRowChecklist">
+          <span class="slip-label">ผลการตรวจเช็ค</span>
+          <span class="slip-val" id="slipChecklistVal">-</span>
+        </div>
+        <div class="slip-row">
+          <span class="slip-label">ผู้บันทึก</span>
+          <span class="slip-val" id="slipStaffVal">-</span>
+        </div>
+        <div class="slip-row" id="slipRowNote">
+          <span class="slip-label">หมายเหตุ</span>
+          <span class="slip-val" id="slipNoteVal" style="font-weight: 400; color: var(--text-body);">-</span>
+        </div>
+
+        <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 8px;" class="no-print">
+          <button type="button" onclick="window.print()" class="btn-submit-main" style="background: linear-gradient(135deg, #059669 0%, #047857 100%); height: 42px;">
+            <span class="material-icons-round" style="font-size: 16px;">print</span>
+            <span>พิมพ์สลิปยืนยัน</span>
+          </button>
+          <button type="button" onclick="recordNextCheckpoint()" class="btn-topbar-link" style="justify-content: center; height: 40px; font-weight: 700;">
+            <span class="material-icons-round" style="font-size: 16px;">qr_code_scanner</span>
+            <span>บันทึกจุดตรวจถัดไป</span>
+          </button>
+          <a href="lab.html" class="btn-topbar-link" style="justify-content: center; height: 40px; background: transparent; border-color: var(--border-main); color: var(--text-muted);">
+            <span>กลับสู่แดชบอร์ด LAB</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Application Logic -->
+  <script>
+    // Configuration
+    var GAS_API_URL = 'https://script.google.com/macros/s/AKfycbz8oIgnJWUcji2DaPI8CSBrPd22BFjL9A9Ui9mhamLCkRV7FVYGNWBKYJvZbjq31KE36g/exec';
+
+    // 23 Checkpoints Database
+    var LAB_ITEMS = {
+      // 1. FM-PPCH-LAB-057: อุณหภูมิห้องแลป (5 จุด)
+      '057_lab': { id: '057_lab', name: 'Laboratory (ห้องปฏิบัติการกลาง)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิและความชื้นห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: true, defaultTemp: 25.4, defaultHum: 52 },
+      '057_immu': { id: '057_immu', name: 'ห้อง Immunology', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิและความชื้นห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: true, defaultTemp: 24.8, defaultHum: 50 },
+      '057_blood': { id: '057_blood', name: 'Blood bank (ธนาคารเลือด)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิและความชื้นห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: true, defaultTemp: 25.1, defaultHum: 54 },
+      '057_bac': { id: '057_bac', name: 'Bacteria (จุลชีววิทยา)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิและความชื้นห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: true, defaultTemp: 25.6, defaultHum: 55 },
+      '057_store': { id: '057_store', name: 'Storage (คลังเก็บน้ำยา/เวชภัณฑ์)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิและความชื้นห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: true, defaultTemp: 24.5, defaultHum: 49 },
+
+      // 2. FM-PPCH-LAB-060: ตู้แช่แข็ง FFP & Control (2 จุด)
+      '060_ffp': { id: '060_ffp', name: 'ตู้แช่แข็ง FFP (ควบคุม ≤ -18 °C)', code: 'FM-PPCH-LAB-060', cat: 'cat_freezer', catName: 'ตู้แช่แข็ง', type: 'temp_freezer', targetTemp: '≤ -18.0 °C', tempMin: -40.0, tempMax: -18.0, hasHumidity: false, defaultTemp: -20.2 },
+      '060_ctrl': { id: '060_ctrl', name: 'ตู้แช่แข็ง Control (ควบคุม ≤ -18 °C)', code: 'FM-PPCH-LAB-060', cat: 'cat_freezer', catName: 'ตู้แช่แข็ง', type: 'temp_freezer', targetTemp: '≤ -18.0 °C', tempMin: -40.0, tempMax: -18.0, hasHumidity: false, defaultTemp: -19.5 },
+
+      // 3. FM-PPCH-LAB-061: Water bath (2 จุด)
+      '061_wb1': { id: '061_wb1', name: 'Water bath 1 (WB-01)', code: 'FM-PPCH-LAB-061', cat: 'cat_wb', catName: 'Water bath', type: 'temp_waterbath', targetTemp: '37.0 ± 0.5 °C', tempMin: 36.5, tempMax: 37.5, hasHumidity: false, defaultTemp: 37.0 },
+      '061_wb2': { id: '061_wb2', name: 'Water bath 2 (WB-02)', code: 'FM-PPCH-LAB-061', cat: 'cat_wb', catName: 'Water bath', type: 'temp_waterbath', targetTemp: '37.0 ± 0.5 °C', tempMin: 36.5, tempMax: 37.5, hasHumidity: false, defaultTemp: 36.9 },
+
+      // 4. FM-PPCH-LAB-062: ตู้เย็นแช่น้ำยา & สิ่งส่งตรวจ (3 จุด)
+      '062_r1': { id: '062_r1', name: 'ตู้แช่น้ำยา 1 (Ref-01)', code: 'FM-PPCH-LAB-062', cat: 'cat_ref', catName: 'ตู้เย็น', type: 'temp_refrigerator', targetTemp: '2.0 - 8.0 °C', tempMin: 2.0, tempMax: 8.0, hasHumidity: false, defaultTemp: 4.5 },
+      '062_r2': { id: '062_r2', name: 'ตู้แช่น้ำยา 2 (Ref-02)', code: 'FM-PPCH-LAB-062', cat: 'cat_ref', catName: 'ตู้เย็น', type: 'temp_refrigerator', targetTemp: '2.0 - 8.0 °C', tempMin: 2.0, tempMax: 8.0, hasHumidity: false, defaultTemp: 4.8 },
+      '062_rs': { id: '062_rs', name: 'ตู้แช่สิ่งส่งตรวจ (Ref-Sample)', code: 'FM-PPCH-LAB-062', cat: 'cat_ref', catName: 'ตู้เย็น', type: 'temp_refrigerator', targetTemp: '2.0 - 8.0 °C', tempMin: 2.0, tempMax: 8.0, hasHumidity: false, defaultTemp: 5.2 },
+
+      // 5. FM-PPCH-LAB-049: Cobas h232 (3 จุด)
+      '049_k1': { id: '049_k1', name: 'Roche Cobas h232 เครื่อง 1 (KQ03008166)', code: 'FM-PPCH-LAB-049', cat: 'cat_cobas', catName: 'Cobas h232', type: 'analyzer_cobas', targetCheck: 'ทำความสะอาดภายนอก & ตรวจเช็คประจำวัน', checklist: ['ทำความสะอาดตัวเครื่องภายนอก', 'ตรวจเช็คระดับแบตเตอรี่และสายชาร์จ', 'ทดสอบการเปิดเครื่องและการแสดงผล', 'ตรวจเช็คกระดาษพิมพ์ผล / เครื่องอ่านบาร์โค้ด'] },
+      '049_k2': { id: '049_k2', name: 'Roche Cobas h232 เครื่อง 2 (KQ0304874)', code: 'FM-PPCH-LAB-049', cat: 'cat_cobas', catName: 'Cobas h232', type: 'analyzer_cobas', targetCheck: 'ทำความสะอาดภายนอก & ตรวจเช็คประจำวัน', checklist: ['ทำความสะอาดตัวเครื่องภายนอก', 'ตรวจเช็คระดับแบตเตอรี่และสายชาร์จ', 'ทดสอบการเปิดเครื่องและการแสดงผล', 'ตรวจเช็คกระดาษพิมพ์ผล / เครื่องอ่านบาร์โค้ด'] },
+      '049_k3': { id: '049_k3', name: 'Roche Cobas h232 เครื่อง 3 (KQ0132536)', code: 'FM-PPCH-LAB-049', cat: 'cat_cobas', catName: 'Cobas h232', type: 'analyzer_cobas', targetCheck: 'ทำความสะอาดภายนอก & ตรวจเช็คประจำวัน', checklist: ['ทำความสะอาดตัวเครื่องภายนอก', 'ตรวจเช็คระดับแบตเตอรี่และสายชาร์จ', 'ทดสอบการเปิดเครื่องและการแสดงผล', 'ตรวจเช็คกระดาษพิมพ์ผล / เครื่องอ่านบาร์โค้ด'] },
+
+      // 6. FM-PPCH-LAB-091: ตู้ชีวนิรภัย BSC Class II (1 จุด)
+      '091_bsc': { id: '091_bsc', name: 'ตู้กรองชีวนิรภัย BSC Class II (MICRO TECH)', code: 'FM-PPCH-LAB-091', cat: 'cat_bsc', catName: 'ตู้ชีวนิรภัย', type: 'analyzer_bsc', targetCheck: 'แรงดันคอลัมน์น้ำ (0.5-1.0 in.wg) / UV / แอลกอฮอล์', checklist: ['ตรวจสอบแรงดันคอลัมน์น้ำ Magnehelic Gauge (0.5 - 1.0 in.wg)', 'ตรวจสอบการทำงานของหลอด UV และพัดลมระบายอากาศ', 'ทำความสะอาดพื้นผิวสแตนเลสด้วยแอลกอฮอล์ 70%', 'ตรวจสอบสภาพกระจกหน้าและระดับการเปิดใช้งาน'] },
+
+      // 7. FM-PPCH-LAB-099: Chemistry Mindray BS600M (1 จุด)
+      '099_bs600': { id: '099_bs600', name: 'Chemistry Mindray BS600M', code: 'FM-PPCH-LAB-099', cat: 'cat_mindray', catName: 'Chemistry Mindray', type: 'analyzer_mindray', targetCheck: 'Conc Wash, Electrode, Cuvette & Special Wash', checklist: ['ตรวจเช็คระดับ Concentrated Wash Solution', 'ตรวจสอบสภาพ Electrode และปฏิกิริยา Cuvette', 'ทำความสะอาด Probe และ Sample Dilution Station', 'ดำเนินการรันขั้นตอน Special Wash ประจำวัน'] },
+
+      // 8. FM-PPCH-LAB-019: แบตเตอรี่สำรองไฟ UPS (6 จุด)
+      '019_ups1': { id: '019_ups1', name: 'UPS-LAB-01 (BS600M)', code: 'FM-PPCH-LAB-019', cat: 'cat_ups', catName: 'สำรองไฟ UPS', type: 'ups_battery', targetCheck: 'สำรองไฟต่อเนื่อง ≥ 15 นาที', loadDevice: 'Mindray BS600M', defaultRuntime: 25 },
+      '019_ups2': { id: '019_ups2', name: 'UPS-LAB-02 (Sysmex)', code: 'FM-PPCH-LAB-019', cat: 'cat_ups', catName: 'สำรองไฟ UPS', type: 'ups_battery', targetCheck: 'สำรองไฟต่อเนื่อง ≥ 15 นาที', loadDevice: 'Sysmex XN-L', defaultRuntime: 22 },
+      '019_ups3': { id: '019_ups3', name: 'UPS-LAB-03 (Cobas)', code: 'FM-PPCH-LAB-019', cat: 'cat_ups', catName: 'สำรองไฟ UPS', type: 'ups_battery', targetCheck: 'สำรองไฟต่อเนื่อง ≥ 15 นาที', loadDevice: 'Cobas h232 ทั้งหมด', defaultRuntime: 30 },
+      '019_ups4': { id: '019_ups4', name: 'UPS-LAB-04 (Blood Bank)', code: 'FM-PPCH-LAB-019', cat: 'cat_ups', catName: 'สำรองไฟ UPS', type: 'ups_battery', targetCheck: 'สำรองไฟต่อเนื่อง ≥ 15 นาที', loadDevice: 'ตู้เย็นเก็บเลือด Blood Bank', defaultRuntime: 45 },
+      '019_ups5': { id: '019_ups5', name: 'UPS-LAB-05 (FFP Freezer)', code: 'FM-PPCH-LAB-019', cat: 'cat_ups', catName: 'สำรองไฟ UPS', type: 'ups_battery', targetCheck: 'สำรองไฟต่อเนื่อง ≥ 15 นาที', loadDevice: 'ตู้แช่แข็ง FFP', defaultRuntime: 40 },
+      '019_ups6': { id: '019_ups6', name: 'UPS-LAB-06 (Server LIS)', code: 'FM-PPCH-LAB-019', cat: 'cat_ups', catName: 'สำรองไฟ UPS', type: 'ups_battery', targetCheck: 'สำรองไฟต่อเนื่อง ≥ 15 นาที', loadDevice: 'Server และคอมพิวเตอร์ LIS', defaultRuntime: 50 }
+    };
+
+    var currentItem = null;
+    var currentShift = 'morning';
+    var analyzerChecklistState = {};
+
+    // Page Initialization
+    document.addEventListener('DOMContentLoaded', function() {
+      try {
+        initPage();
+      } catch (err) {
+        console.error('initPage error:', err);
+      } finally {
+        setTimeout(hidePageLoader, 350);
+      }
+    });
+
+    function hidePageLoader() {
+      var pl = document.getElementById('pageLoader');
+      if (pl && !pl.classList.contains('hidden')) {
+        pl.classList.add('hidden');
+      }
+    }
+
+    function initPage() {
+      // 1. Set current Date and Time
+      var now = new Date();
+      var todayStr = now.toISOString().slice(0, 10);
+      var timeStr = now.toTimeString().slice(0, 5);
+      document.getElementById('evalDate').value = todayStr;
+      document.getElementById('evalTime').value = timeStr;
+
+      // 2. Auto-detect shift
+      var hours = now.getHours();
+      if (hours >= 8 && hours < 16) {
+        setShift('morning');
+      } else if (hours >= 16 && hours < 24) {
+        setShift('afternoon');
+      } else {
+        setShift('night');
+      }
+
+      // 3. Pre-fill staff from localStorage if remembered
+      var savedStaffId = localStorage.getItem('PPCH_LAST_STAFF_ID') || '';
+      var savedStaffName = localStorage.getItem('PPCH_LAST_STAFF_NAME') || '';
+      if (savedStaffId) document.getElementById('staffId').value = savedStaffId;
+      if (savedStaffName) document.getElementById('staffName').value = savedStaffName;
+
+      // 4. Parse Query Param
+      var params = new URLSearchParams(window.location.search);
+      var queryId = params.get('itemId') || params.get('id') || params.get('code');
+
+      if (queryId && LAB_ITEMS[queryId]) {
+        selectCheckpointDirect(queryId);
+      } else {
+        // Show Step 1 selector
+        document.getElementById('cardSelector').style.display = 'block';
+        updateStepper(1);
+      }
+    }
+
+    // Shift Handling
+    function setShift(shift) {
+      currentShift = shift;
+      ['morning', 'afternoon', 'night'].forEach(function(s) {
+        var btn = document.getElementById('btnShift' + s.charAt(0).toUpperCase() + s.slice(1));
+        if (btn) btn.classList.toggle('active', s === shift);
+      });
+    }
+
+    // 2-Step Cascade Checkpoint Selector
+    function onCategoryChanged() {
+      var catVal = document.getElementById('selectCategory').value;
+      var selItem = document.getElementById('selectItem');
+      selItem.innerHTML = '<option value="">-- กรุณาเลือกจุดตรวจ --</option>';
+
+      if (!catVal) {
+        selItem.disabled = true;
+        return;
+      }
+
+      var filtered = Object.values(LAB_ITEMS).filter(function(item) {
+        return item.cat === catVal;
+      });
+
+      filtered.forEach(function(item) {
+        var opt = document.createElement('option');
+        opt.value = item.id;
+        opt.textContent = item.name + ' (' + item.code + ')';
+        selItem.appendChild(opt);
+      });
+
+      selItem.disabled = false;
+    }
+
+    function onItemSelected() {
+      var itemId = document.getElementById('selectItem').value;
+      if (itemId && LAB_ITEMS[itemId]) {
+        selectCheckpointDirect(itemId);
+      }
+    }
+
+    function selectCheckpointDirect(itemId) {
+      currentItem = LAB_ITEMS[itemId];
+      if (!currentItem) return;
+
+      // Update Hero Banner
+      document.getElementById('heroTitle').innerText = currentItem.name;
+      var subText = 'รหัสแบบฟอร์ม: ' + currentItem.code + ' | ';
+      if (currentItem.targetTemp) subText += 'เกณฑ์อุณหภูมิ: ' + currentItem.targetTemp;
+      else if (currentItem.targetCheck) subText += 'เกณฑ์ตรวจเช็ค: ' + currentItem.targetCheck;
+      document.getElementById('heroSub').innerText = subText;
+      document.getElementById('btnChangeCheckpoint').style.display = 'inline-block';
+
+      // Update Hero Icon
+      var icon = 'thermostat';
+      if (currentItem.cat === 'cat_freezer') icon = 'ac_unit';
+      else if (currentItem.cat === 'cat_wb') icon = 'waves';
+      else if (currentItem.cat === 'cat_ref') icon = 'kitchen';
+      else if (currentItem.cat.indexOf('analyzer') >= 0 || currentItem.cat === 'cat_cobas' || currentItem.cat === 'cat_bsc' || currentItem.cat === 'cat_mindray') icon = 'biotech';
+      else if (currentItem.cat === 'cat_ups') icon = 'battery_charging_full';
+      document.getElementById('heroIcon').innerText = icon;
+
+      // Target Spec Pill
+      document.getElementById('targetSpecPill').innerText = currentItem.targetTemp || currentItem.targetCheck || currentItem.code;
+
+      // Hide selector, show form
+      document.getElementById('cardSelector').style.display = 'none';
+      document.getElementById('cardForm').style.display = 'block';
+
+      // Setup dynamic form fields
+      setupDynamicForm(currentItem);
+
+      // Advance Stepper
+      updateStepper(2);
+    }
+
+    function toggleSelectorDrawer() {
+      var cs = document.getElementById('cardSelector');
+      if (cs.style.display === 'none') {
+        cs.style.display = 'block';
+        updateStepper(1);
+      } else {
+        cs.style.display = 'none';
+        updateStepper(2);
+      }
+    }
+
+    // Dynamic Form Switcher
+    function setupDynamicForm(item) {
+      var secTemp = document.getElementById('sectionTemp');
+      var secAnalyzer = document.getElementById('sectionAnalyzer');
+      var secUps = document.getElementById('sectionUps');
+      var boxHum = document.getElementById('boxHumidity');
+
+      secTemp.style.display = 'none';
+      secAnalyzer.style.display = 'none';
+      secUps.style.display = 'none';
+
+      if (item.type.indexOf('temp_') === 0) {
+        secTemp.style.display = 'block';
+        document.getElementById('tempTargetBadge').innerText = 'เกณฑ์: ' + item.targetTemp;
+        
+        // Humidity box visibility
+        if (item.hasHumidity) {
+          boxHum.style.display = 'block';
+        } else {
+          boxHum.style.display = 'none';
+        }
+
+        // Set suggested values if blank
+        var inputTemp = document.getElementById('inputTemp');
+        var inputHum = document.getElementById('inputHumidity');
+        if (!inputTemp.value && item.defaultTemp !== undefined) {
+          inputTemp.value = item.defaultTemp;
+        }
+        if (item.hasHumidity && !inputHum.value && item.defaultHum !== undefined) {
+          inputHum.value = item.defaultHum;
+        }
+        validateTempLive();
+        if (item.hasHumidity) validateHumLive();
+
+      } else if (item.type.indexOf('analyzer_') === 0) {
+        secAnalyzer.style.display = 'block';
+        renderAnalyzerChecklist(item.checklist || []);
+
+      } else if (item.type === 'ups_battery') {
+        secUps.style.display = 'block';
+        var inputUps = document.getElementById('inputUpsRuntime');
+        if (!inputUps.value && item.defaultRuntime !== undefined) {
+          inputUps.value = item.defaultRuntime;
+        }
+        validateUpsLive();
+      }
+    }
+
+    // Temperature Micro-stepper & Validation
+    function stepTemp(delta) {
+      var el = document.getElementById('inputTemp');
+      var val = parseFloat(el.value) || 0;
+      el.value = (val + delta).toFixed(1);
+      validateTempLive();
+    }
+
+    function validateTempLive() {
+      if (!currentItem || currentItem.tempMin === undefined) return;
+      var el = document.getElementById('inputTemp');
+      var val = parseFloat(el.value);
+      var fb = document.getElementById('tempStatusFeedback');
+      var txt = document.getElementById('tempStatusText');
+
+      if (isNaN(val)) {
+        fb.style.display = 'none';
+        return;
+      }
+
+      fb.style.display = 'inline-flex';
+      var isPass = (val >= currentItem.tempMin && val <= currentItem.tempMax);
+      if (isPass) {
+        fb.className = 'status-feedback-pill normal';
+        fb.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">check_circle</span> <span>ปกติในเกณฑ์ (' + currentItem.targetTemp + ')</span>';
+      } else {
+        fb.className = 'status-feedback-pill abnormal';
+        fb.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">warning</span> <span>หลุดเกณฑ์มาตรฐาน! (เกณฑ์ปกติ ' + currentItem.targetTemp + ')</span>';
+      }
+    }
+
+    // Humidity Micro-stepper & Validation
+    function stepHum(delta) {
+      var el = document.getElementById('inputHumidity');
+      var val = parseInt(el.value) || 0;
+      el.value = Math.max(0, Math.min(100, val + delta));
+      validateHumLive();
+    }
+
+    function validateHumLive() {
+      var el = document.getElementById('inputHumidity');
+      var val = parseInt(el.value);
+      var fb = document.getElementById('humStatusFeedback');
+
+      if (isNaN(val)) {
+        fb.style.display = 'none';
+        return;
+      }
+
+      fb.style.display = 'inline-flex';
+      if (val <= 60) {
+        fb.className = 'status-feedback-pill normal';
+        fb.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">check_circle</span> <span>ความชื้นปกติ (≤ 60 %RH)</span>';
+      } else {
+        fb.className = 'status-feedback-pill abnormal';
+        fb.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">warning</span> <span>ความชื้นเกินเกณฑ์มาตรฐาน (> 60 %RH)</span>';
+      }
+    }
+
+    // UPS Micro-stepper & Validation
+    function stepUps(delta) {
+      var el = document.getElementById('inputUpsRuntime');
+      var val = parseInt(el.value) || 0;
+      el.value = Math.max(0, val + delta);
+      validateUpsLive();
+    }
+
+    function validateUpsLive() {
+      var el = document.getElementById('inputUpsRuntime');
+      var val = parseInt(el.value);
+      var fb = document.getElementById('upsStatusFeedback');
+
+      if (isNaN(val)) {
+        fb.style.display = 'none';
+        return;
+      }
+
+      fb.style.display = 'inline-flex';
+      if (val >= 15) {
+        fb.className = 'status-feedback-pill normal';
+        fb.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">check_circle</span> <span>สำรองไฟผ่านเกณฑ์ (≥ 15 นาที)</span>';
+      } else {
+        fb.className = 'status-feedback-pill abnormal';
+        fb.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">warning</span> <span>สำรองไฟต่ำกว่าเกณฑ์ (< 15 นาที)</span>';
+      }
+    }
+
+    // Analyzer Checklist
+    function renderAnalyzerChecklist(items) {
+      var container = document.getElementById('analyzerChecklistContainer');
+      container.innerHTML = '';
+      analyzerChecklistState = {};
+
+      items.forEach(function(text, idx) {
+        analyzerChecklistState[idx] = null;
+        var row = document.createElement('div');
+        row.className = 'checklist-item';
+        row.id = 'checkRow_' + idx;
+        row.innerHTML = '<div class="item-text"><strong>' + (idx + 1) + '.</strong> ' + text + '</div>' +
+          '<div class="item-btn-group">' +
+            '<button type="button" class="btn-check-choice" id="btnChkPass_' + idx + '" onclick="setChecklistItem(' + idx + ', \'pass\')">' +
+              '<span class="material-icons-round" style="font-size: 13px; vertical-align: -2px;">check</span> ผ่าน' +
+            '</button>' +
+            '<button type="button" class="btn-check-choice" id="btnChkFail_' + idx + '" onclick="setChecklistItem(' + idx + ', \'fail\')">' +
+              '<span class="material-icons-round" style="font-size: 13px; vertical-align: -2px;">close</span> ไม่ผ่าน' +
+            '</button>' +
+          '</div>';
+        container.appendChild(row);
+      });
+    }
+
+    function setChecklistItem(idx, val) {
+      analyzerChecklistState[idx] = val;
+      var bPass = document.getElementById('btnChkPass_' + idx);
+      var bFail = document.getElementById('btnChkFail_' + idx);
+
+      if (val === 'pass') {
+        bPass.className = 'btn-check-choice active-pass';
+        bFail.className = 'btn-check-choice';
+      } else {
+        bPass.className = 'btn-check-choice';
+        bFail.className = 'btn-check-choice active-fail';
+      }
+    }
+
+    function quickPassChecklist() {
+      if (!currentItem || !currentItem.checklist) return;
+      currentItem.checklist.forEach(function(_, idx) {
+        setChecklistItem(idx, 'pass');
+      });
+    }
+
+    // Employee ID 6-Digit Format (Strict Golden Rule)
+    function formatStaffId(el) {
+      var val = (el.value || '').trim();
+      if (!val) return;
+      // Strip non-digits
+      var numOnly = val.replace(/\D/g, '');
+      if (numOnly) {
+        el.value = numOnly.padStart(6, '0');
+      }
+    }
+
+    // Stepper State Updater
+    function updateStepper(step) {
+      var s1 = document.getElementById('step1');
+      var s2 = document.getElementById('step2');
+      var s3 = document.getElementById('step3');
+      var l1 = document.getElementById('line1');
+      var l2 = document.getElementById('line2');
+
+      if (step === 1) {
+        s1.className = 'stepper-step active';
+        s2.className = 'stepper-step';
+        s3.className = 'stepper-step';
+        l1.className = 'stepper-line';
+        l2.className = 'stepper-line';
+      } else if (step === 2) {
+        s1.className = 'stepper-step done';
+        s2.className = 'stepper-step active';
+        s3.className = 'stepper-step';
+        l1.className = 'stepper-line done';
+        l2.className = 'stepper-line';
+      } else if (step === 3) {
+        s1.className = 'stepper-step done';
+        s2.className = 'stepper-step done';
+        s3.className = 'stepper-step active';
+        l1.className = 'stepper-line done';
+        l2.className = 'stepper-line done';
+      }
+    }
+
+    // Submit Evaluation Form
+    function submitEvaluation() {
+      if (!currentItem) {
+        alert('กรุณาเลือกจุดตรวจก่อนบันทึกข้อมูล');
+        return;
+      }
+
+      var staffIdInput = document.getElementById('staffId');
+      formatStaffId(staffIdInput);
+      var staffId = staffIdInput.value.trim();
+      var staffName = document.getElementById('staffName').value.trim();
+
+      if (!staffId) {
+        alert('กรุณาระบุรหัสพนักงานผู้ตรวจ (เช่น 000023)');
+        staffIdInput.focus();
+        return;
+      }
+      if (!staffName) {
+        alert('กรุณาระบุชื่อ-สกุล ผู้ตรวจเช็ค');
+        document.getElementById('staffName').focus();
+        return;
+      }
+
+      var evalDate = document.getElementById('evalDate').value;
+      var evalTime = document.getElementById('evalTime').value;
+      var note = document.getElementById('evalNote').value.trim();
+
+      // Collect Evaluation Payload
+      var isOverallPass = true;
+      var evalData = {
+        itemId: currentItem.id,
+        itemName: currentItem.name,
+        formCode: currentItem.code,
+        category: currentItem.catName,
+        type: currentItem.type,
+        date: evalDate,
+        time: evalTime,
+        shift: currentShift,
+        staffId: staffId,
+        staffName: staffName,
+        note: note,
+        timestamp: new Date().toISOString()
+      };
+
+      if (currentItem.type.indexOf('temp_') === 0) {
+        var tempVal = parseFloat(document.getElementById('inputTemp').value);
+        if (isNaN(tempVal)) {
+          alert('กรุณากรอกค่าอุณหภูมิ');
+          document.getElementById('inputTemp').focus();
+          return;
+        }
+        evalData.temperature = tempVal;
+        var tempPass = (tempVal >= currentItem.tempMin && tempVal <= currentItem.tempMax);
+        if (!tempPass) isOverallPass = false;
+
+        if (currentItem.hasHumidity) {
+          var humVal = parseInt(document.getElementById('inputHumidity').value);
+          if (isNaN(humVal)) {
+            alert('กรุณากรอกค่าความชื้นสัมพัทธ์');
+            document.getElementById('inputHumidity').focus();
+            return;
+          }
+          evalData.humidity = humVal;
+          if (humVal > 60) isOverallPass = false;
+        }
+
+      } else if (currentItem.type.indexOf('analyzer_') === 0) {
+        var items = currentItem.checklist || [];
+        var passCount = 0;
+        for (var i = 0; i < items.length; i++) {
+          if (analyzerChecklistState[i] === null) {
+            alert('กรุณาตรวจเช็ครายการที่ ' + (i + 1) + ' ให้ครบถ้วน');
+            return;
+          }
+          if (analyzerChecklistState[i] === 'pass') passCount++;
+          else isOverallPass = false;
+        }
+        evalData.checklistResults = analyzerChecklistState;
+        evalData.checklistSummary = passCount + '/' + items.length + ' ผ่านเกณฑ์';
+
+      } else if (currentItem.type === 'ups_battery') {
+        var upsMin = parseInt(document.getElementById('inputUpsRuntime').value);
+        if (isNaN(upsMin)) {
+          alert('กรุณาระบุระยะเวลาสำรองไฟ (นาที)');
+          document.getElementById('inputUpsRuntime').focus();
+          return;
+        }
+        evalData.runtimeMinutes = upsMin;
+        if (upsMin < 15) isOverallPass = false;
+      }
+
+      evalData.status = isOverallPass ? 'ready' : 'abnormal';
+
+      // Persist to localStorage
+      try {
+        localStorage.setItem('PPCH_LAST_STAFF_ID', staffId);
+        localStorage.setItem('PPCH_LAST_STAFF_NAME', staffName);
+
+        var historyList = JSON.parse(localStorage.getItem('PPCH_LAB_EVAL_RECORDS') || '[]');
+        historyList.unshift(evalData);
+        if (historyList.length > 200) historyList = historyList.slice(0, 200);
+        localStorage.setItem('PPCH_LAB_EVAL_RECORDS', JSON.stringify(historyList));
+
+        // Update latest state cache for lab dashboard
+        var latestCache = JSON.parse(localStorage.getItem('PPCH_LAB_LATEST_STATUS') || '{}');
+        latestCache[currentItem.id] = {
+          status: evalData.status,
+          lastTemp: evalData.temperature,
+          lastHumidity: evalData.humidity,
+          evaluatedAt: evalTime,
+          evaluatedBy: staffName,
+          shift: currentShift,
+          date: evalDate
+        };
+        localStorage.setItem('PPCH_LAB_LATEST_STATUS', JSON.stringify(latestCache));
+      } catch (err) {
+        console.warn('localStorage save warning:', err);
+      }
+
+      // Background POST to GAS API (silent async)
+      try {
+        fetch(GAS_API_URL + '?action=saveLabRecord', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(evalData),
+          mode: 'no-cors'
+        }).catch(function(e) { console.log('GAS push background:', e); });
+      } catch (e) {}
+
+      // Advance Stepper to Step 3 & Show Confirmation Slip
+      updateStepper(3);
+      showConfirmationSlip(evalData);
+    }
+
+    // Render Slip Modal
+    function showConfirmationSlip(data) {
+      var docNo = 'LAB-REC-' + data.date.replace(/-/g, '') + '-' + String(Math.floor(Math.random() * 900) + 100);
+      document.getElementById('slipDocNo').innerText = 'DOC: ' + docNo;
+
+      var badge = document.getElementById('slipStatusBadge');
+      if (data.status === 'ready') {
+        badge.className = 'slip-badge-pass';
+        badge.innerText = '✓ ผ่านเกณฑ์มาตรฐาน (PASSED)';
+      } else {
+        badge.className = 'slip-badge-fail';
+        badge.innerText = '⚠ พบสิ่งผิดปกติ / หลุดเกณฑ์ (FLAGGED)';
+      }
+
+      document.getElementById('slipItemName').innerText = data.itemName;
+      document.getElementById('slipFormCode').innerText = data.formCode;
+
+      var shiftNames = { morning: 'เวรเช้า (08:00 - 16:00)', afternoon: 'เวรบ่าย (16:00 - 24:00)', night: 'เวรดึก (00:00 - 08:00)' };
+      document.getElementById('slipDateTime').innerText = data.date + ' ' + data.time + ' น. • ' + (shiftNames[data.shift] || data.shift);
+
+      // Temperature row
+      var rowTemp = document.getElementById('slipRowTemp');
+      if (data.temperature !== undefined) {
+        rowTemp.style.display = 'flex';
+        document.getElementById('slipTempVal').innerText = data.temperature.toFixed(1) + ' °C';
+      } else {
+        rowTemp.style.display = 'none';
+      }
+
+      // Humidity row
+      var rowHum = document.getElementById('slipRowHum');
+      if (data.humidity !== undefined) {
+        rowHum.style.display = 'flex';
+        document.getElementById('slipHumVal').innerText = data.humidity + ' %RH';
+      } else {
+        rowHum.style.display = 'none';
+      }
+
+      // Checklist row
+      var rowChk = document.getElementById('slipRowChecklist');
+      if (data.checklistSummary) {
+        rowChk.style.display = 'flex';
+        document.getElementById('slipChecklistVal').innerText = data.checklistSummary;
+      } else if (data.runtimeMinutes !== undefined) {
+        rowChk.style.display = 'flex';
+        document.getElementById('slipChecklistVal').innerText = 'สำรองไฟ ' + data.runtimeMinutes + ' นาที';
+      } else {
+        rowChk.style.display = 'none';
+      }
+
+      document.getElementById('slipStaffVal').innerText = data.staffName + ' (' + data.staffId + ')';
+
+      var rowNote = document.getElementById('slipRowNote');
+      if (data.note) {
+        rowNote.style.display = 'flex';
+        document.getElementById('slipNoteVal').innerText = data.note;
+      } else {
+        rowNote.style.display = 'none';
+      }
+
+      document.getElementById('slipOverlay').classList.remove('hidden');
+    }
+
+    function closeSlipModal() {
+      document.getElementById('slipOverlay').classList.add('hidden');
+    }
+
+    function recordNextCheckpoint() {
+      closeSlipModal();
+      document.getElementById('cardSelector').style.display = 'block';
+      document.getElementById('cardForm').style.display = 'none';
+      document.getElementById('btnChangeCheckpoint').style.display = 'none';
+      document.getElementById('heroTitle').innerText = 'กรุณาเลือกจุดตรวจ LAB';
+      document.getElementById('heroSub').innerText = 'รหัสแบบฟอร์ม: - | มาตรฐาน: -';
+      document.getElementById('selectCategory').value = '';
+      document.getElementById('selectItem').innerHTML = '<option value="">-- กรุณาเลือกหมวดหมู่ก่อน --</option>';
+      document.getElementById('selectItem').disabled = true;
+      currentItem = null;
+      updateStepper(1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
