@@ -179,10 +179,10 @@
 
     /* Main Container */
     .eval-container {
-      max-width: 680px;
+      max-width: 1040px;
       width: 100%;
       margin: 0 auto;
-      padding: 16px 16px 40px;
+      padding: 16px 14px 40px;
       flex: 1;
     }
 
@@ -610,10 +610,571 @@
       font-size: 12px;
     }
 
+    /* ==================== GOOGLE SHEETS TEMPLATE & GRAPH STYLES ==================== */
+    .sheet-grid-wrapper {
+      background: #ffffff;
+      border: 1.5px solid #64748b;
+      box-shadow: 0 4px 16px rgba(0, 46, 110, 0.06);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 18px;
+    }
+
+    .sheet-meta-header {
+      background: #ffffff;
+      border-bottom: 2px solid #000000;
+      padding: 14px 18px 10px;
+    }
+
+    .sheet-main-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #000000;
+      text-align: center;
+      letter-spacing: -0.2px;
+      margin-bottom: 6px;
+    }
+
+    .sheet-subtitle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 12.5px;
+      color: #1e293b;
+    }
+
+    .sheet-sub-bold {
+      font-weight: 700;
+      color: #000000;
+    }
+
+    .month-pill-list {
+      display: inline-flex;
+      gap: 3px;
+      align-items: center;
+      background: #f1f5f9;
+      padding: 3px 5px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+    }
+
+    .month-pill-btn {
+      border: none;
+      background: transparent;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #475569;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .month-pill-btn:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .month-pill-btn.active {
+      background: var(--royal-blue);
+      color: #ffffff;
+      font-weight: 700;
+      box-shadow: 0 1px 4px rgba(0, 75, 147, 0.3);
+    }
+
+    .sheet-table-scroll-container {
+      overflow-x: auto;
+      position: relative;
+      background: #ffffff;
+      padding: 8px 12px;
+      scrollbar-width: thin;
+      scrollbar-color: #cbd5e1 #f8fafc;
+    }
+
+    .sheet-shift-block {
+      border: 1.5px solid #000000;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 14px;
+      background: #ffffff;
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+
+    .sheet-shift-block.active-block {
+      box-shadow: 0 0 0 2px var(--royal-blue);
+    }
+
+    .sheet-grid-layer-relative {
+      position: relative;
+      width: 946px;
+      height: 140px;
+    }
+
+    .sheet-grid-table {
+      width: 946px;
+      min-width: 946px;
+      table-layout: fixed;
+      border-collapse: collapse;
+      background: #ffffff;
+      font-family: var(--font-sans);
+    }
+
+    .sheet-grid-table th, .sheet-grid-table td {
+      border: 1px solid #94a3b8;
+      padding: 0;
+      margin: 0;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 11.5px;
+      user-select: none;
+    }
+
+    .sheet-cell-shift {
+      width: 42px;
+      background: #e2e8f0;
+      font-weight: 800;
+      color: #000000;
+      border: 1.5px solid #000000 !important;
+      position: sticky;
+      left: 0;
+      z-index: 10;
+    }
+
+    .shift-vertical-label {
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      letter-spacing: 5px;
+      font-size: 14px;
+      font-weight: 800;
+      margin: 0 auto;
+    }
+
+    .sheet-scale-cell {
+      width: 36px;
+      height: 28px;
+      font-size: 11.5px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: #000000;
+      background: #f8fafc;
+      border-right: 1.5px solid #000000 !important;
+      position: sticky;
+      left: 42px;
+      z-index: 10;
+    }
+
+    .sheet-grid-cell {
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+
+    .sheet-grid-cell:hover {
+      background: rgba(0, 75, 147, 0.08);
+    }
+
+    .sheet-grid-cell.active-col {
+      background: rgba(0, 75, 147, 0.08) !important;
+      border-left: 2px solid #004b93 !important;
+      border-right: 2px solid #004b93 !important;
+    }
+
+    .safe-zone-row {
+      background: rgba(16, 185, 129, 0.04);
+    }
+
+    .safe-zone-top td {
+      border-top: 2px solid #059669 !important;
+    }
+
+    .safe-zone-bottom td {
+      border-bottom: 2px solid #059669 !important;
+    }
+
+    .sheet-bottom-table {
+      border-top: 2px solid #000000;
+    }
+
+    .sheet-bottom-table td {
+      height: 26px;
+    }
+
+    .sheet-day-row {
+      background: #f1f5f9;
+      font-weight: 700;
+    }
+
+    .sheet-day-hdr {
+      font-weight: 800;
+      color: #000000;
+      background: #e2e8f0;
+      font-size: 11.5px;
+      position: sticky;
+      left: 0;
+      z-index: 10;
+      border-right: 1.5px solid #000000 !important;
+    }
+
+    .sheet-day-num {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #0f172a;
+      cursor: pointer;
+    }
+
+    .sheet-day-num:hover, .sheet-day-num.active-day {
+      background: var(--royal-blue);
+      color: #ffffff;
+      font-weight: 800;
+    }
+
+    .sheet-hum-gt60-hdr {
+      font-weight: 800;
+      color: #dc2626;
+      background: #fef2f2;
+      font-size: 11px;
+      position: sticky;
+      left: 0;
+      z-index: 10;
+      border-right: 1.5px solid #000000 !important;
+    }
+
+    .sheet-hum-lt60-hdr {
+      font-weight: 800;
+      color: #2563eb;
+      background: #eff6ff;
+      font-size: 11px;
+      position: sticky;
+      left: 0;
+      z-index: 10;
+      border-right: 1.5px solid #000000 !important;
+    }
+
+    .sheet-hum-cell {
+      font-size: 10px;
+      font-family: var(--font-mono);
+      cursor: pointer;
+    }
+
+    .sheet-hum-cell.gt60-active {
+      color: #dc2626;
+      font-weight: 800;
+      background: #fee2e2;
+    }
+
+    .sheet-hum-cell.lt60-active {
+      color: #2563eb;
+      font-weight: 800;
+      background: #dbeafe;
+    }
+
+    .sheet-staff-hdr {
+      font-weight: 800;
+      color: #000000;
+      background: #e2e8f0;
+      font-size: 11.5px;
+      position: sticky;
+      left: 0;
+      z-index: 10;
+      border-right: 1.5px solid #000000 !important;
+    }
+
+    .sheet-staff-cell {
+      font-size: 9px;
+      color: #1e293b;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 28px;
+      cursor: pointer;
+    }
+
+    .sheet-svg-graph {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 946px;
+      height: 140px;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    @keyframes markerPulseAnim {
+      0% { r: 6px; opacity: 1; }
+      50% { r: 16px; opacity: 0.3; }
+      100% { r: 6px; opacity: 1; }
+    }
+
+    .marker-pulse {
+      animation: markerPulseAnim 1.6s ease-in-out infinite;
+      transform-origin: center;
+    }
+
+    /* ==================== REALTIME DOCK STYLES ==================== */
+    .realtime-dock-card {
+      background: #ffffff;
+      border: 1.5px solid var(--royal-blue);
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 75, 147, 0.08);
+      overflow: hidden;
+      margin-top: 14px;
+    }
+
+    .dock-header {
+      background: linear-gradient(135deg, #002e6e 0%, #004b93 100%);
+      color: #ffffff;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .dock-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dock-badge {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .dock-body {
+      padding: 16px 18px;
+      background: #ffffff;
+    }
+
+    .dock-toolbar-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .dock-shift-toggle {
+      display: inline-flex;
+      background: #f1f5f9;
+      padding: 3px;
+      border-radius: 8px;
+      gap: 4px;
+    }
+
+    .dock-shift-btn {
+      border: none;
+      background: transparent;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #475569;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+
+    .dock-shift-btn.active {
+      background: var(--royal-blue);
+      color: #ffffff;
+      font-weight: 700;
+      box-shadow: 0 2px 6px rgba(0, 75, 147, 0.25);
+    }
+
+    .dock-day-selector {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-day-nav {
+      width: 34px;
+      height: 34px;
+      background: #f1f5f9;
+      border: 1px solid var(--border-main);
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-body);
+      transition: all 0.1s;
+    }
+    .btn-day-nav:hover { background: #e2e8f0; }
+
+    .dock-day-display {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #f8fafc;
+      border: 1px solid var(--border-blue-soft);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--royal-dark);
+    }
+
+    .dock-day-dropdown {
+      border: none;
+      background: transparent;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--royal-blue);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .btn-day-today {
+      padding: 6px 10px;
+      background: var(--royal-subtle);
+      border: 1px solid var(--border-blue-soft);
+      color: var(--royal-blue);
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .dock-inputs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 640px) {
+      .dock-inputs-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .dock-input-box {
+      background: #f8fafc;
+      border: 1px solid var(--border-main);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+
+    .dock-box-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .dock-box-label {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dock-spec-tag {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--royal-blue);
+      background: var(--royal-subtle);
+      border: 1px solid var(--border-blue-soft);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .dock-staff-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .dock-field-label {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .dock-actions-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-dock-save {
+      flex: 2;
+      min-width: 180px;
+      height: 44px;
+      background: linear-gradient(135deg, #004b93 0%, #0284c7 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0, 75, 147, 0.25);
+      transition: all 0.15s;
+    }
+    .btn-dock-save:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(0, 75, 147, 0.35);
+    }
+
+    .btn-dock-secondary {
+      height: 44px;
+      padding: 0 14px;
+      background: #ffffff;
+      border: 1px solid var(--border-main);
+      border-radius: 8px;
+      color: var(--text-body);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.1s;
+    }
+    .btn-dock-secondary:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
     /* Print styles */
     @media print {
-      body { background: #ffffff; font-size: 11pt; }
-      .app-topbar, .eval-stepper-bar, .no-print { display: none !important; }
+      body { background: #ffffff; font-size: 10pt; }
+      .app-topbar, .eval-stepper-bar, .no-print, .realtime-dock-card, .checkpoint-hero { display: none !important; }
+      .sheet-grid-wrapper { box-shadow: none; border: 1.5px solid #000; margin: 0; width: 100%; }
+      .sheet-table-scroll-container { padding: 0; overflow: visible; }
+      .sheet-grid-layer-relative, .sheet-grid-table, .sheet-svg-graph { width: 100% !important; min-width: 0 !important; }
       .slip-overlay { position: static; background: transparent; backdrop-filter: none; padding: 0; }
       .slip-card { box-shadow: none; border: 1px solid #000000; max-width: 100%; border-radius: 0; }
       .slip-header { background: #ffffff !important; color: #000000 !important; border-bottom: 2px solid #000000; }
@@ -735,167 +1296,377 @@
     </section>
 
     <!-- Step 2 Card: Main Evaluation Form -->
-    <section class="eval-card" id="cardForm" style="display: none;">
-      <div class="eval-card-header">
-        <div class="eval-card-title">
-          <span class="material-icons-round" style="color: var(--royal-blue); font-size: 18px;">edit_note</span>
-          <span>บันทึกผลการตรวจเช็ค</span>
+    <section class="eval-card" id="cardForm" style="display: none; background: transparent; border: none; box-shadow: none; padding: 0;">
+      
+      <!-- ==================== A. GOOGLE SHEETS TEMPERATURE GRID (EXACT FORM FORMAT) ==================== -->
+      <div id="sheetGridSection" class="sheet-grid-wrapper" style="display: none;">
+        <!-- Sheet Header Bar -->
+        <div class="sheet-meta-header">
+          <div class="sheet-main-title" id="sheetTitleText">แบบบันทึกอุณหภูมิห้องปฏิบัติการ</div>
+          <div class="sheet-subtitle-row">
+            <div class="sheet-sub-left">
+              <span class="sheet-sub-bold">แผนกบันทึกอุณหภูมิห้อง:</span>
+              <span id="sheetRoomNameText" style="color: var(--royal-blue); font-weight: 700;">Laboratory (ห้องปฏิบัติการกลาง)</span>
+            </div>
+            <div class="sheet-sub-center">
+              <span class="sheet-sub-bold" style="margin-right: 6px;">ประจำเดือน:</span>
+              <div class="month-pill-list" id="monthPillList">
+                <!-- 12 Months pills generated by JS -->
+              </div>
+            </div>
+            <div class="sheet-sub-right">
+              <span class="sheet-sub-bold">ปี</span>
+              <span id="sheetYearText" style="font-weight: 700;">2569</span>
+            </div>
+          </div>
         </div>
-        <div id="targetSpecPill" style="font-size: 11px; font-weight: 700; color: var(--royal-blue); background: var(--royal-subtle); padding: 3px 8px; border-radius: 4px; border: 1px solid var(--border-blue-soft);">-</div>
+
+        <!-- Scrollable Table Container (31 Days) -->
+        <div class="sheet-table-scroll-container" id="sheetScrollContainer">
+          
+          <!-- Shift Block 1: เช้า (Morning) -->
+          <div class="sheet-shift-block active-block" id="blockMorning">
+            <div class="sheet-grid-layer-relative">
+              <table class="sheet-grid-table" id="tableMorning">
+                <tbody id="tbodyMorning">
+                  <!-- Populated by JS: 5 scale rows with 31 cells each -->
+                </tbody>
+              </table>
+
+              <!-- SVG Graph Overlay for Morning Shift -->
+              <svg class="sheet-svg-graph" id="svgMorning" viewBox="0 0 946 140" preserveAspectRatio="none">
+                <!-- Safe Target Zone Band (e.g. 24-28 °C, Y=42 to Y=98) -->
+                <rect id="safeBandMorning" x="78" y="42" width="868" height="56" fill="rgba(16, 185, 129, 0.08)" stroke="none" />
+                <line id="safeLineTopMorning" x1="78" y1="42" x2="946" y2="42" stroke="#059669" stroke-width="1.5" stroke-dasharray="4,2" />
+                <line id="safeLineBotMorning" x1="78" y1="98" x2="946" y2="98" stroke="#059669" stroke-width="1.5" stroke-dasharray="4,2" />
+                
+                <!-- Polyline connecting days -->
+                <polyline id="polyMorning" points="" fill="none" stroke="#004b93" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                
+                <!-- Static dots for recorded days -->
+                <g id="dotsMorning"></g>
+                
+                <!-- Active Live Marker & Pulse & Tooltip -->
+                <g id="liveMarkerMorning" style="display: none;">
+                  <circle id="livePulseMorning" cx="0" cy="0" r="14" fill="none" stroke="#0284c7" stroke-width="2" class="marker-pulse" />
+                  <circle id="liveDotMorning" cx="0" cy="0" r="6" fill="#004b93" stroke="#ffffff" stroke-width="2" />
+                  <g id="liveTooltipMorning" transform="translate(0, -14)">
+                    <rect x="-24" y="-20" width="48" height="18" rx="4" fill="#002e6e" />
+                    <polygon points="-4,-2 4,-2 0,2" fill="#002e6e" />
+                    <text x="0" y="-8" fill="#ffffff" font-size="10.5" font-weight="700" text-anchor="middle" id="liveTooltipTextMorning">25.4°</text>
+                  </g>
+                </g>
+              </svg>
+            </div>
+
+            <!-- Bottom Table of Morning Block (Day, >60%, <60%, Staff) -->
+            <table class="sheet-grid-table sheet-bottom-table">
+              <tbody>
+                <tr class="sheet-day-row" id="rowDayMorning">
+                  <td class="sheet-day-hdr" style="width: 78px;">วันที่ (Day)</td>
+                  <!-- 31 Day numbers -->
+                </tr>
+                <tr class="sheet-hum-gt60-row" id="rowHumGt60Morning">
+                  <td class="sheet-hum-gt60-hdr" style="width: 78px;">> 60% ■</td>
+                  <!-- 31 cells -->
+                </tr>
+                <tr class="sheet-hum-lt60-row" id="rowHumLt60Morning">
+                  <td class="sheet-hum-lt60-hdr" style="width: 78px;">< 60% ■</td>
+                  <!-- 31 cells -->
+                </tr>
+                <tr class="sheet-staff-row" id="rowStaffMorning">
+                  <td class="sheet-staff-hdr" style="width: 78px;">ผู้บันทึก</td>
+                  <!-- 31 cells -->
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Shift Block 2: บ่าย (Afternoon) -->
+          <div class="sheet-shift-block" id="blockAfternoon">
+            <div class="sheet-grid-layer-relative">
+              <table class="sheet-grid-table" id="tableAfternoon">
+                <tbody id="tbodyAfternoon">
+                  <!-- Populated by JS: 5 scale rows with 31 cells each -->
+                </tbody>
+              </table>
+
+              <!-- SVG Graph Overlay for Afternoon Shift -->
+              <svg class="sheet-svg-graph" id="svgAfternoon" viewBox="0 0 946 140" preserveAspectRatio="none">
+                <!-- Safe Target Zone Band -->
+                <rect id="safeBandAfternoon" x="78" y="42" width="868" height="56" fill="rgba(16, 185, 129, 0.08)" stroke="none" />
+                <line id="safeLineTopAfternoon" x1="78" y1="42" x2="946" y2="42" stroke="#059669" stroke-width="1.5" stroke-dasharray="4,2" />
+                <line id="safeLineBotAfternoon" x1="78" y1="98" x2="946" y2="98" stroke="#059669" stroke-width="1.5" stroke-dasharray="4,2" />
+                
+                <!-- Polyline connecting days -->
+                <polyline id="polyAfternoon" points="" fill="none" stroke="#0284c7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                
+                <!-- Static dots for recorded days -->
+                <g id="dotsAfternoon"></g>
+                
+                <!-- Active Live Marker & Pulse & Tooltip -->
+                <g id="liveMarkerAfternoon" style="display: none;">
+                  <circle id="livePulseAfternoon" cx="0" cy="0" r="14" fill="none" stroke="#0284c7" stroke-width="2" class="marker-pulse" />
+                  <circle id="liveDotAfternoon" cx="0" cy="0" r="6" fill="#004b93" stroke="#ffffff" stroke-width="2" />
+                  <g id="liveTooltipAfternoon" transform="translate(0, -14)">
+                    <rect x="-24" y="-20" width="48" height="18" rx="4" fill="#002e6e" />
+                    <polygon points="-4,-2 4,-2 0,2" fill="#002e6e" />
+                    <text x="0" y="-8" fill="#ffffff" font-size="10.5" font-weight="700" text-anchor="middle" id="liveTooltipTextAfternoon">25.8°</text>
+                  </g>
+                </g>
+              </svg>
+            </div>
+
+            <!-- Bottom Table of Afternoon Block (Day, >60%, <60%, Staff) -->
+            <table class="sheet-grid-table sheet-bottom-table">
+              <tbody>
+                <tr class="sheet-day-row" id="rowDayAfternoon">
+                  <td class="sheet-day-hdr" style="width: 78px;">วันที่ (Day)</td>
+                  <!-- 31 Day numbers -->
+                </tr>
+                <tr class="sheet-hum-gt60-row" id="rowHumGt60Afternoon">
+                  <td class="sheet-hum-gt60-hdr" style="width: 78px;">> 60% ■</td>
+                  <!-- 31 cells -->
+                </tr>
+                <tr class="sheet-hum-lt60-row" id="rowHumLt60Afternoon">
+                  <td class="sheet-hum-lt60-hdr" style="width: 78px;">< 60% ■</td>
+                  <!-- 31 cells -->
+                </tr>
+                <tr class="sheet-staff-row" id="rowStaffAfternoon">
+                  <td class="sheet-staff-hdr" style="width: 78px;">ผู้บันทึก</td>
+                  <!-- 31 cells -->
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
       </div>
-      <div class="eval-card-body">
 
-        <!-- Date Time & Shift -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
-          <div>
-            <label style="display: block; font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 3px;">วันที่บันทึก</label>
-            <input type="date" id="evalDate" class="form-control-input" style="font-family: var(--font-mono); font-weight: 600;">
+      <!-- ==================== B. REAL-TIME INPUT DOCK (DIRECTLY BELOW TABLE) ==================== -->
+      <div id="realtimeDockSection" class="realtime-dock-card" style="display: none;">
+        <div class="dock-header">
+          <div class="dock-title">
+            <span class="material-icons-round" style="color: #60a5fa; font-size: 20px;">speed</span>
+            <span>ช่องกรอกข้อมูล (ใส่ตัวเลขเสร็จ กราฟพล็อตบนตารางแบบเรียลไทม์ทันที)</span>
           </div>
-          <div>
-            <label style="display: block; font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 3px;">เวลาบันทึก</label>
-            <input type="time" id="evalTime" class="form-control-input" style="font-family: var(--font-mono); font-weight: 600;">
-          </div>
+          <span class="dock-badge">REAL-TIME PLOTTING</span>
         </div>
 
-        <!-- Shift Selector -->
-        <div style="margin-bottom: 14px;">
-          <label style="display: block; font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px;">เวรปฏิบัติการ (ตรวจจับอัตโนมัติตามเวลาปัจจุบัน)</label>
-          <div class="shift-pill-group">
-            <button type="button" class="shift-pill-btn active" id="btnShiftMorning" onclick="setShift('morning')">
-              <span>เวรเช้า</span>
-              <span class="shift-time">08:00 - 16:00</span>
-            </button>
-            <button type="button" class="shift-pill-btn" id="btnShiftAfternoon" onclick="setShift('afternoon')">
-              <span>เวรบ่าย</span>
-              <span class="shift-time">16:00 - 24:00</span>
-            </button>
-            <button type="button" class="shift-pill-btn" id="btnShiftNight" onclick="setShift('night')">
-              <span>เวรดึก</span>
-              <span class="shift-time">00:00 - 08:00</span>
-            </button>
-          </div>
-        </div>
+        <div class="dock-body">
+          <!-- Shift & Day Toolbar -->
+          <div class="dock-toolbar-row">
+            <!-- Shift Selector -->
+            <div class="dock-shift-toggle">
+              <button type="button" class="dock-shift-btn active" id="dockShiftMorning" onclick="switchActiveShift('morning')">
+                <span class="material-icons-round" style="font-size: 16px;">wb_sunny</span>
+                <span>เวรเช้า (08:00 - 16:00)</span>
+              </button>
+              <button type="button" class="dock-shift-btn" id="dockShiftAfternoon" onclick="switchActiveShift('afternoon')">
+                <span class="material-icons-round" style="font-size: 16px;">wb_twilight</span>
+                <span>เวรบ่าย (16:00 - 24:00)</span>
+              </button>
+            </div>
 
-        <!-- Dynamic Section A: Temperature & Humidity -->
-        <div id="sectionTemp" style="display: none;">
-          <!-- Temperature Input -->
-          <div style="margin-bottom: 16px; background: #f8fafc; border: 1px solid var(--border-main); padding: 14px; border-radius: 12px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <label style="font-size: 13px; font-weight: 700; color: var(--text-main);">
-                ค่าอุณหภูมิที่วัดได้ (°C) *
+            <!-- Day Selector -->
+            <div class="dock-day-selector">
+              <button type="button" class="btn-day-nav" onclick="navDay(-1)" title="วันก่อนหน้า">
+                <span class="material-icons-round">chevron_left</span>
+              </button>
+              <div class="dock-day-display">
+                <span class="material-icons-round" style="font-size: 16px; color: var(--royal-blue);">calendar_today</span>
+                <span>วันที่</span>
+                <select id="dockDaySelect" class="dock-day-dropdown" onchange="onDayDropdownChanged()">
+                  <!-- 1 to 31 options -->
+                </select>
+                <span id="dockMonthYearText" style="font-size: 12px; color: var(--text-muted); font-weight: 600;">ต.ค. 2569</span>
+              </div>
+              <button type="button" class="btn-day-nav" onclick="navDay(1)" title="วันถัดไป">
+                <span class="material-icons-round">chevron_right</span>
+              </button>
+              <button type="button" class="btn-day-today" onclick="navToday()">วันนี้</button>
+            </div>
+          </div>
+
+          <!-- Inputs Grid: Temperature & Humidity -->
+          <div class="dock-inputs-grid">
+            <!-- Temperature Input -->
+            <div class="dock-input-box">
+              <div class="dock-box-header">
+                <label class="dock-box-label">
+                  <span class="material-icons-round" style="font-size: 18px; color: #ef4444;">thermostat</span>
+                  <span>ค่าอุณหภูมิที่วัดได้ (°C) *</span>
+                </label>
+                <span id="dockTempTarget" class="dock-spec-tag">เกณฑ์: 24.0 - 28.0 °C</span>
+              </div>
+              
+              <div class="numeric-entry-box">
+                <button type="button" class="btn-stepper" onclick="stepLiveTemp(-0.5)">-0.5</button>
+                <button type="button" class="btn-stepper" onclick="stepLiveTemp(-0.1)">-0.1</button>
+                <input type="number" id="inputTemp" class="numeric-entry-input" step="0.1" placeholder="00.0" oninput="onLiveTempInput()" onkeyup="onLiveTempInput()">
+                <button type="button" class="btn-stepper" onclick="stepLiveTemp(0.1)">+0.1</button>
+                <button type="button" class="btn-stepper" onclick="stepLiveTemp(0.5)">+0.5</button>
+              </div>
+
+              <div id="dockTempFeedback" class="status-feedback-pill normal" style="margin-top: 8px;">
+                <span class="material-icons-round" style="font-size: 15px;">check_circle</span>
+                <span id="dockTempFeedbackText">ปกติในเกณฑ์มาตรฐาน</span>
+              </div>
+            </div>
+
+            <!-- Humidity Input (Visible if checkpoint has humidity) -->
+            <div class="dock-input-box" id="dockHumBox">
+              <div class="dock-box-header">
+                <label class="dock-box-label">
+                  <span class="material-icons-round" style="font-size: 18px; color: #0284c7;">water_drop</span>
+                  <span>ค่าความชื้นสัมพัทธ์ (%RH) *</span>
+                </label>
+                <span class="dock-spec-tag" style="color: #dc2626; border-color: #fecaca; background: #fef2f2;">เกณฑ์: ≤ 60 %RH</span>
+              </div>
+
+              <div class="numeric-entry-box">
+                <button type="button" class="btn-stepper" onclick="stepLiveHum(-5)">-5</button>
+                <button type="button" class="btn-stepper" onclick="stepLiveHum(-1)">-1</button>
+                <input type="number" id="inputHumidity" class="numeric-entry-input" step="1" placeholder="50" oninput="onLiveHumInput()" onkeyup="onLiveHumInput()">
+                <button type="button" class="btn-stepper" onclick="stepLiveHum(1)">+1</button>
+                <button type="button" class="btn-stepper" onclick="stepLiveHum(5)">+5</button>
+              </div>
+
+              <div id="dockHumFeedback" class="status-feedback-pill normal" style="margin-top: 8px;">
+                <span class="material-icons-round" style="font-size: 15px;">check_circle</span>
+                <span id="dockHumFeedbackText">ความชื้นปกติ (≤ 60 %RH)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Staff ID & Name -->
+          <div class="dock-staff-grid">
+            <div>
+              <label class="dock-field-label">รหัสพนักงานผู้ตรวจ (6 หลัก) *</label>
+              <input type="text" id="staffId" class="form-control-input" placeholder="เช่น 000023" maxlength="6" onblur="formatStaffId(this); onLiveStaffInput();" oninput="onLiveStaffInput()" style="font-family: var(--font-mono); font-weight: 700;">
+            </div>
+            <div>
+              <label class="dock-field-label">ชื่อ-สกุล ผู้ตรวจเช็ค *</label>
+              <input type="text" id="staffName" class="form-control-input" placeholder="เช่น ทนพ. สมชาย ใจดี" oninput="onLiveStaffInput()">
+            </div>
+            <div style="grid-column: 1 / -1;">
+              <label class="dock-field-label" style="display: flex; justify-content: space-between;">
+                <span>หมายเหตุ / การแก้ไขกรณีพบปัญหา (ถ้ามี)</span>
+                <span style="font-weight: 400; color: var(--text-light);">(ไม่บังคับกรอก)</span>
               </label>
-              <span id="tempTargetBadge" style="font-size: 11px; color: var(--royal-blue); font-weight: 600;">เกณฑ์: -</span>
-            </div>
-            
-            <div class="numeric-entry-box">
-              <button type="button" class="btn-stepper" onclick="stepTemp(-0.5)">-0.5</button>
-              <button type="button" class="btn-stepper" onclick="stepTemp(-0.1)">-0.1</button>
-              <input type="number" id="inputTemp" class="numeric-entry-input" step="0.1" placeholder="00.0" oninput="validateTempLive()">
-              <button type="button" class="btn-stepper" onclick="stepTemp(0.1)">+0.1</button>
-              <button type="button" class="btn-stepper" onclick="stepTemp(0.5)">+0.5</button>
-            </div>
-
-            <div id="tempStatusFeedback" class="status-feedback-pill normal" style="display: none;">
-              <span class="material-icons-round" style="font-size: 15px;">check_circle</span>
-              <span id="tempStatusText">ปกติในเกณฑ์มาตรฐาน</span>
+              <textarea id="evalNote" class="form-control-textarea" rows="2" placeholder="ระบุการปรับเครื่องปรับอากาศ เติมน้ำกลั่น หรือทำความสะอาด (ถ้ามี)..."></textarea>
             </div>
           </div>
 
-          <!-- Humidity Input (Only if applicable) -->
-          <div id="boxHumidity" style="margin-bottom: 16px; background: #f8fafc; border: 1px solid var(--border-main); padding: 14px; border-radius: 12px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <label style="font-size: 13px; font-weight: 700; color: var(--text-main);">
-                ค่าความชื้นสัมพัทธ์ (%RH) *
-              </label>
-              <span style="font-size: 11px; color: #dc2626; font-weight: 700;">เกณฑ์: ≤ 60 %RH</span>
-            </div>
-
-            <div class="numeric-entry-box">
-              <button type="button" class="btn-stepper" onclick="stepHum(-5)">-5</button>
-              <button type="button" class="btn-stepper" onclick="stepHum(-1)">-1</button>
-              <input type="number" id="inputHumidity" class="numeric-entry-input" step="1" placeholder="50" oninput="validateHumLive()">
-              <button type="button" class="btn-stepper" onclick="stepHum(1)">+1</button>
-              <button type="button" class="btn-stepper" onclick="stepHum(5)">+5</button>
-            </div>
-
-            <div id="humStatusFeedback" class="status-feedback-pill normal" style="display: none;">
-              <span class="material-icons-round" style="font-size: 15px;">check_circle</span>
-              <span id="humStatusText">ความชื้นปกติ (≤ 60 %RH)</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Dynamic Section B: Analyzer Checklist -->
-        <div id="sectionAnalyzer" style="display: none; margin-bottom: 16px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <label style="font-size: 13px; font-weight: 700; color: var(--text-main);">รายการตรวจเช็คประจำวัน</label>
-            <button type="button" class="btn-quick-pass" onclick="quickPassChecklist()">
-              <span class="material-icons-round" style="font-size: 14px;">done_all</span>
-              <span>ผ่านทั้งหมด (Quick Pass)</span>
+          <!-- Action Buttons Bar -->
+          <div class="dock-actions-bar">
+            <button type="button" id="btnSubmitEval" onclick="submitEvaluation()" class="btn-dock-save">
+              <span class="material-icons-round">save</span>
+              <span>บันทึกผลลงชีท (Save to Sheet)</span>
+            </button>
+            <button type="button" onclick="clearDayData()" class="btn-dock-secondary" title="ล้างค่าวันที่เลือก">
+              <span class="material-icons-round">backspace</span>
+              <span>ล้างค่า</span>
+            </button>
+            <button type="button" onclick="window.print()" class="btn-dock-secondary" title="พิมพ์แบบฟอร์ม">
+              <span class="material-icons-round">print</span>
+              <span>พิมพ์</span>
+            </button>
+            <button type="button" onclick="toggleSelectorDrawer()" class="btn-dock-secondary" title="เปลี่ยนจุดตรวจ">
+              <span class="material-icons-round">swap_horiz</span>
+              <span>เปลี่ยนจุด</span>
             </button>
           </div>
-          <div id="analyzerChecklistContainer" style="border: 1px solid var(--border-main); border-radius: 10px; overflow: hidden; background: #ffffff;">
-            <!-- Rendered by JS -->
-          </div>
         </div>
+      </div>
 
-        <!-- Dynamic Section C: UPS Battery Test -->
-        <div id="sectionUps" style="display: none; margin-bottom: 16px;">
-          <div style="background: #f8fafc; border: 1px solid var(--border-main); padding: 14px; border-radius: 12px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-              <label style="font-size: 13px; font-weight: 700; color: var(--text-main);">ระยะเวลาสำรองไฟเมื่อตัดไฟ (นาที) *</label>
-              <span style="font-size: 11px; color: var(--green-ready); font-weight: 700;">เกณฑ์: ≥ 15 นาที</span>
-            </div>
-
-            <div class="numeric-entry-box">
-              <button type="button" class="btn-stepper" onclick="stepUps(-5)">-5</button>
-              <button type="button" class="btn-stepper" onclick="stepUps(-1)">-1</button>
-              <input type="number" id="inputUpsRuntime" class="numeric-entry-input" step="1" placeholder="25" oninput="validateUpsLive()">
-              <button type="button" class="btn-stepper" onclick="stepUps(1)">+1</button>
-              <button type="button" class="btn-stepper" onclick="stepUps(5)">+5</button>
-            </div>
-
-            <div id="upsStatusFeedback" class="status-feedback-pill normal" style="display: none;">
-              <span class="material-icons-round" style="font-size: 15px;">check_circle</span>
-              <span id="upsStatusText">สำรองไฟปกติ (≥ 15 นาที)</span>
-            </div>
+      <!-- ==================== C. STANDARD FORM FOR ANALYZERS & UPS ==================== -->
+      <div id="standardFormSection" class="eval-card" style="display: none;">
+        <div class="eval-card-header">
+          <div class="eval-card-title">
+            <span class="material-icons-round" style="color: var(--royal-blue); font-size: 18px;">checklist</span>
+            <span>บันทึกผลการตรวจเช็คเครื่องมือวิเคราะห์ / UPS</span>
           </div>
+          <div id="stdTargetSpecPill" style="font-size: 11px; font-weight: 700; color: var(--royal-blue); background: var(--royal-subtle); padding: 3px 8px; border-radius: 4px; border: 1px solid var(--border-blue-soft);">-</div>
         </div>
-
-        <!-- Staff & Remarks Section -->
-        <div style="border-top: 1px solid var(--border-subtle); padding-top: 14px; margin-top: 14px;">
+        <div class="eval-card-body">
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
             <div>
-              <label style="display: block; font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 3px;">
-                รหัสพนักงานผู้ตรวจ (6 หลัก) *
-              </label>
-              <input type="text" id="staffId" class="form-control-input" placeholder="เช่น 000023" maxlength="6" onblur="formatStaffId(this)" style="font-family: var(--font-mono); font-weight: 700;">
+              <label style="display: block; font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 3px;">วันที่บันทึก</label>
+              <input type="date" id="evalDate" class="form-control-input" style="font-family: var(--font-mono); font-weight: 600;">
             </div>
             <div>
-              <label style="display: block; font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 3px;">
-                ชื่อ-สกุล ผู้ตรวจเช็ค *
-              </label>
-              <input type="text" id="staffName" class="form-control-input" placeholder="เช่น ทนพ. สมชาย ใจดี">
+              <label style="display: block; font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 3px;">เวลาบันทึก</label>
+              <input type="time" id="evalTime" class="form-control-input" style="font-family: var(--font-mono); font-weight: 600;">
             </div>
           </div>
 
-          <!-- Optional Free-text Remark (Strict Rule: Optional Free-Text) -->
-          <div style="margin-bottom: 16px;">
-            <label style="display: flex; justify-content: space-between; font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 3px;">
-              <span>หมายเหตุ / การแก้ไขกรณีพบปัญหา (ถ้ามี)</span>
-              <span style="font-weight: 400; color: var(--text-light);">(ไม่บังคับกรอก)</span>
-            </label>
-            <textarea id="evalNote" class="form-control-textarea" rows="2" placeholder="ระบุการปรับเครื่องปรับอากาศ เติมน้ำกลั่น หรือทำความสะอาด (ถ้ามี)..."></textarea>
+          <!-- Dynamic Section B: Analyzer Checklist -->
+          <div id="sectionAnalyzer" style="display: none; margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <label style="font-size: 13px; font-weight: 700; color: var(--text-main);">รายการตรวจเช็คประจำวัน</label>
+              <button type="button" class="btn-quick-pass" onclick="quickPassChecklist()">
+                <span class="material-icons-round" style="font-size: 14px;">done_all</span>
+                <span>ผ่านทั้งหมด (Quick Pass)</span>
+              </button>
+            </div>
+            <div id="analyzerChecklistContainer" style="border: 1px solid var(--border-main); border-radius: 10px; overflow: hidden; background: #ffffff;">
+              <!-- Rendered by JS -->
+            </div>
           </div>
 
-          <!-- Submit Button -->
-          <button type="button" id="btnSubmitEval" onclick="submitEvaluation()" class="btn-submit-main">
-            <span class="material-icons-round">send</span>
-            <span>บันทึกผลการตรวจเช็ค</span>
-          </button>
-        </div>
+          <!-- Dynamic Section C: UPS Battery Test -->
+          <div id="sectionUps" style="display: none; margin-bottom: 16px;">
+            <div style="background: #f8fafc; border: 1px solid var(--border-main); padding: 14px; border-radius: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <label style="font-size: 13px; font-weight: 700; color: var(--text-main);">ระยะเวลาสำรองไฟเมื่อตัดไฟ (นาที) *</label>
+                <span style="font-size: 11px; color: var(--green-ready); font-weight: 700;">เกณฑ์: ≥ 15 นาที</span>
+              </div>
+              <div class="numeric-entry-box">
+                <button type="button" class="btn-stepper" onclick="stepUps(-5)">-5</button>
+                <button type="button" class="btn-stepper" onclick="stepUps(-1)">-1</button>
+                <input type="number" id="inputUpsRuntime" class="numeric-entry-input" step="1" placeholder="25" oninput="validateUpsLive()">
+                <button type="button" class="btn-stepper" onclick="stepUps(1)">+1</button>
+                <button type="button" class="btn-stepper" onclick="stepUps(5)">+5</button>
+              </div>
+              <div id="upsStatusFeedback" class="status-feedback-pill normal" style="display: none;">
+                <span class="material-icons-round" style="font-size: 15px;">check_circle</span>
+                <span id="upsStatusText">สำรองไฟปกติ (≥ 15 นาที)</span>
+              </div>
+            </div>
+          </div>
 
+          <!-- Staff Section for Standard Form -->
+          <div style="border-top: 1px solid var(--border-subtle); padding-top: 14px; margin-top: 14px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+              <div>
+                <label style="display: block; font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 3px;">
+                  รหัสพนักงานผู้ตรวจ (6 หลัก) *
+                </label>
+                <input type="text" id="stdStaffId" class="form-control-input" placeholder="เช่น 000023" maxlength="6" onblur="formatStaffId(this)" style="font-family: var(--font-mono); font-weight: 700;">
+              </div>
+              <div>
+                <label style="display: block; font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 3px;">
+                  ชื่อ-สกุล ผู้ตรวจเช็ค *
+                </label>
+                <input type="text" id="stdStaffName" class="form-control-input" placeholder="เช่น ทนพ. สมชาย ใจดี">
+              </div>
+            </div>
+            <div style="margin-bottom: 16px;">
+              <label style="display: flex; justify-content: space-between; font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 3px;">
+                <span>หมายเหตุ / การแก้ไขกรณีพบปัญหา (ถ้ามี)</span>
+                <span style="font-weight: 400; color: var(--text-light);">(ไม่บังคับกรอก)</span>
+              </label>
+              <textarea id="stdEvalNote" class="form-control-textarea" rows="2" placeholder="ระบุรายละเอียด (ถ้ามี)..."></textarea>
+            </div>
+            <button type="button" onclick="submitStandardEvaluation()" class="btn-submit-main">
+              <span class="material-icons-round">send</span>
+              <span>บันทึกผลการตรวจเช็ค</span>
+            </button>
+          </div>
+        </div>
       </div>
+
     </section>
 
   </main>
@@ -1015,8 +1786,18 @@
     };
 
     var currentItem = null;
-    var currentShift = 'morning';
+    var currentShift = 'morning'; // 'morning' | 'afternoon'
+    var activeYear = 2569;
+    var activeMonth = 10; // 1 to 12 (October)
+    var activeDay = new Date().getDate(); // 1 to 31
+    var monthSheetData = {
+      morning: {},
+      afternoon: {}
+    };
     var analyzerChecklistState = {};
+
+    var THAI_MONTHS_SHORT = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+    var THAI_MONTHS_FULL = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
 
     // Page Initialization
     document.addEventListener('DOMContentLoaded', function() {
@@ -1041,24 +1822,37 @@
       var now = new Date();
       var todayStr = now.toISOString().slice(0, 10);
       var timeStr = now.toTimeString().slice(0, 5);
-      document.getElementById('evalDate').value = todayStr;
-      document.getElementById('evalTime').value = timeStr;
+      var evalDateInput = document.getElementById('evalDate');
+      var evalTimeInput = document.getElementById('evalTime');
+      if (evalDateInput) evalDateInput.value = todayStr;
+      if (evalTimeInput) evalTimeInput.value = timeStr;
 
       // 2. Auto-detect shift
       var hours = now.getHours();
       if (hours >= 8 && hours < 16) {
-        setShift('morning');
+        currentShift = 'morning';
       } else if (hours >= 16 && hours < 24) {
-        setShift('afternoon');
+        currentShift = 'afternoon';
       } else {
-        setShift('night');
+        currentShift = 'morning'; // Default lab dual shifts morning/afternoon
       }
 
       // 3. Pre-fill staff from localStorage if remembered
       var savedStaffId = localStorage.getItem('PPCH_LAST_STAFF_ID') || '';
       var savedStaffName = localStorage.getItem('PPCH_LAST_STAFF_NAME') || '';
-      if (savedStaffId) document.getElementById('staffId').value = savedStaffId;
-      if (savedStaffName) document.getElementById('staffName').value = savedStaffName;
+      var staffIdEl = document.getElementById('staffId');
+      var staffNameEl = document.getElementById('staffName');
+      var stdStaffIdEl = document.getElementById('stdStaffId');
+      var stdStaffNameEl = document.getElementById('stdStaffName');
+
+      if (savedStaffId) {
+        if (staffIdEl) staffIdEl.value = savedStaffId;
+        if (stdStaffIdEl) stdStaffIdEl.value = savedStaffId;
+      }
+      if (savedStaffName) {
+        if (staffNameEl) staffNameEl.value = savedStaffName;
+        if (stdStaffNameEl) stdStaffNameEl.value = savedStaffName;
+      }
 
       // 4. Parse Query Param
       var params = new URLSearchParams(window.location.search);
@@ -1067,19 +1861,9 @@
       if (queryId && LAB_ITEMS[queryId]) {
         selectCheckpointDirect(queryId);
       } else {
-        // Show Step 1 selector
         document.getElementById('cardSelector').style.display = 'block';
         updateStepper(1);
       }
-    }
-
-    // Shift Handling
-    function setShift(shift) {
-      currentShift = shift;
-      ['morning', 'afternoon', 'night'].forEach(function(s) {
-        var btn = document.getElementById('btnShift' + s.charAt(0).toUpperCase() + s.slice(1));
-        if (btn) btn.classList.toggle('active', s === shift);
-      });
     }
 
     // 2-Step Cascade Checkpoint Selector
@@ -1135,10 +1919,7 @@
       else if (currentItem.cat === 'cat_ups') icon = 'battery_charging_full';
       document.getElementById('heroIcon').innerText = icon;
 
-      // Target Spec Pill
-      document.getElementById('targetSpecPill').innerText = currentItem.targetTemp || currentItem.targetCheck || currentItem.code;
-
-      // Hide selector, show form
+      // Hide selector, show form card
       document.getElementById('cardSelector').style.display = 'none';
       document.getElementById('cardForm').style.display = 'block';
 
@@ -1162,18 +1943,19 @@
 
     // Dynamic Form Switcher
     function setupDynamicForm(item) {
-      var secTemp = document.getElementById('sectionTemp');
-      var secAnalyzer = document.getElementById('sectionAnalyzer');
-      var secUps = document.getElementById('sectionUps');
-      var boxHum = document.getElementById('boxHumidity');
-
-      secTemp.style.display = 'none';
-      secAnalyzer.style.display = 'none';
-      secUps.style.display = 'none';
+      var secSheet = document.getElementById('sheetGridSection');
+      var secDock = document.getElementById('realtimeDockSection');
+      var secStandard = document.getElementById('standardFormSection');
+      var boxHum = document.getElementById('dockHumBox');
 
       if (item.type.indexOf('temp_') === 0) {
-        secTemp.style.display = 'block';
-        document.getElementById('tempTargetBadge').innerText = 'เกณฑ์: ' + item.targetTemp;
+        // TEMPERATURE CHECKPOINT: Show Exact Google Sheets Grid & Realtime Dock
+        secSheet.style.display = 'block';
+        secDock.style.display = 'block';
+        secStandard.style.display = 'none';
+
+        // Set target text
+        document.getElementById('dockTempTarget').innerText = 'เกณฑ์: ' + item.targetTemp;
         
         // Humidity box visibility
         if (item.hasHumidity) {
@@ -1182,117 +1964,869 @@
           boxHum.style.display = 'none';
         }
 
-        // Set suggested values if blank
-        var inputTemp = document.getElementById('inputTemp');
-        var inputHum = document.getElementById('inputHumidity');
-        if (!inputTemp.value && item.defaultTemp !== undefined) {
-          inputTemp.value = item.defaultTemp;
-        }
-        if (item.hasHumidity && !inputHum.value && item.defaultHum !== undefined) {
-          inputHum.value = item.defaultHum;
-        }
-        validateTempLive();
-        if (item.hasHumidity) validateHumLive();
+        // Build Table DOM & Load Data
+        buildSheetDom(item);
+        loadMonthSheetData(item.id, activeYear, activeMonth);
 
-      } else if (item.type.indexOf('analyzer_') === 0) {
-        secAnalyzer.style.display = 'block';
-        renderAnalyzerChecklist(item.checklist || []);
+        // Switch to detected shift
+        switchActiveShift(currentShift);
 
-      } else if (item.type === 'ups_battery') {
-        secUps.style.display = 'block';
-        var inputUps = document.getElementById('inputUpsRuntime');
-        if (!inputUps.value && item.defaultRuntime !== undefined) {
-          inputUps.value = item.defaultRuntime;
+      } else {
+        // NON-TEMPERATURE CHECKPOINT (Analyzer or UPS)
+        secSheet.style.display = 'none';
+        secDock.style.display = 'none';
+        secStandard.style.display = 'block';
+
+        var secAnalyzer = document.getElementById('sectionAnalyzer');
+        var secUps = document.getElementById('sectionUps');
+        document.getElementById('stdTargetSpecPill').innerText = item.targetCheck || item.code;
+
+        if (item.type.indexOf('analyzer_') === 0) {
+          secAnalyzer.style.display = 'block';
+          secUps.style.display = 'none';
+          renderAnalyzerChecklist(item.checklist || []);
+        } else if (item.type === 'ups_battery') {
+          secAnalyzer.style.display = 'none';
+          secUps.style.display = 'block';
+          var inputUps = document.getElementById('inputUpsRuntime');
+          if (!inputUps.value && item.defaultRuntime !== undefined) {
+            inputUps.value = item.defaultRuntime;
+          }
+          validateUpsLive();
         }
-        validateUpsLive();
       }
     }
 
-    // Temperature Micro-stepper & Validation
-    function stepTemp(delta) {
-      var el = document.getElementById('inputTemp');
-      var val = parseFloat(el.value) || 0;
-      el.value = (val + delta).toFixed(1);
-      validateTempLive();
+    // Scale Configuration by Equipment Type
+    function getScaleConfig(item) {
+      if (!item) return { scaleMin: 22, scaleMax: 30, ticks: [30, 28, 26, 24, 22], safeMin: 24, safeMax: 28 };
+      if (item.cat === 'cat_freezer' || item.type === 'temp_freezer') {
+        return { scaleMin: -22, scaleMax: -14, ticks: [-14, -16, -18, -20, -22], safeMin: -40, safeMax: -18 };
+      } else if (item.cat === 'cat_ref' || item.type === 'temp_refrigerator') {
+        return { scaleMin: 2, scaleMax: 10, ticks: [10, 8, 6, 4, 2], safeMin: 2, safeMax: 8 };
+      } else if (item.cat === 'cat_wb' || item.type === 'temp_waterbath') {
+        return { scaleMin: 35, scaleMax: 39, ticks: [39, 38, 37, 36, 35], safeMin: 36.5, safeMax: 37.5 };
+      } else {
+        return { scaleMin: 22, scaleMax: 30, ticks: [30, 28, 26, 24, 22], safeMin: 24, safeMax: 28 };
+      }
     }
 
-    function validateTempLive() {
-      if (!currentItem || currentItem.tempMin === undefined) return;
+    // Coordinate Math for 946 x 140 SVG viewBox
+    function getSvgX(d) {
+      // Shift Col (42px) + Scale Col (36px) = 78px
+      // Day cols: 28px wide
+      return 78 + (d - 0.5) * 28;
+    }
+
+    function getSvgY(t, config) {
+      var span = config.scaleMax - config.scaleMin;
+      if (span === 0) span = 8;
+      var ratio = (config.scaleMax - t) / span;
+      var y = 14 + ratio * 112; // 14px padding at top and bottom (140px total)
+      return Math.max(4, Math.min(136, y));
+    }
+
+    // Build Sheet Table DOM (Header, 31 Columns, Scale Rows)
+    function buildSheetDom(item) {
+      var config = getScaleConfig(item);
+      
+      // Update Title & Room Name
+      var titleText = 'แบบบันทึกอุณหภูมิห้องปฏิบัติการ';
+      if (item.cat === 'cat_ref') titleText = 'แบบบันทึกอุณหภูมิตู้เย็นแช่น้ำยา & สิ่งส่งตรวจ';
+      else if (item.cat === 'cat_freezer') titleText = 'แบบบันทึกอุณหภูมิตู้แช่แข็ง FFP & Control';
+      else if (item.cat === 'cat_wb') titleText = 'แบบบันทึกอุณหภูมิ Water Bath อ่างควบคุมอุณหภูมิ';
+      document.getElementById('sheetTitleText').innerText = titleText;
+      document.getElementById('sheetRoomNameText').innerText = item.name + ' (' + item.code + ')';
+      document.getElementById('sheetYearText').innerText = activeYear;
+
+      // Build Month Pills (Jan - Dec)
+      var monthList = document.getElementById('monthPillList');
+      monthList.innerHTML = '';
+      THAI_MONTHS_SHORT.forEach(function(mName, idx) {
+        var mNum = idx + 1;
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'month-pill-btn' + (mNum === activeMonth ? ' active' : '');
+        btn.innerText = mName;
+        btn.onclick = function() { switchMonth(mNum); };
+        monthList.appendChild(btn);
+      });
+
+      // Populate Day Dropdown
+      var daySelect = document.getElementById('dockDaySelect');
+      daySelect.innerHTML = '';
+      for (var d = 1; d <= 31; d++) {
+        var opt = document.createElement('option');
+        opt.value = d;
+        opt.textContent = String(d).padStart(2, '0');
+        if (d === activeDay) opt.selected = true;
+        daySelect.appendChild(opt);
+      }
+      document.getElementById('dockMonthYearText').innerText = THAI_MONTHS_SHORT[activeMonth - 1] + ' ' + activeYear;
+
+      // Build Table Bodies for Morning & Afternoon Blocks
+      ['morning', 'afternoon'].forEach(function(shift) {
+        var isMorning = (shift === 'morning');
+        var Shift = isMorning ? 'Morning' : 'Afternoon';
+        var shiftLabel = isMorning ? 'เช้า' : 'บ่าย';
+        var tbody = document.getElementById('tbody' + Shift);
+        tbody.innerHTML = '';
+
+        config.ticks.forEach(function(tickVal, rIdx) {
+          var tr = document.createElement('tr');
+          
+          var isSafeZone = (tickVal >= config.safeMin && tickVal <= config.safeMax);
+          if (isSafeZone) tr.classList.add('safe-zone-row');
+          if (tickVal === config.safeMax) tr.classList.add('safe-zone-top');
+          if (tickVal === config.safeMin) tr.classList.add('safe-zone-bottom');
+
+          // Left shift cell (only on top row with rowspan=5)
+          if (rIdx === 0) {
+            var tdShift = document.createElement('td');
+            tdShift.rowSpan = 5;
+            tdShift.className = 'sheet-cell-shift';
+            tdShift.innerHTML = '<div class="shift-vertical-label">' + shiftLabel + '</div>';
+            tr.appendChild(tdShift);
+          }
+
+          // Scale label cell
+          var tdScale = document.createElement('td');
+          tdScale.className = 'sheet-scale-cell';
+          tdScale.innerText = tickVal;
+          tr.appendChild(tdScale);
+
+          // 31 Grid Cells
+          for (var d = 1; d <= 31; d++) {
+            var td = document.createElement('td');
+            td.className = 'sheet-grid-cell col-day-' + d;
+            td.id = 'gridCell_' + shift + '_' + rIdx + '_' + d;
+            td.dataset.day = d;
+            td.dataset.shift = shift;
+            td.onclick = (function(dayNum) {
+              return function() { selectDay(dayNum); };
+            })(d);
+            tr.appendChild(td);
+          }
+
+          tbody.appendChild(tr);
+        });
+
+        // Bottom Table Rows
+        var rowDay = document.getElementById('rowDay' + Shift);
+        var rowHumGt60 = document.getElementById('rowHumGt60' + Shift);
+        var rowHumLt60 = document.getElementById('rowHumLt60' + Shift);
+        var rowStaff = document.getElementById('rowStaff' + Shift);
+
+        // Clear previous day cells, keeping only header cell
+        while (rowDay.children.length > 1) rowDay.removeChild(rowDay.lastChild);
+        while (rowHumGt60.children.length > 1) rowHumGt60.removeChild(rowHumGt60.lastChild);
+        while (rowHumLt60.children.length > 1) rowHumLt60.removeChild(rowHumLt60.lastChild);
+        while (rowStaff.children.length > 1) rowStaff.removeChild(rowStaff.lastChild);
+
+        for (var d = 1; d <= 31; d++) {
+          // Day number cell
+          var tdDay = document.createElement('td');
+          tdDay.className = 'sheet-day-num col-day-' + d;
+          tdDay.id = 'dayHdr_' + shift + '_' + d;
+          tdDay.innerText = d;
+          tdDay.onclick = (function(dayNum) { return function() { selectDay(dayNum); }; })(d);
+          rowDay.appendChild(tdDay);
+
+          // >60% cell
+          var tdGt = document.createElement('td');
+          tdGt.className = 'sheet-hum-cell col-day-' + d;
+          tdGt.id = 'cellGt60_' + shift + '_' + d;
+          tdGt.onclick = (function(dayNum) { return function() { selectDay(dayNum); }; })(d);
+          rowHumGt60.appendChild(tdGt);
+
+          // <60% cell
+          var tdLt = document.createElement('td');
+          tdLt.className = 'sheet-hum-cell col-day-' + d;
+          tdLt.id = 'cellLt60_' + shift + '_' + d;
+          tdLt.onclick = (function(dayNum) { return function() { selectDay(dayNum); }; })(d);
+          rowHumLt60.appendChild(tdLt);
+
+          // Staff cell
+          var tdStaff = document.createElement('td');
+          tdStaff.className = 'sheet-staff-cell col-day-' + d;
+          tdStaff.id = 'cellStaff_' + shift + '_' + d;
+          tdStaff.onclick = (function(dayNum) { return function() { selectDay(dayNum); }; })(d);
+          rowStaff.appendChild(tdStaff);
+        }
+
+        // Configure Safe Target Band in SVG
+        var yTop = getSvgY(config.safeMax, config);
+        var yBot = getSvgY(config.safeMin, config);
+        var bandH = Math.max(8, yBot - yTop);
+
+        var safeBand = document.getElementById('safeBand' + Shift);
+        if (safeBand) {
+          safeBand.setAttribute('y', yTop.toFixed(1));
+          safeBand.setAttribute('height', bandH.toFixed(1));
+        }
+        var lineTop = document.getElementById('safeLineTop' + Shift);
+        if (lineTop) {
+          lineTop.setAttribute('y1', yTop.toFixed(1));
+          lineTop.setAttribute('y2', yTop.toFixed(1));
+        }
+        var lineBot = document.getElementById('safeLineBot' + Shift);
+        if (lineBot) {
+          lineBot.setAttribute('y1', yBot.toFixed(1));
+          lineBot.setAttribute('y2', yBot.toFixed(1));
+        }
+      });
+    }
+
+    // Load Monthly Data from localStorage or Seed Realistic Past Days
+    function loadMonthSheetData(itemId, year, month) {
+      var storageKey = 'PPCH_LAB_SHEET_DATA_' + itemId + '_' + year + '_' + month;
+      var raw = localStorage.getItem(storageKey);
+      
+      if (raw) {
+        try {
+          monthSheetData = JSON.parse(raw);
+          if (!monthSheetData.morning) monthSheetData.morning = {};
+          if (!monthSheetData.afternoon) monthSheetData.afternoon = {};
+        } catch (e) {
+          monthSheetData = { morning: {}, afternoon: {} };
+        }
+      } else {
+        // Seed realistic historical data up to activeDay - 1
+        monthSheetData = { morning: {}, afternoon: {} };
+        var defT = (currentItem && currentItem.defaultTemp !== undefined) ? currentItem.defaultTemp : 25.4;
+        var defH = (currentItem && currentItem.defaultHum !== undefined) ? currentItem.defaultHum : 52;
+        var staffInit = localStorage.getItem('PPCH_LAST_STAFF_NAME') || '000023';
+
+        var pastDays = Math.min(activeDay - 1, 28);
+        for (var d = 1; d <= pastDays; d++) {
+          var varianceM = (Math.sin(d * 1.5) * 0.4);
+          var varianceA = (Math.cos(d * 1.2) * 0.5) + 0.3;
+          var mTemp = parseFloat((defT + varianceM).toFixed(1));
+          var aTemp = parseFloat((defT + varianceA).toFixed(1));
+          var mHum = Math.round(defH + Math.sin(d) * 4);
+          var aHum = Math.round(defH + Math.cos(d) * 3);
+
+          monthSheetData.morning[d] = {
+            temp: mTemp,
+            hum: mHum,
+            staff: staffInit,
+            time: '09:00'
+          };
+
+          monthSheetData.afternoon[d] = {
+            temp: aTemp,
+            hum: aHum,
+            staff: staffInit,
+            time: '17:00'
+          };
+        }
+
+        // Seed initial values for today if empty
+        if (!monthSheetData[currentShift][activeDay]) {
+          monthSheetData[currentShift][activeDay] = {
+            temp: defT,
+            hum: defH,
+            staff: staffInit,
+            time: new Date().toTimeString().slice(0, 5)
+          };
+        }
+      }
+
+      renderFullShift('morning');
+      renderFullShift('afternoon');
+      selectDay(activeDay);
+    }
+
+    // Render Static SVG Dots, Lines, and Bottom Cells for a Shift
+    function renderFullShift(shift) {
+      if (!currentItem) return;
+      var config = getScaleConfig(currentItem);
+      var isMorning = (shift === 'morning');
+      var Shift = isMorning ? 'Morning' : 'Afternoon';
+      var shiftData = monthSheetData[shift] || {};
+
+      var dotsGroup = document.getElementById('dots' + Shift);
+      if (dotsGroup) dotsGroup.innerHTML = '';
+
+      var polyline = document.getElementById('poly' + Shift);
+      var points = [];
+
+      for (var d = 1; d <= 31; d++) {
+        var dayRecord = shiftData[d];
+        var cellGt = document.getElementById('cellGt60_' + shift + '_' + d);
+        var cellLt = document.getElementById('cellLt60_' + shift + '_' + d);
+        var cellStaff = document.getElementById('cellStaff_' + shift + '_' + d);
+
+        if (dayRecord && dayRecord.temp !== undefined && !isNaN(dayRecord.temp)) {
+          var x = getSvgX(d);
+          var y = getSvgY(dayRecord.temp, config);
+          points.push(x.toFixed(1) + ',' + y.toFixed(1));
+
+          var isPass = (dayRecord.temp >= config.safeMin && dayRecord.temp <= config.safeMax);
+          var dotColor = isPass ? '#059669' : '#dc2626';
+
+          var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          circle.setAttribute('cx', x.toFixed(1));
+          circle.setAttribute('cy', y.toFixed(1));
+          circle.setAttribute('r', '4');
+          circle.setAttribute('fill', dotColor);
+          circle.setAttribute('stroke', '#ffffff');
+          circle.setAttribute('stroke-width', '1.5');
+          circle.setAttribute('id', 'dot_' + shift + '_' + d);
+          circle.style.cursor = 'pointer';
+          circle.onclick = (function(dayNum) { return function() { selectDay(dayNum); }; })(d);
+          if (dotsGroup) dotsGroup.appendChild(circle);
+        }
+
+        // Humidity Cells
+        if (cellGt && cellLt) {
+          if (dayRecord && dayRecord.hum !== undefined) {
+            var humVal = parseInt(dayRecord.hum);
+            if (humVal > 60) {
+              cellGt.innerText = '■ ' + humVal + '%';
+              cellGt.className = 'sheet-hum-cell gt60-active col-day-' + d;
+              cellLt.innerText = '';
+              cellLt.className = 'sheet-hum-cell col-day-' + d;
+            } else {
+              cellLt.innerText = '■ ' + humVal + '%';
+              cellLt.className = 'sheet-hum-cell lt60-active col-day-' + d;
+              cellGt.innerText = '';
+              cellGt.className = 'sheet-hum-cell col-day-' + d;
+            }
+          } else {
+            cellGt.innerText = '';
+            cellGt.className = 'sheet-hum-cell col-day-' + d;
+            cellLt.innerText = '';
+            cellLt.className = 'sheet-hum-cell col-day-' + d;
+          }
+        }
+
+        // Staff Cell
+        if (cellStaff) {
+          if (dayRecord && dayRecord.staff) {
+            cellStaff.innerText = dayRecord.staff;
+            cellStaff.title = dayRecord.staff;
+          } else {
+            cellStaff.innerText = '';
+          }
+        }
+      }
+
+      if (polyline) {
+        polyline.setAttribute('points', points.join(' '));
+      }
+    }
+
+    // Select Active Day (1 - 31)
+    function selectDay(d) {
+      activeDay = Math.max(1, Math.min(31, d));
+      
+      // Update Dropdown
+      var daySelect = document.getElementById('dockDaySelect');
+      if (daySelect) daySelect.value = activeDay;
+
+      // Highlight active column in tables
+      document.querySelectorAll('.active-col').forEach(function(el) { el.classList.remove('active-col'); });
+      document.querySelectorAll('.active-day').forEach(function(el) { el.classList.remove('active-day'); });
+      document.querySelectorAll('.col-day-' + activeDay).forEach(function(el) { el.classList.add('active-col'); });
+
+      var dayHdrM = document.getElementById('dayHdr_morning_' + activeDay);
+      var dayHdrA = document.getElementById('dayHdr_afternoon_' + activeDay);
+      if (dayHdrM) dayHdrM.classList.add('active-day');
+      if (dayHdrA) dayHdrA.classList.add('active-day');
+
+      // Populate Input Dock with Day d values for currentShift
+      var rec = (monthSheetData[currentShift] && monthSheetData[currentShift][activeDay]) ? monthSheetData[currentShift][activeDay] : null;
+      var inputTemp = document.getElementById('inputTemp');
+      var inputHum = document.getElementById('inputHumidity');
+
+      if (rec) {
+        if (inputTemp) inputTemp.value = (rec.temp !== undefined) ? rec.temp : '';
+        if (inputHum) inputHum.value = (rec.hum !== undefined) ? rec.hum : '';
+      } else {
+        if (inputTemp) inputTemp.value = (currentItem && currentItem.defaultTemp !== undefined) ? currentItem.defaultTemp : '';
+        if (inputHum) inputHum.value = (currentItem && currentItem.defaultHum !== undefined) ? currentItem.defaultHum : '';
+      }
+
+      // Update Live Marker
+      updateActiveMarkerLive();
+
+      // Smooth scroll table to center active day if overflowing
+      var scrollContainer = document.getElementById('sheetScrollContainer');
+      if (scrollContainer && scrollContainer.scrollWidth > scrollContainer.clientWidth) {
+        var x = getSvgX(activeDay);
+        var targetScroll = x - (scrollContainer.clientWidth / 2);
+        scrollContainer.scrollTo({ left: Math.max(0, targetScroll), behavior: 'smooth' });
+      }
+    }
+
+    // REAL-TIME PLOTTING AS USER TYPES TEMPERATURE
+    function onLiveTempInput() {
+      if (!currentItem) return;
       var el = document.getElementById('inputTemp');
       var val = parseFloat(el.value);
-      var fb = document.getElementById('tempStatusFeedback');
-      var txt = document.getElementById('tempStatusText');
+      if (isNaN(val)) return;
+
+      if (!monthSheetData[currentShift]) monthSheetData[currentShift] = {};
+      if (!monthSheetData[currentShift][activeDay]) monthSheetData[currentShift][activeDay] = {};
+      monthSheetData[currentShift][activeDay].temp = val;
+
+      updateActiveMarkerLive();
+    }
+
+    // Dynamic SVG Marker & Connecting Line Update
+    function updateActiveMarkerLive() {
+      if (!currentItem) return;
+      var config = getScaleConfig(currentItem);
+      var isMorning = (currentShift === 'morning');
+      var Shift = isMorning ? 'Morning' : 'Afternoon';
+      var otherShift = isMorning ? 'Afternoon' : 'Morning';
+
+      // Hide marker on inactive shift
+      var otherMarker = document.getElementById('liveMarker' + otherShift);
+      if (otherMarker) otherMarker.style.display = 'none';
+
+      var liveMarker = document.getElementById('liveMarker' + Shift);
+      var livePulse = document.getElementById('livePulse' + Shift);
+      var liveDot = document.getElementById('liveDot' + Shift);
+      var liveTooltip = document.getElementById('liveTooltip' + Shift);
+      var liveTooltipText = document.getElementById('liveTooltipText' + Shift);
+
+      var inputTemp = document.getElementById('inputTemp');
+      var val = parseFloat(inputTemp.value);
 
       if (isNaN(val)) {
-        fb.style.display = 'none';
+        if (liveMarker) liveMarker.style.display = 'none';
         return;
       }
 
-      fb.style.display = 'inline-flex';
-      var isPass = (val >= currentItem.tempMin && val <= currentItem.tempMax);
-      if (isPass) {
-        fb.className = 'status-feedback-pill normal';
-        fb.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">check_circle</span> <span>ปกติในเกณฑ์ (' + currentItem.targetTemp + ')</span>';
-      } else {
-        fb.className = 'status-feedback-pill abnormal';
-        fb.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">warning</span> <span>หลุดเกณฑ์มาตรฐาน! (เกณฑ์ปกติ ' + currentItem.targetTemp + ')</span>';
+      var x = getSvgX(activeDay);
+      var y = getSvgY(val, config);
+
+      var isPass = (val >= config.safeMin && val <= config.safeMax);
+      var dotColor = isPass ? '#059669' : '#dc2626';
+
+      if (livePulse) {
+        livePulse.setAttribute('cx', x.toFixed(1));
+        livePulse.setAttribute('cy', y.toFixed(1));
+        livePulse.setAttribute('stroke', isPass ? '#0284c7' : '#ef4444');
+      }
+      if (liveDot) {
+        liveDot.setAttribute('cx', x.toFixed(1));
+        liveDot.setAttribute('cy', y.toFixed(1));
+        liveDot.setAttribute('fill', dotColor);
+      }
+      if (liveTooltip) {
+        liveTooltip.setAttribute('transform', 'translate(' + x.toFixed(1) + ',' + y.toFixed(1) + ')');
+      }
+      if (liveTooltipText) {
+        liveTooltipText.textContent = val.toFixed(1) + '°';
+      }
+      if (liveMarker) {
+        liveMarker.style.display = 'block';
+      }
+
+      // Re-render polyline & dots for current shift
+      renderFullShift(currentShift);
+
+      // Feedback Badge below input
+      var fb = document.getElementById('dockTempFeedback');
+      var fbText = document.getElementById('dockTempFeedbackText');
+      if (fb && fbText) {
+        if (isPass) {
+          fb.className = 'status-feedback-pill normal';
+          fb.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">check_circle</span> <span>ปกติในเกณฑ์มาตรฐาน (' + val.toFixed(1) + ' °C)</span>';
+        } else {
+          fb.className = 'status-feedback-pill abnormal';
+          fb.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">warning</span> <span>หลุดเกณฑ์มาตรฐาน! (' + val.toFixed(1) + ' °C เกณฑ์ ' + currentItem.targetTemp + ')</span>';
+        }
       }
     }
 
-    // Humidity Micro-stepper & Validation
-    function stepHum(delta) {
+    // REAL-TIME HUMIDITY INPUT
+    function onLiveHumInput() {
+      if (!currentItem) return;
       var el = document.getElementById('inputHumidity');
-      var val = parseInt(el.value) || 0;
+      var val = parseInt(el.value);
+      if (isNaN(val)) return;
+
+      if (!monthSheetData[currentShift]) monthSheetData[currentShift] = {};
+      if (!monthSheetData[currentShift][activeDay]) monthSheetData[currentShift][activeDay] = {};
+      monthSheetData[currentShift][activeDay].hum = val;
+
+      // Update Table Cell live
+      var cellGt = document.getElementById('cellGt60_' + currentShift + '_' + activeDay);
+      var cellLt = document.getElementById('cellLt60_' + currentShift + '_' + activeDay);
+      if (cellGt && cellLt) {
+        if (val > 60) {
+          cellGt.innerText = '■ ' + val + '%';
+          cellGt.className = 'sheet-hum-cell gt60-active col-day-' + activeDay + ' active-col';
+          cellLt.innerText = '';
+          cellLt.className = 'sheet-hum-cell col-day-' + activeDay + ' active-col';
+        } else {
+          cellLt.innerText = '■ ' + val + '%';
+          cellLt.className = 'sheet-hum-cell lt60-active col-day-' + activeDay + ' active-col';
+          cellGt.innerText = '';
+          cellGt.className = 'sheet-hum-cell col-day-' + activeDay + ' active-col';
+        }
+      }
+
+      // Feedback pill
+      var fb = document.getElementById('dockHumFeedback');
+      var fbText = document.getElementById('dockHumFeedbackText');
+      if (fb && fbText) {
+        if (val <= 60) {
+          fb.className = 'status-feedback-pill normal';
+          fb.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">check_circle</span> <span>ความชื้นปกติ (≤ 60 %RH)</span>';
+        } else {
+          fb.className = 'status-feedback-pill abnormal';
+          fb.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">warning</span> <span>ความชื้นเกินเกณฑ์มาตรฐาน (> 60 %RH)</span>';
+        }
+      }
+    }
+
+    // REAL-TIME STAFF INPUT
+    function onLiveStaffInput() {
+      var staffId = (document.getElementById('staffId').value || '').trim();
+      var staffName = (document.getElementById('staffName').value || '').trim();
+      var label = staffName || staffId;
+
+      if (!monthSheetData[currentShift]) monthSheetData[currentShift] = {};
+      if (!monthSheetData[currentShift][activeDay]) monthSheetData[currentShift][activeDay] = {};
+      monthSheetData[currentShift][activeDay].staff = label;
+
+      var cellStaff = document.getElementById('cellStaff_' + currentShift + '_' + activeDay);
+      if (cellStaff) {
+        cellStaff.innerText = label;
+        cellStaff.title = label;
+      }
+    }
+
+    // Micro-Steppers
+    function stepLiveTemp(delta) {
+      var el = document.getElementById('inputTemp');
+      var val = parseFloat(el.value);
+      if (isNaN(val)) val = (currentItem && currentItem.defaultTemp !== undefined) ? currentItem.defaultTemp : 25.0;
+      el.value = (val + delta).toFixed(1);
+      onLiveTempInput();
+    }
+
+    function stepLiveHum(delta) {
+      var el = document.getElementById('inputHumidity');
+      var val = parseInt(el.value);
+      if (isNaN(val)) val = 50;
       el.value = Math.max(0, Math.min(100, val + delta));
-      validateHumLive();
+      onLiveHumInput();
     }
 
-    function validateHumLive() {
-      var el = document.getElementById('inputHumidity');
-      var val = parseInt(el.value);
-      var fb = document.getElementById('humStatusFeedback');
+    // Shift Switcher
+    function switchActiveShift(shift) {
+      currentShift = shift;
+      var isM = (shift === 'morning');
+      document.getElementById('dockShiftMorning').classList.toggle('active', isM);
+      document.getElementById('dockShiftAfternoon').classList.toggle('active', !isM);
+      document.getElementById('blockMorning').classList.toggle('active-block', isM);
+      document.getElementById('blockAfternoon').classList.toggle('active-block', !isM);
+      selectDay(activeDay);
+    }
 
-      if (isNaN(val)) {
-        fb.style.display = 'none';
+    // Day Navigation
+    function navDay(delta) {
+      var newD = activeDay + delta;
+      if (newD < 1) newD = 31;
+      if (newD > 31) newD = 1;
+      selectDay(newD);
+    }
+
+    function navToday() {
+      selectDay(new Date().getDate());
+    }
+
+    function onDayDropdownChanged() {
+      var val = parseInt(document.getElementById('dockDaySelect').value);
+      if (!isNaN(val)) selectDay(val);
+    }
+
+    // Month Switcher
+    function switchMonth(m) {
+      activeMonth = m;
+      document.querySelectorAll('.month-pill-btn').forEach(function(b, idx) {
+        b.classList.toggle('active', (idx + 1) === m);
+      });
+      document.getElementById('dockMonthYearText').innerText = THAI_MONTHS_SHORT[activeMonth - 1] + ' ' + activeYear;
+      if (currentItem) {
+        loadMonthSheetData(currentItem.id, activeYear, activeMonth);
+      }
+    }
+
+    // Clear Day Data
+    function clearDayData() {
+      if (!confirm('ยืนยันล้างข้อมูลวันที่ ' + activeDay + ' (' + (currentShift === 'morning' ? 'เวรเช้า' : 'เวรบ่าย') + ') หรือไม่?')) return;
+      if (monthSheetData[currentShift] && monthSheetData[currentShift][activeDay]) {
+        delete monthSheetData[currentShift][activeDay];
+      }
+      renderFullShift(currentShift);
+      selectDay(activeDay);
+    }
+
+    // Employee ID 6-Digit Format (Strict Golden Rule)
+    function formatStaffId(el) {
+      var val = (el.value || '').trim();
+      if (!val) return;
+      var numOnly = val.replace(/\D/g, '');
+      if (numOnly) {
+        el.value = numOnly.padStart(6, '0');
+      }
+    }
+
+    // Stepper State Updater
+    function updateStepper(step) {
+      var s1 = document.getElementById('step1');
+      var s2 = document.getElementById('step2');
+      var s3 = document.getElementById('step3');
+      var l1 = document.getElementById('line1');
+      var l2 = document.getElementById('line2');
+
+      if (step === 1) {
+        s1.className = 'stepper-step active';
+        s2.className = 'stepper-step';
+        s3.className = 'stepper-step';
+        l1.className = 'stepper-line';
+        l2.className = 'stepper-line';
+      } else if (step === 2) {
+        s1.className = 'stepper-step done';
+        s2.className = 'stepper-step active';
+        s3.className = 'stepper-step';
+        l1.className = 'stepper-line done';
+        l2.className = 'stepper-line';
+      } else if (step === 3) {
+        s1.className = 'stepper-step done';
+        s2.className = 'stepper-step done';
+        s3.className = 'stepper-step active';
+        l1.className = 'stepper-line done';
+        l2.className = 'stepper-line done';
+      }
+    }
+
+    // SUBMIT EVALUATION FROM REAL-TIME DOCK (SHEET MODE)
+    function submitEvaluation() {
+      if (!currentItem) {
+        alert('กรุณาเลือกจุดตรวจก่อนบันทึกข้อมูล');
         return;
       }
 
-      fb.style.display = 'inline-flex';
-      if (val <= 60) {
-        fb.className = 'status-feedback-pill normal';
-        fb.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">check_circle</span> <span>ความชื้นปกติ (≤ 60 %RH)</span>';
-      } else {
-        fb.className = 'status-feedback-pill abnormal';
-        fb.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">warning</span> <span>ความชื้นเกินเกณฑ์มาตรฐาน (> 60 %RH)</span>';
+      var staffIdInput = document.getElementById('staffId');
+      formatStaffId(staffIdInput);
+      var staffId = staffIdInput.value.trim();
+      var staffName = document.getElementById('staffName').value.trim();
+
+      if (!staffId) {
+        alert('กรุณาระบุรหัสพนักงานผู้ตรวจ (เช่น 000023)');
+        staffIdInput.focus();
+        return;
       }
-    }
-
-    // UPS Micro-stepper & Validation
-    function stepUps(delta) {
-      var el = document.getElementById('inputUpsRuntime');
-      var val = parseInt(el.value) || 0;
-      el.value = Math.max(0, val + delta);
-      validateUpsLive();
-    }
-
-    function validateUpsLive() {
-      var el = document.getElementById('inputUpsRuntime');
-      var val = parseInt(el.value);
-      var fb = document.getElementById('upsStatusFeedback');
-
-      if (isNaN(val)) {
-        fb.style.display = 'none';
+      if (!staffName) {
+        alert('กรุณาระบุชื่อ-สกุล ผู้ตรวจเช็ค');
+        document.getElementById('staffName').focus();
         return;
       }
 
-      fb.style.display = 'inline-flex';
-      if (val >= 15) {
-        fb.className = 'status-feedback-pill normal';
-        fb.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">check_circle</span> <span>สำรองไฟผ่านเกณฑ์ (≥ 15 นาที)</span>';
-      } else {
-        fb.className = 'status-feedback-pill abnormal';
-        fb.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">warning</span> <span>สำรองไฟต่ำกว่าเกณฑ์ (< 15 นาที)</span>';
+      var tempVal = parseFloat(document.getElementById('inputTemp').value);
+      if (isNaN(tempVal)) {
+        alert('กรุณากรอกค่าอุณหภูมิ');
+        document.getElementById('inputTemp').focus();
+        return;
       }
+
+      var humVal = null;
+      if (currentItem.hasHumidity) {
+        humVal = parseInt(document.getElementById('inputHumidity').value);
+        if (isNaN(humVal)) {
+          alert('กรุณากรอกค่าความชื้นสัมพัทธ์');
+          document.getElementById('inputHumidity').focus();
+          return;
+        }
+      }
+
+      var note = document.getElementById('evalNote').value.trim();
+      var config = getScaleConfig(currentItem);
+      var isPass = (tempVal >= config.safeMin && tempVal <= config.safeMax);
+      if (humVal !== null && humVal > 60) isPass = false;
+
+      // Update in-memory monthSheetData
+      if (!monthSheetData[currentShift]) monthSheetData[currentShift] = {};
+      monthSheetData[currentShift][activeDay] = {
+        temp: tempVal,
+        hum: humVal !== null ? humVal : undefined,
+        staff: staffName + ' (' + staffId + ')',
+        note: note,
+        time: new Date().toTimeString().slice(0, 5)
+      };
+
+      // Persist full sheet data to localStorage
+      var storageKey = 'PPCH_LAB_SHEET_DATA_' + currentItem.id + '_' + activeYear + '_' + activeMonth;
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(monthSheetData));
+        localStorage.setItem('PPCH_LAST_STAFF_ID', staffId);
+        localStorage.setItem('PPCH_LAST_STAFF_NAME', staffName);
+      } catch (e) {}
+
+      // Re-render
+      renderFullShift(currentShift);
+      selectDay(activeDay);
+
+      // Create evaluation event payload
+      var evalData = {
+        itemId: currentItem.id,
+        itemName: currentItem.name,
+        formCode: currentItem.code,
+        category: currentItem.catName,
+        type: currentItem.type,
+        date: activeYear + '-' + String(activeMonth).padStart(2, '0') + '-' + String(activeDay).padStart(2, '0'),
+        time: new Date().toTimeString().slice(0, 5),
+        shift: currentShift,
+        staffId: staffId,
+        staffName: staffName,
+        temperature: tempVal,
+        humidity: humVal,
+        status: isPass ? 'ready' : 'abnormal',
+        note: note,
+        timestamp: new Date().toISOString()
+      };
+
+      // Save into record history and update latest status
+      try {
+        var historyList = JSON.parse(localStorage.getItem('PPCH_LAB_EVAL_RECORDS') || '[]');
+        historyList.unshift(evalData);
+        if (historyList.length > 200) historyList = historyList.slice(0, 200);
+        localStorage.setItem('PPCH_LAB_EVAL_RECORDS', JSON.stringify(historyList));
+
+        var latestCache = JSON.parse(localStorage.getItem('PPCH_LAB_LATEST_STATUS') || '{}');
+        latestCache[currentItem.id] = {
+          status: evalData.status,
+          lastTemp: evalData.temperature,
+          lastHumidity: evalData.humidity,
+          evaluatedAt: evalData.time,
+          evaluatedBy: staffName,
+          shift: currentShift,
+          date: evalData.date
+        };
+        localStorage.setItem('PPCH_LAB_LATEST_STATUS', JSON.stringify(latestCache));
+      } catch (err) {}
+
+      // Push to GAS async
+      try {
+        fetch(GAS_API_URL + '?action=saveLabRecord', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(evalData),
+          mode: 'no-cors'
+        }).catch(function(e) {});
+      } catch (e) {}
+
+      // Advance Stepper & Show confirmation slip
+      updateStepper(3);
+      showConfirmationSlip(evalData);
+    }
+
+    // SUBMIT STANDARD EVALUATION (ANALYZERS & UPS)
+    function submitStandardEvaluation() {
+      if (!currentItem) return;
+
+      var staffIdInput = document.getElementById('stdStaffId');
+      formatStaffId(staffIdInput);
+      var staffId = staffIdInput.value.trim();
+      var staffName = document.getElementById('stdStaffName').value.trim();
+
+      if (!staffId) {
+        alert('กรุณาระบุรหัสพนักงานผู้ตรวจ (เช่น 000023)');
+        staffIdInput.focus();
+        return;
+      }
+      if (!staffName) {
+        alert('กรุณาระบุชื่อ-สกุล ผู้ตรวจเช็ค');
+        document.getElementById('stdStaffName').focus();
+        return;
+      }
+
+      var evalDate = document.getElementById('evalDate').value;
+      var evalTime = document.getElementById('evalTime').value;
+      var note = document.getElementById('stdEvalNote').value.trim();
+
+      var isOverallPass = true;
+      var evalData = {
+        itemId: currentItem.id,
+        itemName: currentItem.name,
+        formCode: currentItem.code,
+        category: currentItem.catName,
+        type: currentItem.type,
+        date: evalDate,
+        time: evalTime,
+        shift: currentShift,
+        staffId: staffId,
+        staffName: staffName,
+        note: note,
+        timestamp: new Date().toISOString()
+      };
+
+      if (currentItem.type.indexOf('analyzer_') === 0) {
+        var items = currentItem.checklist || [];
+        var passCount = 0;
+        for (var i = 0; i < items.length; i++) {
+          if (analyzerChecklistState[i] === null) {
+            alert('กรุณาตรวจเช็ครายการที่ ' + (i + 1) + ' ให้ครบถ้วน');
+            return;
+          }
+          if (analyzerChecklistState[i] === 'pass') passCount++;
+          else isOverallPass = false;
+        }
+        evalData.checklistResults = analyzerChecklistState;
+        evalData.checklistSummary = passCount + '/' + items.length + ' ผ่านเกณฑ์';
+
+      } else if (currentItem.type === 'ups_battery') {
+        var upsMin = parseInt(document.getElementById('inputUpsRuntime').value);
+        if (isNaN(upsMin)) {
+          alert('กรุณาระบุระยะเวลาสำรองไฟ (นาที)');
+          document.getElementById('inputUpsRuntime').focus();
+          return;
+        }
+        evalData.runtimeMinutes = upsMin;
+        if (upsMin < 15) isOverallPass = false;
+      }
+
+      evalData.status = isOverallPass ? 'ready' : 'abnormal';
+
+      try {
+        localStorage.setItem('PPCH_LAST_STAFF_ID', staffId);
+        localStorage.setItem('PPCH_LAST_STAFF_NAME', staffName);
+
+        var historyList = JSON.parse(localStorage.getItem('PPCH_LAB_EVAL_RECORDS') || '[]');
+        historyList.unshift(evalData);
+        if (historyList.length > 200) historyList = historyList.slice(0, 200);
+        localStorage.setItem('PPCH_LAB_EVAL_RECORDS', JSON.stringify(historyList));
+
+        var latestCache = JSON.parse(localStorage.getItem('PPCH_LAB_LATEST_STATUS') || '{}');
+        latestCache[currentItem.id] = {
+          status: evalData.status,
+          evaluatedAt: evalTime,
+          evaluatedBy: staffName,
+          shift: currentShift,
+          date: evalDate
+        };
+        localStorage.setItem('PPCH_LAB_LATEST_STATUS', JSON.stringify(latestCache));
+      } catch (err) {}
+
+      try {
+        fetch(GAS_API_URL + '?action=saveLabRecord', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(evalData),
+          mode: 'no-cors'
+        }).catch(function(e) {});
+      } catch (e) {}
+
+      updateStepper(3);
+      showConfirmationSlip(evalData);
     }
 
     // Analyzer Checklist
@@ -1340,181 +2874,35 @@
       });
     }
 
-    // Employee ID 6-Digit Format (Strict Golden Rule)
-    function formatStaffId(el) {
-      var val = (el.value || '').trim();
-      if (!val) return;
-      // Strip non-digits
-      var numOnly = val.replace(/\D/g, '');
-      if (numOnly) {
-        el.value = numOnly.padStart(6, '0');
-      }
+    // UPS Stepper & Validation
+    function stepUps(delta) {
+      var el = document.getElementById('inputUpsRuntime');
+      var val = parseInt(el.value) || 0;
+      el.value = Math.max(0, val + delta);
+      validateUpsLive();
     }
 
-    // Stepper State Updater
-    function updateStepper(step) {
-      var s1 = document.getElementById('step1');
-      var s2 = document.getElementById('step2');
-      var s3 = document.getElementById('step3');
-      var l1 = document.getElementById('line1');
-      var l2 = document.getElementById('line2');
+    function validateUpsLive() {
+      var el = document.getElementById('inputUpsRuntime');
+      var val = parseInt(el.value);
+      var fb = document.getElementById('upsStatusFeedback');
 
-      if (step === 1) {
-        s1.className = 'stepper-step active';
-        s2.className = 'stepper-step';
-        s3.className = 'stepper-step';
-        l1.className = 'stepper-line';
-        l2.className = 'stepper-line';
-      } else if (step === 2) {
-        s1.className = 'stepper-step done';
-        s2.className = 'stepper-step active';
-        s3.className = 'stepper-step';
-        l1.className = 'stepper-line done';
-        l2.className = 'stepper-line';
-      } else if (step === 3) {
-        s1.className = 'stepper-step done';
-        s2.className = 'stepper-step done';
-        s3.className = 'stepper-step active';
-        l1.className = 'stepper-line done';
-        l2.className = 'stepper-line done';
-      }
-    }
-
-    // Submit Evaluation Form
-    function submitEvaluation() {
-      if (!currentItem) {
-        alert('กรุณาเลือกจุดตรวจก่อนบันทึกข้อมูล');
+      if (isNaN(val)) {
+        fb.style.display = 'none';
         return;
       }
 
-      var staffIdInput = document.getElementById('staffId');
-      formatStaffId(staffIdInput);
-      var staffId = staffIdInput.value.trim();
-      var staffName = document.getElementById('staffName').value.trim();
-
-      if (!staffId) {
-        alert('กรุณาระบุรหัสพนักงานผู้ตรวจ (เช่น 000023)');
-        staffIdInput.focus();
-        return;
+      fb.style.display = 'inline-flex';
+      if (val >= 15) {
+        fb.className = 'status-feedback-pill normal';
+        fb.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">check_circle</span> <span>สำรองไฟผ่านเกณฑ์ (≥ 15 นาที)</span>';
+      } else {
+        fb.className = 'status-feedback-pill abnormal';
+        fb.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">warning</span> <span>สำรองไฟต่ำกว่าเกณฑ์ (< 15 นาที)</span>';
       }
-      if (!staffName) {
-        alert('กรุณาระบุชื่อ-สกุล ผู้ตรวจเช็ค');
-        document.getElementById('staffName').focus();
-        return;
-      }
-
-      var evalDate = document.getElementById('evalDate').value;
-      var evalTime = document.getElementById('evalTime').value;
-      var note = document.getElementById('evalNote').value.trim();
-
-      // Collect Evaluation Payload
-      var isOverallPass = true;
-      var evalData = {
-        itemId: currentItem.id,
-        itemName: currentItem.name,
-        formCode: currentItem.code,
-        category: currentItem.catName,
-        type: currentItem.type,
-        date: evalDate,
-        time: evalTime,
-        shift: currentShift,
-        staffId: staffId,
-        staffName: staffName,
-        note: note,
-        timestamp: new Date().toISOString()
-      };
-
-      if (currentItem.type.indexOf('temp_') === 0) {
-        var tempVal = parseFloat(document.getElementById('inputTemp').value);
-        if (isNaN(tempVal)) {
-          alert('กรุณากรอกค่าอุณหภูมิ');
-          document.getElementById('inputTemp').focus();
-          return;
-        }
-        evalData.temperature = tempVal;
-        var tempPass = (tempVal >= currentItem.tempMin && tempVal <= currentItem.tempMax);
-        if (!tempPass) isOverallPass = false;
-
-        if (currentItem.hasHumidity) {
-          var humVal = parseInt(document.getElementById('inputHumidity').value);
-          if (isNaN(humVal)) {
-            alert('กรุณากรอกค่าความชื้นสัมพัทธ์');
-            document.getElementById('inputHumidity').focus();
-            return;
-          }
-          evalData.humidity = humVal;
-          if (humVal > 60) isOverallPass = false;
-        }
-
-      } else if (currentItem.type.indexOf('analyzer_') === 0) {
-        var items = currentItem.checklist || [];
-        var passCount = 0;
-        for (var i = 0; i < items.length; i++) {
-          if (analyzerChecklistState[i] === null) {
-            alert('กรุณาตรวจเช็ครายการที่ ' + (i + 1) + ' ให้ครบถ้วน');
-            return;
-          }
-          if (analyzerChecklistState[i] === 'pass') passCount++;
-          else isOverallPass = false;
-        }
-        evalData.checklistResults = analyzerChecklistState;
-        evalData.checklistSummary = passCount + '/' + items.length + ' ผ่านเกณฑ์';
-
-      } else if (currentItem.type === 'ups_battery') {
-        var upsMin = parseInt(document.getElementById('inputUpsRuntime').value);
-        if (isNaN(upsMin)) {
-          alert('กรุณาระบุระยะเวลาสำรองไฟ (นาที)');
-          document.getElementById('inputUpsRuntime').focus();
-          return;
-        }
-        evalData.runtimeMinutes = upsMin;
-        if (upsMin < 15) isOverallPass = false;
-      }
-
-      evalData.status = isOverallPass ? 'ready' : 'abnormal';
-
-      // Persist to localStorage
-      try {
-        localStorage.setItem('PPCH_LAST_STAFF_ID', staffId);
-        localStorage.setItem('PPCH_LAST_STAFF_NAME', staffName);
-
-        var historyList = JSON.parse(localStorage.getItem('PPCH_LAB_EVAL_RECORDS') || '[]');
-        historyList.unshift(evalData);
-        if (historyList.length > 200) historyList = historyList.slice(0, 200);
-        localStorage.setItem('PPCH_LAB_EVAL_RECORDS', JSON.stringify(historyList));
-
-        // Update latest state cache for lab dashboard
-        var latestCache = JSON.parse(localStorage.getItem('PPCH_LAB_LATEST_STATUS') || '{}');
-        latestCache[currentItem.id] = {
-          status: evalData.status,
-          lastTemp: evalData.temperature,
-          lastHumidity: evalData.humidity,
-          evaluatedAt: evalTime,
-          evaluatedBy: staffName,
-          shift: currentShift,
-          date: evalDate
-        };
-        localStorage.setItem('PPCH_LAB_LATEST_STATUS', JSON.stringify(latestCache));
-      } catch (err) {
-        console.warn('localStorage save warning:', err);
-      }
-
-      // Background POST to GAS API (silent async)
-      try {
-        fetch(GAS_API_URL + '?action=saveLabRecord', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(evalData),
-          mode: 'no-cors'
-        }).catch(function(e) { console.log('GAS push background:', e); });
-      } catch (e) {}
-
-      // Advance Stepper to Step 3 & Show Confirmation Slip
-      updateStepper(3);
-      showConfirmationSlip(evalData);
     }
 
-    // Render Slip Modal
+    // Confirmation Slip Modal
     function showConfirmationSlip(data) {
       var docNo = 'LAB-REC-' + data.date.replace(/-/g, '') + '-' + String(Math.floor(Math.random() * 900) + 100);
       document.getElementById('slipDocNo').innerText = 'DOC: ' + docNo;
@@ -1531,7 +2919,7 @@
       document.getElementById('slipItemName').innerText = data.itemName;
       document.getElementById('slipFormCode').innerText = data.formCode;
 
-      var shiftNames = { morning: 'เวรเช้า (08:00 - 16:00)', afternoon: 'เวรบ่าย (16:00 - 24:00)', night: 'เวรดึก (00:00 - 08:00)' };
+      var shiftNames = { morning: 'เวรเช้า (08:00 - 16:00)', afternoon: 'เวรบ่าย (16:00 - 24:00)' };
       document.getElementById('slipDateTime').innerText = data.date + ' ' + data.time + ' น. • ' + (shiftNames[data.shift] || data.shift);
 
       // Temperature row
@@ -1545,7 +2933,7 @@
 
       // Humidity row
       var rowHum = document.getElementById('slipRowHum');
-      if (data.humidity !== undefined) {
+      if (data.humidity !== undefined && data.humidity !== null) {
         rowHum.style.display = 'flex';
         document.getElementById('slipHumVal').innerText = data.humidity + ' %RH';
       } else {
