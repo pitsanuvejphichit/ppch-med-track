@@ -785,16 +785,49 @@
       });
     },
 
-    // 8. Test LINE Alert via GAS
+    // 8. Test LINE Alert via GAS (Messaging API & Notify)
     testLineAlert: function (callback) {
+      this.testLineDevAlert('Admin', callback);
+    },
+
+    testLineDevAlert: function (operator, callback) {
       var gasUrl = this.getGasEndpoint();
       if (!gasUrl) {
         if (callback) callback({ success: false, message: 'ยังไม่ได้ระบุ Web App URL ของ Google Apps Script' });
         return;
       }
-      this.postToGas({ action: 'testLine' }, function (res) {
+      this.postToGas({ action: 'testLineDev', operator: operator || 'Admin' }, function (res) {
         if (callback) callback(res);
       });
+    },
+
+    // 9. Fetch LINE Settings from Google Sheets
+    fetchLineSettings: function (callback) {
+      var gasUrl = this.getGasEndpoint();
+      if (!gasUrl) {
+        if (callback) callback({ success: false, message: 'ยังไม่ได้ระบุ Web App URL ของ Google Apps Script' });
+        return;
+      }
+      var cbName = 'ppch_linesettings_cb_' + Date.now();
+      var script = document.createElement('script');
+      script.src = gasUrl + (gasUrl.indexOf('?') === -1 ? '?' : '&') + 'action=getLineSettings&callback=' + cbName;
+      window[cbName] = function (data) {
+        delete window[cbName];
+        if (script.parentNode) script.parentNode.removeChild(script);
+        if (callback) callback({ success: true, data: (data && data.data) ? data.data : null });
+      };
+      script.onerror = function () {
+        delete window[cbName];
+        if (script.parentNode) script.parentNode.removeChild(script);
+        if (callback) callback({ success: false, message: 'Failed to load LINE settings' });
+      };
+      document.body.appendChild(script);
+    },
+
+    // 10. Save LINE Settings to Google Sheets
+    saveLineSettings: function (settings, callback) {
+      var payload = Object.assign({ action: 'saveLineSettings' }, settings);
+      this.postToGas(payload, callback);
     }
   };
 

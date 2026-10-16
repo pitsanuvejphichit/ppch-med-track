@@ -47,9 +47,23 @@
 
       --font-sans: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono: 'Inter', monospace;
+      color-scheme: light;
+      accent-color: #004b93;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Modern Web Guidance: Branded Selection & Accessible Contrast */
+    ::selection {
+      background-color: var(--royal-blue);
+      color: #ffffff;
+    }
+
+    /* Modern Web Guidance: Standardized Baseline Scrollbar Theming */
+    html {
+      scrollbar-color: #94a3b8 #f1f5f9;
+      scrollbar-width: thin;
+    }
 
     body {
       background-color: var(--canvas-bg);
@@ -59,6 +73,44 @@
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
+      overflow-wrap: break-word;
+    }
+
+    /* Modern Web Guidance: Headings Balanced Wrapping */
+    h1, h2, h3, h4, h5, h6, .panel-title, th {
+      text-wrap: balance;
+    }
+
+    /* Modern Web Guidance: Long Copy Pretty Wrapping (Prevent Orphans/Runts) */
+    p, .defect-note, .status-reason-text, .guide-text {
+      text-wrap: pretty;
+    }
+
+    /* Modern Web Guidance: Form Controls Theming & Layout Integrity */
+    textarea {
+      resize: vertical;
+      font-family: inherit;
+    }
+
+    input, select, textarea, button {
+      accent-color: var(--royal-blue);
+    }
+
+    /* Modern Web Guidance: User-Interacted Validity (Not Hostile on Load) */
+    input:user-invalid, select:user-invalid, textarea:user-invalid {
+      border-color: var(--red-abnormal) !important;
+      background-color: #fff8f8;
+    }
+
+    /* Modern Web Guidance: Accessible High-Contrast Focus Indicator */
+    :focus-visible {
+      outline: 2px solid var(--royal-blue);
+      outline-offset: 2px;
+    }
+
+    /* Modern Web Guidance: Selective user-select on UI Chrome (Protect Content Text) */
+    .btn-tool, .action-btn, .speed-dial-btn, .nav-item, .nav-sub-btn, .badge, .status-pill, .modal-header, .panel-icon {
+      user-select: none;
     }
 
     .app-wrapper {
@@ -1346,6 +1398,9 @@
       opacity: 1;
       visibility: visible;
       transition: all 0.2s;
+      /* Modern Web Guidance: Prevent Page Scroll Underneath Modal Dialog without Layout Shift */
+      overflow: hidden;
+      overscroll-behavior: contain;
     }
     .modal-overlay.hidden {
       opacity: 0;
@@ -1361,6 +1416,8 @@
       max-width: 480px;
       width: 90%;
       animation: loaderPop 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      /* Modern Web Guidance: Contain Modal Inner Scroll */
+      overscroll-behavior: contain;
     }
     .modal-box .filter-input,
     .modal-box input:not([type="checkbox"]):not([type="radio"]),
@@ -3408,6 +3465,11 @@
               <span>การจัดการเครื่องมือแพทย์</span>
               <span id="badgeSettingsEquipCount" class="nav-count-badge" style="background: var(--royal-subtle); color: var(--royal-blue); margin-left: 4px;">0</span>
             </button>
+            <button type="button" id="tabBtn_settings_line" onclick="switchSettingsTab('line')" class="btn-tool" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 14px; font-weight: 600; flex: 1; min-width: 140px;">
+              <span class="material-icons-round" style="font-size: 18px; color: #06c755;">chat</span>
+              <span>ตั้งค่า LINE Developers</span>
+              <span id="badgeSettingsLineStatus" class="nav-count-badge" style="background: var(--royal-subtle); color: var(--royal-blue); margin-left: 4px;">API</span>
+            </button>
           </div>
 
           <!-- TAB 1: การจัดการแผนก -->
@@ -3528,6 +3590,165 @@
                     <!-- Injected via JS -->
                   </tbody>
                 </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 3: การตั้งค่า LINE Developers (Messaging API) -->
+          <div id="settingsPanelLine" style="display: none;">
+            <div class="content-panel" style="margin-bottom: 16px;">
+              <div class="panel-header" style="flex-wrap: wrap; gap: 10px;">
+                <div>
+                  <div class="panel-title" style="display: flex; align-items: center; gap: 8px;">
+                    <span class="material-icons-round" style="color: #06c755;">chat</span>
+                    <span>ตั้งค่าการแจ้งเตือน LINE Developers (Messaging API)</span>
+                    <span class="badge" style="background: #e8f8ee; color: #06c755; border: 1px solid #a3e9be; font-size: 11px; padding: 2px 8px; border-radius: 999px;">Flex Message v2</span>
+                  </div>
+                  <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                    ระบบส่งข้อความแจ้งเตือนความผิดปกติ การย้ายแผนก และการซ่อมบำรุง ผ่าน LINE Official Account / Bot (ทดแทน LINE Notify)
+                  </div>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <button type="button" onclick="testLineDevFromAdmin()" id="btnTestLineDev" class="btn-tool" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-color: #06c755; color: #05963f;">
+                    <span class="material-icons-round" style="font-size: 18px; color: #06c755;">send</span>
+                    <span>ทดสอบส่ง LINE Flex Message</span>
+                  </button>
+                  <button type="button" onclick="saveLineSettingsFromAdmin()" id="btnSaveLineSettings" class="btn-tool btn-tool-primary" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px;">
+                    <span class="material-icons-round" style="font-size: 18px;">save</span>
+                    <span>บันทึกการตั้งค่า LINE</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Form Body -->
+              <div style="padding: 16px; display: grid; grid-template-columns: 1fr; gap: 16px;">
+                <!-- Card 1: API Credentials -->
+                <div style="background: var(--bg-surface, #ffffff); border: 1px solid var(--border-subtle, #e2e8f0); border-radius: 12px; padding: 16px;">
+                  <div style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                    <span class="material-icons-round" style="color: var(--royal-blue); font-size: 18px;">vpn_key</span>
+                    <span>LINE Channel Access Token &amp; กลุ่มผู้รับการแจ้งเตือน</span>
+                  </div>
+
+                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+                    <!-- Channel Access Token -->
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                      <label style="font-size: 12px; font-weight: 600; color: var(--text-secondary);">
+                        Channel Access Token (Long-lived) <span style="color: #ef4444;">*</span>
+                      </label>
+                      <div style="position: relative; display: flex; align-items: center;">
+                        <input type="password" id="lineDevToken" placeholder="วาง Long-lived Token จาก LINE Developers Console" style="width: 100%; padding: 9px 40px 9px 12px; border: 1px solid var(--border-main); border-radius: 8px; font-family: monospace; font-size: 12px;">
+                        <button type="button" onclick="toggleLineTokenVisibility()" title="แสดง/ซ่อน Token" style="position: absolute; right: 8px; background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 4px; display: flex; align-items: center;">
+                          <span class="material-icons-round" id="iconToggleLineToken" style="font-size: 18px;">visibility_off</span>
+                        </button>
+                      </div>
+                      <div style="font-size: 11px; color: var(--text-muted);">
+                        ออก Token ได้จาก LINE Developers Console &gt; Channel Settings &gt; Messaging API &gt; Channel access token (long-lived)
+                      </div>
+                    </div>
+
+                    <!-- Target ID (Group ID or BROADCAST) -->
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                      <label style="font-size: 12px; font-weight: 600; color: var(--text-secondary);">
+                        Target ID (Group ID หรือ User ID)
+                      </label>
+                      <div style="position: relative; display: flex; align-items: center;">
+                        <input type="text" id="lineDevTargetId" placeholder="เช่น Cxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx หรือ BROADCAST" style="width: 100%; padding: 9px 12px; border: 1px solid var(--border-main); border-radius: 8px; font-family: monospace; font-size: 12px;">
+                      </div>
+                      <div style="font-size: 11px; color: var(--text-muted);">
+                        💡 นำบอทเข้ากลุ่มไลน์ หรือพิมพ์คำว่า <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px;">id</code> ในกลุ่ม ระบบ Webhook จะดึง Group ID มาบันทึกให้อัตโนมัติ (ใส่ <code>BROADCAST</code> เพื่อส่งหาผู้ติดตามทุกคน)
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Webhook URL Box -->
+                  <div style="margin-top: 14px; background: #f8fafc; border: 1px dashed var(--border-main); border-radius: 8px; padding: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                    <div style="display: flex; align-items: center; gap: 8px; min-width: 200px; flex: 1;">
+                      <span class="material-icons-round" style="color: var(--royal-blue); font-size: 20px;">link</span>
+                      <div style="overflow: hidden;">
+                        <div style="font-size: 11px; font-weight: 600; color: var(--text-secondary);">Webhook URL สำหรับกรอกใน LINE Developers Console:</div>
+                        <div id="lineWebhookDisplay" style="font-size: 11px; font-family: monospace; color: var(--royal-blue); word-break: break-all; margin-top: 2px;">
+                          https://script.google.com/macros/s/AKfycbxSJMfEnW94Lzd-VJ4y4uxGt5a1XhnMopVnt1jhCoXTh-__BhTPkrdHtOBQNEhnoZOeSA/exec
+                        </div>
+                      </div>
+                    </div>
+                    <button type="button" onclick="copyLineWebhookUrl()" class="btn-tool" style="padding: 6px 12px; font-size: 12px;">
+                      <span class="material-icons-round" style="font-size: 16px;">content_copy</span>
+                      <span id="btnCopyWebhookText">คัดลอก URL</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Card 2: Notification Event Rules -->
+                <div style="background: var(--bg-surface, #ffffff); border: 1px solid var(--border-subtle, #e2e8f0); border-radius: 12px; padding: 16px;">
+                  <div style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                    <span class="material-icons-round" style="color: var(--royal-blue); font-size: 18px;">notifications_active</span>
+                    <span>เงื่อนไขการส่งแจ้งเตือนอัตโนมัติ (Notification Triggers)</span>
+                  </div>
+
+                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px;">
+                    <!-- Event 1: Abnormal/Defect -->
+                    <label style="display: flex; align-items: flex-start; gap: 10px; padding: 12px; border: 1px solid var(--border-main); border-radius: 10px; cursor: pointer; background: #fff;">
+                      <input type="checkbox" id="lineAlertAbnormal" checked style="margin-top: 2px; width: 16px; height: 16px; accent-color: #ef4444;">
+                      <div>
+                        <div style="font-weight: 700; font-size: 13px; color: #b91c1c; display: flex; align-items: center; gap: 4px;">
+                          <span class="material-icons-round" style="font-size: 16px;">warning</span>
+                          <span>ตรวจพบเครื่องชำรุด / ไม่พร้อมใช้</span>
+                        </div>
+                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+                          ส่ง Flex Message สีแดงทันทีเมื่อผู้ตรวจเช็คส่งผลว่า "ไม่พร้อมใช้" พร้อมรายละเอียดปัญหา
+                        </div>
+                      </div>
+                    </label>
+
+                    <!-- Event 2: Relocate / Custody Transfer -->
+                    <label style="display: flex; align-items: flex-start; gap: 10px; padding: 12px; border: 1px solid var(--border-main); border-radius: 10px; cursor: pointer; background: #fff;">
+                      <input type="checkbox" id="lineAlertTransfer" checked style="margin-top: 2px; width: 16px; height: 16px; accent-color: #f59e0b;">
+                      <div>
+                        <div style="font-weight: 700; font-size: 13px; color: #b45309; display: flex; align-items: center; gap: 4px;">
+                          <span class="material-icons-round" style="font-size: 16px;">move_up</span>
+                          <span>ย้ายแผนกรับผิดชอบเครื่อง</span>
+                        </div>
+                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+                          ส่ง Flex Message สีส้มแจ้งเตือนต้นทางและปลายทางเมื่อมีการย้ายแผนกถาวร
+                        </div>
+                      </div>
+                    </label>
+
+                    <!-- Event 3: Maintenance Resolved -->
+                    <label style="display: flex; align-items: flex-start; gap: 10px; padding: 12px; border: 1px solid var(--border-main); border-radius: 10px; cursor: pointer; background: #fff;">
+                      <input type="checkbox" id="lineAlertResolve" checked style="margin-top: 2px; width: 16px; height: 16px; accent-color: #10b981;">
+                      <div>
+                        <div style="font-weight: 700; font-size: 13px; color: #047857; display: flex; align-items: center; gap: 4px;">
+                          <span class="material-icons-round" style="font-size: 16px;">check_circle</span>
+                          <span>ช่างซ่อมเสร็จ &amp; ปลดล็อกพร้อมใช้</span>
+                        </div>
+                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+                          ส่ง Flex Message สีเขียวแจ้งเตือนแผนกเจ้าของเครื่องว่าเครื่องได้รับการซ่อมแซมพร้อมใช้งานแล้ว
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Card 3: Preview of Rich Flex Cards -->
+                <div style="background: #f8fafc; border: 1px solid var(--border-subtle, #e2e8f0); border-radius: 12px; padding: 14px;">
+                  <div style="font-size: 12px; font-weight: 700; color: var(--text-secondary); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                    <span class="material-icons-round" style="font-size: 16px; color: #06c755;">style</span>
+                    <span>ตัวอย่างรูปแบบข้อความ LINE Flex Message (ออกแบบตามมาตรฐานอัตลักษณ์โรงพยาบาลพิษณุเวช)</span>
+                  </div>
+                  <div style="display: flex; gap: 10px; flex-wrap: wrap; font-size: 11px; color: var(--text-muted);">
+                    <div style="background: #fff; padding: 8px 12px; border-radius: 8px; border-left: 4px solid #ef4444; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                      🚨 <strong>บัตรสีแดง</strong>: แจ้งเตือนเครื่องมือแพทย์ชำรุด ระบุชื่อเครื่อง, แผนก, อาการเสีย, ผู้รายงาน
+                    </div>
+                    <div style="background: #fff; padding: 8px 12px; border-radius: 8px; border-left: 4px solid #f59e0b; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                      🚚 <strong>บัตรสีส้ม</strong>: แจ้งเตือนย้ายแผนกรับผิดชอบ ระบุแผนกต้นทาง, ปลายทาง, ผู้ดำเนินการ
+                    </div>
+                    <div style="background: #fff; padding: 8px 12px; border-radius: 8px; border-left: 4px solid #10b981; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                      ✅ <strong>บัตรสีเขียว</strong>: แจ้งเตือนซ่อมเสร็จ &amp; คืนสภาพพร้อมใช้ ระบุช่างซ่อม, รายละเอียดการแก้ไข
+                    </div>
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>
@@ -5927,37 +6148,33 @@
       currentSettingsTab = tabKey;
       var btnDept = document.getElementById('tabBtn_settings_dept');
       var btnEquip = document.getElementById('tabBtn_settings_equip');
+      var btnLine = document.getElementById('tabBtn_settings_line');
       var pnlDept = document.getElementById('settingsPanelDepartments');
       var pnlEquip = document.getElementById('settingsPanelEquipment');
+      var pnlLine = document.getElementById('settingsPanelLine');
+
+      [
+        { btn: btnDept, pnl: pnlDept, key: 'departments' },
+        { btn: btnEquip, pnl: pnlEquip, key: 'equipment' },
+        { btn: btnLine, pnl: pnlLine, key: 'line' }
+      ].forEach(function (item) {
+        if (!item.btn) return;
+        var isActive = (item.key === tabKey);
+        item.btn.className = isActive ? 'btn-tool btn-tool-primary' : 'btn-tool';
+        var b = item.btn.querySelector('.nav-count-badge');
+        if (b) {
+          b.style.background = isActive ? 'rgba(255,255,255,0.25)' : 'var(--royal-subtle)';
+          b.style.color = isActive ? '#fff' : 'var(--royal-blue)';
+        }
+        if (item.pnl) item.pnl.style.display = isActive ? 'block' : 'none';
+      });
 
       if (tabKey === 'departments') {
-        if (btnDept) {
-          btnDept.className = 'btn-tool btn-tool-primary';
-          var b = btnDept.querySelector('.nav-count-badge');
-          if (b) { b.style.background = 'rgba(255,255,255,0.25)'; b.style.color = '#fff'; }
-        }
-        if (btnEquip) {
-          btnEquip.className = 'btn-tool';
-          var b = btnEquip.querySelector('.nav-count-badge');
-          if (b) { b.style.background = 'var(--royal-subtle)'; b.style.color = 'var(--royal-blue)'; }
-        }
-        if (pnlDept) pnlDept.style.display = 'block';
-        if (pnlEquip) pnlEquip.style.display = 'none';
         renderDepartmentsTable();
-      } else {
-        if (btnDept) {
-          btnDept.className = 'btn-tool';
-          var b = btnDept.querySelector('.nav-count-badge');
-          if (b) { b.style.background = 'var(--royal-subtle)'; b.style.color = 'var(--royal-blue)'; }
-        }
-        if (btnEquip) {
-          btnEquip.className = 'btn-tool btn-tool-primary';
-          var b = btnEquip.querySelector('.nav-count-badge');
-          if (b) { b.style.background = 'rgba(255,255,255,0.25)'; b.style.color = '#fff'; }
-        }
-        if (pnlDept) pnlDept.style.display = 'none';
-        if (pnlEquip) pnlEquip.style.display = 'block';
+      } else if (tabKey === 'equipment') {
         renderEquipmentSettingsTable();
+      } else if (tabKey === 'line') {
+        loadLineSettingsIntoAdmin();
       }
     }
 
@@ -5973,8 +6190,157 @@
 
       if (currentSettingsTab === 'departments') {
         renderDepartmentsTable();
-      } else {
+      } else if (currentSettingsTab === 'equipment') {
         renderEquipmentSettingsTable();
+      } else if (currentSettingsTab === 'line') {
+        loadLineSettingsIntoAdmin();
+      }
+    }
+
+    // ==================== LINE DEVELOPERS MESSAGING API SETTINGS ====================
+    var lineSettingsCache = null;
+
+    function loadLineSettingsIntoAdmin() {
+      var gasUrl = (window.PPCH_API && window.PPCH_API.getGasEndpoint) ? window.PPCH_API.getGasEndpoint() : ((window.PPCH_CONFIG && window.PPCH_CONFIG.defaultGasUrl) || '');
+      var webhookEl = document.getElementById('lineWebhookDisplay');
+      if (webhookEl && gasUrl) webhookEl.innerText = gasUrl;
+
+      if (window.PPCH_API && window.PPCH_API.fetchLineSettings) {
+        window.PPCH_API.fetchLineSettings(function (res) {
+          if (res && res.success && res.data) {
+            lineSettingsCache = res.data;
+            var tInput = document.getElementById('lineDevToken');
+            var idInput = document.getElementById('lineDevTargetId');
+            var chkAbn = document.getElementById('lineAlertAbnormal');
+            var chkTrf = document.getElementById('lineAlertTransfer');
+            var chkRes = document.getElementById('lineAlertResolve');
+            var bStatus = document.getElementById('badgeSettingsLineStatus');
+
+            if (tInput) tInput.value = res.data.channelAccessToken || '';
+            if (idInput) idInput.value = res.data.targetId || '';
+            if (chkAbn) chkAbn.checked = res.data.alertAbnormal !== false;
+            if (chkTrf) chkTrf.checked = res.data.alertTransfer !== false;
+            if (chkRes) chkRes.checked = res.data.alertResolve !== false;
+
+            if (bStatus) {
+              if (res.data.channelAccessToken) {
+                bStatus.innerText = 'เชื่อมต่อแล้ว';
+                bStatus.style.background = '#dcfce7';
+                bStatus.style.color = '#15803d';
+              } else {
+                bStatus.innerText = 'รอระบุ Token';
+                bStatus.style.background = '#fef3c7';
+                bStatus.style.color = '#b45309';
+              }
+            }
+          }
+        });
+      }
+    }
+
+    function saveLineSettingsFromAdmin() {
+      var tInput = document.getElementById('lineDevToken');
+      var idInput = document.getElementById('lineDevTargetId');
+      var chkAbn = document.getElementById('lineAlertAbnormal');
+      var chkTrf = document.getElementById('lineAlertTransfer');
+      var chkRes = document.getElementById('lineAlertResolve');
+      var btn = document.getElementById('btnSaveLineSettings');
+
+      var token = tInput ? tInput.value.trim() : '';
+      var targetId = idInput ? idInput.value.trim() : '';
+      var alertAbn = chkAbn ? chkAbn.checked : true;
+      var alertTrf = chkTrf ? chkTrf.checked : true;
+      var alertRes = chkRes ? chkRes.checked : true;
+
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="material-icons-round" style="font-size: 18px; animation: spin 1s infinite linear;">refresh</span> บันทึก...';
+      }
+
+      if (window.PPCH_API && window.PPCH_API.saveLineSettings) {
+        window.PPCH_API.saveLineSettings({
+          channelAccessToken: token,
+          targetId: targetId,
+          alertAbnormal: alertAbn,
+          alertTransfer: alertTrf,
+          alertResolve: alertRes
+        }, function (res) {
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<span class="material-icons-round" style="font-size: 18px;">save</span> <span>บันทึกการตั้งค่า LINE</span>';
+          }
+          var bStatus = document.getElementById('badgeSettingsLineStatus');
+          if (bStatus) {
+            if (token) {
+              bStatus.innerText = 'เชื่อมต่อแล้ว';
+              bStatus.style.background = '#dcfce7';
+              bStatus.style.color = '#15803d';
+            } else {
+              bStatus.innerText = 'รอระบุ Token';
+              bStatus.style.background = '#fef3c7';
+              bStatus.style.color = '#b45309';
+            }
+          }
+          showToast('บันทึกการตั้งค่า LINE สำเร็จและบันทึกลง Google Sheets เรียบร้อย');
+        });
+      }
+    }
+
+    function testLineDevFromAdmin() {
+      var btn = document.getElementById('btnTestLineDev');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="material-icons-round" style="font-size: 18px; animation: spin 1s infinite linear;">refresh</span> กำลังส่งทดสอบ...';
+      }
+
+      var operator = (window.currentUser && window.currentUser.name) ? window.currentUser.name : 'ผู้ดูแลระบบ (Admin)';
+      if (window.PPCH_API && window.PPCH_API.testLineDevAlert) {
+        window.PPCH_API.testLineDevAlert(operator, function (res) {
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<span class="material-icons-round" style="font-size: 18px; color: #06c755;">send</span> <span>ทดสอบส่ง LINE Flex Message</span>';
+          }
+          showToast('ส่งข้อความทดสอบ LINE Flex Message เรียบร้อยแล้ว กรุณาตรวจสอบใน LINE');
+        });
+      }
+    }
+
+    function toggleLineTokenVisibility() {
+      var tInput = document.getElementById('lineDevToken');
+      var icon = document.getElementById('iconToggleLineToken');
+      if (!tInput) return;
+      if (tInput.type === 'password') {
+        tInput.type = 'text';
+        if (icon) icon.innerText = 'visibility';
+      } else {
+        tInput.type = 'password';
+        if (icon) icon.innerText = 'visibility_off';
+      }
+    }
+
+    function copyLineWebhookUrl() {
+      var webhookEl = document.getElementById('lineWebhookDisplay');
+      var txt = webhookEl ? webhookEl.innerText.trim() : '';
+      if (!txt) return;
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(function () {
+          var btnTxt = document.getElementById('btnCopyWebhookText');
+          if (btnTxt) {
+            var orig = btnTxt.innerText;
+            btnTxt.innerText = 'คัดลอกสำเร็จ!';
+            setTimeout(function () { btnTxt.innerText = orig; }, 2000);
+          }
+          showToast('คัดลอก Webhook URL สำเร็จแล้ว');
+        });
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = txt;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showToast('คัดลอก Webhook URL สำเร็จแล้ว');
       }
     }
 

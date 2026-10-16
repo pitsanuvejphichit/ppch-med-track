@@ -12,8 +12,18 @@
     :root {
       --royal-dark: #002e6e;
       --royal-blue: #004b93;
+      color-scheme: light;
+      accent-color: #004b93;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    ::selection {
+      background-color: var(--royal-blue);
+      color: #ffffff;
+    }
+    html {
+      scrollbar-color: #94a3b8 #f1f5f9;
+      scrollbar-width: thin;
+    }
     body {
       font-family: 'Prompt', -apple-system, sans-serif;
       background: #f4f7fb;
@@ -26,6 +36,10 @@
       margin: 0;
       padding: 20px;
       text-align: center;
+      overflow-wrap: break-word;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      text-wrap: balance;
     }
     .loader-card {
       background: #ffffff;

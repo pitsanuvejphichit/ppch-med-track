@@ -44,9 +44,23 @@
 
       --font-sans: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono: 'Inter', monospace;
+      color-scheme: light;
+      accent-color: #004b93;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Modern Web Guidance: Branded Selection & Accessible Contrast */
+    ::selection {
+      background-color: var(--royal-blue);
+      color: #ffffff;
+    }
+
+    /* Modern Web Guidance: Standardized Baseline Scrollbar Theming */
+    html {
+      scrollbar-color: #94a3b8 #f1f5f9;
+      scrollbar-width: thin;
+    }
 
     body {
       background-color: var(--canvas-bg);
@@ -58,6 +72,46 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow-wrap: break-word;
+    }
+
+    /* Modern Web Guidance: Headings Balanced Wrapping */
+    h1, h2, h3, h4, h5, h6, .card-title, .form-title {
+      text-wrap: balance;
+    }
+
+    /* Modern Web Guidance: Checklist & Body Copy Pretty Wrapping */
+    p, .checklist-label, .note-text, .alert-box {
+      text-wrap: pretty;
+    }
+
+    /* Modern Web Guidance: Form Controls Theming & Layout Integrity */
+    textarea {
+      resize: vertical;
+      font-family: inherit;
+    }
+
+    input, select, textarea, button {
+      accent-color: var(--royal-blue);
+    }
+
+    /* Modern Web Guidance: User-Interacted Validity (Not Hostile on Load) */
+    input:user-invalid, select:user-invalid, textarea:user-invalid {
+      border-color: var(--red-abnormal) !important;
+      background-color: #fff8f8;
+    }
+
+    /* Modern Web Guidance: Accessible High-Contrast Focus Indicator */
+    :focus-visible {
+      outline: 2px solid var(--royal-blue);
+      outline-offset: 2px;
+    }
+
+    /* Modern Web Guidance: Mobile Touch Target Ergonomics */
+    @media (pointer: coarse) {
+      .btn-submit, .btn-secondary, .checklist-opt-btn {
+        min-height: 48px;
+      }
     }
 
     /* ==================== PHITSANUVEJ CSS MEDICAL CROSS LOADER ==================== */
@@ -481,6 +535,9 @@
       justify-content: center;
       z-index: 1000;
       transition: all 0.2s;
+      /* Modern Web Guidance: Prevent Page Scroll Underneath Modal Dialog without Layout Shift */
+      overflow: hidden;
+      overscroll-behavior: contain;
     }
     .modal-overlay.hidden {
       opacity: 0;
@@ -496,6 +553,8 @@
       max-width: 440px;
       width: 90%;
       text-align: center;
+      /* Modern Web Guidance: Contain Modal Inner Scroll */
+      overscroll-behavior: contain;
     }
 
     /* Device Under Repair Banner & Overlay */
