@@ -4816,7 +4816,7 @@
       var officerName = document.getElementById('ackOfficerName').value.trim();
 
       if (!deviceId || !officerName) {
-        alert('กรุณาระบุชื่อเจ้าหน้าที่ผู้รับทราบ');
+        showToast('กรุณาระบุชื่อเจ้าหน้าที่ผู้รับทราบ');
         return;
       }
 
@@ -4830,7 +4830,7 @@
         showToast('รับทราบรายการ ' + (eq ? eq.assetCode : deviceId) + ' เรียบร้อย! เปลี่ยนสถานะเป็น "กำลังดำเนินการแก้ไข"');
         loadData();
       } catch (err) {
-        alert('เกิดข้อผิดพลาด: ' + err.message);
+        showToast('เกิดข้อผิดพลาด: ' + err.message);
       }
     }
 
@@ -4874,7 +4874,7 @@
       var testNote = document.getElementById('resolveTestNote').value.trim();
 
       if (!deviceId || !actionTaken || !techName) {
-        alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+        showToast('กรุณากรอกข้อมูลให้ครบถ้วน');
         return;
       }
 
@@ -4898,7 +4898,7 @@
         showToast('บันทึกการแก้ไข ' + res.equipment.assetCode + ' เสร็จสิ้น! ปลดล็อกเครื่องพร้อมใช้งานแล้ว');
         loadData();
       } catch (err) {
-        alert('เกิดข้อผิดพลาดในการบันทึก: ' + err.message);
+        showToast('เกิดข้อผิดพลาดในการบันทึก: ' + err.message);
       }
     }
 
@@ -4951,7 +4951,7 @@
       var dtVal = document.getElementById('allowUseDateTime').value;
 
       if (!deviceId || !officerName) {
-        alert('กรุณาระบุชื่อเจ้าหน้าที่ผู้มีอำนาจอนุญาต');
+        showToast('กรุณาระบุชื่อเจ้าหน้าที่ผู้มีอำนาจอนุญาต');
         return;
       }
 
@@ -4975,7 +4975,7 @@
         showToast('บันทึกอนุญาตให้ใช้งานต่อ ' + (res.equipment ? res.equipment.assetCode : deviceId) + ' เรียบร้อยแล้ว (สถานะ: อนุญาตให้ใช้งานต่อ)');
         loadData();
       } catch (err) {
-        alert('เกิดข้อผิดพลาดในการบันทึก: ' + err.message);
+        showToast('เกิดข้อผิดพลาดในการบันทึก: ' + err.message);
       }
     }
 
@@ -5002,7 +5002,7 @@
         showToast('ยกเลิกการอนุญาต ' + (res.equipment ? res.equipment.assetCode : deviceId) + ' เรียบร้อยแล้ว (กลับเป็นสถานะไม่พร้อมใช้งาน)');
         loadData();
       } catch (err) {
-        alert('เกิดข้อผิดพลาด: ' + err.message);
+        showToast('เกิดข้อผิดพลาด: ' + err.message);
       }
     }
 
@@ -5763,7 +5763,7 @@
       var targetDept = document.getElementById('relocateTargetDept').value;
 
       if (!devId || !targetDept) {
-        alert('กรุณาเลือกเครื่องมือแพทย์และแผนกที่ต้องการมอบหมาย');
+        showToast('กรุณาเลือกเครื่องมือแพทย์และแผนกที่ต้องการมอบหมาย');
         return;
       }
 
@@ -5789,7 +5789,7 @@
         loadData();
         onRelocateDeviceSelected();
       } catch (err) {
-        alert('เกิดข้อผิดพลาด: ' + err.message);
+        showToast('เกิดข้อผิดพลาด: ' + err.message);
       }
     }
 
