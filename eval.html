@@ -1645,6 +1645,18 @@
 
       var chosenDept = (document.getElementById('evalDeptSelect') && document.getElementById('evalDeptSelect').value) ? document.getElementById('evalDeptSelect').value : currentDevice.currentDept;
 
+      var checklistDetails = [];
+      if (currentForm && currentForm.items) {
+        checklistDetails = currentForm.items.map(function (it, idx) {
+          var res = checklistState[idx] || 'unanswered';
+          return {
+            no: idx + 1,
+            text: it.text || it.title || ('ข้อ ' + (idx + 1)),
+            status: (res === 'pass' ? 'pass' : (res === 'fail' ? 'fail' : res))
+          };
+        });
+      }
+
       var record = {
         id: 'EV-' + Date.now(),
         deviceId: currentDevice.id,
@@ -1657,6 +1669,7 @@
         result: hasFail ? 'abnormal' : 'normal',
         abnormalNote: note,
         checklist: checklistState,
+        checklistDetails: checklistDetails,
         upsBattery: upsObj
       };
 

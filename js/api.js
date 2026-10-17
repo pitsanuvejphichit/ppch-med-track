@@ -289,6 +289,7 @@
             result: record.result,
             abnormalNote: record.abnormalNote || '',
             checklist: record.checklist || {},
+            checklistDetails: record.checklistDetails || [],
             upsBatteryRuntime: record.upsBattery ? record.upsBattery.runtimeFormatted : '',
             upsBatteryTested: record.upsBattery ? record.upsBattery.tested : false,
             upsBatteryCycle: record.upsBattery ? record.upsBattery.cycleDate : ''
