@@ -1715,7 +1715,6 @@
                   <th>หมวดหมู่</th>
                   <th>เกณฑ์ควบคุม</th>
                   <th>อุณหภูมิล่าสุด</th>
-                  <th>ความชื้น</th>
                   <th style="text-align: center; width: 90px;">สถานะ</th>
                   <th style="width: 90px;">เวลาตรวจ</th>
                   <th>ผู้บันทึก</th>
@@ -1905,71 +1904,6 @@
     </div>
   </div>
 
-  <!-- Entry Recording Modal (Spacious Modern Design) -->
-  <div id="entryModal" class="modal-overlay hidden" onclick="if(event.target === this) closeModal()">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h3 id="modalTitle">
-          <span class="material-icons-round" style="color: var(--royal-blue); font-size: 20px;">edit_note</span>
-          <span id="modalTitleText">บันทึกข้อมูลผลการตรวจเช็ค</span>
-        </h3>
-        <button type="button" class="btn-close-modal" onclick="closeModal()">✕</button>
-      </div>
-      <div class="modal-body">
-        <div class="modal-form-group">
-          <label>จุดตรวจ / เครื่องมือ:</label>
-          <input type="text" id="modalPointName" readonly style="background: #f1f5f9; font-weight: 700; color: var(--royal-blue);">
-        </div>
-
-        <div class="modal-form-group" id="grpTemp">
-          <label>อุณหภูมิที่วัดได้ (°C):</label>
-          <input type="number" step="0.1" id="modalTempInput" placeholder="เช่น 25.4 หรือ 4.2" oninput="validateTempLive()">
-          <div id="tempFeedbackPill" class="temp-feedback-pill" style="display: none;"></div>
-        </div>
-
-        <div class="modal-form-group" id="grpHumidity">
-          <label>ความชื้นสัมพัทธ์ (%RH):</label>
-          <input type="number" step="1" id="modalHumInput" placeholder="เช่น 55">
-        </div>
-
-        <div class="modal-form-group" id="grpChecklist" style="display: none;">
-          <label>ผลการตรวจสอบความพร้อม:</label>
-          <select id="modalCheckSelect">
-            <option value="pass">✓ ปกติ / พร้อมใช้งานสมบูรณ์</option>
-            <option value="fail">✗ พบข้อบกพร่อง / ไม่พร้อมใช้</option>
-          </select>
-        </div>
-
-        <div class="modal-form-group" id="grpUpsMinutes" style="display: none;">
-          <label>ระยะเวลาสำรองไฟจริง (นาที):</label>
-          <input type="number" id="modalUpsMinutes" placeholder="เช่น 25">
-        </div>
-
-        <div style="display: grid; grid-template-columns: 130px 1fr; gap: 10px;">
-          <div class="modal-form-group">
-            <label>รหัสพนักงาน:</label>
-            <input type="text" id="modalStaffId" placeholder="000023" maxlength="6" onblur="if(this.value) this.value = this.value.trim().padStart(6, '0');" style="font-family: var(--font-mono); font-weight: 700;">
-          </div>
-          <div class="modal-form-group">
-            <label>ผู้บันทึกข้อมูล (ชื่อ-สกุล): <span style="color: var(--red-abnormal);">*</span></label>
-            <input type="text" id="modalRecorder" placeholder="เช่น ทนพ. สมชาย ใจดี" value="ทนพ. สมชาย ใจดี" required>
-          </div>
-        </div>
-
-        <div class="modal-form-group" id="grpNote">
-          <label>การแก้ไขเมื่อหลุดเกณฑ์ / บันทึกเพิ่มเติม (ถ้ามี):</label>
-          <textarea id="modalNote" placeholder="ระบุการดำเนินการ เช่น แจ้งช่าง, ปรับแอร์, ละลายน้ำแข็ง..."></textarea>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn-tool" onclick="closeModal()">ยกเลิก</button>
-        <button type="button" class="btn-tool btn-tool-primary" onclick="saveModalEntry()">
-          <span class="material-icons-round" style="font-size: 16px;">save</span>
-          <span>บันทึกข้อมูล</span>
-        </button>
-      </div>
-    </div>
-  </div>
 
   <!-- QR Code Modal (Single Item View & Print Sticker) -->
   <div id="qrModal" class="modal-overlay hidden" onclick="if(event.target === this) closeQrModal()">
@@ -2275,12 +2209,11 @@
       renderUpsTableView(data);
     }
 
-    // Helper: generate row floating speed dial
-    function createRowFloatingActions(editAction, viewSheetGid, itemId, itemName) {
+    // Helper: generate row floating speed dial (No modal on admin; link directly to QR Check-in)
+    function createRowFloatingActions(itemId, viewSheetGid, itemName) {
       var actions = [];
-      actions.push('<button type="button" onclick="' + editAction + '" class="btn-action-icon" style="background: linear-gradient(135deg, var(--royal-blue) 0%, var(--royal-light) 100%); color: #ffffff;" title="บันทึกด่วน (Modal)"><span class="material-icons-round">edit</span></button>');
       if (itemId) {
-        actions.push('<a href="eval-lab.html?itemId=' + itemId + '" target="_blank" class="btn-action-icon" style="background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe;" title="เปิดหน้ากรอกผลแยก (Mobile / QR)"><span class="material-icons-round">open_in_new</span></a>');
+        actions.push('<a href="eval-lab.html?itemId=' + itemId + '" target="_blank" class="btn-action-icon" style="background: linear-gradient(135deg, var(--royal-blue) 0%, var(--royal-light) 100%); color: #ffffff;" title="เปิดหน้าบันทึกผลการตรวจเช็ค (Mobile & QR Check-in)"><span class="material-icons-round">edit_note</span></a>');
         actions.push('<button type="button" onclick="openQrModal(\'' + itemId + '\')" class="btn-action-icon" style="background: #f8fafc; color: #002e6e; border-color: #cbd5e1;" title="ดู / พิมพ์ QR Code"><span class="material-icons-round">qr_code_2</span></button>');
       }
       if (viewSheetGid) {
@@ -2299,7 +2232,7 @@
       '</div>';
     }
 
-    // Render Table 1: อุณหภูมิและความชื้น (12 จุด)
+    // Render Table 1: อุณหภูมิจุดตรวจ LAB (12 จุด - ไม่เก็บความชื้น)
     function renderTempTableView(data) {
       var tbody = document.getElementById('tableBody_temp');
       if (!tbody) return;
@@ -2331,20 +2264,19 @@
           if (query && textMatch.indexOf(query) === -1) continue;
 
           count++;
+          var evalLink = 'eval-lab.html?itemId=' + encodeURIComponent(ik);
           var statusBadge = '';
-          var editFn = 'openEntryModal(\'' + fk + '\', \'' + ik + '\', \'' + it.name.replace(/'/g, "\\'") + '\')';
           if (st === 'ready') {
-            statusBadge = '<div class="status-symbol-btn symbol-ready" title="ปกติ / ผ่านเกณฑ์ (คลิกเพื่อดูหรือแก้ไข)" onclick="' + editFn + '"><span class="material-icons-round">check_circle</span></div>';
+            statusBadge = '<a href="' + evalLink + '" target="_blank" class="status-symbol-btn symbol-ready" title="ปกติ / ผ่านเกณฑ์ (คลิกเพื่อบันทึกหรือดูประวัติ)"><span class="material-icons-round">check_circle</span></a>';
           } else if (st === 'abnormal') {
-            statusBadge = '<div class="status-symbol-btn symbol-abnormal" title="หลุดเกณฑ์มาตรฐาน! (คลิกเพื่อบันทึกการแก้ไข)" onclick="' + editFn + '"><span class="material-icons-round">cancel</span></div>';
+            statusBadge = '<a href="' + evalLink + '" target="_blank" class="status-symbol-btn symbol-abnormal" title="หลุดเกณฑ์มาตรฐาน! (คลิกเพื่อแก้ไข)"><span class="material-icons-round">cancel</span></a>';
           } else {
-            statusBadge = '<div class="status-symbol-btn symbol-pending" title="รอตรวจเวรนี้ (คลิกเพื่อบันทึก)" onclick="' + editFn + '"><span class="material-icons-round">schedule</span></div>';
+            statusBadge = '<a href="' + evalLink + '" target="_blank" class="status-symbol-btn symbol-pending" title="รอตรวจเวรนี้ (คลิกเพื่อบันทึกผล)"><span class="material-icons-round">schedule</span></a>';
           }
 
           var tempDisplay = (it.lastTemp !== undefined && it.lastTemp !== null) ? '<strong>' + it.lastTemp + ' °C</strong>' : '-';
-          var humDisplay = (it.lastHumidity !== undefined && it.lastHumidity !== null) ? it.lastHumidity + ' %RH' : '-';
           var gid = TEMPLATE_GIDS[ik] || 0;
-          var rowActionHtml = createRowFloatingActions(editFn, gid, ik, it.name);
+          var rowActionHtml = createRowFloatingActions(ik, gid, it.name);
 
           html += '<tr>';
           html += '  <td data-label="รหัสฟอร์ม"><span class="asset-code-clean">' + spec.code + '</span></td>';
@@ -2352,7 +2284,6 @@
           html += '  <td data-label="หมวดหมู่"><span style="color: var(--text-muted); font-size: 12px;">' + (spec.cat || '-') + '</span></td>';
           html += '  <td data-label="เกณฑ์ควบคุม"><span style="font-size:11.5px; font-weight:600; color:var(--royal-blue);">' + (spec.targetTemp || '-') + '</span></td>';
           html += '  <td data-label="อุณหภูมิล่าสุด">' + tempDisplay + '</td>';
-          html += '  <td data-label="ความชื้น">' + humDisplay + '</td>';
           html += '  <td data-label="สถานะ" style="text-align: center;">' + statusBadge + '</td>';
           html += '  <td data-label="เวลาตรวจ" style="color:var(--text-muted); font-size:11.5px; font-family:var(--font-mono);">' + (it.evaluatedAt || '-') + '</td>';
           html += '  <td data-label="ผู้บันทึก" style="color:var(--text-body); font-size:12px; font-weight:500;">' + (it.evaluatedBy || '-') + '</td>';
@@ -2362,7 +2293,7 @@
       });
 
       if (!html) {
-        html = '<tr><td colspan="10" style="text-align:center; padding:30px; color:var(--text-muted);">ไม่พบจุดตรวจตามเงื่อนไขที่ค้นหา</td></tr>';
+        html = '<tr><td colspan="9" style="text-align:center; padding:30px; color:var(--text-muted);">ไม่พบจุดตรวจตามเงื่อนไขที่ค้นหา</td></tr>';
       }
       tbody.innerHTML = html;
       var lbl = document.getElementById('lblCountTemp');
@@ -2400,14 +2331,14 @@
           if (query && textMatch.indexOf(query) === -1) return;
 
           count++;
-          var editFn = 'openEntryModal(\'' + fk + '\', \'' + ik + '\', \'' + it.name.replace(/'/g, "\\'") + '\')';
+          var evalLink = 'eval-lab.html?itemId=' + encodeURIComponent(ik);
           var statusBadge = (st === 'ready') 
-            ? '<div class="status-symbol-btn symbol-ready" title="ปกติ / พร้อมใช้งาน (คลิกเพื่อแก้ไข)" onclick="' + editFn + '"><span class="material-icons-round">check_circle</span></div>'
-            : '<div class="status-symbol-btn symbol-pending" title="รอตรวจเวรนี้ (คลิกเพื่อบันทึก)" onclick="' + editFn + '"><span class="material-icons-round">schedule</span></div>';
+            ? '<a href="' + evalLink + '" target="_blank" class="status-symbol-btn symbol-ready" title="ปกติ / พร้อมใช้งาน (คลิกเพื่อบันทึกหรือดูประวัติ)"><span class="material-icons-round">check_circle</span></a>'
+            : '<a href="' + evalLink + '" target="_blank" class="status-symbol-btn symbol-pending" title="รอตรวจเวรนี้ (คลิกเพื่อบันทึกผล)"><span class="material-icons-round">schedule</span></a>';
 
           var gidKey = fk === 'lab_049' ? '049' : (fk === 'lab_091' ? '091' : '099');
           var gid = TEMPLATE_GIDS[gidKey] || 0;
-          var rowActionHtml = createRowFloatingActions(editFn, gid, ik, it.name);
+          var rowActionHtml = createRowFloatingActions(ik, gid, it.name);
 
           html += '<tr>';
           html += '  <td data-label="รหัสฟอร์ม"><span class="asset-code-clean">' + spec.code + '</span></td>';
@@ -2460,13 +2391,13 @@
         if (query && textMatch.indexOf(query) === -1) return;
 
         count++;
-        var editFn = 'openEntryModal(\'lab_019\', \'' + ik + '\', \'' + it.name.replace(/'/g, "\\'") + '\')';
+        var evalLink = 'eval-lab.html?itemId=' + encodeURIComponent(ik);
         var statusBadge = (st === 'ready') 
-          ? '<div class="status-symbol-btn symbol-ready" title="สำรองไฟปกติ (คลิกเพื่อแก้ไข)" onclick="' + editFn + '"><span class="material-icons-round">check_circle</span></div>'
-          : '<div class="status-symbol-btn symbol-pending" title="รอตรวจรอบนี้ (คลิกเพื่อบันทึก)" onclick="' + editFn + '"><span class="material-icons-round">schedule</span></div>';
+          ? '<a href="' + evalLink + '" target="_blank" class="status-symbol-btn symbol-ready" title="สำรองไฟปกติ (คลิกเพื่อบันทึกหรือดูประวัติ)"><span class="material-icons-round">check_circle</span></a>'
+          : '<a href="' + evalLink + '" target="_blank" class="status-symbol-btn symbol-pending" title="รอตรวจรอบนี้ (คลิกเพื่อบันทึกผล)"><span class="material-icons-round">schedule</span></a>';
 
         var gid = TEMPLATE_GIDS['019'] || 0;
-        var rowActionHtml = createRowFloatingActions(editFn, gid, ik, it.name);
+        var rowActionHtml = createRowFloatingActions(ik, gid, it.name);
 
         html += '<tr>';
         html += '  <td data-label="รหัส UPS"><span class="asset-code-clean">' + it.id.toUpperCase() + '</span></td>';
@@ -2559,186 +2490,6 @@
       }
     });
 
-    // Modal Control
-    function openEntryModal(formKey, itemId, itemName) {
-      activeFormKey = formKey;
-      activeModalItem = { id: itemId, name: itemName };
-
-      document.getElementById('modalTitleText').innerText = 'บันทึกข้อมูล: ' + itemName;
-      document.getElementById('modalPointName').value = itemName;
-      document.getElementById('modalTempInput').value = '';
-      document.getElementById('modalHumInput').value = '';
-      document.getElementById('modalUpsMinutes').value = '';
-      document.getElementById('modalNote').value = '';
-      document.getElementById('tempFeedbackPill').style.display = 'none';
-
-      // In-memory staff session prefill
-      if (currentStaffSession.id) {
-        var elId = document.getElementById('modalStaffId');
-        if (elId) elId.value = currentStaffSession.id;
-      }
-      if (currentStaffSession.name) {
-        var elName = document.getElementById('modalRecorder');
-        if (elName) elName.value = currentStaffSession.name;
-      }
-
-      var isTemp = formKey.startsWith('lab_05') || formKey.startsWith('lab_06');
-      var isRoom = (formKey === 'lab_057');
-      var isUps = (formKey === 'lab_019');
-
-      document.getElementById('grpTemp').style.display = isTemp ? 'block' : 'none';
-      document.getElementById('grpHumidity').style.display = isRoom ? 'block' : 'none';
-      document.getElementById('grpChecklist').style.display = (!isTemp && !isUps) ? 'block' : 'none';
-      document.getElementById('grpUpsMinutes').style.display = isUps ? 'block' : 'none';
-
-      document.getElementById('entryModal').classList.remove('hidden');
-    }
-
-    function closeModal() {
-      document.getElementById('entryModal').classList.add('hidden');
-    }
-
-    function validateTempLive() {
-      var val = parseFloat(document.getElementById('modalTempInput').value);
-      var pill = document.getElementById('tempFeedbackPill');
-      if (isNaN(val)) {
-        pill.style.display = 'none';
-        return;
-      }
-
-      var formKey = activeFormKey;
-      var isValid = true;
-      var targetText = '';
-
-      if (formKey === 'lab_057') {
-        isValid = (val >= 24.0 && val <= 28.0);
-        targetText = 'เกณฑ์ห้อง: 24.0 - 28.0 °C';
-      } else if (formKey === 'lab_060') {
-        isValid = (val <= -18.0);
-        targetText = 'เกณฑ์ตู้แช่แข็ง: ≤ -18.0 °C';
-      } else if (formKey === 'lab_061') {
-        isValid = (val >= 36.5 && val <= 37.5);
-        targetText = 'เกณฑ์ Waterbath: 37.0 ± 0.5 °C';
-      } else if (formKey === 'lab_062') {
-        isValid = (val >= 2.0 && val <= 8.0);
-        targetText = 'เกณฑ์ตู้เย็น: 2.0 - 8.0 °C';
-      }
-
-      pill.style.display = 'inline-flex';
-      if (isValid) {
-        pill.style.background = 'var(--green-bg)';
-        pill.style.color = 'var(--green-ready)';
-        pill.style.border = '1px solid var(--green-border)';
-        pill.innerHTML = '<span class="material-icons-round" style="font-size:15px;">check_circle</span> ผ่านเกณฑ์มาตรฐาน (' + targetText + ')';
-      } else {
-        pill.style.background = 'var(--red-bg)';
-        pill.style.color = 'var(--red-abnormal)';
-        pill.style.border = '1px solid var(--red-border)';
-        pill.innerHTML = '<span class="material-icons-round" style="font-size:15px;">warning</span> หลุดเกณฑ์ควบคุม! (' + targetText + ')';
-      }
-    }
-
-    function saveModalEntry() {
-      if (!activeModalItem) return;
-      var staffIdEl = document.getElementById('modalStaffId');
-      var staffId = staffIdEl ? staffIdEl.value.trim().padStart(6, '0') : '';
-      if (staffIdEl && staffIdEl.value.trim()) staffIdEl.value = staffId;
-
-      var recorder = document.getElementById('modalRecorder').value.trim();
-      if (!recorder) {
-        showToast('กรุณาระบุชื่อผู้บันทึกข้อมูล');
-        return;
-      }
-
-      var now = new Date();
-      var timeStr = ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
-      var dateStr = now.toISOString().slice(0, 10);
-
-      var tempVal = null;
-      var humVal = null;
-      var upsMinutes = null;
-      var checkSelect = 'pass';
-      var note = document.getElementById('modalNote').value.trim();
-
-      if (activeFormKey === 'lab_019') {
-        upsMinutes = parseInt(document.getElementById('modalUpsMinutes').value, 10) || 25;
-      } else if (activeFormKey.startsWith('lab_05') || activeFormKey.startsWith('lab_06')) {
-        tempVal = parseFloat(document.getElementById('modalTempInput').value);
-        if (isNaN(tempVal)) {
-          showToast('กรุณากรอกค่าอุณหภูมิ');
-          return;
-        }
-        if (activeFormKey === 'lab_057') {
-          humVal = parseFloat(document.getElementById('modalHumInput').value);
-          if (isNaN(humVal)) humVal = 50;
-        }
-      } else {
-        checkSelect = document.getElementById('modalCheckSelect').value;
-      }
-
-      // Remember staff in current in-memory session (No localStorage)
-      currentStaffSession.id = staffId;
-      currentStaffSession.name = recorder;
-
-      // 1. Update in-memory data for instant UI responsiveness
-      var formObj = labData.forms[activeFormKey];
-      var itemName = activeModalItem.name;
-      var isAbnormal = false;
-      if (formObj && formObj.items[activeModalItem.id]) {
-        var it = formObj.items[activeModalItem.id];
-        it.evaluatedBy = recorder + (staffId ? ' (' + staffId + ')' : '');
-        it.evaluatedAt = timeStr;
-        if (tempVal !== null) it.lastTemp = tempVal;
-        if (humVal !== null) it.lastHumidity = humVal;
-        if (upsMinutes !== null) {
-          it.runtimeMin = upsMinutes;
-          it.status = (upsMinutes >= 15) ? 'ready' : 'abnormal';
-        } else if (tempVal !== null) {
-          if (activeFormKey === 'lab_057') it.status = (tempVal >= 24 && tempVal <= 28 && (humVal === null || humVal <= 60)) ? 'ready' : 'abnormal';
-          else if (activeFormKey === 'lab_060') it.status = (tempVal <= -18) ? 'ready' : 'abnormal';
-          else if (activeFormKey === 'lab_061') it.status = (tempVal >= 36.5 && tempVal <= 37.5) ? 'ready' : 'abnormal';
-          else if (activeFormKey === 'lab_062') it.status = (tempVal >= 2 && tempVal <= 8) ? 'ready' : 'abnormal';
-        } else {
-          it.status = (checkSelect === 'pass') ? 'ready' : 'abnormal';
-        }
-        isAbnormal = (it.status === 'abnormal');
-      }
-
-      // 2. Update UI, close modal, and notify toast INSTANTLY (0 ms wait)
-      updateDashboardKPIs(labData);
-      applyFilters();
-      closeModal();
-      showToast('✓ บันทึกข้อมูล ' + itemName + ' เรียบร้อยแล้ว');
-
-      // 3. Write directly to Supabase + Background Sync to Sheets via PPCH_LAB_API
-      var specCode = (formObj && formObj.spec) ? formObj.spec.code : '';
-      var evalPayload = {
-        itemId: activeModalItem.id,
-        itemName: itemName,
-        formKey: activeFormKey,
-        formCode: specCode,
-        date: dateStr,
-        time: timeStr,
-        temperature: tempVal,
-        humidity: humVal,
-        runtimeMinutes: upsMinutes,
-        status: isAbnormal ? 'abnormal' : 'ready',
-        staffId: staffId,
-        staffName: recorder,
-        note: note
-      };
-
-      if (window.PPCH_LAB_API) {
-        window.PPCH_LAB_API.submitLabEvaluation(evalPayload, function(res) {
-          if (res && res.success) {
-            console.log('Supabase sync confirmed for:', itemName);
-          } else {
-            console.warn('Supabase write fallback:', res ? res.error : 'unknown');
-          }
-        });
-      }
-    }
-
     // Filter controls
     function setKpiFilter(filterKey) {
       activeKpiFilter = filterKey;
@@ -2830,11 +2581,11 @@
     // ==================== 23 CHECKPOINTS REGISTRY & QR WORKSTATION ====================
     var ALL_LAB_CHECKPOINTS = [
       // 057 Room Temp (5)
-      { id: '057_lab', name: 'Laboratory (ห้องปฏิบัติการกลาง)', code: 'FM-PPCH-LAB-057', cat: 'temp_room', catTitle: 'อุณหภูมิห้องแลป', target: '24.0 - 28.0 °C', tempMin: 24, tempMax: 28, hasHum: true, icon: 'thermostat', color: '#004b93' },
-      { id: '057_immu', name: 'ห้อง Immunology', code: 'FM-PPCH-LAB-057', cat: 'temp_room', catTitle: 'อุณหภูมิห้องแลป', target: '24.0 - 28.0 °C', tempMin: 24, tempMax: 28, hasHum: true, icon: 'thermostat', color: '#004b93' },
-      { id: '057_blood', name: 'Blood bank (ธนาคารเลือด)', code: 'FM-PPCH-LAB-057', cat: 'temp_room', catTitle: 'อุณหภูมิห้องแลป', target: '24.0 - 28.0 °C', tempMin: 24, tempMax: 28, hasHum: true, icon: 'thermostat', color: '#004b93' },
-      { id: '057_bac', name: 'Bacteria (จุลชีววิทยา)', code: 'FM-PPCH-LAB-057', cat: 'temp_room', catTitle: 'อุณหภูมิห้องแลป', target: '24.0 - 28.0 °C', tempMin: 24, tempMax: 28, hasHum: true, icon: 'thermostat', color: '#004b93' },
-      { id: '057_store', name: 'Storage (คลังเก็บน้ำยา/เวชภัณฑ์)', code: 'FM-PPCH-LAB-057', cat: 'temp_room', catTitle: 'อุณหภูมิห้องแลป', target: '24.0 - 28.0 °C', tempMin: 24, tempMax: 28, hasHum: true, icon: 'thermostat', color: '#004b93' },
+      { id: '057_lab', name: 'Laboratory (ห้องปฏิบัติการกลาง)', code: 'FM-PPCH-LAB-057', cat: 'temp_room', catTitle: 'อุณหภูมิห้องแลป', target: '24.0 - 28.0 °C', tempMin: 24, tempMax: 28, hasHum: false, icon: 'thermostat', color: '#004b93' },
+      { id: '057_immu', name: 'ห้อง Immunology', code: 'FM-PPCH-LAB-057', cat: 'temp_room', catTitle: 'อุณหภูมิห้องแลป', target: '24.0 - 28.0 °C', tempMin: 24, tempMax: 28, hasHum: false, icon: 'thermostat', color: '#004b93' },
+      { id: '057_blood', name: 'Blood bank (ธนาคารเลือด)', code: 'FM-PPCH-LAB-057', cat: 'temp_room', catTitle: 'อุณหภูมิห้องแลป', target: '24.0 - 28.0 °C', tempMin: 24, tempMax: 28, hasHum: false, icon: 'thermostat', color: '#004b93' },
+      { id: '057_bac', name: 'Bacteria (จุลชีววิทยา)', code: 'FM-PPCH-LAB-057', cat: 'temp_room', catTitle: 'อุณหภูมิห้องแลป', target: '24.0 - 28.0 °C', tempMin: 24, tempMax: 28, hasHum: false, icon: 'thermostat', color: '#004b93' },
+      { id: '057_store', name: 'Storage (คลังเก็บน้ำยา/เวชภัณฑ์)', code: 'FM-PPCH-LAB-057', cat: 'temp_room', catTitle: 'อุณหภูมิห้องแลป', target: '24.0 - 28.0 °C', tempMin: 24, tempMax: 28, hasHum: false, icon: 'thermostat', color: '#004b93' },
       // 060 Freezer (2)
       { id: '060_ffp', name: 'ตู้แช่แข็ง FFP (ควบคุม ≤ -18 °C)', code: 'FM-PPCH-LAB-060', cat: 'temp_freezer', catTitle: 'ตู้แช่แข็ง', target: '≤ -18.0 °C', tempMin: -40, tempMax: -18, hasHum: false, icon: 'ac_unit', color: '#0284c7' },
       { id: '060_ctrl', name: 'ตู้แช่แข็ง Control (ควบคุม ≤ -18 °C)', code: 'FM-PPCH-LAB-060', cat: 'temp_freezer', catTitle: 'ตู้แช่แข็ง', target: '≤ -18.0 °C', tempMin: -40, tempMax: -18, hasHum: false, icon: 'ac_unit', color: '#0284c7' },

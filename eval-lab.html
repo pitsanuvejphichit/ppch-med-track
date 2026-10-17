@@ -612,27 +612,36 @@
 
     /* ==================== SMART CLINICAL LAB MONITOR COCKPIT ==================== */
     .cockpit-layout {
-      display: grid;
-      grid-template-columns: 360px 1fr;
+      display: flex;
+      flex-direction: column;
       gap: 16px;
-      align-items: start;
+      width: 100%;
     }
-    @media (max-width: 1040px) {
-      .cockpit-layout {
-        grid-template-columns: 1fr;
-      }
+    .cockpit-left {
+      width: 100%;
+    }
+    .cockpit-right {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
 
-    /* Left Panel: Hero & Entry */
+    /* Top Panel: Hero & Entry */
     .cockpit-hero-card {
       background: linear-gradient(135deg, #002e6e 0%, #004b93 100%);
       color: #ffffff;
       border-radius: 12px;
-      padding: 12px 14px;
-      margin-bottom: 12px;
+      padding: 12px 18px;
+      margin-bottom: 14px;
       box-shadow: 0 4px 14px rgba(0, 46, 110, 0.15);
       position: relative;
       overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
     }
     .cockpit-tag {
       display: inline-flex;
@@ -1001,7 +1010,7 @@
     .cockpit-svg-wrap {
       position: relative;
       width: 100%;
-      height: 180px;
+      height: 220px;
       background: #ffffff;
       border-radius: 6px;
       overflow: hidden;
@@ -1330,67 +1339,72 @@
       <div id="smartLabSection" style="display: none;">
         <div class="cockpit-layout">
           
-          <!-- LEFT COLUMN: Compact Hero + Speed Entry Console + Action CTAs + Mini KPI -->
+          <!-- TOP SECTION: Checkpoint Header + Full-Width Speed Entry Console -->
           <div class="cockpit-left">
             
-            <!-- Compact Hero Card -->
+            <!-- Compact Hero Card (Top Banner) -->
             <div class="cockpit-hero-card">
-              <div class="cockpit-hero-meta">
-                <span class="material-icons-round" style="font-size: 13px;">verified</span>
-                <span id="smartFormCode">FM-PPCH-LAB-057</span>
-                <span>•</span>
-                <span id="smartCatName">อุณหภูมิห้องแลป</span>
+              <div>
+                <div class="cockpit-hero-meta" style="display: flex; align-items: center; gap: 6px; font-size: 11.5px; opacity: 0.9;">
+                  <span class="material-icons-round" style="font-size: 14px;">verified</span>
+                  <span id="smartFormCode">FM-PPCH-LAB-057</span>
+                  <span>•</span>
+                  <span id="smartCatName">อุณหภูมิห้องแลป</span>
+                </div>
+                <div class="cockpit-hero-title" style="font-size: 16px; font-weight: 800; display: flex; align-items: center; gap: 6px; margin-top: 2px;">
+                  <span class="material-icons-round" id="smartHeroIcon" style="font-size: 22px; color: #60a5fa;">thermostat</span>
+                  <span id="smartItemName">Laboratory (ห้องปฏิบัติการกลาง)</span>
+                </div>
               </div>
-              <div class="cockpit-hero-title">
-                <span class="material-icons-round" id="smartHeroIcon" style="font-size: 20px; color: #60a5fa;">thermostat</span>
-                <span id="smartItemName">Laboratory (ห้องปฏิบัติการกลาง)</span>
-              </div>
-              <div class="cockpit-hero-sub">
-                <span id="smartTargetSpecText">เกณฑ์มาตรฐาน: 24.0 – 28.0 °C</span>
-                <button type="button" onclick="toggleSelectorDrawer()" class="cockpit-btn-switch">
-                  <span class="material-icons-round" style="font-size: 13px;">swap_horiz</span>
-                  <span>เปลี่ยนจุด</span>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span id="smartTargetSpecText" style="font-size: 12.5px; font-weight: 700; background: rgba(0,0,0,0.2); padding: 4px 10px; border-radius: 6px; color: #a7f3d0;">เกณฑ์มาตรฐาน: 24.0 – 28.0 °C</span>
+                <button type="button" onclick="toggleSelectorDrawer()" class="cockpit-btn-switch" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: #ffffff; padding: 5px 10px; border-radius: 6px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                  <span class="material-icons-round" style="font-size: 14px;">swap_horiz</span>
+                  <span>เปลี่ยนจุดตรวจ</span>
                 </button>
               </div>
             </div>
 
-            <!-- Cockpit Speed Entry Card -->
-            <div class="cockpit-entry-card">
-              <!-- 3-Shift Selector Tabs -->
-              <div class="cockpit-shift-tabs">
-                <button type="button" class="cockpit-shift-tab active" id="btnShiftMorning" onclick="switchActiveShift('morning')">
-                  <span class="material-icons-round" style="font-size: 14px;">wb_sunny</span>
-                  <span>เวรเช้า</span>
-                </button>
-                <button type="button" class="cockpit-shift-tab" id="btnShiftAfternoon" onclick="switchActiveShift('afternoon')">
-                  <span class="material-icons-round" style="font-size: 14px;">wb_twilight</span>
-                  <span>เวรบ่าย</span>
-                </button>
-                <button type="button" class="cockpit-shift-tab" id="btnShiftEvening" onclick="switchActiveShift('evening')">
-                  <span class="material-icons-round" style="font-size: 14px;">bedtime</span>
-                  <span>เวรดึก</span>
-                </button>
+            <!-- Cockpit Speed Entry Card (Full Width Form) -->
+            <div class="cockpit-entry-card" style="padding: 16px 20px;">
+              <!-- Row 1: Shift Tabs (Left) & Date Row (Right) -->
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
+                <!-- 3-Shift Selector Tabs -->
+                <div class="cockpit-shift-tabs" style="margin-bottom: 0; min-width: 280px; flex: 1;">
+                  <button type="button" class="cockpit-shift-tab active" id="btnShiftMorning" onclick="switchActiveShift('morning')">
+                    <span class="material-icons-round" style="font-size: 14px;">wb_sunny</span>
+                    <span>เวรเช้า (08:00)</span>
+                  </button>
+                  <button type="button" class="cockpit-shift-tab" id="btnShiftAfternoon" onclick="switchActiveShift('afternoon')">
+                    <span class="material-icons-round" style="font-size: 14px;">wb_twilight</span>
+                    <span>เวรบ่าย (16:00)</span>
+                  </button>
+                  <button type="button" class="cockpit-shift-tab" id="btnShiftEvening" onclick="switchActiveShift('evening')">
+                    <span class="material-icons-round" style="font-size: 14px;">bedtime</span>
+                    <span>เวรดึก (24:00)</span>
+                  </button>
+                </div>
+
+                <!-- Date Picker Row -->
+                <div class="cockpit-date-row" style="margin-bottom: 0; display: flex; align-items: center; gap: 6px;">
+                  <span class="material-icons-round" style="font-size: 16px; color: var(--royal-blue);">calendar_today</span>
+                  <span style="font-size: 12px; font-weight: 700; color: #334155;">วันที่:</span>
+                  <button type="button" class="cockpit-nav-btn" onclick="navDay(-1)" title="วันก่อนหน้า" style="width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--border-main); background: #f8fafc; cursor: pointer;">
+                    <span class="material-icons-round" style="font-size: 16px;">chevron_left</span>
+                  </button>
+                  <select id="speedDaySelect" onchange="onDayDropdownChanged()" class="cockpit-day-select" style="font-size: 14px; font-weight: 800; color: #004b93; font-family: var(--font-mono); padding: 2px 6px; border: 1px solid var(--border-blue-soft); border-radius: 6px; background: #ffffff;">
+                    <!-- 1 to 31 options -->
+                  </select>
+                  <button type="button" class="cockpit-nav-btn" onclick="navDay(1)" title="วันถัดไป" style="width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--border-main); background: #f8fafc; cursor: pointer;">
+                    <span class="material-icons-round" style="font-size: 16px;">chevron_right</span>
+                  </button>
+                  <span id="speedMonthYearText" style="font-size: 12px; font-weight: 700; color: #64748b; margin-left: 2px;">ต.ค. 2569</span>
+                  <button type="button" class="cockpit-today-btn" onclick="navToday()" style="padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border-main); background: #f8fafc; font-size: 11.5px; font-weight: 700; color: #004b93; cursor: pointer;">วันนี้</button>
+                </div>
               </div>
 
-              <!-- Date Picker Row -->
-              <div class="cockpit-date-row">
-                <span class="material-icons-round" style="font-size: 16px; color: var(--royal-blue);">calendar_today</span>
-                <span style="font-size: 11.5px; font-weight: 700; color: #334155;">วันที่:</span>
-                <button type="button" class="cockpit-nav-btn" onclick="navDay(-1)" title="วันก่อนหน้า">
-                  <span class="material-icons-round" style="font-size: 16px;">chevron_left</span>
-                </button>
-                <select id="speedDaySelect" onchange="onDayDropdownChanged()" class="cockpit-day-select">
-                  <!-- 1 to 31 options -->
-                </select>
-                <button type="button" class="cockpit-nav-btn" onclick="navDay(1)" title="วันถัดไป">
-                  <span class="material-icons-round" style="font-size: 16px;">chevron_right</span>
-                </button>
-                <span id="speedMonthYearText" style="font-size: 11.5px; font-weight: 600; color: #64748b; margin-left: 2px;">ต.ค. 2569</span>
-                <button type="button" class="cockpit-today-btn" onclick="navToday()">วันนี้</button>
-              </div>
-
-              <!-- Ambient Glow Dial Box & Quick Steppers -->
-              <div class="cockpit-dial-box status-normal" id="speedDialBox">
+              <!-- Row 2: Ambient Glow Dial Box & Quick Steppers (Centered, Clean, No Humidity) -->
+              <div class="cockpit-dial-box status-normal" id="speedDialBox" style="max-width: 480px; margin: 0 auto 16px auto;">
                 <div class="cockpit-dial-row">
                   <button type="button" class="cockpit-step-btn" onclick="stepLiveTemp(-1.0)">-1.0</button>
                   <button type="button" class="cockpit-step-btn" onclick="stepLiveTemp(-0.1)">-0.1</button>
@@ -1407,78 +1421,56 @@
                 </div>
               </div>
 
-              <!-- Humidity Dial Box (Only for Room Temp & Humidity checkpoints) -->
-              <div class="cockpit-dial-box status-normal" id="cockpitHumBox" style="display: none; margin-top: -4px;">
-                <div style="font-size: 11px; font-weight: 700; color: #004b93; margin-bottom: 6px; display: flex; align-items: center; justify-content: center; gap: 4px;">
-                  <span class="material-icons-round" style="font-size: 14px;">water_drop</span>
-                  <span>ความชื้นสัมพัทธ์ห้อง (เป้าหมาย: ≤ 60 %RH)</span>
-                </div>
-                <div class="cockpit-dial-row">
-                  <button type="button" class="cockpit-step-btn" onclick="stepLiveHum(-5)">-5</button>
-                  <button type="button" class="cockpit-step-btn" onclick="stepLiveHum(-1)">-1</button>
-                  <div class="cockpit-input-wrap">
-                    <input type="number" id="inputHum" class="cockpit-temp-input" step="1" placeholder="50" oninput="onLiveHumInput()" onkeyup="onLiveHumInput()">
-                    <span class="cockpit-unit">%RH</span>
-                  </div>
-                  <button type="button" class="cockpit-step-btn" onclick="stepLiveHum(1)">+1</button>
-                  <button type="button" class="cockpit-step-btn" onclick="stepLiveHum(5)">+5</button>
-                </div>
-                <div class="cockpit-status-banner normal" id="speedHumStatusBanner">
-                  <span class="material-icons-round" style="font-size: 14px;">check_circle</span>
-                  <span id="speedHumStatusText">ความชื้นอยู่ในเกณฑ์ปกติ (≤ 60 %RH)</span>
-                </div>
-              </div>
-
-              <!-- Compact Staff Inputs (2 columns) -->
-              <div class="cockpit-fields-grid">
+              <!-- Row 3: Staff & Note Inputs (3 Columns Responsive) -->
+              <div style="display: grid; grid-template-columns: 180px 1.2fr 1.5fr; gap: 12px; margin-bottom: 16px;">
                 <div>
                   <label class="cockpit-field-label">รหัสพนักงาน (6 หลัก) *</label>
-                  <input type="text" id="staffId" class="cockpit-field-input" placeholder="000023" maxlength="6" onblur="formatStaffId(this); onLiveStaffInput();" oninput="onLiveStaffInput()" style="font-family: var(--font-mono); font-weight: 700;">
+                  <input type="text" id="staffId" class="form-control-input" placeholder="000023" maxlength="6" onblur="formatStaffId(this); onLiveStaffInput();" oninput="onLiveStaffInput()" style="font-family: var(--font-mono); font-weight: 700; height: 38px;">
                 </div>
                 <div>
                   <label class="cockpit-field-label">ชื่อ-สกุล ผู้ตรวจ *</label>
-                  <input type="text" id="staffName" class="cockpit-field-input" placeholder="ทนพ. สมชาย" oninput="onLiveStaffInput()">
+                  <input type="text" id="staffName" class="form-control-input" placeholder="ทนพ. สมชาย" oninput="onLiveStaffInput()" style="height: 38px;">
+                </div>
+                <div>
+                  <label class="cockpit-field-label" style="display: flex; justify-content: space-between;">
+                    <span>หมายเหตุ / การแก้ไข</span>
+                    <span style="font-weight: 400; color: #94a3b8;">(ไม่บังคับกรอก)</span>
+                  </label>
+                  <input type="text" id="evalNote" class="form-control-input" placeholder="ระบุการปรับอุณหภูมิแอร์ (ถ้ามี)..." style="height: 38px;">
                 </div>
               </div>
 
-              <!-- Optional Note -->
-              <div style="margin-bottom: 10px;">
-                <label class="cockpit-field-label" style="display: flex; justify-content: space-between;">
-                  <span>หมายเหตุ / การแก้ไข</span>
-                  <span style="font-weight: 400; color: #94a3b8;">(ไม่บังคับกรอก)</span>
-                </label>
-                <input type="text" id="evalNote" class="cockpit-field-input" placeholder="ระบุการปรับอุณหภูมิแอร์ (ถ้ามี)...">
-              </div>
-
-              <!-- Action Buttons -->
-              <div class="cockpit-actions-row">
-                <button type="button" id="btnSubmitEval" onclick="submitEvaluation()" class="btn-cockpit-save">
-                  <span class="material-icons-round" style="font-size: 17px;">save</span>
-                  <span>บันทึกผลตรวจเช็ค</span>
-                </button>
-                <button type="button" onclick="clearDayData()" class="btn-cockpit-sub" title="ล้างค่าของวันที่เลือก">
-                  <span class="material-icons-round" style="font-size: 15px;">backspace</span>
-                  <span>ล้าง</span>
-                </button>
-                <button type="button" onclick="window.print()" class="btn-cockpit-sub" title="พิมพ์รายงานสรุป A4">
-                  <span class="material-icons-round" style="font-size: 15px;">print</span>
-                  <span>พิมพ์</span>
-                </button>
-              </div>
-
-              <!-- Mini KPI Strip -->
-              <div class="cockpit-kpi-strip">
-                <div>
-                  <div class="cockpit-kpi-label">เฉลี่ยเดือน</div>
-                  <div class="cockpit-kpi-val" id="kpiMonthAvg">--.- °C</div>
+              <!-- Row 4: CTAs & Mini KPI Bar -->
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 320px;">
+                  <button type="button" id="btnSubmitEval" onclick="submitEvaluation()" class="btn-cockpit-save" style="flex: 2; height: 44px; font-size: 14px;">
+                    <span class="material-icons-round" style="font-size: 18px;">save</span>
+                    <span>บันทึกผลตรวจเช็ค</span>
+                  </button>
+                  <button type="button" onclick="clearDayData()" class="btn-cockpit-sub" title="ล้างค่าของวันที่เลือก" style="height: 44px; padding: 0 16px;">
+                    <span class="material-icons-round" style="font-size: 16px;">backspace</span>
+                    <span>ล้าง</span>
+                  </button>
+                  <button type="button" onclick="window.print()" class="btn-cockpit-sub" title="พิมพ์รายงานสรุป A4" style="height: 44px; padding: 0 16px;">
+                    <span class="material-icons-round" style="font-size: 16px;">print</span>
+                    <span>พิมพ์</span>
+                  </button>
                 </div>
-                <div>
-                  <div class="cockpit-kpi-label">ต่ำ / สูง</div>
-                  <div class="cockpit-kpi-val" id="kpiMinMax">-- / --</div>
-                </div>
-                <div>
-                  <div class="cockpit-kpi-label">ผ่านเกณฑ์</div>
-                  <div class="cockpit-kpi-val" id="kpiCompliance">100%</div>
+
+                <!-- Mini KPI Strip -->
+                <div class="cockpit-kpi-strip" style="min-width: 280px; padding: 6px 14px; background: #f8fafc; border: 1px solid var(--border-main); border-radius: 8px;">
+                  <div>
+                    <div class="cockpit-kpi-label">เฉลี่ยเดือน</div>
+                    <div class="cockpit-kpi-val" id="kpiMonthAvg">--.- °C</div>
+                  </div>
+                  <div>
+                    <div class="cockpit-kpi-label">ต่ำ / สูง</div>
+                    <div class="cockpit-kpi-val" id="kpiMinMax">-- / --</div>
+                  </div>
+                  <div>
+                    <div class="cockpit-kpi-label">ผ่านเกณฑ์</div>
+                    <div class="cockpit-kpi-val" id="kpiCompliance">100%</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1702,10 +1694,6 @@
           <span class="slip-label">อุณหภูมิที่วัดได้</span>
           <span class="slip-val" id="slipTempVal" style="color: var(--royal-blue); font-weight: 700;">-</span>
         </div>
-        <div class="slip-row" id="slipRowHum">
-          <span class="slip-label">ความชื้นสัมพัทธ์</span>
-          <span class="slip-val" id="slipHumVal">-</span>
-        </div>
         <div class="slip-row" id="slipRowChecklist">
           <span class="slip-label">ผลการตรวจเช็ค</span>
           <span class="slip-val" id="slipChecklistVal">-</span>
@@ -1747,11 +1735,11 @@
     // 23 Checkpoints Database
     var LAB_ITEMS = {
       // 1. FM-PPCH-LAB-057: อุณหภูมิห้องแลป (5 จุด)
-      '057_lab': { id: '057_lab', name: 'Laboratory (ห้องปฏิบัติการกลาง)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: true, humMax: 60, targetHum: '≤ 60 %RH', defaultTemp: 25.4, defaultHum: 50 },
-      '057_immu': { id: '057_immu', name: 'ห้อง Immunology', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: true, humMax: 60, targetHum: '≤ 60 %RH', defaultTemp: 24.8, defaultHum: 52 },
-      '057_blood': { id: '057_blood', name: 'Blood bank (ธนาคารเลือด)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: true, humMax: 60, targetHum: '≤ 60 %RH', defaultTemp: 25.1, defaultHum: 48 },
-      '057_bac': { id: '057_bac', name: 'Bacteria (จุลชีววิทยา)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: true, humMax: 60, targetHum: '≤ 60 %RH', defaultTemp: 25.6, defaultHum: 54 },
-      '057_store': { id: '057_store', name: 'Storage (คลังเก็บน้ำยา/เวชภัณฑ์)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: true, humMax: 60, targetHum: '≤ 60 %RH', defaultTemp: 24.5, defaultHum: 49 },
+      '057_lab': { id: '057_lab', name: 'Laboratory (ห้องปฏิบัติการกลาง)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: false, defaultTemp: 25.4 },
+      '057_immu': { id: '057_immu', name: 'ห้อง Immunology', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: false, defaultTemp: 24.8 },
+      '057_blood': { id: '057_blood', name: 'Blood bank (ธนาคารเลือด)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: false, defaultTemp: 25.1 },
+      '057_bac': { id: '057_bac', name: 'Bacteria (จุลชีววิทยา)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: false, defaultTemp: 25.6 },
+      '057_store': { id: '057_store', name: 'Storage (คลังเก็บน้ำยา/เวชภัณฑ์)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: false, defaultTemp: 24.5 },
 
       // 2. FM-PPCH-LAB-060: ตู้แช่แข็ง FFP & Control (2 จุด)
       '060_ffp': { id: '060_ffp', name: 'ตู้แช่แข็ง FFP (ควบคุม ≤ -18 °C)', code: 'FM-PPCH-LAB-060', cat: 'cat_freezer', catName: 'ตู้แช่แข็ง', type: 'temp_freezer', targetTemp: '≤ -18.0 °C', tempMin: -40.0, tempMax: -18.0, hasHumidity: false, defaultTemp: -20.2 },
@@ -2020,7 +2008,7 @@
       if (elCode) elCode.innerText = item.code;
       if (elCat) elCat.innerText = item.catName;
       if (elTitle) elTitle.innerText = item.name;
-      if (elSpec) elSpec.innerText = 'เกณฑ์มาตรฐาน: ' + (item.targetTemp || '-') + (item.hasHumidity ? (' | ความชื้น: ' + (item.targetHum || '≤ 60 %RH')) : '');
+      if (elSpec) elSpec.innerText = 'เกณฑ์มาตรฐาน: ' + (item.targetTemp || '-');
 
       var icon = 'thermostat';
       if (item.cat === 'cat_freezer') icon = 'ac_unit';
@@ -2028,11 +2016,9 @@
       else if (item.cat === 'cat_ref') icon = 'kitchen';
       if (elIcon) elIcon.innerText = icon;
 
-      // Show/hide humidity dial box
+      // Ensure humidity dial box is hidden
       var humBox = document.getElementById('cockpitHumBox');
-      if (humBox) {
-        humBox.style.display = item.hasHumidity ? 'block' : 'none';
-      }
+      if (humBox) humBox.style.display = 'none';
 
       // Month Buttons
       var monthList = document.getElementById('monthPillList');
@@ -2222,16 +2208,11 @@
         html.push('<text x="' + (padL - 8) + '" y="' + (yPos + 3.5).toFixed(1) + '" fill="#64748b" font-size="10" font-weight="600" text-anchor="end" font-family="var(--font-mono)">' + tickVal + '°</text>');
       });
 
-      // 3. Vertical Grid Lines & Day labels (Days: 1, 5, 10, 15, 20, 25, 30, 31)
-      var labelDays = [1, 5, 10, 15, 20, 25, 30, 31];
+      // 3. Vertical Grid Lines & Day labels (Days 1 to 31 full, no abbreviations)
       for (var d = 1; d <= 31; d++) {
         var xPos = getX(d);
-        if (labelDays.indexOf(d) >= 0) {
-          html.push('<line x1="' + xPos.toFixed(1) + '" y1="' + padT + '" x2="' + xPos.toFixed(1) + '" y2="' + (padT + chartH) + '" stroke="#f1f5f9" stroke-width="1" />');
-          var anchor = d === 1 ? 'start' : (d === 31 ? 'end' : 'middle');
-          var textX = d === 1 ? (xPos + 2) : (d === 31 ? (xPos - 2) : xPos);
-          html.push('<text x="' + textX.toFixed(1) + '" y="193" fill="#64748b" font-size="9.5" font-weight="700" text-anchor="' + anchor + '" font-family="var(--font-mono)">ว.' + d + '</text>');
-        }
+        html.push('<line x1="' + xPos.toFixed(1) + '" y1="' + padT + '" x2="' + xPos.toFixed(1) + '" y2="' + (padT + chartH) + '" stroke="#f1f5f9" stroke-width="1" />');
+        html.push('<text x="' + xPos.toFixed(1) + '" y="193" fill="#64748b" font-size="8.5" font-weight="700" text-anchor="middle" font-family="var(--font-mono)">' + d + '</text>');
       }
 
       // 4. Active Day Vertical Highlight Line
@@ -2337,10 +2318,8 @@
             var cls = inSpec ? 'normal' : 'abnormal';
             var staffTip = rec.staff ? ('&#10;ผู้ตรวจ: ' + rec.staff) : '';
             var noteTip = rec.note ? ('&#10;หมายเหตุ: ' + rec.note) : '';
-            var humTip = (rec.hum !== undefined && rec.hum !== '') ? ('&#10;ความชื้น: ' + rec.hum + ' %RH') : '';
-            var titleAttr = 'วันที่ ' + dayNum + ' (' + s.label + '): ' + rec.temp.toFixed(1) + ' °C' + humTip + staffTip + noteTip;
-            var humSub = (rec.hum !== undefined && rec.hum !== '') ? ('<small style="display:block;font-size:9px;opacity:0.85;line-height:1;">' + rec.hum + '%</small>') : '';
-            chipHtml = '<span class="matrix-temp-chip ' + cls + '" title="' + titleAttr + '">' + rec.temp.toFixed(1) + humSub + '</span>';
+            var titleAttr = 'วันที่ ' + dayNum + ' (' + s.label + '): ' + rec.temp.toFixed(1) + ' °C' + staffTip + noteTip;
+            chipHtml = '<span class="matrix-temp-chip ' + cls + '" title="' + titleAttr + '">' + rec.temp.toFixed(1) + '</span>';
           }
           tbHtml += '<td class="col-day-' + dayNum + isAct + '" onclick="selectShiftAndDay(\'' + s.key + '\', ' + dayNum + ')">' + chipHtml + '</td>';
         }
@@ -2380,26 +2359,22 @@
       // Populate Dial Input, Humidity & Staff inputs
       var rec = (monthSheetData[currentShift] && monthSheetData[currentShift][activeDay]) ? monthSheetData[currentShift][activeDay] : null;
       var inputTemp = document.getElementById('inputTemp');
-      var inputHum = document.getElementById('inputHum');
       var evalNote = document.getElementById('evalNote');
       var staffIdInput = document.getElementById('staffId');
       var staffNameInput = document.getElementById('staffName');
 
       if (rec) {
         if (inputTemp) inputTemp.value = (rec.temp !== undefined && rec.temp !== '') ? rec.temp : '';
-        if (inputHum) inputHum.value = (rec.hum !== undefined && rec.hum !== '') ? rec.hum : ((rec.humidity !== undefined && rec.humidity !== '') ? rec.humidity : '');
         if (evalNote) evalNote.value = rec.note || '';
         if (rec.staffId && staffIdInput) staffIdInput.value = rec.staffId;
         else if (rec.staff && staffIdInput && rec.staff.match(/^\d{6}/)) staffIdInput.value = rec.staff.slice(0, 6);
         if (rec.staffName && staffNameInput) staffNameInput.value = rec.staffName;
       } else {
         if (inputTemp) inputTemp.value = (currentItem && currentItem.defaultTemp !== undefined) ? currentItem.defaultTemp : '';
-        if (inputHum) inputHum.value = (currentItem && currentItem.defaultHum !== undefined) ? currentItem.defaultHum : '';
         if (evalNote) evalNote.value = '';
       }
 
       updateActiveMarkerLive();
-      updateHumFeedbackLive();
     }
 
     // Real-Time Temperature Input Handling
@@ -2419,62 +2394,10 @@
       updateKpiSummary();
     }
 
-    // Real-Time Humidity Input Handling
-    function onLiveHumInput() {
-      if (!currentItem) return;
-      var inputEl = document.getElementById('inputHum');
-      var val = parseFloat(inputEl.value);
-
-      if (!monthSheetData[currentShift]) monthSheetData[currentShift] = {};
-      if (!monthSheetData[currentShift][activeDay]) monthSheetData[currentShift][activeDay] = {};
-      monthSheetData[currentShift][activeDay].hum = isNaN(val) ? '' : val;
-
-      updateHumFeedbackLive();
-      renderMonthlyMatrix();
-    }
-
-    // Micro-Steppers for Humidity
-    function stepLiveHum(delta) {
-      var el = document.getElementById('inputHum');
-      var val = parseFloat(el.value);
-      if (isNaN(val)) val = (currentItem && currentItem.defaultHum !== undefined) ? currentItem.defaultHum : 50;
-      el.value = Math.max(0, Math.min(100, Math.round(val + delta)));
-      onLiveHumInput();
-    }
-
-    // Update Humidity Glow & Banner Feedback
-    function updateHumFeedbackLive() {
-      if (!currentItem || !currentItem.hasHumidity) return;
-      var humInput = document.getElementById('inputHum');
-      var val = parseFloat(humInput.value);
-      var humBox = document.getElementById('cockpitHumBox');
-      var banner = document.getElementById('speedHumStatusBanner');
-      var text = document.getElementById('speedHumStatusText');
-
-      if (isNaN(val)) {
-        if (humBox) humBox.className = 'cockpit-dial-box status-normal';
-        if (banner) banner.className = 'cockpit-status-banner normal';
-        if (text) text.innerText = 'ระบุความชื้นห้อง (เกณฑ์ ≤ ' + (currentItem.humMax || 60) + ' %RH)';
-        return;
-      }
-
-      var maxHum = currentItem.humMax || 60;
-      var isPass = (val <= maxHum);
-
-      if (humBox) {
-        humBox.className = 'cockpit-dial-box ' + (isPass ? 'status-normal' : 'status-abnormal');
-      }
-      if (banner) {
-        banner.className = 'cockpit-status-banner ' + (isPass ? 'normal' : 'abnormal');
-      }
-      if (text) {
-        if (isPass) {
-          text.innerText = 'ความชื้นปกติ (' + val + ' %RH • ≤ ' + maxHum + ' %RH)';
-        } else {
-          text.innerText = 'ความชื้นเกินเกณฑ์ (' + val + ' %RH • > ' + maxHum + ' %RH)';
-        }
-      }
-    }
+    // Stubbed Humidity Handlers (No humidity tracking)
+    function onLiveHumInput() {}
+    function stepLiveHum(delta) {}
+    function updateHumFeedbackLive() {}
 
     // Update Dial Glow & Banner Feedback
     function updateActiveMarkerLive() {
@@ -2679,24 +2602,15 @@
         return;
       }
 
-      var humVal = null;
-      if (currentItem.hasHumidity) {
-        var rawHum = parseFloat(document.getElementById('inputHum').value);
-        if (!isNaN(rawHum)) humVal = rawHum;
-      }
-
       var note = document.getElementById('evalNote').value.trim();
       var config = getScaleConfig(currentItem);
       var isPass = (tempVal >= config.safeMin && tempVal <= config.safeMax);
-      if (humVal !== null && currentItem.humMax && humVal > currentItem.humMax) {
-        isPass = false;
-      }
 
       // Update in-memory monthSheetData
       if (!monthSheetData[currentShift]) monthSheetData[currentShift] = {};
       monthSheetData[currentShift][activeDay] = {
         temp: tempVal,
-        hum: humVal,
+        hum: null,
         staffId: staffId,
         staffName: staffName,
         staff: staffName + ' (' + staffId + ')',
@@ -2710,6 +2624,9 @@
       renderMonthlyMatrix();
       selectDay(activeDay);
 
+      // CE Year for ISO Date YYYY-MM-DD
+      var sendYear = activeYear > 2500 ? (activeYear - 543) : activeYear;
+
       // Create evaluation event payload
       var evalData = {
         action: 'submitLabEntry',
@@ -2719,13 +2636,13 @@
         formCode: currentItem.code,
         category: currentItem.catName,
         type: currentItem.type,
-        date: activeYear + '-' + String(activeMonth).padStart(2, '0') + '-' + String(activeDay).padStart(2, '0'),
+        date: sendYear + '-' + String(activeMonth).padStart(2, '0') + '-' + String(activeDay).padStart(2, '0'),
         time: new Date().toTimeString().slice(0, 5),
         shift: currentShift,
         staffId: staffId,
         staffName: staffName,
         temperature: tempVal,
-        humidity: humVal,
+        humidity: null,
         status: isPass ? 'ready' : 'abnormal',
         note: note,
         timestamp: new Date().toISOString()
@@ -2978,13 +2895,16 @@
         rowTemp.style.display = 'none';
       }
 
-      // Humidity row
+      // Humidity row (if exists)
       var rowHum = document.getElementById('slipRowHum');
-      if (data.humidity !== undefined && data.humidity !== null) {
-        rowHum.style.display = 'flex';
-        document.getElementById('slipHumVal').innerText = data.humidity + ' %RH';
-      } else {
-        rowHum.style.display = 'none';
+      if (rowHum) {
+        if (data.humidity !== undefined && data.humidity !== null) {
+          rowHum.style.display = 'flex';
+          var humValEl = document.getElementById('slipHumVal');
+          if (humValEl) humValEl.innerText = data.humidity + ' %RH';
+        } else {
+          rowHum.style.display = 'none';
+        }
       }
 
       // Checklist row

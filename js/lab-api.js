@@ -12,7 +12,7 @@
   var LAB_GAS_URL = 'https://script.google.com/macros/s/AKfycbz8oIgnJWUcji2DaPI8CSBrPd22BFjL9A9Ui9mhamLCkRV7FVYGNWBKYJvZbjq31KE36g/exec';
 
   var FORM_SPECS = {
-    'lab_057': { code: 'FM-PPCH-LAB-057', targetTemp: '24.0 - 28.0 °C', targetHum: '≤ 60 %RH', type: 'temp_room', cat: 'ห้องปฏิบัติการ' },
+    'lab_057': { code: 'FM-PPCH-LAB-057', targetTemp: '24.0 - 28.0 °C', type: 'temp_room', cat: 'ห้องปฏิบัติการ' },
     'lab_060': { code: 'FM-PPCH-LAB-060', targetTemp: '≤ -18.0 °C', type: 'temp_freezer', cat: 'ตู้แช่แข็ง' },
     'lab_061': { code: 'FM-PPCH-LAB-061', targetTemp: '37.0 ± 0.5 °C', type: 'temp_waterbath', cat: 'Water bath' },
     'lab_062': { code: 'FM-PPCH-LAB-062', targetTemp: '2.0 - 8.0 °C', type: 'temp_refrigerator', cat: 'ตู้เย็น' },
@@ -85,7 +85,7 @@
                 name: it.name,
                 status: st,
                 lastTemp: it.last_temp !== null ? parseFloat(it.last_temp) : null,
-                lastHumidity: it.last_humidity !== null ? parseFloat(it.last_humidity) : null,
+                lastHumidity: null,
                 runtimeMin: it.last_runtime_min,
                 loadDevice: it.load_device,
                 evaluatedAt: it.last_evaluated_at,
@@ -128,17 +128,26 @@
         formattedStaffId = numOnly.padStart(6, '0');
       }
 
+      // Strictly normalize date to CE Year (YYYY-MM-DD)
+      var cleanDate = evalData.date || '';
+      if (cleanDate && cleanDate.match(/^(\d{4})-/)) {
+        var yr = parseInt(cleanDate.slice(0, 4), 10);
+        if (yr > 2500) {
+          cleanDate = (yr - 543) + cleanDate.slice(4);
+        }
+      }
+
       var evalRow = {
         id: evalId,
         item_id: evalData.itemId,
         form_code: evalData.formCode,
         form_key: evalData.formKey,
         item_name: evalData.itemName,
-        date: evalData.date,
+        date: cleanDate,
         time: evalData.time,
         shift: evalData.shift || null,
         temperature: evalData.temperature !== null && evalData.temperature !== undefined ? parseFloat(evalData.temperature) : null,
-        humidity: evalData.humidity !== null && evalData.humidity !== undefined ? parseFloat(evalData.humidity) : null,
+        humidity: null, // No humidity tracking required for LAB
         runtime_minutes: evalData.runtimeMinutes !== null && evalData.runtimeMinutes !== undefined ? parseInt(evalData.runtimeMinutes, 10) : null,
         checklist_results: evalData.checklistResults || [],
         status: isPass ? 'ready' : 'abnormal',
@@ -151,7 +160,7 @@
       var itemUpdate = {
         status: evalRow.status,
         last_temp: evalRow.temperature,
-        last_humidity: evalRow.humidity,
+        last_humidity: null,
         last_runtime_min: evalRow.runtime_minutes,
         last_evaluated_at: evalRow.time,
         last_evaluated_by: evalRow.staff_name + (formattedStaffId ? ' (' + formattedStaffId + ')' : ''),
@@ -186,14 +195,14 @@
             pointName: evalData.itemName,
             temp: evalRow.temperature,
             temperature: evalRow.temperature,
-            humidity: evalRow.humidity,
+            humidity: null,
             result: evalRow.status,
             runtimeMinutes: evalRow.runtime_minutes,
             staffId: formattedStaffId,
             staffName: evalData.staffName,
             evaluatedBy: itemUpdate.last_evaluated_by,
             note: evalData.note || '',
-            date: evalData.date,
+            date: evalRow.date,
             time: evalData.time,
             timestamp: nowIso
           };
@@ -206,7 +215,6 @@
           .then(function (res) { return res.json(); })
           .then(function (json) {
             if (json && json.status === 'success') {
-              // Update sheet_synced = true in Supabase
               supabaseFetch('lab_evaluations?id=eq.' + encodeURIComponent(evalId), {
                 method: 'PATCH',
                 body: { sheet_synced: true, sheet_synced_at: new Date().toISOString() }
@@ -225,24 +233,30 @@
 
     // 3. Fetch Monthly History for Item from Supabase (Sub-100ms)
     fetchMonthlyHistory: function (itemId, year, month, callback) {
+      var cleanYear = (year > 2500) ? (year - 543) : year;
+      var beYear = cleanYear + 543;
       var monthStr = String(month).padStart(2, '0');
-      var startDate = year + '-' + monthStr + '-01';
-      var endDate = year + '-' + monthStr + '-31';
+      var startDateCE = cleanYear + '-' + monthStr + '-01';
+      var endDateCE = cleanYear + '-' + monthStr + '-31';
+      var startDateBE = beYear + '-' + monthStr + '-01';
+      var endDateBE = beYear + '-' + monthStr + '-31';
 
+      // Query CE range + BE range (just in case legacy rows exist)
       var query = 'lab_evaluations?item_id=eq.' + encodeURIComponent(itemId) +
-        '&date=gte.' + startDate + '&date=lte.' + endDate +
+        '&or=(and(date.gte.' + startDateCE + ',date.lte.' + endDateCE + '),and(date.gte.' + startDateBE + ',date.lte.' + endDateBE + '))' +
         '&order=date.asc,time.asc';
 
       supabaseFetch(query)
         .then(function (rows) {
           var matrix = { morning: {}, afternoon: {}, evening: {} };
           (rows || []).forEach(function (r) {
-            var dayNum = parseInt(r.date.split('-')[2], 10);
+            var parts = (r.date || '').split('-');
+            var dayNum = parseInt(parts[2], 10);
             var shift = r.shift || 'morning';
             if (!matrix[shift]) matrix[shift] = {};
             matrix[shift][dayNum] = {
               temp: r.temperature !== null ? parseFloat(r.temperature) : null,
-              hum: r.humidity !== null ? parseFloat(r.humidity) : null,
+              hum: null,
               staffId: r.staff_id,
               staffName: r.staff_name,
               staff: r.staff_name + (r.staff_id ? ' (' + r.staff_id + ')' : ''),
