@@ -2,118 +2,563 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=admin.html">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PPCH Medical Equipment Hub | โรงพยาบาลพิษณุเวช</title>
+  <title>ระบบบริหารจัดการเครื่องมือแพทย์ | โรงพยาบาลพิษณุเวช</title>
+
+  <!-- Typography: Prompt (Hospital Modern Healthcare) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
   <style>
+    /* ==================== DESIGN TOKENS: ECG VITAL HORIZON (LIGHT THEME) ==================== */
     :root {
-      --royal-dark: #002e6e;
-      --royal-blue: #004b93;
+      --brand-navy: #002e6e;
+      --brand-blue: #004b93;
+      --brand-sky: #0284c7;
+      --brand-cyan: #38bdf8;
+      --brand-emerald: #059669;
+      --bg-light: #f8fafc;
+
       color-scheme: light;
-      accent-color: #004b93;
+      accent-color: var(--brand-sky);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     ::selection {
-      background-color: var(--royal-blue);
+      background-color: var(--brand-sky);
       color: #ffffff;
     }
-    html {
-      scrollbar-color: #94a3b8 #f1f5f9;
-      scrollbar-width: thin;
+
+    :focus-visible {
+      outline: 2px solid var(--brand-sky);
+      outline-offset: 3px;
     }
-    body {
-      font-family: 'Prompt', -apple-system, sans-serif;
-      background: #f4f7fb;
-      color: #0f172a;
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Prompt', system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background: var(--bg-light);
+    }
+
+    /* ==================== SEAMLESS ADMIN WORKSTATION FRAME ==================== */
+    #adminFrame {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      z-index: 1;
+      opacity: 0;
+      transform: scale(1.03) translateY(16px);
+      filter: blur(4px);
+      pointer-events: none;
+      transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                  filter 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform, filter;
+    }
+
+    #adminFrame.is-active {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      filter: blur(0px);
+      pointer-events: auto;
+    }
+
+    /* ==================== GATE STAGE (LIGHT THEME AMBIENCE) ==================== */
+    #gateStage {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 50% 42%, #ffffff 0%, #f0f7ff 55%, #e1effe 100%);
+      padding: 24px;
+      transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                  filter 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform, filter;
+    }
+
+    #gateStage.is-exiting {
+      opacity: 0;
+      transform: translateY(-36px) scale(0.93);
+      filter: blur(8px);
+      pointer-events: none;
+    }
+
+    /* Background Medical Grid (32px x 32px) */
+    .bg-stage {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      background-image: 
+        linear-gradient(rgba(2, 132, 199, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(2, 132, 199, 0.07) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+
+    /* Real-Time ECG Heartbeat Wave Canvas */
+    #ecgCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Ambient Soft Blue Radial Glows */
+    .ambient-glow {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .glow-1 {
+      top: 15%;
+      left: 18%;
+      width: 520px;
+      height: 520px;
+      background: rgba(56, 189, 248, 0.22);
+      filter: blur(95px);
+    }
+    .glow-2 {
+      bottom: 12%;
+      right: 16%;
+      width: 560px;
+      height: 560px;
+      background: rgba(0, 75, 147, 0.12);
+      filter: blur(105px);
+    }
+
+    /* ==================== CORE GATE CARD CONTAINER (LIGHT FRAME) ==================== */
+    .gate-wrapper {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 620px;
+      perspective: 1200px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
-      text-align: center;
-      overflow-wrap: break-word;
     }
-    h1, h2, h3, h4, h5, h6 {
-      text-wrap: balance;
-    }
-    .loader-card {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 20px;
-      padding: 38px 46px;
-      text-align: center;
-      box-shadow: 0 20px 40px rgba(0, 46, 110, 0.08);
-      min-width: 290px;
-    }
-    .css-logo-loader {
-      position: relative;
-      width: 80px;
-      height: 80px;
-      margin: 10px auto 30px;
-      transform: scale(1.4);
-      transform-origin: center;
-    }
-    .logo-petal {
-      position: absolute;
-      animation: loadingPulse 1.6s ease-in-out infinite;
-      will-change: transform, opacity;
-    }
-    .logo-petal.outer { background: #1e5387; border-radius: 6px; }
-    .logo-petal.inner { background: #5faee3; border-radius: 5px; }
-    .logo-petal.outer.top { top: 0px; left: 30px; width: 20px; height: 24px; animation-delay: 0s; }
-    .logo-petal.inner.top-right { top: 14px; right: 14px; width: 20px; height: 20px; animation-delay: 0.2s; }
-    .logo-petal.outer.right { top: 30px; right: 0px; width: 24px; height: 20px; animation-delay: 0.4s; }
-    .logo-petal.inner.bottom-right { bottom: 14px; right: 14px; width: 20px; height: 20px; animation-delay: 0.6s; }
-    .logo-petal.outer.bottom { bottom: 0px; left: 30px; width: 20px; height: 24px; animation-delay: 0.8s; }
-    .logo-petal.inner.bottom-left { bottom: 14px; left: 14px; width: 20px; height: 20px; animation-delay: 1.0s; }
-    .logo-petal.outer.left { top: 30px; left: 0px; width: 24px; height: 20px; animation-delay: 1.2s; }
-    .logo-petal.inner.top-left { top: 14px; left: 14px; width: 20px; height: 20px; animation-delay: 1.4s; }
 
-    @keyframes loadingPulse {
-      0%, 100% { transform: scale(1); opacity: 0.35; }
-      50% { transform: scale(1.15); opacity: 1; filter: drop-shadow(0 0 6px rgba(95, 174, 227, 0.8)); }
+    .gate-card {
+      position: relative;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 50px 44px 46px 44px;
+      border-radius: 32px;
+      background: rgba(255, 255, 255, 0.90);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border: 1px solid rgba(226, 232, 240, 0.95);
+      box-shadow: 
+        0 28px 65px -12px rgba(0, 46, 110, 0.14),
+        0 8px 24px -4px rgba(15, 23, 42, 0.05),
+        inset 0 1px 1px rgba(255, 255, 255, 1);
+      transition: box-shadow 0.4s ease, border-color 0.4s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform;
+      transform-style: preserve-3d;
     }
-    .btn-enter {
-      display: inline-block;
-      margin-top: 18px;
-      padding: 10px 24px;
-      border-radius: 10px;
-      background: var(--royal-blue);
-      color: #ffffff;
-      font-size: 13px;
+
+    .gate-card:hover {
+      border-color: rgba(56, 189, 248, 0.65);
+      box-shadow: 
+        0 36px 80px -12px rgba(0, 46, 110, 0.20),
+        0 12px 30px -4px rgba(15, 23, 42, 0.08),
+        inset 0 1px 2px rgba(255, 255, 255, 1);
+    }
+
+    /* 1. Hospital Logo Container (Enlarged) */
+    .emblem-wrapper {
+      position: relative;
+      width: 184px;
+      height: 184px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: floatLevitate 5s ease-in-out infinite;
+      will-change: transform;
+    }
+
+    @keyframes floatLevitate {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-7px); }
+    }
+
+    .emblem-glow {
+      position: absolute;
+      inset: -14px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(2, 132, 199, 0.22), transparent 70%);
+      opacity: 0.85;
+      animation: pulseAura 3.2s ease-in-out infinite;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    @keyframes pulseAura {
+      0%, 100% { transform: scale(0.95); opacity: 0.45; }
+      50% { transform: scale(1.18); opacity: 0.95; }
+    }
+
+    .hospital-logo {
+      position: relative;
+      z-index: 2;
+      width: 172px;
+      height: 172px;
+      object-fit: contain;
+      filter: drop-shadow(0 12px 24px rgba(0, 46, 110, 0.16));
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .hospital-logo:hover {
+      transform: scale(1.05);
+      filter: drop-shadow(0 16px 30px rgba(2, 132, 199, 0.30));
+    }
+
+    /* 2. Main Title: ระบบบริหารจัดการเครื่องมือแพทย์ (Strictly Single Row) */
+    .main-title {
+      font-size: clamp(22px, 2.7vw, 32px);
       font-weight: 700;
-      text-decoration: none;
-      transition: all 0.2s;
+      line-height: 1.35;
+      white-space: nowrap;
+      color: var(--brand-navy);
+      letter-spacing: -0.2px;
+      margin-bottom: 34px;
+      text-shadow: 0 1px 2px rgba(0, 46, 110, 0.08);
     }
+
+    /* 3. Button: เข้าสู่ระบบ (Royal Navy & Hospital Blue Gradient) */
+    .btn-enter {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      max-width: 360px;
+      padding: 17px 42px;
+      border-radius: 9999px;
+      font-family: 'Prompt', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      text-decoration: none;
+      background: linear-gradient(135deg, #004b93 0%, #002e6e 100%);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      box-shadow: 
+        0 14px 28px -6px rgba(0, 75, 147, 0.40),
+        0 4px 12px -2px rgba(0, 46, 110, 0.25);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      outline: none;
+      overflow: hidden;
+      user-select: none;
+      min-height: 56px;
+    }
+
+    .btn-enter .btn-text {
+      position: relative;
+      z-index: 2;
+      letter-spacing: 0.3px;
+    }
+
+    .btn-enter .btn-icon {
+      position: relative;
+      z-index: 2;
+      font-size: 22px;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
     .btn-enter:hover {
-      background: var(--royal-dark);
-      transform: translateY(-1px);
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 
+        0 20px 38px -6px rgba(0, 75, 147, 0.50),
+        0 8px 16px -2px rgba(0, 46, 110, 0.30);
+      border-color: rgba(255, 255, 255, 0.6);
+    }
+
+    .btn-enter:hover .btn-icon {
+      transform: translateX(6px);
+    }
+
+    .btn-enter:active,
+    .btn-enter.is-pressed {
+      transform: translateY(1px) scale(0.97);
+      box-shadow: 0 8px 18px -4px rgba(0, 46, 110, 0.35);
+    }
+
+    /* Ambient Shimmer Sweep on Button Hover */
+    .btn-enter::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 45%;
+      height: 200%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.35),
+        transparent
+      );
+      transform: rotate(25deg);
+      pointer-events: none;
+    }
+
+    .btn-enter:hover::after {
+      animation: shimmerSweep 1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes shimmerSweep {
+      0% { left: -60%; }
+      100% { left: 140%; }
+    }
+
+    /* ==================== ACCESSIBILITY: REDUCED MOTION ==================== */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* ==================== RESPONSIVE TUNING ==================== */
+    @media (max-width: 640px) {
+      #gateStage {
+        padding: 20px;
+      }
+      .gate-card {
+        padding: 40px 24px 36px 24px;
+        border-radius: 26px;
+      }
+      .emblem-wrapper {
+        width: 144px;
+        height: 144px;
+        margin-bottom: 20px;
+      }
+      .hospital-logo {
+        width: 134px;
+        height: 134px;
+      }
+      .main-title {
+        font-size: clamp(18px, 5.2vw, 24px);
+        margin-bottom: 26px;
+        white-space: nowrap;
+      }
+      .btn-enter {
+        padding: 16px 32px;
+        font-size: 17px;
+        width: 100%;
+      }
     }
   </style>
-  <script>
-    window.location.replace('admin.html');
-  </script>
 </head>
 <body>
-  <div class="loader-card">
-    <div class="css-logo-loader">
-      <div class="logo-petal outer top"></div>
-      <div class="logo-petal inner top-right"></div>
-      <div class="logo-petal outer right"></div>
-      <div class="logo-petal inner bottom-right"></div>
-      <div class="logo-petal outer bottom"></div>
-      <div class="logo-petal inner bottom-left"></div>
-      <div class="logo-petal outer left"></div>
-      <div class="logo-petal inner top-left"></div>
+
+  <!-- ==================== BACKGROUND PRE-LOADED ADMIN WORKSTATION ==================== -->
+  <iframe id="adminFrame" src="admin.html" title="ระบบบริหารจัดการเครื่องมือแพทย์ (Admin Workstation)"></iframe>
+
+  <!-- ==================== MAIN GATE STAGE (LIGHT THEME) ==================== -->
+  <div id="gateStage">
+    <!-- Fullscreen Medical Grid Stage -->
+    <div class="bg-stage">
+      <div class="ambient-glow glow-1"></div>
+      <div class="ambient-glow glow-2"></div>
     </div>
-    <h1 style="font-size: 17px; font-weight: 700; color: #004b93; margin-bottom: 4px;">ระบบเครื่องมือแพทย์ (Admin Hub)</h1>
-    <p style="font-size: 12px; color: #64748b;">กำลังเข้าสู่ระบบ โรงพยาบาลพิษณุเวช...</p>
-    <a href="admin.html" class="btn-enter">เข้าสู่หน้าระบบทันที</a>
+
+    <!-- Real-Time ECG Heartbeat Wave Canvas (Medical Blue Glow) -->
+    <canvas id="ecgCanvas"></canvas>
+
+    <!-- Core Gate Card Container (Light Frame) -->
+    <main class="gate-wrapper" id="gateWrapper">
+      <div class="gate-card" id="gateCard">
+
+        <!-- 1. โลโก้โรงพยาบาล (ขยายใหญ่ขึ้น คมชัด พร้อมแสงเรืองออร่า) -->
+        <div class="emblem-wrapper">
+          <div class="emblem-glow"></div>
+          <img src="logo.png" alt="โลโก้โรงพยาบาล" class="hospital-logo" id="hospitalLogo">
+        </div>
+
+        <!-- 2. ข้อความ: ระบบบริหารจัดการเครื่องมือแพทย์ (แถวเดียว) -->
+        <h1 class="main-title">ระบบบริหารจัดการเครื่องมือแพทย์</h1>
+
+        <!-- 3. ปุ่มเข้าสู่ระบบ (เปิดไปยังหน้า admin ด้วยอนิเมชั่นสลับหน้า) -->
+        <button id="btnEnter" class="btn-enter" onclick="handleEnter(event)">
+          <span class="btn-text">เข้าสู่ระบบ</span>
+          <span class="material-icons-round btn-icon">arrow_forward</span>
+        </button>
+
+      </div>
+    </main>
   </div>
+
+  <script>
+    /* ==================== SEAMLESS ANIMATED PAGE SWITCH TO ADMIN ==================== */
+    var isTransitioning = false;
+
+    function handleEnter(e) {
+      if (e) e.preventDefault();
+      if (isTransitioning) return;
+      isTransitioning = true;
+
+      var btn = document.getElementById('btnEnter');
+      if (btn) btn.classList.add('is-pressed');
+
+      var gateStage = document.getElementById('gateStage');
+      var adminFrame = document.getElementById('adminFrame');
+
+      // Trigger cinematic exit & zoom reveal
+      if (gateStage) gateStage.classList.add('is-exiting');
+      if (adminFrame) adminFrame.classList.add('is-active');
+
+      setTimeout(function () {
+        if (gateStage) {
+          gateStage.style.display = 'none';
+        }
+        try {
+          window.history.pushState({ page: 'admin' }, 'ระบบบริหารจัดการเครื่องมือแพทย์ (Admin)', 'admin.html');
+        } catch (err) {}
+
+        if (adminFrame && adminFrame.contentWindow) {
+          try { adminFrame.contentWindow.focus(); } catch (err) {}
+        }
+      }, 650);
+    }
+
+    /* ==================== 3D GYRO TILT EFFECT ON MOUSEMOVE ==================== */
+    var gateCard = document.getElementById('gateCard');
+    var targetRotateX = 0, targetRotateY = 0;
+    var currentRotateX = 0, currentRotateY = 0;
+
+    window.addEventListener('mousemove', function (e) {
+      if (window.innerWidth < 768 || isTransitioning) return;
+      var cx = window.innerWidth / 2;
+      var cy = window.innerHeight / 2;
+      var dx = (e.clientX - cx) / cx;
+      var dy = (e.clientY - cy) / cy;
+
+      targetRotateY = dx * 7;
+      targetRotateX = -dy * 7;
+    });
+
+    window.addEventListener('mouseleave', function () {
+      targetRotateX = 0;
+      targetRotateY = 0;
+    });
+
+    function updateCardTilt() {
+      if (!isTransitioning && gateCard) {
+        currentRotateX += (targetRotateX - currentRotateX) * 0.08;
+        currentRotateY += (targetRotateY - currentRotateY) * 0.08;
+        gateCard.style.transform = 'perspective(1000px) rotateX(' + currentRotateX.toFixed(2) + 'deg) rotateY(' + currentRotateY.toFixed(2) + 'deg)';
+      }
+      if (!isTransitioning) {
+        requestAnimationFrame(updateCardTilt);
+      }
+    }
+    updateCardTilt();
+
+    /* ==================== REAL-TIME ECG HEARTBEAT WAVE ANIMATION (LIGHT THEME) ==================== */
+    (function initEcgWave() {
+      var canvas = document.getElementById('ecgCanvas');
+      if (!canvas) return;
+      var ctx = canvas.getContext('2d');
+      var width = canvas.width = window.innerWidth;
+      var height = canvas.height = window.innerHeight;
+
+      var centerY = height * 0.52;
+      var x = 0;
+      var points = [];
+
+      window.addEventListener('resize', function () {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        centerY = height * 0.52;
+        points = [];
+        x = 0;
+      });
+
+      function renderEcg() {
+        if (isTransitioning) return;
+
+        // Subtle soft clear for gentle trail on light background
+        ctx.fillStyle = 'rgba(240, 247, 255, 0.12)';
+        ctx.fillRect(0, 0, width, height);
+
+        var stepY = 0;
+        var phase = x % 220;
+
+        // Clinical P-Q-R-S-T curve
+        if (phase >= 40 && phase < 60) {
+          stepY = -Math.sin((phase - 40) / 20 * Math.PI) * 14; // P wave
+        } else if (phase >= 70 && phase < 75) {
+          stepY = ((phase - 70) / 5) * 12; // Q dip
+        } else if (phase >= 75 && phase < 85) {
+          stepY = -Math.sin((phase - 75) / 10 * Math.PI) * 85; // R peak
+        } else if (phase >= 85 && phase < 95) {
+          stepY = Math.sin((phase - 85) / 10 * Math.PI) * 22; // S dip
+        } else if (phase >= 120 && phase < 155) {
+          stepY = -Math.sin((phase - 120) / 35 * Math.PI) * 20; // T wave
+        }
+
+        var currentY = centerY + stepY;
+        points.push({ x: x, y: currentY });
+
+        if (points.length > 1) {
+          ctx.beginPath();
+          ctx.strokeStyle = '#0284c7'; // Vibrant Medical Cyan-Blue
+          ctx.lineWidth = 2.8;
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = 'rgba(2, 132, 199, 0.45)';
+
+          var p1 = points[points.length - 2];
+          var p2 = points[points.length - 1];
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.stroke();
+          ctx.shadowBlur = 0;
+        }
+
+        x += 3.5;
+        if (x > width) {
+          x = 0;
+          points = [];
+          ctx.clearRect(0, 0, width, height);
+        }
+
+        requestAnimationFrame(renderEcg);
+      }
+
+      renderEcg();
+    })();
+  </script>
 </body>
 </html>
