@@ -2202,9 +2202,24 @@
       html.push('<text x="' + (padL + 8) + '" y="' + labelY.toFixed(1) + '" fill="#059669" font-size="9.5" font-weight="700">เกณฑ์มาตรฐาน: ' + (currentItem.targetTemp || '') + '</text>');
 
       // 2. Horizontal Tick Lines & Y-axis labels
+      // Intermediate sub-ticks (3 thin gray lines per interval, e.g. 22.5, 23.0, 23.5 - no numbers)
+      for (var ti = 0; ti < config.ticks.length - 1; ti++) {
+        var tA = config.ticks[ti];
+        var tB = config.ticks[ti + 1];
+        var tLow = Math.min(tA, tB);
+        var tHigh = Math.max(tA, tB);
+        var tStep = (tHigh - tLow) / 4;
+        for (var s = 1; s <= 3; s++) {
+          var subVal = tLow + (s * tStep);
+          var subY = getY(subVal);
+          html.push('<line x1="' + padL + '" y1="' + subY.toFixed(1) + '" x2="' + (padL + chartW) + '" y2="' + subY.toFixed(1) + '" stroke="#cbd5e1" stroke-width="0.6" opacity="0.6" />');
+        }
+      }
+
+      // Major Horizontal Tick Lines
       config.ticks.forEach(function(tickVal) {
         var yPos = getY(tickVal);
-        html.push('<line x1="' + padL + '" y1="' + yPos.toFixed(1) + '" x2="' + (padL + chartW) + '" y2="' + yPos.toFixed(1) + '" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="2 2" />');
+        html.push('<line x1="' + padL + '" y1="' + yPos.toFixed(1) + '" x2="' + (padL + chartW) + '" y2="' + yPos.toFixed(1) + '" stroke="#94a3b8" stroke-width="0.85" opacity="0.75" />');
         html.push('<text x="' + (padL - 8) + '" y="' + (yPos + 3.5).toFixed(1) + '" fill="#64748b" font-size="10" font-weight="600" text-anchor="end" font-family="var(--font-mono)">' + tickVal + '°</text>');
       });
 
