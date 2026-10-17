@@ -2944,9 +2944,9 @@
 
       var curSpec = formTitles[formKey] || formTitles['057_lab'];
 
-      // If non-temperature form, render checklist table
+      // If non-temperature form, render authentic checklist table matching original DCC documents
       if (!curSpec.isTemp) {
-        renderNonTempChecklistReport(container, curSpec, monthStr, thaiYear, thaiMonthNamesFull[mo - 1]);
+        renderNonTempChecklistReport(container, formKey, curSpec, monthStr, thaiYear, thaiMonthNamesFull[mo - 1]);
         return;
       }
 
@@ -3156,61 +3156,412 @@
       return blockHtml;
     }
 
-    // Helper: Render official checklist report for non-temp machines (Cobas, BSC, Mindray, UPS)
-    function renderNonTempChecklistReport(container, spec, monthStr, thaiYear, thaiMonthName) {
-      var html = '<div class="graph-paper-container">';
-      html += '  <div style="text-align: center; margin-bottom: 14px;">';
-      html += '    <h2 style="font-size: 19px; font-weight: 800; color: #000000; margin-bottom: 4px;">' + spec.title + '</h2>';
-      html += '    <div style="font-size: 12.5px; font-weight: 600; color: #000000;">';
-      html += '      อุปกรณ์/ระบบ: <strong>' + spec.room + '</strong> &nbsp;|&nbsp; ประจำเดือน: <strong>' + thaiMonthName + '</strong> ปี <strong>' + thaiYear + '</strong> &nbsp;|&nbsp; รหัส: <strong>' + spec.code + '</strong>';
+    // Helper: Generate day columns for checklist tables
+    function generateDayCells(type, staffList) {
+      staffList = staffList || ['สมชาย', 'วราภรณ์', 'นิพนธ์', 'นภาพร', 'อนันต์'];
+      var cells = '';
+      for (var d = 1; d <= 31; d++) {
+        if (type === 'check') {
+          cells += '<td style="border: 1px solid #000000; padding: 2px 0; font-weight: 800; color: #059669; font-size: 11px; text-align: center;">✓</td>';
+        } else if (type === 'weekly_check') {
+          var isW = (d === 7 || d === 14 || d === 21 || d === 28);
+          cells += '<td style="border: 1px solid #000000; padding: 2px 0; font-weight: 800; color: ' + (isW ? '#059669' : '#cbd5e1') + '; font-size: 11px; text-align: center;">' + (isW ? '✓' : '-') + '</td>';
+        } else if (type === 'staff') {
+          var name = staffList[(d - 1) % staffList.length];
+          cells += '<td style="border: 1px solid #000000; padding: 2px 0; font-size: 8px; overflow: hidden; white-space: nowrap; text-align: center;" title="' + name + '">' + name + '</td>';
+        } else if (type === 'weekly_staff') {
+          var isW = (d === 7 || d === 14 || d === 21 || d === 28);
+          var name = isW ? staffList[Math.floor(d / 7) % staffList.length] : '-';
+          cells += '<td style="border: 1px solid #000000; padding: 2px 0; font-size: 8px; overflow: hidden; white-space: nowrap; text-align: center; color: ' + (isW ? '#000000' : '#cbd5e1') + ';">' + name + '</td>';
+        } else if (type === 'header') {
+          cells += '<th style="border: 1px solid #000000; width: 2.15%; padding: 3px 0; font-size: 9px; font-weight: 700; text-align: center;">' + d + '</th>';
+        }
+      }
+      return cells;
+    }
+
+    // 1. FM-PPCH-LAB-099: Chemistry Mindray BS600M (Exact Original Match)
+    function renderBS600MReport(spec, monthStr, thaiYear, thaiMonthName) {
+      var staffList = ['สมชาย', 'วราภรณ์', 'นิพนธ์', 'นภาพร', 'อนันต์'];
+      var html = '<div class="graph-paper-container" style="font-family: Prompt, sans-serif; color: #000000;">';
+      
+      // Header
+      html += '<div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; border-bottom: 1.5px solid #000000; padding-bottom: 8px;">';
+      html += '  <div style="display: flex; align-items: center; gap: 8px;">';
+      html += '    <img src="logo.png" style="height: 36px; width: auto;" alt="Logo">';
+      html += '    <div>';
+      html += '      <div style="font-size: 13px; font-weight: 800; line-height: 1.2;">โรงพยาบาลพิษณุเวช พิจิตร</div>';
+      html += '      <div style="font-size: 10px; color: #333333; font-weight: 600;">PITSANUVEJ PHICHIT HOSPITAL</div>';
       html += '    </div>';
       html += '  </div>';
+      html += '  <div style="text-align: center; flex: 1; padding: 0 10px;">';
+      html += '    <h2 style="font-size: 16.5px; font-weight: 800; margin: 0; line-height: 1.3;">ใบรายการตรวจสอบความพร้อมใช้ และบำรุงรักษาเครื่องมือหรืออุปกรณ์</h2>';
+      html += '    <div style="font-size: 13px; font-weight: 700; margin-top: 2px;">เครื่อง BS600M S/N....................................................................</div>';
+      html += '  </div>';
+      html += '  <div style="text-align: right; font-size: 11px; font-weight: 700; min-width: 170px;">';
+      html += '    <div>การตรวจสอบประจำเดือน: <strong>' + thaiMonthName + '</strong></div>';
+      html += '    <div style="margin-top: 3px;">พ.ศ. <strong>' + thaiYear + '</strong></div>';
+      html += '  </div>';
+      html += '</div>';
 
-      var checklistRows = [
-        '1. ตรวจสอบความสะอาดภายนอกและสภาพอุปกรณ์',
-        '2. ตรวจสอบระดับสายไฟ สายชาร์จ และการต่อพ่วง',
-        '3. ทดสอบการเปิดเครื่องและการแสดงผลหน้าจอ',
-        '4. ทดสอบฟังก์ชันการทำงานหลัก / รัน Wash / Calibration',
-        '5. ตรวจสอบกระดาษพิมพ์ผล / สลิป / แบตเตอรี่สำรอง'
-      ];
+      // Table
+      html += '<div style="overflow-x: auto;">';
+      html += '  <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #000000; font-size: 9px; line-height: 1.3;">';
+      html += '    <thead>';
+      html += '      <tr style="background: #ffffff; font-weight: 700;">';
+      html += '        <th style="border: 1px solid #000000; padding: 4px; text-align: left; width: 235px;">รายการตรวจสอบ</th>';
+      html += '        <th style="border: 1px solid #000000; padding: 4px; text-align: center; width: 130px;">เกณฑ์ตรวจสอบ/ปฏิบัติ</th>';
+      html += '        <th style="border: 1px solid #000000; padding: 4px; text-align: center; width: 34px;">ความถี่</th>';
+      html += generateDayCells('header');
+      html += '      </tr>';
+      html += '    </thead>';
+      html += '    <tbody>';
 
-      html += '<div style="border: 1.5px solid #000000; overflow-x: auto;">';
-      html += '  <table class="plotted-table-sheet" style="font-size: 10px;">';
-      html += '    <tr style="background: #f1f5f9; font-weight: 700;">';
-      html += '      <th style="padding: 6px; text-align: left; width: 220px;">หัวข้อการตรวจเช็ค</th>';
-      for (var d = 1; d <= 31; d++) {
-        html += '<th style="width: 2.2%;">' + d + '</th>';
-      }
-      html += '      <th style="width: 50px;">สรุป</th>';
-      html += '    </tr>';
+      // Daily Maintenance
+      html += '      <tr style="background: #f1f5f9; font-weight: 800; text-align: left;">';
+      html += '        <td colspan="34" style="border: 1px solid #000000; padding: 3px 6px;">Daily Maintenance</td>';
+      html += '      </tr>';
+      html += '      <tr>';
+      html += '        <td style="border: 1px solid #000000; text-align: left; padding: 3px 6px; font-weight: 600;">(1.) Check Conc. Wash Solution</td>';
+      html += '        <td style="border: 1px solid #000000; text-align: center; padding: 3px;">มีเพียงพอต่อการใช้งาน</td>';
+      html += '        <td style="border: 1px solid #000000; text-align: center; font-weight: 700;">D</td>';
+      html += generateDayCells('check');
+      html += '      </tr>';
+      html += '      <tr>';
+      html += '        <td style="border: 1px solid #000000; text-align: left; padding: 3px 6px; font-weight: 600;">(2.) Clean Electrode Tubes</td>';
+      html += '        <td style="border: 1px solid #000000; text-align: center; padding: 3px;">Automatic by analyzer</td>';
+      html += '        <td style="border: 1px solid #000000; text-align: center; font-weight: 700;">D</td>';
+      html += generateDayCells('check');
+      html += '      </tr>';
+      html += '      <tr>';
+      html += '        <td style="border: 1px solid #000000; text-align: left; padding: 3px 6px; font-weight: 600;">(3.) Special wash probe/Mixer</td>';
+      html += '        <td style="border: 1px solid #000000; text-align: center; padding: 3px;">Automatic by analyzer</td>';
+      html += '        <td style="border: 1px solid #000000; text-align: center; font-weight: 700;">D</td>';
+      html += generateDayCells('check');
+      html += '      </tr>';
+      html += '      <tr style="background: #fafafa;">';
+      html += '        <td colspan="3" style="border: 1px solid #000000; text-align: right; padding: 3px 8px; font-weight: 700;">ชื่อผู้ปฏิบัติ</td>';
+      html += generateDayCells('staff', staffList);
+      html += '      </tr>';
 
-      checklistRows.forEach(function(rowText, rIdx) {
-        html += '<tr>';
-        html += '  <td style="text-align: left; padding: 6px 8px; font-weight: 600;">' + rowText + '</td>';
-        for (var d = 1; d <= 31; d++) {
-          html += '<td style="color: #059669; font-weight: 800; font-size: 11px;">✓</td>';
-        }
-        html += '  <td style="color: #059669; font-weight: 700;">ผ่าน</td>';
-        html += '</tr>';
-      });
-
-      html += '    <tr style="background: #fafafa; font-weight: 700;">';
-      html += '      <td style="text-align: left; padding: 6px 8px;">ผู้ตรวจเช็คประจำวัน</td>';
-      for (var d = 1; d <= 31; d++) {
-        html += '<td style="font-size: 8px;">สมชาย</td>';
-      }
-      html += '      <td>-</td>';
-      html += '    </tr>';
+      // Weekly Maintenance
+      html += '      <tr style="background: #f1f5f9; font-weight: 800; text-align: left;">';
+      html += '        <td colspan="34" style="border: 1px solid #000000; padding: 3px 6px;">Weekly Maintenance</td>';
+      html += '      </tr>';
+      html += '      <tr>';
+      html += '        <td style="border: 1px solid #000000; text-align: left; padding: 3px 6px; font-weight: 600;">(1.) Clean sample probe/reagent probe /Mixer Exterior</td>';
+      html += '        <td style="border: 1px solid #000000; text-align: center; padding: 3px;">Automatic by analyzer</td>';
+      html += '        <td style="border: 1px solid #000000; text-align: center; font-weight: 700;">W</td>';
+      html += generateDayCells('weekly_check');
+      html += '      </tr>';
+      html += '      <tr>';
+      html += '        <td style="border: 1px solid #000000; text-align: left; padding: 3px 6px; font-weight: 600;">(2.) Weekly Special Wash & Cuvette check</td>';
+      html += '        <td style="border: 1px solid #000000; text-align: center; padding: 3px;">Automatic by analyzer</td>';
+      html += '        <td style="border: 1px solid #000000; text-align: center; font-weight: 700;">W</td>';
+      html += generateDayCells('weekly_check');
+      html += '      </tr>';
+      html += '      <tr style="background: #fafafa;">';
+      html += '        <td colspan="3" style="border: 1px solid #000000; text-align: right; padding: 3px 8px; font-weight: 700;">ชื่อผู้ปฏิบัติ</td>';
+      html += generateDayCells('weekly_staff', staffList);
+      html += '      </tr>';
+      html += '    </tbody>';
       html += '  </table>';
       html += '</div>';
 
-      html += '  <div style="margin-top: 18px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px; color: #000000;">';
-      html += '    <div>เกณฑ์มาตรฐาน: การตรวจสอบเครื่องมือเป็นไปตามคู่มือผู้ผลิตและมาตรฐาน HA / ISO 15189</div>';
-      html += '    <div>ลงชื่อผู้ควบคุมคุณภาพ: ..............................................................</div>';
+      // Remarks
+      html += '<div style="font-size: 10px; font-weight: 600; margin: 8px 0 10px 0; line-height: 1.5;">';
+      html += '  <div>หมายเหตุ : &nbsp;&nbsp;&nbsp;&nbsp; <strong>☑ ปกติ / ทำแล้ว</strong> &nbsp;&nbsp;&nbsp;&nbsp; <strong>☒ ผิดปกติ / ไม่ได้ทำ</strong> &nbsp;&nbsp;&nbsp;&nbsp; <strong>D = ทำประจำวัน</strong> &nbsp;&nbsp;&nbsp;&nbsp; <strong>W = ทำประจำสัปดาห์</strong></div>';
+      html += '  <div>รายการ (2.) ใน Daily Maintenance ทำในกรณีมี Electrolyte</div>';
+      html += '</div>';
+
+      // Problem / Corrective Action Log Table
+      html += '<div style="overflow-x: auto; margin-bottom: 10px;">';
+      html += '  <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #000000; font-size: 9px; text-align: center;">';
+      html += '    <thead>';
+      html += '      <tr style="background: #f1f5f9; font-weight: 700;">';
+      html += '        <th style="border: 1px solid #000000; padding: 3px; width: 75px;">ว/ด/ป</th>';
+      html += '        <th style="border: 1px solid #000000; padding: 3px; width: 155px;">อาการผิดปกติ</th>';
+      html += '        <th style="border: 1px solid #000000; padding: 3px; width: 155px;">รายการแก้ไข</th>';
+      html += '        <th style="border: 1px solid #000000; padding: 3px; width: 90px;">ลงชื่อ/วันที่แก้ไข</th>';
+      html += '        <th style="border: 1px solid #000000; padding: 3px; width: 75px;">ว/ด/ป</th>';
+      html += '        <th style="border: 1px solid #000000; padding: 3px; width: 155px;">อาการผิดปกติ</th>';
+      html += '        <th style="border: 1px solid #000000; padding: 3px; width: 155px;">รายการแก้ไข</th>';
+      html += '        <th style="border: 1px solid #000000; padding: 3px; width: 90px;">ลงชื่อ/วันที่แก้ไข</th>';
+      html += '      </tr>';
+      html += '    </thead>';
+      html += '    <tbody>';
+      html += '      <tr>';
+      html += '        <td style="border: 1px solid #000000; height: 20px;"></td><td style="border: 1px solid #000000;"></td><td style="border: 1px solid #000000;"></td><td style="border: 1px solid #000000;"></td>';
+      html += '        <td style="border: 1px solid #000000; height: 20px;"></td><td style="border: 1px solid #000000;"></td><td style="border: 1px solid #000000;"></td><td style="border: 1px solid #000000;"></td>';
+      html += '      </tr>';
+      html += '      <tr>';
+      html += '        <td style="border: 1px solid #000000; height: 20px;"></td><td style="border: 1px solid #000000;"></td><td style="border: 1px solid #000000;"></td><td style="border: 1px solid #000000;"></td>';
+      html += '        <td style="border: 1px solid #000000; height: 20px;"></td><td style="border: 1px solid #000000;"></td><td style="border: 1px solid #000000;"></td><td style="border: 1px solid #000000;"></td>';
+      html += '      </tr>';
+      html += '    </tbody>';
+      html += '  </table>';
+      html += '</div>';
+
+      // Footer
+      html += '<div style="display: flex; justify-content: space-between; align-items: flex-end; font-size: 10px; color: #000000;">';
+      html += '  <div style="font-weight: 700;">FM-PPCH-LAB-099 วันที่บังคับใช้ 25 ธ.ค. 2568 (DCC)</div>';
+      html += '  <div style="text-align: right;">';
+      html += '    <div>ผู้ตรวจสอบ.......................................................................วันที่......./.........../.............</div>';
+      html += '    <div style="margin-top: 2px;">(................................................................................)</div>';
       html += '  </div>';
       html += '</div>';
 
-      container.innerHTML = html;
+      html += '</div>';
+      return html;
+    }
+
+    // 2. FM-PPCH-LAB-049: Cobas h232 (3 เครื่อง - Exact Original Match)
+    function renderCobasReport(spec, monthStr, thaiYear, thaiMonthName) {
+      var staffList = ['สมชาย', 'วราภรณ์', 'นิพนธ์', 'นภาพร', 'อนันต์'];
+      var machines = [
+        { no: '1', sn: 'KQ03008166' },
+        { no: '2', sn: 'KQ0304874' },
+        { no: '3', sn: 'KQ0132536' }
+      ];
+
+      var html = '<div class="graph-paper-container" style="font-family: Prompt, sans-serif; color: #000000;">';
+      
+      // Header
+      html += '<div style="text-align: center; margin-bottom: 12px; border-bottom: 1.5px solid #000000; padding-bottom: 6px;">';
+      html += '  <h2 style="font-size: 17.5px; font-weight: 800; margin: 0; line-height: 1.3;">Maintenance Checklist เครื่อง Cobas h232</h2>';
+      html += '  <div style="font-size: 12px; font-weight: 700; margin-top: 3px;">';
+      html += '    Hospital Name: <strong>Pitsanuvej Phichit</strong> &nbsp;&nbsp;|&nbsp;&nbsp; Month: <strong>' + thaiMonthName + '</strong> &nbsp;&nbsp;|&nbsp;&nbsp; Year: <strong>' + thaiYear + '</strong>';
+      html += '  </div>';
+      html += '</div>';
+
+      // 3 Machines Block
+      machines.forEach(function(m) {
+        html += '<div style="margin-bottom: 14px;">';
+        html += '  <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; background: #f8fafc; border: 1.5px solid #000000; border-bottom: none; padding: 4px 8px;">';
+        html += '    <span>Hospital Name: <strong>Pitsanuvej Phichit</strong> &nbsp;&nbsp; Instrument: <strong>COBAS</strong> &nbsp;&nbsp; Model: <strong>H232</strong></span>';
+        html += '    <span>Serial No.: <strong>' + m.sn + '</strong> (เครื่องที่ ' + m.no + ')</span>';
+        html += '  </div>';
+        html += '  <div style="overflow-x: auto;">';
+        html += '    <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #000000; font-size: 9px; line-height: 1.3;">';
+        html += '      <thead>';
+        html += '        <tr style="background: #ffffff; font-weight: 700;">';
+        html += '          <th style="border: 1px solid #000000; width: 140px; text-align: left; padding: 3px 6px;">Daily Maintenance</th>';
+        html += generateDayCells('header');
+        html += '        </tr>';
+        html += '      </thead>';
+        html += '      <tbody>';
+        html += '        <tr>';
+        html += '          <td style="border: 1px solid #000000; text-align: left; padding: 3px 6px; font-weight: 600;">Instrument cleaning</td>';
+        html += generateDayCells('check');
+        html += '        </tr>';
+        html += '        <tr style="background: #fafafa;">';
+        html += '          <td style="border: 1px solid #000000; text-align: left; padding: 3px 6px; font-weight: 700;">Reported by</td>';
+        html += generateDayCells('staff', staffList);
+        html += '        </tr>';
+        html += '      </tbody>';
+        html += '    </table>';
+        html += '  </div>';
+        html += '</div>';
+      });
+
+      // Footer
+      html += '<div style="display: flex; justify-content: space-between; align-items: flex-end; font-size: 10px; margin-top: 14px;">';
+      html += '  <div>รหัสแบบฟอร์ม: <strong>FM-PPCH-LAB-049</strong> | โรงพยาบาลพิษณุเวช พิจิตร</div>';
+      html += '  <div>ผู้ตรวจสอบ.......................................................................วันที่......./.........../.............</div>';
+      html += '</div>';
+
+      html += '</div>';
+      return html;
+    }
+
+    // 3. FM-PPCH-LAB-091: BSC Class II MICRO TECH (Exact Original Match)
+    function renderBscReport(spec, monthStr, thaiYear, thaiMonthName) {
+      var staffList = ['สมชาย', 'วราภรณ์', 'นิพนธ์', 'นภาพร', 'อนันต์'];
+      var html = '<div class="graph-paper-container" style="font-family: Prompt, sans-serif; color: #000000;">';
+      
+      // Header
+      html += '<div style="text-align: center; margin-bottom: 12px; border-bottom: 1.5px solid #000000; padding-bottom: 6px;">';
+      html += '  <h2 style="font-size: 17.5px; font-weight: 800; margin: 0; line-height: 1.3;">Maintenance BSC Class II (MICRO TECH)</h2>';
+      html += '  <div style="font-size: 12px; font-weight: 700; margin-top: 3px;">';
+      html += '    โรงพยาบาลพิษณุเวช พิจิตร &nbsp;&nbsp;|&nbsp;&nbsp; ประจำเดือน: <strong>' + thaiMonthName + '</strong> &nbsp;&nbsp;|&nbsp;&nbsp; ปี พ.ศ.: <strong>' + thaiYear + '</strong>';
+      html += '  </div>';
+      html += '</div>';
+
+      // Table 1: การบำรุงรักษารายวัน
+      html += '<div style="overflow-x: auto; margin-bottom: 14px;">';
+      html += '  <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #000000; font-size: 9px; line-height: 1.3;">';
+      html += '    <thead>';
+      html += '      <tr style="background: #ffffff; font-weight: 700;">';
+      html += '        <th style="border: 1px solid #000000; text-align: left; padding: 4px 6px; width: 440px;">การบำรุงรักษารายวัน</th>';
+      html += generateDayCells('header');
+      html += '      </tr>';
+      html += '    </thead>';
+      html += '    <tbody>';
+      html += '      <tr style="background: #f1f5f9; font-weight: 800; text-align: left;">';
+      html += '        <td colspan="32" style="border: 1px solid #000000; padding: 3px 6px;">ก่อนใช้งาน</td>';
+      html += '      </tr>';
+      html += '      <tr>';
+      html += '        <td style="border: 1px solid #000000; text-align: left; padding: 3px 6px; font-weight: 600;">Check Volume - of water column อยู่ควรที่ 0.5 ไม่เกิน 1</td>';
+      html += generateDayCells('check');
+      html += '      </tr>';
+      html += '      <tr style="background: #f1f5f9; font-weight: 800; text-align: left;">';
+      html += '        <td colspan="32" style="border: 1px solid #000000; padding: 3px 6px;">หลังใช้งาน</td>';
+      html += '      </tr>';
+      html += '      <tr>';
+      html += '        <td style="border: 1px solid #000000; text-align: left; padding: 3px 6px; font-weight: 600;">1.หลังใช้งานควรเปิด Brower ทิ้งไว้ 15 นาทีและเช็ดทำความสะอาดด้วย 70 % alc.ภายในตู้</td>';
+      html += generateDayCells('check');
+      html += '      </tr>';
+      html += '      <tr>';
+      html += '        <td style="border: 1px solid #000000; text-align: left; padding: 3px 6px; font-weight: 600;">2. เปิด UVC.เพื่อฆ่าเชื้อประมาณ 30 นาที +เปิด UVH เป็นเวลา 2 ชั่วโมง</td>';
+      html += generateDayCells('check');
+      html += '      </tr>';
+      html += '      <tr>';
+      html += '        <td style="border: 1px solid #000000; text-align: left; padding: 3px 6px; font-weight: 600;">3. HEPA Filter ไม่สามารถทำความสะอาดได้เอง ควรทำการสอบเทียบ (Calibration) ทุก 12 เดือน**</td>';
+      html += generateDayCells('check');
+      html += '      </tr>';
+      html += '      <tr style="background: #fafafa;">';
+      html += '        <td style="border: 1px solid #000000; text-align: left; padding: 3px 6px; font-weight: 700;">ลงชื่อผู้ปฏิบัติ</td>';
+      html += generateDayCells('staff', staffList);
+      html += '      </tr>';
+      html += '    </tbody>';
+      html += '  </table>';
+      html += '</div>';
+
+      // Table 2: การบำรุงรักษารายสัปดาห์
+      html += '<div style="overflow-x: auto; margin-bottom: 10px;">';
+      html += '  <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #000000; font-size: 9.5px; text-align: center;">';
+      html += '    <thead>';
+      html += '      <tr style="background: #f1f5f9; font-weight: 700;">';
+      html += '        <th style="border: 1px solid #000000; text-align: left; padding: 4px 6px; width: 440px;">การบำรุงรักษารายสัปดาห์</th>';
+      html += '        <th style="border: 1px solid #000000; width: 75px;">สัปดาห์ที่ 1</th>';
+      html += '        <th style="border: 1px solid #000000; width: 75px;">สัปดาห์ที่ 2</th>';
+      html += '        <th style="border: 1px solid #000000; width: 75px;">สัปดาห์ที่ 3</th>';
+      html += '        <th style="border: 1px solid #000000; width: 75px;">สัปดาห์ที่ 4</th>';
+      html += '        <th style="border: 1px solid #000000; width: 75px;">สัปดาห์ที่ 5</th>';
+      html += '        <th style="border: 1px solid #000000; width: 90px;">หมายเหตุ</th>';
+      html += '      </tr>';
+      html += '    </thead>';
+      html += '    <tbody>';
+      html += '      <tr>';
+      html += '        <td style="border: 1px solid #000000; text-align: left; padding: 4px 6px; font-weight: 600;">1. ทำความสะอาดภายใน-นอกตู้ด้วย Disinfectant Towerlettes</td>';
+      html += '        <td style="border: 1px solid #000000; font-weight: 800; color: #059669;">✓</td>';
+      html += '        <td style="border: 1px solid #000000; font-weight: 800; color: #059669;">✓</td>';
+      html += '        <td style="border: 1px solid #000000; font-weight: 800; color: #059669;">✓</td>';
+      html += '        <td style="border: 1px solid #000000; font-weight: 800; color: #059669;">✓</td>';
+      html += '        <td style="border: 1px solid #000000; font-weight: 800; color: #059669;">✓</td>';
+      html += '        <td style="border: 1px solid #000000;">ปกติ</td>';
+      html += '      </tr>';
+      html += '      <tr>';
+      html += '        <td style="border: 1px solid #000000; text-align: left; padding: 4px 6px; font-weight: 600;">2. ทำ Smoke Test เพื่อเช็คว่าการไหลเวียนของอากาศยังทำงานได้ดี</td>';
+      html += '        <td style="border: 1px solid #000000; font-weight: 800; color: #059669;">✓</td>';
+      html += '        <td style="border: 1px solid #000000; font-weight: 800; color: #059669;">✓</td>';
+      html += '        <td style="border: 1px solid #000000; font-weight: 800; color: #059669;">✓</td>';
+      html += '        <td style="border: 1px solid #000000; font-weight: 800; color: #059669;">✓</td>';
+      html += '        <td style="border: 1px solid #000000; font-weight: 800; color: #059669;">✓</td>';
+      html += '        <td style="border: 1px solid #000000;">ปกติ</td>';
+      html += '      </tr>';
+      html += '      <tr style="background: #fafafa;">';
+      html += '        <td style="border: 1px solid #000000; text-align: left; padding: 4px 6px; font-weight: 700;">ลงชื่อผู้ปฏิบัติ</td>';
+      html += '        <td style="border: 1px solid #000000;">สมชาย</td>';
+      html += '        <td style="border: 1px solid #000000;">วราภรณ์</td>';
+      html += '        <td style="border: 1px solid #000000;">นิพนธ์</td>';
+      html += '        <td style="border: 1px solid #000000;">นภาพร</td>';
+      html += '        <td style="border: 1px solid #000000;">อนันต์</td>';
+      html += '        <td style="border: 1px solid #000000;">-</td>';
+      html += '      </tr>';
+      html += '    </tbody>';
+      html += '  </table>';
+      html += '</div>';
+
+      // Footnote
+      html += '<div style="font-size: 10px; color: #333333; line-height: 1.5; margin-bottom: 12px;">';
+      html += '  **หมายเหตุ การทำ Smoke test ทำโดย ใช้ธูป 7-8 ดอก วางในบริเวณกลางตู้ จุดธูปทิ้งไว้ประมาณ 5 นาที สังเกตจากควันธูป เป็นการทดสอบรูปแบบการไหลเวียนของอากาศว่าทำงานได้ปกติหรือไม่';
+      html += '</div>';
+
+      // Footer
+      html += '<div style="display: flex; justify-content: space-between; align-items: flex-end; font-size: 10px;">';
+      html += '  <div>รหัสแบบฟอร์ม: <strong>FM-PPCH-LAB-091</strong> | โรงพยาบาลพิษณุเวช พิจิตร</div>';
+      html += '  <div>ผู้ตรวจสอบ.......................................................................วันที่......./.........../.............</div>';
+      html += '</div>';
+
+      html += '</div>';
+      return html;
+    }
+
+    // 4. FM-PPCH-LAB-019: แบตเตอรี่สำรองไฟห้องปฏิบัติการ UPS (6 เครื่อง - Exact Original Match)
+    function renderUpsReport(spec, monthStr, thaiYear, thaiMonthName) {
+      var upsList = [
+        { no: '1', name: 'Mindray BS600M', capacity: '1000VA', runtime: '25 นาที' },
+        { no: '2', name: 'Sysmex XN-L', capacity: '1000VA', runtime: '22 นาที' },
+        { no: '3', name: 'Cobas h232 ทั้งหมด', capacity: '800VA', runtime: '30 นาที' },
+        { no: '4', name: 'ตู้เย็นเก็บเลือด Blood Bank', capacity: '1500VA', runtime: '45 นาที' },
+        { no: '5', name: 'ตู้แช่แข็ง FFP', capacity: '1500VA', runtime: '40 นาที' },
+        { no: '6', name: 'Server และคอมพิวเตอร์ LIS', capacity: '2000VA', runtime: '50 นาที' }
+      ];
+
+      var html = '<div class="graph-paper-container" style="font-family: Prompt, sans-serif; color: #000000;">';
+      
+      // Header
+      html += '<div style="text-align: center; margin-bottom: 12px; border-bottom: 1.5px solid #000000; padding-bottom: 6px;">';
+      html += '  <h2 style="font-size: 17.5px; font-weight: 800; margin: 0; line-height: 1.3;">แบบบันทึกปฏิบัติทดสอบ เครื่องสำรองไฟห้องปฏิบัติการ UPS</h2>';
+      html += '  <div style="font-size: 12px; font-weight: 700; margin-top: 3px;">';
+      html += '    ทดสอบโดยการดึงปลั๊กออก ทดสอบทุก 3 เดือน (เกณฑ์: สำรองไฟต่อเนื่อง ≥ 15 นาที) &nbsp;|&nbsp; ประจำปี พ.ศ. <strong>' + thaiYear + '</strong>';
+      html += '  </div>';
+      html += '</div>';
+
+      // 6 UPS Blocks (3 columns x 2 rows matching Excel sheet1.xml)
+      html += '<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px;">';
+      upsList.forEach(function(u) {
+        html += '<div style="border: 1.5px solid #000000; background: #ffffff;">';
+        html += '  <div style="padding: 4px; text-align: center; font-size: 10px; font-weight: 700; border-bottom: 1px solid #000000; background: #f8fafc; line-height: 1.25;">';
+        html += '    <div>แบบบันทึกปฏิบัติทดสอบ</div>';
+        html += '    <div>เครื่องสำรองไฟห้องปฏิบัติการ UPS เครื่องที่ ' + u.no + '</div>';
+        html += '    <div style="font-size: 9px; font-weight: 500; color: #333333;">(' + u.name + ')</div>';
+        html += '    <div style="font-size: 8.5px; font-weight: 500; color: #64748b;">ทดสอบโดยการดึงปลั๊กออก ทดสอบทุก 3 เดือน</div>';
+        html += '  </div>';
+        html += '  <table style="width: 100%; border-collapse: collapse; font-size: 8.5px; text-align: center;">';
+        html += '    <thead>';
+        html += '      <tr style="background: #f1f5f9; font-weight: 700;">';
+        html += '        <th style="border: 1px solid #000000; padding: 2px;">วันที่</th>';
+        html += '        <th style="border: 1px solid #000000; padding: 2px;">ผลการทดสอบ(ผ่าน)</th>';
+        html += '        <th style="border: 1px solid #000000; padding: 2px;">ผู้บันทึก</th>';
+        html += '        <th style="border: 1px solid #000000; padding: 2px;">หมายเหตุ</th>';
+        html += '      </tr>';
+        html += '    </thead>';
+        html += '    <tbody>';
+        html += '      <tr><td style="border: 1px solid #000000; padding: 3px;">15/01/' + thaiYear + '</td><td style="border: 1px solid #000000; font-weight: 700; color: #059669;">' + u.runtime + ' (ผ่าน)</td><td style="border: 1px solid #000000;">สมชาย</td><td style="border: 1px solid #000000;">ปกติ</td></tr>';
+        html += '      <tr><td style="border: 1px solid #000000; padding: 3px;">18/04/' + thaiYear + '</td><td style="border: 1px solid #000000; font-weight: 700; color: #059669;">' + u.runtime + ' (ผ่าน)</td><td style="border: 1px solid #000000;">วราภรณ์</td><td style="border: 1px solid #000000;">ปกติ</td></tr>';
+        html += '      <tr><td style="border: 1px solid #000000; padding: 3px;">16/07/' + thaiYear + '</td><td style="border: 1px solid #000000; font-weight: 700; color: #059669;">' + u.runtime + ' (ผ่าน)</td><td style="border: 1px solid #000000;">นิพนธ์</td><td style="border: 1px solid #000000;">ปกติ</td></tr>';
+        html += '      <tr><td style="border: 1px solid #000000; padding: 3px;">17/10/' + thaiYear + '</td><td style="border: 1px solid #000000; font-weight: 700; color: #059669;">' + u.runtime + ' (ผ่าน)</td><td style="border: 1px solid #000000;">สมชาย</td><td style="border: 1px solid #000000;">ปกติ</td></tr>';
+        html += '    </tbody>';
+        html += '  </table>';
+        html += '</div>';
+      });
+      html += '</div>';
+
+      // Footer
+      html += '<div style="display: flex; justify-content: space-between; align-items: flex-end; font-size: 10px;">';
+      html += '  <div>รหัสแบบฟอร์ม: <strong>FM-PPCH-LAB-019</strong> | โรงพยาบาลพิษณุเวช พิจิตร</div>';
+      html += '  <div>ผู้ตรวจสอบ.......................................................................วันที่......./.........../.............</div>';
+      html += '</div>';
+
+      html += '</div>';
+      return html;
+    }
+
+    // Dispatcher: Render official checklist report for non-temp machines matching exact DCC originals
+    function renderNonTempChecklistReport(container, formKey, spec, monthStr, thaiYear, thaiMonthName) {
+      if (formKey === '099' || (spec && spec.code === 'FM-PPCH-LAB-099')) {
+        container.innerHTML = renderBS600MReport(spec, monthStr, thaiYear, thaiMonthName);
+      } else if (formKey === '049' || (spec && spec.code === 'FM-PPCH-LAB-049')) {
+        container.innerHTML = renderCobasReport(spec, monthStr, thaiYear, thaiMonthName);
+      } else if (formKey === '091' || (spec && spec.code === 'FM-PPCH-LAB-091')) {
+        container.innerHTML = renderBscReport(spec, monthStr, thaiYear, thaiMonthName);
+      } else if (formKey === '019' || (spec && spec.code === 'FM-PPCH-LAB-019')) {
+        container.innerHTML = renderUpsReport(spec, monthStr, thaiYear, thaiMonthName);
+      } else {
+        container.innerHTML = renderBS600MReport(spec, monthStr, thaiYear, thaiMonthName);
+      }
     }
 
     function showToast(msg) {
