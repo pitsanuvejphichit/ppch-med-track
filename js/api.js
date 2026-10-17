@@ -72,8 +72,6 @@
       assetCode: r.asset_code || '',
       name: r.name || '',
       formId: r.form_id || '',
-      model: r.model || '',
-      serialNo: r.serial_no || '',
       frequency: r.frequency || 'daily',
       riskLevel: r.risk_level || (r.frequency === 'monthly' ? 'low' : 'high'),
       homeDept: r.home_dept || '',
@@ -652,8 +650,6 @@
         asset_code: itemData.assetCode.trim(),
         name: itemData.name.trim(),
         form_id: itemData.formId || 'defibrillator',
-        model: itemData.model || '',
-        serial_no: itemData.serialNo || '',
         risk_level: riskLevel,
         frequency: frequency,
         home_dept: itemData.homeDept || itemData.currentDept || 'CENTRAL',
@@ -675,8 +671,6 @@
             assetCode: created.assetCode,
             name: created.name,
             formId: created.formId,
-            model: created.model,
-            serialNo: created.serialNo,
             riskLevel: created.riskLevel,
             frequency: created.frequency,
             homeDept: created.homeDept,
@@ -701,8 +695,6 @@
       if (itemData.assetCode !== undefined) body.asset_code = itemData.assetCode.trim();
       if (itemData.name !== undefined) body.name = itemData.name.trim();
       if (itemData.formId !== undefined) body.form_id = itemData.formId;
-      if (itemData.model !== undefined) body.model = itemData.model;
-      if (itemData.serialNo !== undefined) body.serial_no = itemData.serialNo;
       if (itemData.riskLevel !== undefined) {
         body.risk_level = itemData.riskLevel;
         body.frequency = (itemData.riskLevel === 'low') ? 'monthly' : 'daily';
@@ -726,8 +718,6 @@
             assetCode: itemData.assetCode,
             name: itemData.name,
             formId: itemData.formId,
-            model: itemData.model,
-            serialNo: itemData.serialNo,
             riskLevel: itemData.riskLevel,
             frequency: itemData.frequency,
             homeDept: itemData.homeDept,
