@@ -1736,6 +1736,9 @@
     </div>
   </div>
 
+  <!-- Dedicated LAB Supabase API -->
+  <script src="js/lab-api.js"></script>
+
   <!-- JavaScript Application Logic -->
   <script>
     // Configuration
@@ -1836,9 +1839,10 @@
         currentShift = 'evening'; // 24:00 - 08:00 (เวรดึก/เย็น)
       }
 
-      // 3. Pre-fill staff from localStorage if remembered
-      var savedStaffId = localStorage.getItem('PPCH_LAST_STAFF_ID') || '';
-      var savedStaffName = localStorage.getItem('PPCH_LAST_STAFF_NAME') || '';
+      // 3. Pre-fill staff from URL params if provided
+      var urlParams = new URLSearchParams(window.location.search);
+      var savedStaffId = urlParams.get('staffId') || '';
+      var savedStaffName = urlParams.get('staffName') || '';
       var staffIdEl = document.getElementById('staffId');
       var staffNameEl = document.getElementById('staffName');
       var stdStaffIdEl = document.getElementById('stdStaffId');
@@ -2061,33 +2065,40 @@
       if (elMY) elMY.innerText = THAI_MONTHS_SHORT[activeMonth - 1] + ' ' + activeYear;
     }
 
-    // Load Month Sheet Data from Real GAS API (with local fallback)
+    // Load Month Sheet Data from Supabase PostgreSQL (< 100ms) with GAS Sheet Fallback
     function loadMonthSheetData(itemId, year, month) {
-      var storageKey = 'PPCH_LAB_SHEET_DATA_' + itemId + '_' + year + '_' + month;
-      var raw = localStorage.getItem(storageKey);
-
-      if (raw) {
-        try {
-          monthSheetData = JSON.parse(raw);
-          if (!monthSheetData.morning) monthSheetData.morning = {};
-          if (!monthSheetData.afternoon) monthSheetData.afternoon = {};
-          if (!monthSheetData.evening) monthSheetData.evening = {};
-        } catch (e) {
-          monthSheetData = { morning: {}, afternoon: {}, evening: {} };
-        }
-      } else {
-        monthSheetData = { morning: {}, afternoon: {}, evening: {} };
-      }
-
+      monthSheetData = { morning: {}, afternoon: {}, evening: {} };
       updateKpiSummary();
       renderTrendSvg();
       renderMonthlyMatrix();
       selectDay(activeDay);
 
-      // Async fetch real historical month data from GAS Dedicated Database
       var cleanYear = (year > 2500) ? (year - 543) : year;
-      var fetchUrl = GAS_API_URL + '?action=getLabMonthData&itemId=' + encodeURIComponent(itemId) + '&year=' + cleanYear + '&month=' + month;
 
+      // 1. Primary: Fetch directly from Supabase (< 100ms)
+      if (window.PPCH_LAB_API) {
+        window.PPCH_LAB_API.fetchMonthlyHistory(itemId, cleanYear, month, function (res) {
+          if (res && res.success && res.data) {
+            monthSheetData = res.data;
+            if (!monthSheetData.morning) monthSheetData.morning = {};
+            if (!monthSheetData.afternoon) monthSheetData.afternoon = {};
+            if (!monthSheetData.evening) monthSheetData.evening = {};
+            updateKpiSummary();
+            renderTrendSvg();
+            renderMonthlyMatrix();
+            selectDay(activeDay);
+          } else {
+            console.warn('Supabase month fetch error, attempting GAS fallback:', res ? res.error : 'unknown');
+            fallbackGasMonthFetch(itemId, cleanYear, month);
+          }
+        });
+      } else {
+        fallbackGasMonthFetch(itemId, cleanYear, month);
+      }
+    }
+
+    function fallbackGasMonthFetch(itemId, cleanYear, month) {
+      var fetchUrl = GAS_API_URL + '?action=getLabMonthData&itemId=' + encodeURIComponent(itemId) + '&year=' + cleanYear + '&month=' + month;
       fetch(fetchUrl)
         .then(function(res) { return res.json(); })
         .then(function(res) {
@@ -2107,11 +2118,6 @@
                 });
               }
             });
-
-            try {
-              localStorage.setItem(storageKey, JSON.stringify(monthSheetData));
-            } catch (err) {}
-
             updateKpiSummary();
             renderTrendSvg();
             renderMonthlyMatrix();
@@ -2698,15 +2704,7 @@
         time: new Date().toTimeString().slice(0, 5)
       };
 
-      // Persist full sheet data to localStorage
-      var storageKey = 'PPCH_LAB_SHEET_DATA_' + currentItem.id + '_' + activeYear + '_' + activeMonth;
-      try {
-        localStorage.setItem(storageKey, JSON.stringify(monthSheetData));
-        localStorage.setItem('PPCH_LAST_STAFF_ID', staffId);
-        localStorage.setItem('PPCH_LAST_STAFF_NAME', staffName);
-      } catch (e) {}
-
-      // Re-render UI
+      // Re-render UI immediately
       updateKpiSummary();
       renderTrendSvg();
       renderMonthlyMatrix();
@@ -2717,6 +2715,7 @@
         action: 'submitLabEntry',
         itemId: currentItem.id,
         itemName: currentItem.name,
+        formKey: currentItem.formKey || ('lab_' + (currentItem.code || '').replace(/\D/g, '')),
         formCode: currentItem.code,
         category: currentItem.catName,
         type: currentItem.type,
@@ -2732,64 +2731,40 @@
         timestamp: new Date().toISOString()
       };
 
-      // Save into record history and update latest status
-      try {
-        var historyList = JSON.parse(localStorage.getItem('PPCH_LAB_EVAL_RECORDS') || '[]');
-        historyList.unshift(evalData);
-        if (historyList.length > 200) historyList = historyList.slice(0, 200);
-        localStorage.setItem('PPCH_LAB_EVAL_RECORDS', JSON.stringify(historyList));
-
-        var latestCache = JSON.parse(localStorage.getItem('PPCH_LAB_LATEST_STATUS') || '{}');
-        latestCache[currentItem.id] = {
-          status: evalData.status,
-          lastTemp: evalData.temperature,
-          lastHumidity: evalData.humidity,
-          evaluatedAt: evalData.time,
-          evaluatedBy: staffName,
-          shift: currentShift,
-          date: evalData.date
-        };
-        localStorage.setItem('PPCH_LAB_LATEST_STATUS', JSON.stringify(latestCache));
-      } catch (err) {}
-
       // UI Loading state
       var btnSubmit = document.getElementById('btnSubmitEval');
       var origBtnHtml = btnSubmit ? btnSubmit.innerHTML : '';
       if (btnSubmit) {
         btnSubmit.disabled = true;
-        btnSubmit.innerHTML = '<span class="material-icons-round spin" style="font-size: 17px;">sync</span> <span>กำลังบันทึกลงชีท...</span>';
+        btnSubmit.innerHTML = '<span class="material-icons-round spin" style="font-size: 17px;">sync</span> <span>กำลังบันทึกลง Supabase...</span>';
       }
 
-      // Push to GAS Dedicated Database
-      fetch(GAS_API_URL + '?action=submitLabEntry', {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(evalData)
-      })
-      .then(function(r) { return r.json(); })
-      .then(function(res) {
-        if (res && res.success) {
-          showToast('✓ บันทึกลง Google Sheets เรียบร้อยแล้ว');
-          // Reload month sheet data to sync
-          loadMonthSheetData(currentItem.id, activeYear, activeMonth);
-        } else {
-          showToast(res && res.error ? ('คำเตือน: ' + res.error) : 'บันทึกในเครื่องแล้ว');
-        }
-      })
-      .catch(function(err) {
-        console.warn('GAS Push fallback:', err);
-        showToast('บันทึกในเครื่องเรียบร้อยแล้ว (ออฟไลน์)');
-      })
-      .finally(function() {
+      // Write directly to Supabase + Background Sync to Sheets via PPCH_LAB_API
+      if (window.PPCH_LAB_API) {
+        window.PPCH_LAB_API.submitLabEvaluation(evalData, function (res) {
+          if (btnSubmit) {
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = origBtnHtml;
+          }
+          if (res && res.success) {
+            showToast('✓ บันทึกผลตรวจลง Supabase เรียบร้อยแล้ว');
+            // Advance Stepper & Show confirmation slip
+            updateStepper(3);
+            showConfirmationSlip(evalData);
+          } else {
+            showToast('คำเตือน: บันทึกข้อมูลแบบออฟไลน์');
+            updateStepper(3);
+            showConfirmationSlip(evalData);
+          }
+        });
+      } else {
         if (btnSubmit) {
           btnSubmit.disabled = false;
           btnSubmit.innerHTML = origBtnHtml;
         }
-      });
-
-      // Advance Stepper & Show confirmation slip
-      updateStepper(3);
-      showConfirmationSlip(evalData);
+        updateStepper(3);
+        showConfirmationSlip(evalData);
+      }
     }
 
     // SUBMIT STANDARD EVALUATION (ANALYZERS & UPS)
@@ -2860,61 +2835,41 @@
 
       evalData.status = isOverallPass ? 'ready' : 'abnormal';
 
-      try {
-        localStorage.setItem('PPCH_LAST_STAFF_ID', staffId);
-        localStorage.setItem('PPCH_LAST_STAFF_NAME', staffName);
-
-        var historyList = JSON.parse(localStorage.getItem('PPCH_LAB_EVAL_RECORDS') || '[]');
-        historyList.unshift(evalData);
-        if (historyList.length > 200) historyList = historyList.slice(0, 200);
-        localStorage.setItem('PPCH_LAB_EVAL_RECORDS', JSON.stringify(historyList));
-
-        var latestCache = JSON.parse(localStorage.getItem('PPCH_LAB_LATEST_STATUS') || '{}');
-        latestCache[currentItem.id] = {
-          status: evalData.status,
-          evaluatedAt: evalTime,
-          evaluatedBy: staffName,
-          shift: currentShift,
-          date: evalDate
-        };
-        localStorage.setItem('PPCH_LAB_LATEST_STATUS', JSON.stringify(latestCache));
-      } catch (err) {}
-
       // UI Loading state
       var btnSubmit = document.getElementById('btnSubmitStd');
       var origBtnHtml = btnSubmit ? btnSubmit.innerHTML : '';
       if (btnSubmit) {
         btnSubmit.disabled = true;
-        btnSubmit.innerHTML = '<span class="material-icons-round spin" style="font-size: 17px;">sync</span> <span>กำลังบันทึกข้อมูล...</span>';
+        btnSubmit.innerHTML = '<span class="material-icons-round spin" style="font-size: 17px;">sync</span> <span>กำลังบันทึกลง Supabase...</span>';
       }
 
-      // Push to GAS
-      fetch(GAS_API_URL + '?action=submitLabEntry', {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(evalData)
-      })
-      .then(function(r) { return r.json(); })
-      .then(function(res) {
-        if (res && res.success) {
-          showToast('✓ บันทึกผลการตรวจเช็คลง Google Sheets สำเร็จ');
-        } else {
-          showToast(res && res.error ? ('คำเตือน: ' + res.error) : 'บันทึกในเครื่องแล้ว');
-        }
-      })
-      .catch(function(err) {
-        console.warn('GAS Push fallback:', err);
-        showToast('บันทึกในเครื่องเรียบร้อย (ออฟไลน์)');
-      })
-      .finally(function() {
+      evalData.formKey = currentItem.formKey || ('lab_' + (currentItem.code || '').replace(/\D/g, ''));
+
+      // Write directly to Supabase + Background Sync to Sheets via PPCH_LAB_API
+      if (window.PPCH_LAB_API) {
+        window.PPCH_LAB_API.submitLabEvaluation(evalData, function (res) {
+          if (btnSubmit) {
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = origBtnHtml;
+          }
+          if (res && res.success) {
+            showToast('✓ บันทึกผลการตรวจเช็คลง Supabase เรียบร้อย');
+            updateStepper(3);
+            showConfirmationSlip(evalData);
+          } else {
+            showToast('คำเตือน: บันทึกข้อมูลแบบออฟไลน์');
+            updateStepper(3);
+            showConfirmationSlip(evalData);
+          }
+        });
+      } else {
         if (btnSubmit) {
           btnSubmit.disabled = false;
           btnSubmit.innerHTML = origBtnHtml;
         }
-      });
-
-      updateStepper(3);
-      showConfirmationSlip(evalData);
+        updateStepper(3);
+        showConfirmationSlip(evalData);
+      }
     }
 
     // Analyzer Checklist

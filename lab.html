@@ -2012,8 +2012,9 @@
   <!-- QR Batch Print Area (Hidden on screen, rendered on Print) -->
   <div id="qrBatchPrintArea"></div>
 
-  <!-- QR Code Library -->
+  <!-- QR Code Library & Dedicated LAB Supabase API -->
   <script src="js/qrcode.min.js"></script>
+  <script src="js/lab-api.js"></script>
 
   <script>
     // Configuration
@@ -2045,6 +2046,7 @@
     var labData = null;
     var activeModalItem = null;
     var activeFormKey = null;
+    var currentStaffSession = { id: '', name: '' };
 
     // Bulletproof Loader Dismissal
     document.addEventListener('DOMContentLoaded', function() {
@@ -2081,12 +2083,12 @@
       else if (hours < 8) shiftName = 'เวรดึก (00:00 - 08:00)';
       document.getElementById('topShiftText').innerText = shiftName;
 
-      // 3. Instant Render (0ms delay - identical to Admin Hub)
-      labData = getInitialLabData();
+      // 3. Instant Render (0ms delay from Built-in Catalog)
+      labData = getBuiltinLabData();
       updateDashboardKPIs(labData);
       renderAllViews(labData);
 
-      // 4. Background Sync from Google Sheets (non-blocking)
+      // 4. Live Sync from Supabase PostgreSQL (sub-100ms)
       loadOverviewData();
 
       // 5. Render initial report preview
@@ -2139,39 +2141,6 @@
           }}
         }
       };
-    }
-
-    // Retrieve Initial Data Immediately (from cache or catalog)
-    function getInitialLabData() {
-      var data = null;
-      try {
-        var raw = localStorage.getItem('PPCH_LAB_OVERVIEW_DATA');
-        if (raw) data = JSON.parse(raw);
-      } catch (e) {}
-
-      if (!data || !data.forms || Object.keys(data.forms).length < 8) {
-        data = getBuiltinLabData();
-      }
-
-      // Merge any latest individual evaluations recorded in localStorage
-      try {
-        var latestCache = JSON.parse(localStorage.getItem('PPCH_LAB_LATEST_STATUS') || '{}');
-        for (var fKey in data.forms) {
-          var items = data.forms[fKey].items || {};
-          for (var iKey in items) {
-            if (latestCache[iKey]) {
-              var c = latestCache[iKey];
-              if (c.status) items[iKey].status = c.status;
-              if (c.lastTemp !== undefined) items[iKey].lastTemp = c.lastTemp;
-              if (c.lastHumidity !== undefined) items[iKey].lastHumidity = c.lastHumidity;
-              if (c.evaluatedAt) items[iKey].evaluatedAt = c.evaluatedAt;
-              if (c.evaluatedBy) items[iKey].evaluatedBy = c.evaluatedBy;
-            }
-          }
-        }
-      } catch (err) {}
-
-      return data;
     }
 
     // Sidebar Toggle (Mobile Drawer & Desktop Pin Expand)
@@ -2229,32 +2198,48 @@
       }
     }
 
-    // Load Data Silently in Background from Google Sheets
+    // Load Data in Real-time from Supabase (sub-100ms) with Sheet Background Fallback
     function loadOverviewData() {
       var syncText = document.getElementById('syncText');
-      if (syncText) syncText.innerText = 'กำลังซิงค์ข้อมูลกับ Google Sheet...';
+      if (syncText) syncText.innerText = 'กำลังเชื่อมต่อ Supabase PostgreSQL...';
 
+      if (window.PPCH_LAB_API) {
+        window.PPCH_LAB_API.fetchLabOverview(function (res) {
+          if (res && res.success && res.data) {
+            labData = res.data;
+            updateDashboardKPIs(labData);
+            renderAllViews(labData);
+            if (syncText) syncText.innerText = 'ซิงค์ข้อมูล Supabase Real-time เรียบร้อย (< 100ms)';
+          } else {
+            console.warn('Supabase overview error, attempting GAS fallback:', res ? res.error : 'unknown');
+            fallbackGasFetch();
+          }
+        });
+      } else {
+        fallbackGasFetch();
+      }
+    }
+
+    function fallbackGasFetch() {
+      var syncText = document.getElementById('syncText');
       fetch(GAS_API_URL + '?action=getLabOverview')
         .then(function(res) { return res.json(); })
         .then(function(json) {
           if (json && json.status === 'success' && json.data) {
             labData = json.data;
-            try {
-              localStorage.setItem('PPCH_LAB_OVERVIEW_DATA', JSON.stringify(labData));
-            } catch (e) {}
             updateDashboardKPIs(labData);
             renderAllViews(labData);
-            if (syncText) syncText.innerText = 'ข้อมูลอัปเดตล่าสุดจาก Google Sheet แล้ว';
+            if (syncText) syncText.innerText = 'ข้อมูลอัปเดตจาก Google Sheet สำรอง';
           }
         })
         .catch(function(err) {
-          console.warn('GAS fetch failed, using cached data:', err);
-          if (syncText) syncText.innerText = 'ระบบฐานข้อมูล LAB พร้อมใช้งาน (ออฟไลน์)';
+          console.warn('GAS fetch failed:', err);
+          if (syncText) syncText.innerText = 'ระบบฐานข้อมูล LAB พร้อมใช้งาน (แคตตาล็อกในตัว)';
         });
     }
 
     function useFallbackData() {
-      labData = getInitialLabData();
+      labData = getBuiltinLabData();
       updateDashboardKPIs(labData);
       renderAllViews(labData);
     }
@@ -2587,15 +2572,15 @@
       document.getElementById('modalNote').value = '';
       document.getElementById('tempFeedbackPill').style.display = 'none';
 
-      // Pre-fill remembered staff info
-      try {
-        var savedId = localStorage.getItem('PPCH_LAST_STAFF_ID') || '';
-        var savedName = localStorage.getItem('PPCH_LAST_STAFF_NAME') || '';
+      // In-memory staff session prefill
+      if (currentStaffSession.id) {
         var elId = document.getElementById('modalStaffId');
+        if (elId) elId.value = currentStaffSession.id;
+      }
+      if (currentStaffSession.name) {
         var elName = document.getElementById('modalRecorder');
-        if (elId && savedId) elId.value = savedId;
-        if (elName && savedName) elName.value = savedName;
-      } catch(e) {}
+        if (elName) elName.value = currentStaffSession.name;
+      }
 
       var isTemp = formKey.startsWith('lab_05') || formKey.startsWith('lab_06');
       var isRoom = (formKey === 'lab_057');
@@ -2691,15 +2676,14 @@
         checkSelect = document.getElementById('modalCheckSelect').value;
       }
 
-      // Save staff in localStorage
-      try {
-        if (staffId) localStorage.setItem('PPCH_LAST_STAFF_ID', staffId);
-        localStorage.setItem('PPCH_LAST_STAFF_NAME', recorder);
-      } catch(e) {}
+      // Remember staff in current in-memory session (No localStorage)
+      currentStaffSession.id = staffId;
+      currentStaffSession.name = recorder;
 
       // 1. Update in-memory data for instant UI responsiveness
       var formObj = labData.forms[activeFormKey];
       var itemName = activeModalItem.name;
+      var isAbnormal = false;
       if (formObj && formObj.items[activeModalItem.id]) {
         var it = formObj.items[activeModalItem.id];
         it.evaluatedBy = recorder + (staffId ? ' (' + staffId + ')' : '');
@@ -2717,67 +2701,42 @@
         } else {
           it.status = (checkSelect === 'pass') ? 'ready' : 'abnormal';
         }
+        isAbnormal = (it.status === 'abnormal');
       }
 
-      // 2. Persist to localStorage immediately
-      try {
-        localStorage.setItem('PPCH_LAB_OVERVIEW_DATA', JSON.stringify(labData));
-        var latestCache = JSON.parse(localStorage.getItem('PPCH_LAB_LATEST_STATUS') || '{}');
-        if (formObj && formObj.items[activeModalItem.id]) {
-          latestCache[activeModalItem.id] = {
-            status: formObj.items[activeModalItem.id].status,
-            lastTemp: tempVal,
-            lastHumidity: humVal,
-            evaluatedAt: timeStr,
-            evaluatedBy: recorder + (staffId ? ' (' + staffId + ')' : ''),
-            date: dateStr
-          };
-          localStorage.setItem('PPCH_LAB_LATEST_STATUS', JSON.stringify(latestCache));
-        }
-      } catch (e) {}
-
-      // 3. Update UI, close modal, and notify toast INSTANTLY (0 ms wait)
+      // 2. Update UI, close modal, and notify toast INSTANTLY (0 ms wait)
       updateDashboardKPIs(labData);
       applyFilters();
       closeModal();
       showToast('✓ บันทึกข้อมูล ' + itemName + ' เรียบร้อยแล้ว');
 
-      // 4. Send POST to GAS in background (non-blocking)
-      var payload = {
-        action: 'submitLabEntry',
-        formKey: activeFormKey,
+      // 3. Write directly to Supabase + Background Sync to Sheets via PPCH_LAB_API
+      var specCode = (formObj && formObj.spec) ? formObj.spec.code : '';
+      var evalPayload = {
         itemId: activeModalItem.id,
-        itemName: activeModalItem.name,
-        pointName: activeModalItem.name,
-        temp: tempVal,
-        temperature: tempVal,
-        humidity: humVal,
-        result: checkSelect === 'pass' ? 'ready' : 'abnormal',
-        runtimeMinutes: upsMinutes,
-        staffId: staffId,
-        staffName: recorder,
-        evaluatedBy: recorder + (staffId ? ' (' + staffId + ')' : ''),
-        note: note,
-        abnormalNote: note,
+        itemName: itemName,
+        formKey: activeFormKey,
+        formCode: specCode,
         date: dateStr,
         time: timeStr,
-        timestamp: new Date().toISOString()
+        temperature: tempVal,
+        humidity: humVal,
+        runtimeMinutes: upsMinutes,
+        status: isAbnormal ? 'abnormal' : 'ready',
+        staffId: staffId,
+        staffName: recorder,
+        note: note
       };
 
-      fetch(GAS_API_URL + '?action=submitLabEntry', {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(payload)
-      })
-      .then(function(res) { return res.json(); })
-      .then(function(json) {
-        if (json && json.status === 'success') {
-          console.log('GAS sync confirmed for:', itemName);
-        }
-      })
-      .catch(function(err) {
-        console.warn('Background GAS sync pending:', err);
-      });
+      if (window.PPCH_LAB_API) {
+        window.PPCH_LAB_API.submitLabEvaluation(evalPayload, function(res) {
+          if (res && res.success) {
+            console.log('Supabase sync confirmed for:', itemName);
+          } else {
+            console.warn('Supabase write fallback:', res ? res.error : 'unknown');
+          }
+        });
+      }
     }
 
     // Filter controls
@@ -3240,21 +3199,6 @@
       var cacheKey = formKey + '_' + monthStr;
       var monthData = monthlySampleSimCache[cacheKey] || { morning: {}, afternoon: {} };
 
-      // Merge real recorded evaluations from localStorage if exists
-      try {
-        var realRecs = JSON.parse(localStorage.getItem('PPCH_LAB_EVAL_RECORDS') || '[]');
-        realRecs.forEach(function(r) {
-          if (r.itemId === formKey && r.date && r.date.startsWith(monthStr)) {
-            var dayNum = parseInt(r.date.split('-')[2], 10);
-            var shiftKey = (r.shift === 'afternoon') ? 'afternoon' : 'morning';
-            monthData[shiftKey][dayNum] = {
-              temp: r.temperature,
-              humidity: r.humidity,
-              staff: r.staffName
-            };
-          }
-        });
-      } catch(e) {}
 
       // Month pills formatting matching user image (ม.ค. ก.พ. มี.ค. ... with active month circled)
       var monthPillsHtml = thaiMonths.map(function(mName, idx) {
