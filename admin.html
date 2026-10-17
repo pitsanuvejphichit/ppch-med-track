@@ -3722,7 +3722,7 @@
         <section id="viewDefective" style="display: none;">
           <!-- 4-Column KPI Strip for Defects -->
           <div class="kpi-strip-4 no-print">
-            <div class="kpi-card" id="kpiCard_defectTotal">
+            <div class="kpi-card" id="kpiCard_defectTotal" onclick="closeRepairHistoryPage()" style="cursor: pointer;" title="คลิกเพื่อดูรายการไม่พร้อมใช้งานทั้งหมด">
               <div class="kpi-icon-box kpi-icon-red">
                 <span class="material-icons-round">error</span>
               </div>
@@ -3732,7 +3732,7 @@
               </div>
             </div>
 
-            <div class="kpi-card" id="kpiCard_defectReported">
+            <div class="kpi-card" id="kpiCard_defectReported" onclick="closeRepairHistoryPage()" style="cursor: pointer;" title="คลิกเพื่อดูรายการรอรับทราบ">
               <div class="kpi-icon-box" style="background: #fee2e2; color: #dc2626;">
                 <span class="material-icons-round">notification_important</span>
               </div>
@@ -3742,7 +3742,7 @@
               </div>
             </div>
 
-            <div class="kpi-card" id="kpiCard_defectProgress">
+            <div class="kpi-card" id="kpiCard_defectProgress" onclick="closeRepairHistoryPage()" style="cursor: pointer;" title="คลิกเพื่อดูรายการกำลังแก้ไข">
               <div class="kpi-icon-box kpi-icon-amber">
                 <span class="material-icons-round">build</span>
               </div>
@@ -3752,7 +3752,7 @@
               </div>
             </div>
 
-            <div class="kpi-card" id="kpiCard_defectResolved">
+            <div class="kpi-card" id="kpiCard_defectResolved" onclick="openRepairHistoryPage()" style="cursor: pointer;" title="คลิกเพื่อดูประวัติการแก้ไขและส่งคืนความพร้อมใช้งาน">
               <div class="kpi-icon-box kpi-icon-green">
                 <span class="material-icons-round">task_alt</span>
               </div>
@@ -3764,13 +3764,20 @@
           </div>
 
           <!-- Active Defective Table Panel -->
-          <div class="content-panel">
-            <div class="panel-header">
+          <div class="content-panel" id="defectiveActivePanel">
+            <div class="panel-header" style="flex-wrap: wrap; gap: 10px;">
               <div class="panel-title" style="display: flex; align-items: center; gap: 8px;">
                 <span class="material-icons-round" style="color: var(--red-abnormal); font-size: 19px;">warning</span>
-                <span>รายการเครื่องมือแพทย์ไม่พร้อมใช้งาน (พบข้อบกพร่อง / กำลังดำเนินการแก้ไข)</span>
+                <span>รายการเครื่องมือแพทย์ไม่พร้อมใช้งาน</span>
               </div>
-              <span class="panel-badge" id="defectiveCountBadge" style="background: #fef2f2; color: #dc2626; border-color: #fecaca; font-weight: 700;">0 เครื่อง</span>
+              <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
+                <span class="panel-badge" id="defectiveCountBadge" style="background: #fef2f2; color: #dc2626; border-color: #fecaca; font-weight: 700;">0 เครื่อง</span>
+                <button type="button" onclick="openRepairHistoryPage()" class="btn-tool" style="background: #ecfdf5; color: var(--green-ready); border-color: #a7f3d0; font-weight: 600; padding: 6px 14px;" title="เปิดดูประวัติการแก้ไขและส่งคืนความพร้อมใช้งาน">
+                  <span class="material-icons-round" style="font-size: 16px;">history</span>
+                  <span>ประวัติการแก้ไขและส่งคืนความพร้อมใช้งาน</span>
+                  <span class="badge" id="repairHistoryBtnBadge" style="background: var(--green-ready); color: #fff; font-size: 11px; padding: 1px 7px; border-radius: 10px; margin-left: 4px; font-weight: 700;">0</span>
+                </button>
+              </div>
             </div>
             <div style="overflow-x: auto;">
               <table class="device-table">
@@ -3792,24 +3799,30 @@
             </div>
           </div>
 
-          <!-- History of Resolved Repairs Panel -->
-          <div class="content-panel" style="margin-top: 16px;">
-            <div class="panel-header">
-              <div class="panel-title" style="display: flex; align-items: center; gap: 8px;">
-                <span class="material-icons-round" style="color: var(--green-ready); font-size: 19px;">history</span>
-                <span>ประวัติการแก้ไขและส่งคืนความพร้อมใช้งาน (Repair History)</span>
+          <!-- History of Resolved Repairs Panel (Dedicated Sub-Page, hidden by default) -->
+          <div class="content-panel" id="defectiveHistoryPanel" style="display: none;">
+            <div class="panel-header" style="flex-wrap: wrap; gap: 12px;">
+              <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                <button type="button" onclick="closeRepairHistoryPage()" class="btn-tool" style="background: #ffffff; color: var(--text-main); border: 1px solid var(--border-color); font-weight: 600; box-shadow: var(--shadow-sm);" title="กลับหน้ารายการไม่พร้อมใช้งาน">
+                  <span class="material-icons-round" style="font-size: 18px; color: var(--royal-blue);">arrow_back</span>
+                  <span>กลับหน้ารายการไม่พร้อมใช้งาน</span>
+                </button>
+                <div class="panel-title" style="display: flex; align-items: center; gap: 8px;">
+                  <span class="material-icons-round" style="color: var(--green-ready); font-size: 20px;">history</span>
+                  <span>ประวัติการแก้ไขและส่งคืนความพร้อมใช้งาน (Repair History)</span>
+                </div>
               </div>
-              <span class="panel-badge" id="repairHistoryCountBadge">0 รายการ</span>
+              <span class="panel-badge" id="repairHistoryCountBadge" style="background: #ecfdf5; color: var(--green-ready); border-color: #a7f3d0; font-weight: 700;">0 รายการ</span>
             </div>
-            <div style="overflow-x: auto; max-height: 320px;">
+            <div style="overflow-x: auto;">
               <table class="device-table">
                 <thead>
                   <tr>
-                    <th style="width: 130px;">วัน-เวลาที่แก้ไขเสร็จ</th>
-                    <th style="width: 120px;">รหัสครุภัณฑ์</th>
+                    <th style="width: 140px;">วัน-เวลาที่แก้ไขเสร็จ</th>
+                    <th style="width: 130px;">รหัสครุภัณฑ์</th>
                     <th>เครื่องมือแพทย์</th>
                     <th>รายละเอียดการแก้ไข (สิ่งที่ดำเนินการไป)</th>
-                    <th style="width: 150px;">ผู้ดำเนินการแก้ไข</th>
+                    <th style="width: 160px;">ผู้ดำเนินการแก้ไข</th>
                   </tr>
                 </thead>
                 <tbody id="repairHistoryTableBody">
@@ -4891,6 +4904,7 @@
       if (viewKey === 'dashboard') {
         renderDashboardView();
       } else if (viewKey === 'defective') {
+        closeRepairHistoryPage();
         renderDefectiveView();
       } else if (viewKey === 'device_summary') {
         renderDeviceSummaryView();
@@ -5376,6 +5390,8 @@
       var hBody = document.getElementById('repairHistoryTableBody');
       var hBadge = document.getElementById('repairHistoryCountBadge');
       if (hBadge) hBadge.innerText = repairs.length + ' รายการ';
+      var hBtnBadge = document.getElementById('repairHistoryBtnBadge');
+      if (hBtnBadge) hBtnBadge.innerText = repairs.length;
 
       if (hBody) {
         if (repairs.length === 0) {
@@ -5396,6 +5412,27 @@
           hBody.innerHTML = hHtml;
         }
       }
+    }
+
+    function openRepairHistoryPage() {
+      var activePanel = document.getElementById('defectiveActivePanel');
+      var historyPanel = document.getElementById('defectiveHistoryPanel');
+      if (activePanel) activePanel.style.display = 'none';
+      if (historyPanel) historyPanel.style.display = 'block';
+
+      var bread = document.getElementById('breadCurrent');
+      if (bread) bread.innerText = 'ประวัติการแก้ไขและส่งคืนความพร้อมใช้งาน';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function closeRepairHistoryPage() {
+      var activePanel = document.getElementById('defectiveActivePanel');
+      var historyPanel = document.getElementById('defectiveHistoryPanel');
+      if (activePanel) activePanel.style.display = 'block';
+      if (historyPanel) historyPanel.style.display = 'none';
+
+      var bread = document.getElementById('breadCurrent');
+      if (bread) bread.innerText = 'เครื่องมือไม่พร้อมใช้งาน & จัดการงานซ่อม';
     }
 
     var currentAckDeviceId = null;
