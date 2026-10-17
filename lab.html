@@ -2861,7 +2861,7 @@
       var month = document.getElementById('reportMonthSelect').value || '2026-10';
       var cacheKey = formKey + '_' + month;
 
-      var daysData = { morning: {}, afternoon: {} };
+      var daysData = { morning: {}, afternoon: {}, evening: {} };
       var baseTemp = 25.4;
       var isFreezer = (formKey.startsWith('060'));
       var isWb = (formKey.startsWith('061'));
@@ -2877,21 +2877,25 @@
         // Morning
         var varM = (Math.sin(d * 0.8) * 0.5) + ((d % 5 === 0) ? 0.3 : -0.2);
         var tempM = parseFloat((baseTemp + varM).toFixed(1));
-        var humM = Math.round(52 + (Math.cos(d * 0.6) * 5));
         daysData.morning[d] = {
           temp: tempM,
-          humidity: humM,
           staff: staffList[(d - 1) % staffList.length]
         };
 
         // Afternoon
         var varA = (Math.cos(d * 0.7) * 0.6) + ((d % 4 === 0) ? -0.2 : 0.3);
         var tempA = parseFloat((baseTemp + varA).toFixed(1));
-        var humA = Math.round(50 + (Math.sin(d * 0.5) * 6));
         daysData.afternoon[d] = {
           temp: tempA,
-          humidity: humA,
           staff: staffList[d % staffList.length]
+        };
+
+        // Evening
+        var varE = (Math.sin(d * 0.5) * 0.4) - 0.1;
+        var tempE = parseFloat((baseTemp + varE).toFixed(1));
+        daysData.evening[d] = {
+          temp: tempE,
+          staff: staffList[(d + 2) % staffList.length]
         };
       }
 
@@ -2920,11 +2924,11 @@
       var thaiMonthNamesFull = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
 
       var formTitles = {
-        '057_lab': { title: 'แบบบันทึกอุณหภูมิห้องปฏิบัติการ', room: 'Laboratory (ห้องปฏิบัติการกลาง)', code: 'FM-PPCH-LAB-057', scale: [30, 28, 26, 24, 22], safeMin: 24, safeMax: 28, isTemp: true, hasHum: true },
-        '057_immu': { title: 'แบบบันทึกอุณหภูมิห้องปฏิบัติการ', room: 'Immunology', code: 'FM-PPCH-LAB-057', scale: [30, 28, 26, 24, 22], safeMin: 24, safeMax: 28, isTemp: true, hasHum: true },
-        '057_blood': { title: 'แบบบันทึกอุณหภูมิห้องปฏิบัติการ', room: 'Blood Bank (ธนาคารเลือด)', code: 'FM-PPCH-LAB-057', scale: [30, 28, 26, 24, 22], safeMin: 24, safeMax: 28, isTemp: true, hasHum: true },
-        '057_bac': { title: 'แบบบันทึกอุณหภูมิห้องปฏิบัติการ', room: 'Bacteria (จุลชีววิทยา)', code: 'FM-PPCH-LAB-057', scale: [30, 28, 26, 24, 22], safeMin: 24, safeMax: 28, isTemp: true, hasHum: true },
-        '057_store': { title: 'แบบบันทึกอุณหภูมิห้องปฏิบัติการ', room: 'Storage (คลังเก็บน้ำยา/เวชภัณฑ์)', code: 'FM-PPCH-LAB-057', scale: [30, 28, 26, 24, 22], safeMin: 24, safeMax: 28, isTemp: true, hasHum: true },
+        '057_lab': { title: 'แบบบันทึกอุณหภูมิห้องปฏิบัติการ', room: 'Laboratory (ห้องปฏิบัติการกลาง)', code: 'FM-PPCH-LAB-057', scale: [30, 28, 26, 24, 22], safeMin: 24, safeMax: 28, isTemp: true, hasHum: false },
+        '057_immu': { title: 'แบบบันทึกอุณหภูมิห้องปฏิบัติการ', room: 'Immunology', code: 'FM-PPCH-LAB-057', scale: [30, 28, 26, 24, 22], safeMin: 24, safeMax: 28, isTemp: true, hasHum: false },
+        '057_blood': { title: 'แบบบันทึกอุณหภูมิห้องปฏิบัติการ', room: 'Blood Bank (ธนาคารเลือด)', code: 'FM-PPCH-LAB-057', scale: [30, 28, 26, 24, 22], safeMin: 24, safeMax: 28, isTemp: true, hasHum: false },
+        '057_bac': { title: 'แบบบันทึกอุณหภูมิห้องปฏิบัติการ', room: 'Bacteria (จุลชีววิทยา)', code: 'FM-PPCH-LAB-057', scale: [30, 28, 26, 24, 22], safeMin: 24, safeMax: 28, isTemp: true, hasHum: false },
+        '057_store': { title: 'แบบบันทึกอุณหภูมิห้องปฏิบัติการ', room: 'Storage (คลังเก็บน้ำยา/เวชภัณฑ์)', code: 'FM-PPCH-LAB-057', scale: [30, 28, 26, 24, 22], safeMin: 24, safeMax: 28, isTemp: true, hasHum: false },
         '060_ffp': { title: 'แบบบันทึกอุณหภูมิตู้แช่แข็ง', room: 'ตู้แช่แข็ง FFP (ควบคุม ≤ -18 °C)', code: 'FM-PPCH-LAB-060', scale: [-14, -18, -22, -26, -30], safeMin: -30, safeMax: -18, isTemp: true, hasHum: false },
         '060_ctrl': { title: 'แบบบันทึกอุณหภูมิตู้แช่แข็ง', room: 'ตู้แช่แข็ง Control (ควบคุม ≤ -18 °C)', code: 'FM-PPCH-LAB-060', scale: [-14, -18, -22, -26, -30], safeMin: -30, safeMax: -18, isTemp: true, hasHum: false },
         '061_wb1': { title: 'แบบบันทึกอุณหภูมิ Water bath', room: 'Water bath 1 (WB-01)', code: 'FM-PPCH-LAB-061', scale: [39, 38, 37, 36, 35], safeMin: 36.5, safeMax: 37.5, isTemp: true, hasHum: false },
@@ -2946,52 +2950,74 @@
         return;
       }
 
-      // Retrieve Data: from Simulation Cache or LocalStorage
       var cacheKey = formKey + '_' + monthStr;
-      var monthData = monthlySampleSimCache[cacheKey] || { morning: {}, afternoon: {} };
+      if (monthlySampleSimCache[cacheKey]) {
+        drawReport(monthlySampleSimCache[cacheKey]);
+        return;
+      }
 
+      container.innerHTML = '<div style="padding: 40px; text-align: center; color: #64748b; font-weight: 600;"><span class="material-icons-round spin" style="font-size: 24px; vertical-align: -6px; color: #004b93;">sync</span> กำลังโหลดข้อมูลรายงาน A4 จาก Supabase...</div>';
 
-      // Month pills formatting matching user image (ม.ค. ก.พ. มี.ค. ... with active month circled)
-      var monthPillsHtml = thaiMonths.map(function(mName, idx) {
-        var isCurrent = (idx + 1 === mo);
-        if (isCurrent) {
-          return '<span style="border: 1.5px solid #002e6e; padding: 0 4px; border-radius: 4px; font-weight: 800; color: #004b93; background: #e0f2fe;">' + mName + '</span>';
-        }
-        return '<span style="color: #64748b; padding: 0 3px;">' + mName + '</span>';
-      }).join(' ');
+      if (window.PPCH_LAB_API) {
+        window.PPCH_LAB_API.fetchMonthlyHistory(formKey, yr, mo, function(res) {
+          var monthData = (res && res.success && res.data) ? res.data : { morning: {}, afternoon: {}, evening: {} };
+          drawReport(monthData);
+        });
+      } else {
+        drawReport({ morning: {}, afternoon: {}, evening: {} });
+      }
 
-      // Build HTML exactly matching spreadsheet media_1792038429083_1f6faac0.png
-      var html = '<div class="graph-paper-container">';
+      function drawReport(monthData) {
+        monthData = monthData || { morning: {}, afternoon: {}, evening: {} };
+        if (!monthData.morning) monthData.morning = {};
+        if (!monthData.afternoon) monthData.afternoon = {};
+        if (!monthData.evening) monthData.evening = {};
 
-      // Header
-      html += '  <div style="text-align: center; margin-bottom: 12px;">';
-      html += '    <h2 style="font-size: 19px; font-weight: 800; color: #000000; margin-bottom: 4px; letter-spacing: 0.5px;">' + curSpec.title + '</h2>';
-      html += '    <div style="font-size: 12px; font-weight: 600; color: #000000; line-height: 1.6;">';
-      html += '      แผนกบันทึกอุณหภูมิห้อง: <strong>' + curSpec.room + '</strong> &nbsp;&nbsp;&nbsp;&nbsp; ประจำเดือน: ' + monthPillsHtml + ' &nbsp;&nbsp;&nbsp;&nbsp; ปี <strong>' + thaiYear + '</strong>';
-      html += '    </div>';
-      html += '  </div>';
+        // Month pills formatting matching user image (ม.ค. ก.พ. มี.ค. ... with active month circled)
+        var monthPillsHtml = thaiMonths.map(function(mName, idx) {
+          var isCurrent = (idx + 1 === mo);
+          if (isCurrent) {
+            return '<span style="border: 1.5px solid #002e6e; padding: 0 4px; border-radius: 4px; font-weight: 800; color: #004b93; background: #e0f2fe;">' + mName + '</span>';
+          }
+          return '<span style="color: #64748b; padding: 0 3px;">' + mName + '</span>';
+        }).join(' ');
 
-      // Block 1: เวรเช้า (Morning Shift)
-      html += renderShiftGraphBlock('เช้า', 'morning', curSpec, monthData.morning);
+        // Build HTML exactly matching spreadsheet media_1792038429083_1f6faac0.png
+        var html = '<div class="graph-paper-container">';
 
-      // Block 2: เวรบ่าย (Afternoon Shift)
-      html += renderShiftGraphBlock('บ่าย', 'afternoon', curSpec, monthData.afternoon);
+        // Header
+        html += '  <div style="text-align: center; margin-bottom: 12px;">';
+        html += '    <h2 style="font-size: 19px; font-weight: 800; color: #000000; margin-bottom: 4px; letter-spacing: 0.5px;">' + curSpec.title + '</h2>';
+        html += '    <div style="font-size: 12px; font-weight: 600; color: #000000; line-height: 1.6;">';
+        html += '      แผนกบันทึกอุณหภูมิห้อง: <strong>' + curSpec.room + '</strong> &nbsp;&nbsp;&nbsp;&nbsp; ประจำเดือน: ' + monthPillsHtml + ' &nbsp;&nbsp;&nbsp;&nbsp; ปี <strong>' + thaiYear + '</strong>';
+        html += '    </div>';
+        html += '  </div>';
 
-      // Footer
-      html += '  <div style="margin-top: 14px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px; color: #000000; padding: 0 6px;">';
-      html += '    <div>';
-      html += '      <div>• เกณฑ์มาตรฐาน: อุณหภูมิ ' + curSpec.safeMin + ' - ' + curSpec.safeMax + ' °C' + (curSpec.hasHum ? ', ความชื้นสัมพัทธ์ ≤ 60 %RH' : '') + ' (ISO 15189 / HA)</div>';
-      html += '      <div style="margin-top: 2px;">• รหัสแบบฟอร์มทางการ: <strong>' + curSpec.code + '</strong> | โรงพยาบาลพิษณุเวช</div>';
-      html += '    </div>';
-      html += '    <div style="text-align: right;">';
-      html += '      <div>ลงชื่อผู้ควบคุมคุณภาพ: ..............................................................</div>';
-      html += '      <div style="margin-top: 3px; font-size: 10px; color: #475569;">(ทนพ. ............................................................. หัวหน้าแผนกชันสูตร)</div>';
-      html += '    </div>';
-      html += '  </div>';
+        // Block 1: เวรเช้า (Morning Shift)
+        html += renderShiftGraphBlock('เช้า', 'morning', curSpec, monthData.morning);
 
-      html += '</div>';
+        // Block 2: เวรบ่าย (Afternoon Shift)
+        html += renderShiftGraphBlock('บ่าย', 'afternoon', curSpec, monthData.afternoon);
 
-      container.innerHTML = html;
+        // Block 3: เวรดึก (Evening Shift)
+        html += renderShiftGraphBlock('ดึก', 'evening', curSpec, monthData.evening);
+
+        // Footer
+        html += '  <div style="margin-top: 14px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px; color: #000000; padding: 0 6px;">';
+        html += '    <div>';
+        html += '      <div>• เกณฑ์มาตรฐาน: อุณหภูมิ ' + curSpec.safeMin + ' - ' + curSpec.safeMax + ' °C (ISO 15189 / HA)</div>';
+        html += '      <div style="margin-top: 2px;">• รหัสแบบฟอร์มทางการ: <strong>' + curSpec.code + '</strong> | โรงพยาบาลพิษณุเวช</div>';
+        html += '    </div>';
+        html += '    <div style="text-align: right;">';
+        html += '      <div>ลงชื่อผู้ควบคุมคุณภาพ: ..............................................................</div>';
+        html += '      <div style="margin-top: 3px; font-size: 10px; color: #475569;">(ทนพ. ............................................................. หัวหน้าแผนกชันสูตร)</div>';
+        html += '    </div>';
+        html += '  </div>';
+
+        html += '</div>';
+
+        container.innerHTML = html;
+      }
     }
 
     // Helper: Render one Shift Block (Left sidebar label + SVG Plotted Graph + Pixel-Aligned Day Table)
@@ -3051,14 +3077,14 @@
 
       for (var d = 1; d <= 31; d++) {
         var entry = dataMap[d];
-        if (entry && entry.temp !== undefined && entry.temp !== null) {
+        if (entry && entry.temp !== undefined && entry.temp !== null && !isNaN(entry.temp)) {
           var cx = getX(d);
           var cy = getY(entry.temp);
           pathPoints.push(cx + ',' + cy);
 
           // Dot
-          var tooltip = 'วันที่ ' + d + ' (' + labelThai + '): อุณหภูมิ ' + entry.temp + ' °C' + (entry.humidity ? ' | ความชื้น ' + entry.humidity + '%RH' : '') + (entry.staff ? ' | ผู้บันทึก: ' + entry.staff : '');
-          dotsSvg += '<circle cx="' + cx + '" cy="' + cy + '" r="4" fill="#004b93" stroke="#ffffff" stroke-width="2" class="graph-dot">';
+          var tooltip = 'วันที่ ' + d + ' (' + labelThai + '): อุณหภูมิ ' + entry.temp + ' °C' + (entry.staff ? ' | ผู้บันทึก: ' + entry.staff : '');
+          dotsSvg += '<circle cx="' + cx + '" cy="' + cy + '" r="4.5" fill="#004b93" stroke="#ffffff" stroke-width="2" class="graph-dot">';
           dotsSvg += '  <title>' + tooltip + '</title>';
           dotsSvg += '</circle>';
         }
@@ -3070,7 +3096,7 @@
       svgContent += dotsSvg;
 
       // Outer block wrapper with left label matching sheet
-      var blockHtml = '<div class="graph-block-outer">';
+      var blockHtml = '<div class="graph-block-outer" style="margin-bottom: 12px;">';
       blockHtml += '  <div class="graph-shift-sidebar">' + labelThai + '</div>';
       blockHtml += '  <div class="graph-main-body">';
       
@@ -3079,7 +3105,7 @@
       blockHtml += '      <svg viewBox="0 0 ' + svgW + ' ' + svgH + '" preserveAspectRatio="none" style="width: 100%; height: 100%; display: block;">' + svgContent + '</svg>';
       blockHtml += '    </div>';
 
-      // Pixel-Aligned Table below graph (4 Rows: วันที่, อุณหภูมิ, ความชื้น, ผู้บันทึก)
+      // Pixel-Aligned Table below graph (3 Clean Rows: วันที่, อุณหภูมิ, ผู้บันทึก) -- NO HUMIDITY ROW
       blockHtml += '    <table class="plotted-table-sheet">';
       // Row 1: วันที่ (Day)
       blockHtml += '      <tr style="background: #ffffff; font-weight: 700;">';
@@ -3094,27 +3120,17 @@
       blockHtml += '        <td style="font-weight: 700; background: #ffffff; white-space: nowrap;">อุณหภูมิ (°C)</td>';
       for (var d = 1; d <= 31; d++) {
         var entry = dataMap[d];
-        var val = (entry && entry.temp !== undefined) ? entry.temp : '';
-        blockHtml += '<td>' + val + '</td>';
+        var val = (entry && entry.temp !== undefined && entry.temp !== null) ? entry.temp : '';
+        blockHtml += '<td style="font-weight: 700;">' + val + '</td>';
       }
       blockHtml += '      </tr>';
 
-      // Row 3: ความชื้นสัมพัทธ์ (Labeled with red 60% as seen in user sheet)
-      blockHtml += '      <tr>';
-      blockHtml += '        <td style="font-weight: 700; background: #ffffff; white-space: nowrap; color: #dc2626;">60%</td>';
-      for (var d = 1; d <= 31; d++) {
-        var entry = dataMap[d];
-        var humVal = (entry && entry.humidity !== undefined) ? entry.humidity + '%' : '';
-        blockHtml += '<td style="font-size: 9.5px;">' + humVal + '</td>';
-      }
-      blockHtml += '      </tr>';
-
-      // Row 4: ผู้บันทึก
+      // Row 3: ผู้บันทึก
       blockHtml += '      <tr>';
       blockHtml += '        <td style="font-weight: 700; background: #ffffff; white-space: nowrap;">ผู้บันทึก</td>';
       for (var d = 1; d <= 31; d++) {
         var entry = dataMap[d];
-        var staffVal = (entry && entry.staff) ? entry.staff : '';
+        var staffVal = (entry && entry.staffName) ? entry.staffName : ((entry && entry.staff) ? entry.staff : '');
         blockHtml += '<td style="font-size: 8.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="' + staffVal + '">' + staffVal + '</td>';
       }
       blockHtml += '      </tr>';
