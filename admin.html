@@ -785,6 +785,8 @@
       color: var(--text-body);
       outline: none;
       transition: all 0.15s;
+    }
+    .filter-drawer-inner .filter-input {
       max-width: 140px;
       flex-shrink: 1;
     }
@@ -792,6 +794,63 @@
       background: #ffffff;
       border-color: var(--royal-blue);
       box-shadow: 0 0 0 2px rgba(0, 75, 147, 0.12);
+    }
+
+    /* Form input override when inside dedicated form views, workstations, or modals */
+    #equipmentFormView input.filter-input,
+    #equipmentFormView select.filter-input,
+    .modal-box input.filter-input,
+    .modal-box select.filter-input,
+    .relocate-workstation-grid .filter-input {
+      max-width: 100% !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+      font-size: 13.5px !important;
+      padding: 9px 12px !important;
+      border-radius: 8px !important;
+      background: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+      color: var(--text-main) !important;
+    }
+    #equipmentFormView input.filter-input:focus,
+    #equipmentFormView select.filter-input:focus,
+    .modal-box input.filter-input:focus,
+    .modal-box select.filter-input:focus,
+    .relocate-workstation-grid .filter-input:focus {
+      border-color: var(--royal-blue) !important;
+      box-shadow: 0 0 0 3px rgba(0, 75, 147, 0.12) !important;
+      background: #ffffff !important;
+    }
+    #equipmentFormView input.filter-input:disabled,
+    .modal-box input.filter-input:disabled {
+      background: #f1f5f9 !important;
+      color: #64748b !important;
+      cursor: not-allowed !important;
+    }
+    .new-form-item-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 6px 12px;
+      transition: all 0.2s ease;
+    }
+    .new-form-item-row:focus-within {
+      border-color: var(--royal-blue);
+      box-shadow: 0 0 0 3px rgba(0, 75, 147, 0.12);
+    }
+    .new-form-item-row input.item-text-input {
+      max-width: 100% !important;
+      width: 100% !important;
+      flex: 1 1 auto !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 4px 6px !important;
+      font-size: 13.5px !important;
+      background: transparent !important;
+      outline: none !important;
     }
 
     .btn-pill-date {
@@ -3741,10 +3800,10 @@
                             <span>2. แบบฟอร์มตรวจเช็คความพร้อม</span>
                           </div>
                           <div style="display: flex; gap: 8px;">
-                            <button type="button" id="btnModeExistingForm" onclick="toggleNewFormBuilder(false)" class="btn-tool active" style="padding: 6px 14px; font-size: 12px; border-radius: 8px; font-weight: 600;">
+                            <button type="button" id="btnModeExistingForm" onclick="toggleNewFormBuilder(false)" class="btn-tool btn-tool-primary active" style="padding: 6px 14px; font-size: 12px; border-radius: 8px; font-weight: 600;">
                               <span>📑 เลือกฟอร์มเดิม / คัดลอก</span>
                             </button>
-                            <button type="button" id="btnModeNewForm" onclick="toggleNewFormBuilder(true)" class="btn-tool" style="padding: 6px 14px; font-size: 12px; border-radius: 8px; color: var(--royal-blue); font-weight: 700;">
+                            <button type="button" id="btnModeNewForm" onclick="toggleNewFormBuilder(true)" class="btn-tool" style="padding: 6px 14px; font-size: 12px; border-radius: 8px; font-weight: 700;">
                               <span class="material-icons-round" style="font-size: 16px;">add_circle</span>
                               <span>➕ สร้างฟอร์มใหม่</span>
                             </button>
@@ -6759,8 +6818,8 @@
 
       var input = document.createElement('input');
       input.type = 'text';
-      input.className = 'filter-input item-text-input';
-      input.style.cssText = 'flex: 1; border: none; padding: 2px 4px; font-size: 12.5px; outline: none; background: transparent;';
+      input.className = 'item-text-input';
+      input.style.cssText = 'flex: 1 1 auto; width: 100%; border: none; padding: 2px 4px; font-size: 13px; outline: none; background: transparent;';
       input.placeholder = 'ระบุเกณฑ์การตรวจเช็คข้อนี้...';
       input.value = initialText || '';
 
@@ -6850,23 +6909,30 @@
           ? '<span style="background: #e0f2fe; color: #0284c7; padding: 2px 8px; border-radius: 12px; font-weight: 700; font-size: 11.5px;">' + eqCount + ' เครื่อง</span>'
           : '<span style="color: var(--text-light); font-size: 11.5px;">0 เครื่อง</span>';
 
+        var deptActionsHtml = '<div class="floating-action-wrapper" onmouseenter="handleFloatingEnter(this)" onmouseleave="handleFloatingLeave(this)">' +
+          '<button type="button" class="btn-floating-trigger" onclick="toggleFloatingMenu(this, event)" title="เมนูจัดการ (คลิกหรือชี้เพื่อเปิด 2 รายการ)">' +
+            '<span class="material-icons-round trigger-icon">more_horiz</span>' +
+            '<span class="floating-badge-count">2</span>' +
+          '</button>' +
+          '<div class="floating-action-tray">' +
+            '<button type="button" onclick="openEditDeptModal(\'' + escapeHtml(dp.id) + '\')" class="btn-action-icon" style="background: #eff6ff; color: var(--royal-blue); border-color: #bfdbfe;" title="แก้ไขชื่อแผนก">' +
+              '<span class="material-icons-round">edit</span>' +
+            '</button>' +
+            '<button type="button" onclick="deleteDepartmentConfirm(\'' + escapeHtml(dp.id) + '\')" class="btn-action-icon" style="background: #fef2f2; color: var(--red-abnormal); border-color: #fecaca;" title="ลบแผนก">' +
+              '<span class="material-icons-round">delete</span>' +
+            '</button>' +
+            '<button type="button" class="btn-floating-close" onclick="closeFloatingMenu(this, event)" title="หุบเก็บ">' +
+              '<span class="material-icons-round">close</span>' +
+            '</button>' +
+          '</div>' +
+        '</div>';
+
         html += '<tr>' +
           '<td data-label="ลำดับ" style="text-align: center; color: var(--text-muted); font-size: 12px;">' + (idx + 1) + '</td>' +
           '<td data-label="รหัสแผนก"><span style="font-family: var(--font-mono); font-weight: 700; font-size: 12px; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: var(--royal-blue);">' + escapeHtml(dp.id) + '</span></td>' +
           '<td data-label="ชื่อแผนก" style="font-weight: 600; color: var(--text-main); font-size: 13px;">' + escapeHtml(dp.name) + '</td>' +
           '<td data-label="จำนวนเครื่องมือแพทย์" style="text-align: center;">' + countBadge + '</td>' +
-          '<td data-label="จัดการ" style="text-align: center;">' +
-            '<div style="display: flex; gap: 6px; justify-content: center;">' +
-              '<button type="button" onclick="openEditDeptModal(\'' + escapeHtml(dp.id) + '\')" class="btn-tool" style="padding: 4px 8px; font-size: 11px; height: 28px;" title="แก้ไขชื่อแผนก">' +
-                '<span class="material-icons-round" style="font-size: 14px; color: var(--royal-blue);">edit</span>' +
-                '<span>แก้ไข</span>' +
-              '</button>' +
-              '<button type="button" onclick="deleteDepartmentConfirm(\'' + escapeHtml(dp.id) + '\')" class="btn-tool" style="padding: 4px 8px; font-size: 11px; height: 28px; color: var(--red-abnormal); border-color: #fecaca;" title="ลบแผนก">' +
-                '<span class="material-icons-round" style="font-size: 14px; color: var(--red-abnormal);">delete</span>' +
-                '<span>ลบ</span>' +
-              '</button>' +
-            '</div>' +
-          '</td>' +
+          '<td data-label="จัดการ" style="text-align: center;">' + deptActionsHtml + '</td>' +
         '</tr>';
       });
 
