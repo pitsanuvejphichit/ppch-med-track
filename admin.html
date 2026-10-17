@@ -1541,93 +1541,42 @@
       line-height: 1.5;
     }
 
-    /* Inspection Slip Modal & Metadata Grid */
+    /* Inspection Slip Modal & Ultra-Compact Metadata Strip */
     #slipModal .modal-box {
-      max-width: 620px;
+      max-width: 560px;
       width: 95%;
       max-height: 90vh;
       display: flex;
       flex-direction: column;
-      padding: 22px 24px;
-    }
-    .slip-meta-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px 14px;
-      font-size: 12px;
-      border-top: 1px dashed #cbd5e1;
-      padding-top: 10px;
-      margin-top: 6px;
-    }
-    .slip-meta-row {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .slip-meta-label {
-      color: var(--text-muted);
-      flex-shrink: 0;
-    }
-    .slip-meta-val {
-      color: var(--text-main);
-      font-weight: 600;
-    }
-    .slip-meta-row.slip-meta-time {
-      grid-column: 1 / 2;
-    }
-    .slip-meta-row.slip-meta-status {
-      grid-column: 2 / 3;
+      padding: 16px 18px 12px 18px;
     }
     .slip-checklist-item {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      padding: 10px 12px;
+      gap: 8px;
+      padding: 6px 10px;
       border-bottom: 1px solid #f1f5f9;
+      font-size: 12px;
     }
 
     @media (max-width: 640px) {
       .modal-box {
-        padding: 18px 16px !important;
+        padding: 16px 14px !important;
+      }
+      #slipModal {
+        padding: 6px !important;
       }
       #slipModal .modal-box {
-        padding: 14px 14px 12px 14px !important;
-        width: 95% !important;
-        max-height: 92vh !important;
+        padding: 12px 12px 10px 12px !important;
+        width: 98% !important;
+        max-width: 100% !important;
+        max-height: 94vh !important;
         border-radius: 14px !important;
       }
-      .slip-meta-grid {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 5px !important;
-        border-top: 1px dashed #cbd5e1 !important;
-        padding-top: 8px !important;
-        margin-top: 6px !important;
-      }
-      .slip-meta-row {
-        display: flex !important;
-        justify-content: space-between !important;
-        align-items: center !important;
-        padding: 4px 0 !important;
-        font-size: 11.5px !important;
-        border-bottom: 1px dashed #f1f5f9 !important;
-        grid-column: auto !important;
-      }
-      .slip-meta-row:last-child {
-        border-bottom: none !important;
-      }
-      .slip-meta-label {
-        font-size: 11.5px !important;
-        color: #64748b !important;
-      }
-      .slip-meta-val {
-        font-size: 11.5px !important;
-        text-align: right !important;
-      }
       .slip-checklist-item {
-        padding: 7px 10px !important;
-        font-size: 12px !important;
+        padding: 6px 8px !important;
+        font-size: 11.5px !important;
       }
 
       /* In-Page Add Equipment Form & Builder */
@@ -4530,23 +4479,27 @@
 
   <!-- Detail Slip Modal -->
   <div id="slipModal" class="modal-overlay hidden" onclick="if(event.target === this) closeSlipModal()">
-    <div class="modal-box" style="max-width: 620px; width: 95%; max-height: 90vh; display: flex; flex-direction: column;">
-      <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 12px; margin-bottom: 12px; flex-shrink: 0;">
-        <div style="font-size: 15px; font-weight: 700; color: var(--royal-blue); display: flex; align-items: center; gap: 8px;">
-          <span class="material-icons-round" style="font-size: 20px;">fact_check</span>
-          <span>สลิปผลการตรวจเช็คเครื่องมือแพทย์</span>
+    <div class="modal-box slip-modal-box" style="max-width: 560px; width: 95%; max-height: 92vh; display: flex; flex-direction: column;">
+      <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 8px; margin-bottom: 8px; flex-shrink: 0;">
+        <div style="font-size: 13.5px; font-weight: 700; color: var(--royal-blue); display: flex; align-items: center; gap: 6px;">
+          <span class="material-icons-round" style="font-size: 18px;">receipt_long</span>
+          <span>สลิปผลการตรวจเช็ค</span>
         </div>
-        <button onclick="closeSlipModal()" class="no-print-slip" style="border: none; background: transparent; cursor: pointer; color: var(--text-muted);"><span class="material-icons-round">close</span></button>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <button type="button" onclick="printSlipDirect()" class="btn-tool no-print-slip" style="padding: 3px 9px; font-size: 11px; height: 26px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px;" title="พิมพ์สลิป">
+            <span class="material-icons-round" style="font-size: 13px; color: var(--royal-blue);">print</span>
+            <span>พิมพ์</span>
+          </button>
+          <button onclick="closeSlipModal()" class="no-print-slip" style="border: none; background: transparent; cursor: pointer; color: var(--text-muted); padding: 2px; display: flex; align-items: center;" title="ปิด">
+            <span class="material-icons-round" style="font-size: 19px;">close</span>
+          </button>
+        </div>
       </div>
-      <div id="slipContent" style="overflow-y: auto; padding-right: 4px; flex-grow: 1;">
+      <div id="slipContent" style="overflow-y: auto; padding-right: 2px; flex-grow: 1;">
         <!-- Injected -->
       </div>
-      <div class="no-print-slip" style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
-        <button type="button" onclick="printSlipDirect()" class="btn-tool" style="display: inline-flex; align-items: center; gap: 6px;">
-          <span class="material-icons-round" style="font-size: 16px; color: var(--royal-blue);">print</span>
-          <span>พิมพ์สลิป</span>
-        </button>
-        <button type="button" onclick="closeSlipModal()" class="btn-tool" style="background: var(--royal-blue); color: #fff; border-color: var(--royal-blue); padding: 7px 18px;">ปิด</button>
+      <div class="no-print-slip" style="margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: flex-end; align-items: center; flex-shrink: 0;">
+        <button type="button" onclick="closeSlipModal()" class="btn-tool" style="background: var(--royal-blue); color: #fff; border-color: var(--royal-blue); padding: 5px 18px; font-size: 12px; border-radius: 6px; font-weight: 600;">ปิด</button>
       </div>
     </div>
   </div>
@@ -6654,36 +6607,36 @@
 
           var badgeHtml = '';
           if (isPass) {
-            badgeHtml = '<span style="background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; padding: 3px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;"><span class="material-icons-round" style="font-size: 14px;">check_circle</span> ผ่าน</span>';
+            badgeHtml = '<span style="background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; padding: 2px 7px; border-radius: 999px; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 3px; white-space: nowrap;"><span class="material-icons-round" style="font-size: 13px;">check_circle</span> ผ่าน</span>';
           } else if (isFail) {
-            badgeHtml = '<span style="background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; padding: 3px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;"><span class="material-icons-round" style="font-size: 14px;">cancel</span> ไม่ผ่าน</span>';
+            badgeHtml = '<span style="background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; padding: 2px 7px; border-radius: 999px; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 3px; white-space: nowrap;"><span class="material-icons-round" style="font-size: 13px;">cancel</span> ไม่ผ่าน</span>';
           } else {
-            badgeHtml = '<span style="background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; padding: 3px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 500; white-space: nowrap;">- ไม่ได้ระบุ -</span>';
+            badgeHtml = '<span style="background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; padding: 2px 7px; border-radius: 999px; font-size: 10.5px; font-weight: 500; white-space: nowrap;">- ไม่ระบุ -</span>';
           }
 
-          rowsHtml += '<div class="slip-checklist-item" style="background: ' + (idx % 2 === 0 ? '#ffffff' : '#f8fafc') + ';">' +
-            '<div style="font-size: 12.5px; line-height: 1.5; color: #1e293b; display: flex; gap: 8px;">' +
-              '<span style="font-weight: 700; color: var(--royal-blue); min-width: 18px;">' + (idx + 1) + '.</span>' +
+          rowsHtml += '<div class="slip-checklist-item" style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 10px; border-bottom: 1px solid #f1f5f9; background: ' + (idx % 2 === 0 ? '#ffffff' : '#f8fafc') + '; font-size: 11.5px;">' +
+            '<div style="font-size: 11.5px; line-height: 1.35; color: #1e293b; display: flex; gap: 6px; flex: 1;">' +
+              '<span style="font-weight: 700; color: var(--royal-blue); min-width: 16px;">' + (idx + 1) + '.</span>' +
               '<span>' + qText + '</span>' +
             '</div>' +
-            '<div style="flex-shrink: 0; margin-top: 1px;">' + badgeHtml + '</div>' +
+            '<div style="flex-shrink: 0;">' + badgeHtml + '</div>' +
           '</div>';
         });
 
         var summaryRate = totalCount > 0 ? Math.round((passCount / totalCount) * 100) : 0;
         var summaryColor = failCount > 0 ? 'var(--red-abnormal)' : 'var(--green-ready)';
 
-        checklistHtml = '<div style="margin-top: 14px;">' +
-          '<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">' +
-            '<div style="font-size: 13px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 6px;">' +
-              '<span class="material-icons-round" style="font-size: 17px; color: var(--royal-blue);">fact_check</span>' +
-              '<span>รายการตรวจเช็คความพร้อมใช้ (' + (form ? (form.shortName || form.name) : 'ทุกข้อ') + ')</span>' +
+        checklistHtml = '<div style="margin-top: 6px;">' +
+          '<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px;">' +
+            '<div style="font-size: 11.5px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 4px;">' +
+              '<span class="material-icons-round" style="font-size: 15px; color: var(--royal-blue);">fact_check</span>' +
+              '<span>รายการตรวจเช็ค (' + totalCount + ' ข้อ)</span>' +
             '</div>' +
-            '<div style="font-size: 12px; font-weight: 700; color: ' + summaryColor + ';">' +
+            '<div style="font-size: 11px; font-weight: 700; color: ' + summaryColor + ';">' +
               'ผ่าน ' + passCount + '/' + totalCount + ' ข้อ (' + summaryRate + '%)' +
             '</div>' +
           '</div>' +
-          '<div style="border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden;">' +
+          '<div style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">' +
             rowsHtml +
           '</div>' +
         '</div>';
@@ -6694,31 +6647,27 @@
           var val = checklist[k];
           var isPass = (val === 'pass' || val === 'normal' || val === true || val === 'ผ่าน');
           var badgeHtml = isPass
-            ? '<span style="background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700;">ผ่าน</span>'
-            : '<span style="background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700;">ไม่ผ่าน</span>';
+            ? '<span style="background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; padding: 2px 7px; border-radius: 999px; font-size: 10.5px; font-weight: 700;">ผ่าน</span>'
+            : '<span style="background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; padding: 2px 7px; border-radius: 999px; font-size: 10.5px; font-weight: 700;">ไม่ผ่าน</span>';
 
-          rowsHtml += '<div class="slip-checklist-item" style="padding: 8px 10px; font-size: 12px;">' +
+          rowsHtml += '<div class="slip-checklist-item" style="padding: 6px 8px; font-size: 11.5px;">' +
             '<span>ข้อ ' + (idx + 1) + ' (' + k + ')</span>' +
             badgeHtml +
           '</div>';
         });
-        checklistHtml = '<div style="margin-top: 12px; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">' + rowsHtml + '</div>';
+        checklistHtml = '<div style="margin-top: 6px; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">' + rowsHtml + '</div>';
       }
 
       // UPS Battery Details
       var upsHtml = '';
       if (ev.upsBattery && ev.upsBattery.tested) {
         var isUpsPass = ev.upsBattery.status === 'normal' || (ev.upsBattery.runtimeHours * 60 + ev.upsBattery.runtimeMinutes >= 60);
-        upsHtml = '<div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 12px 14px; margin-top: 12px;">' +
-          '<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">' +
-            '<div style="font-weight: 700; color: #166534; font-size: 13px; display: flex; align-items: center; gap: 6px;">' +
-              '<span class="material-icons-round" style="font-size: 18px; color: #16a34a;">battery_charging_full</span> การตรวจสอบระยะเวลาใช้งานแบตเตอรี่ UPS (รอบ 1 & 16)' +
+        upsHtml = '<div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 6px 10px; margin-bottom: 8px; font-size: 11.5px; color: #166534;">' +
+          '<div style="display: flex; align-items: center; justify-content: space-between;">' +
+            '<div style="font-weight: 700; display: flex; align-items: center; gap: 4px;">' +
+              '<span class="material-icons-round" style="font-size: 15px; color: #16a34a;">battery_charging_full</span> แบตเตอรี่ UPS: ' + (ev.upsBattery.runtimeFormatted || '-') + ' ชม. (รอบ ' + (ev.upsBattery.cycleDate || '-') + ')' +
             '</div>' +
-            (isUpsPass ? '<span style="background: #dcfce7; color: #15803d; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px;">≥ 1 ชม. (ผ่าน)</span>' : '<span style="background: #fee2e2; color: #b91c1c; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px;">ต่ำกว่าเกณฑ์</span>') +
-          '</div>' +
-          '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px; color: #166534;">' +
-            '<div>• ระยะเวลาสำรองไฟจริง: <strong>' + (ev.upsBattery.runtimeFormatted || '-') + ' ชม.</strong></div>' +
-            '<div>• รอบตรวจประจำวันที่: <strong>' + (ev.upsBattery.cycleDate || '-') + '</strong></div>' +
+            (isUpsPass ? '<span style="background: #dcfce7; color: #15803d; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 999px;">≥ 1 ชม. (ผ่าน)</span>' : '<span style="background: #fee2e2; color: #b91c1c; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 999px;">ต่ำกว่าเกณฑ์</span>') +
           '</div>' +
         '</div>';
       }
@@ -6726,45 +6675,48 @@
       // Abnormal / Defect Note
       var defectHtml = '';
       if (ev.abnormalNote) {
-        defectHtml = '<div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 10px; padding: 12px 14px; margin-top: 12px; color: #991b1b;">' +
-          '<div style="font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">' +
-            '<span class="material-icons-round" style="font-size: 18px; color: #dc2626;">warning</span> ข้อบกพร่องที่ตรวจพบ / บันทึกเพิ่มเติม' +
-          '</div>' +
-          '<div style="font-size: 12.5px; line-height: 1.5; color: #7f1d1d; background: #ffffff; border: 1px solid #fee2e2; padding: 8px 10px; border-radius: 6px; margin-top: 4px;">' +
-            ev.abnormalNote +
+        defectHtml = '<div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 6px 10px; margin-bottom: 8px; font-size: 11.5px; color: #991b1b; display: flex; align-items: flex-start; gap: 6px;">' +
+          '<span class="material-icons-round" style="font-size: 15px; color: #dc2626; flex-shrink: 0; margin-top: 1px;">warning</span>' +
+          '<div style="flex: 1; min-width: 0; line-height: 1.4;">' +
+            '<strong style="color: #b91c1c;">ข้อบกพร่อง: </strong>' +
+            '<span style="color: #7f1d1d; word-break: break-word;">' + ev.abnormalNote + '</span>' +
           '</div>' +
         '</div>';
       }
 
       // Status Badge
       var statusBadgeHtml = ev.result === 'normal'
-        ? '<span class="badge-status badge-status-ready"><span class="material-icons-round" style="font-size: 14px;">check_circle</span> พร้อมใช้งาน</span>'
-        : '<span class="badge-status badge-status-abnormal"><span class="material-icons-round" style="font-size: 14px;">error</span> พบข้อบกพร่อง</span>';
+        ? '<span class="badge-status badge-status-ready" style="padding: 2px 7px; font-size: 10.5px;"><span class="material-icons-round" style="font-size: 12px;">check_circle</span> พร้อมใช้</span>'
+        : '<span class="badge-status badge-status-abnormal" style="padding: 2px 7px; font-size: 10.5px;"><span class="material-icons-round" style="font-size: 12px;">error</span> ข้อบกพร่อง</span>';
 
       var eqRisk = (eq && eq.riskLevel) ? eq.riskLevel : ((eq && eq.frequency === 'monthly') ? 'low' : 'high');
       var riskBadgeSlip = (eqRisk === 'high')
-        ? '<span style="background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; padding: 2px 7px; border-radius: 4px; font-weight: 600; font-size: 11px; display: inline-flex; align-items: center; gap: 3px; white-space: nowrap !important;"><span class="material-icons-round" style="font-size: 13px;">warning</span>เสี่ยงมาก (ทุกวัน)</span>'
-        : '<span style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; padding: 2px 7px; border-radius: 4px; font-weight: 600; font-size: 11px; display: inline-flex; align-items: center; gap: 3px; white-space: nowrap !important;"><span class="material-icons-round" style="font-size: 13px;">verified_user</span>เสี่ยงน้อย (รายเดือน)</span>';
+        ? '<span style="background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; padding: 1px 5px; border-radius: 4px; font-weight: 700; font-size: 10px; white-space: nowrap;"><span class="material-icons-round" style="font-size: 11px; vertical-align: -1px;">warning</span> เสี่ยงมาก</span>'
+        : '<span style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; padding: 1px 5px; border-radius: 4px; font-weight: 700; font-size: 10px; white-space: nowrap;"><span class="material-icons-round" style="font-size: 11px; vertical-align: -1px;">verified_user</span> เสี่ยงน้อย</span>';
 
-      var html = '<div style="line-height: 1.6;">' +
-        // Header Summary Card
-        '<div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 14px;">' +
-          '<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px;">' +
-            '<div style="flex: 1; min-width: 0;">' +
-              '<div style="font-size: 14px; font-weight: 700; color: var(--royal-blue); line-height: 1.35;">' + (eq ? eq.name : ev.deviceName) + '</div>' +
-              '<div style="font-size: 11.5px; color: var(--text-muted); margin-top: 3px;">รุ่น: ' + (eq ? (eq.model || '-') : '-') + ' | S/N: ' + (eq ? (eq.serialNo || '-') : '-') + '</div>' +
+      var html = '<div style="line-height: 1.45;">' +
+        // Ultra-Compact Summary Strip (Only ~48px tall, no truncation)
+        '<div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 10px; margin-bottom: 8px;">' +
+          '<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 5px;">' +
+            '<div style="font-size: 13.5px; font-weight: 700; color: var(--royal-blue); line-height: 1.35; flex: 1;">' +
+              (eq ? eq.name : ev.deviceName) +
             '</div>' +
-            '<div style="text-align: right; flex-shrink: 0;">' +
-              '<span class="asset-code-clean" title="รหัสเครื่อง" style="font-size: 12px; font-weight: 700; white-space: nowrap !important; display: inline-block;">' + (eq ? eq.assetCode : ev.deviceAsset) + '</span>' +
+            '<div style="flex-shrink: 0;">' +
+              '<span class="asset-code-clean" title="รหัสเครื่อง" style="font-size: 11px; font-weight: 700; padding: 2px 7px; white-space: nowrap;">' + (eq ? eq.assetCode : ev.deviceAsset) + '</span>' +
             '</div>' +
           '</div>' +
-          '<div class="slip-meta-grid">' +
-            '<div class="slip-meta-row"><span class="slip-meta-label">ประเภทเครื่องมือ:</span> <strong class="slip-meta-val" style="color: var(--royal-blue);">' + (form ? (form.shortName || form.name) : (ev.formId || '-')) + '</strong></div>' +
-            '<div class="slip-meta-row"><span class="slip-meta-label">ระดับความเสี่ยง:</span> <span class="slip-meta-val">' + riskBadgeSlip + '</span></div>' +
-            '<div class="slip-meta-row"><span class="slip-meta-label">แผนกที่ตรวจ:</span> <strong class="slip-meta-val">' + deptName + '</strong></div>' +
-            '<div class="slip-meta-row"><span class="slip-meta-label">ผู้ตรวจ:</span> <strong class="slip-meta-val">' + (ev.evaluatedBy || 'ไม่ระบุ') + '</strong></div>' +
-            '<div class="slip-meta-row slip-meta-time"><span class="slip-meta-label">เวลาตรวจ:</span> <strong class="slip-meta-val" style="font-family: var(--font-mono); color: var(--royal-blue);">' + (ev.evaluatedAt || '-') + '</strong></div>' +
-            '<div class="slip-meta-row slip-meta-status"><span class="slip-meta-label">ผลการประเมิน:</span> <span class="slip-meta-val">' + statusBadgeHtml + '</span></div>' +
+          '<div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 4px 8px; font-size: 11px; color: var(--text-muted); border-top: 1px dashed #e2e8f0; padding-top: 5px;">' +
+            '<div style="display: flex; align-items: center; gap: 5px;">' +
+              statusBadgeHtml +
+              riskBadgeSlip +
+            '</div>' +
+            '<div style="display: flex; align-items: center; gap: 6px; font-size: 11px;">' +
+              '<span>' + deptName + '</span>' +
+              '<span>•</span>' +
+              '<span>' + (ev.evaluatedBy || 'ไม่ระบุ') + '</span>' +
+              '<span>•</span>' +
+              '<span style="font-family: var(--font-mono); color: var(--royal-blue); font-weight: 600;">' + (ev.evaluatedAt || '-') + '</span>' +
+            '</div>' +
           '</div>' +
         '</div>' +
         // UPS Box
