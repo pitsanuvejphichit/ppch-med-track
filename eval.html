@@ -1649,9 +1649,10 @@
       if (currentForm && currentForm.items) {
         checklistDetails = currentForm.items.map(function (it, idx) {
           var res = checklistState[idx] || 'unanswered';
+          var itemText = (typeof it === 'string') ? it.trim() : (it.text || it.title || it.label || ('หัวข้อที่ ' + (idx + 1)));
           return {
             no: idx + 1,
-            text: it.text || it.title || ('ข้อ ' + (idx + 1)),
+            text: itemText,
             status: (res === 'pass' ? 'pass' : (res === 'fail' ? 'fail' : res))
           };
         });
