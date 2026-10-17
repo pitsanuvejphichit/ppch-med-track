@@ -3660,89 +3660,92 @@
                     <input type="hidden" id="modalEquipMode" value="add">
                     <input type="hidden" id="modalEquipDbId" value="">
 
-                    <!-- Two-Column Responsive Layout -->
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px; align-items: start;">
+                    <!-- Vertical Stacked Layout (ข้อ 1 และ 2 เรียงลงมา ไม่เอาไว้ข้างกัน) -->
+                    <div style="display: flex; flex-direction: column; gap: 20px; max-width: 980px; margin: 0 auto;">
                       
-                      <!-- Column 1: Equipment Profile Information -->
-                      <div style="background: #f8fafc; border: 1px solid var(--border-main); border-radius: 14px; padding: 20px;">
-                        <div style="font-size: 14px; font-weight: 700; color: var(--royal-blue); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-                          <span class="material-icons-round" style="font-size: 20px;">badge</span>
+                      <!-- Section 1: Equipment Profile Information (ข้อ 1) -->
+                      <div style="background: #f8fafc; border: 1px solid var(--border-main); border-radius: 14px; padding: 22px;">
+                        <div style="font-size: 14.5px; font-weight: 700; color: var(--royal-blue); margin-bottom: 18px; display: flex; align-items: center; gap: 8px;">
+                          <span class="material-icons-round" style="font-size: 22px;">badge</span>
                           <span>1. ข้อมูลพื้นฐานเครื่องมือแพทย์</span>
                         </div>
 
-                        <div style="margin-bottom: 14px;">
-                          <label style="display: block; font-size: 12.5px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">
-                            รหัสเครื่อง / ครุภัณฑ์ (Asset Code) <span style="color: var(--red-abnormal);">*</span>
-                          </label>
-                          <input type="text" id="modalEquipAssetCode" class="filter-input" style="width: 100%; font-family: var(--font-mono); font-weight: 700; font-size: 14px; padding: 8px 12px; background: #ffffff;" placeholder="เช่น EQ-68-DEF-001" required>
+                        <!-- Row 1: รหัสเครื่อง & ชื่อเครื่องมือแพทย์ -->
+                        <div style="display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 14px;">
+                          <div style="flex: 1 1 260px;">
+                            <label style="display: block; font-size: 12.5px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">
+                              รหัสเครื่อง / ครุภัณฑ์ (Asset Code) <span style="color: var(--red-abnormal);">*</span>
+                            </label>
+                            <input type="text" id="modalEquipAssetCode" class="filter-input" style="width: 100%; font-family: var(--font-mono); font-weight: 700; font-size: 14px; padding: 8px 12px; background: #ffffff;" placeholder="เช่น EQ-68-DEF-001" required>
+                          </div>
+                          <div style="flex: 2 1 320px;">
+                            <label style="display: block; font-size: 12.5px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">
+                              ชื่อเครื่องมือแพทย์ (Equipment Name) <span style="color: var(--red-abnormal);">*</span>
+                            </label>
+                            <input type="text" id="modalEquipName" class="filter-input" style="width: 100%; font-size: 14px; font-weight: 600; padding: 8px 12px; background: #ffffff;" placeholder="เช่น เครื่องกระตุกหัวใจ Defibrillator" required>
+                          </div>
                         </div>
 
-                        <div style="margin-bottom: 14px;">
-                          <label style="display: block; font-size: 12.5px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">
-                            ชื่อเครื่องมือแพทย์ (Equipment Name) <span style="color: var(--red-abnormal);">*</span>
-                          </label>
-                          <input type="text" id="modalEquipName" class="filter-input" style="width: 100%; font-size: 14px; font-weight: 600; padding: 8px 12px; background: #ffffff;" placeholder="เช่น เครื่องกระตุกหัวใจ Defibrillator" required>
-                        </div>
-
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
-                          <div>
+                        <!-- Row 2: รุ่น / ยี่ห้อ & Serial Number -->
+                        <div style="display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 14px;">
+                          <div style="flex: 1 1 260px;">
                             <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 5px;">
                               รุ่น / ยี่ห้อ (Model)
                             </label>
-                            <input type="text" id="modalEquipModel" class="filter-input" style="width: 100%; padding: 7px 10px; background: #ffffff;" placeholder="เช่น Mindray BeneHeart D3">
+                            <input type="text" id="modalEquipModel" class="filter-input" style="width: 100%; padding: 8px 12px; background: #ffffff;" placeholder="เช่น Mindray BeneHeart D3">
                           </div>
-                          <div>
+                          <div style="flex: 1 1 260px;">
                             <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 5px;">
                               Serial Number (S/N)
                             </label>
-                            <input type="text" id="modalEquipSerialNo" class="filter-input" style="width: 100%; font-family: var(--font-mono); padding: 7px 10px; background: #ffffff;" placeholder="เช่น SN-882910">
+                            <input type="text" id="modalEquipSerialNo" class="filter-input" style="width: 100%; font-family: var(--font-mono); padding: 8px 12px; background: #ffffff;" placeholder="เช่น SN-882910">
                           </div>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
-                          <div>
+                        <!-- Row 3: แผนกสังกัด, ระดับความเสี่ยง, สถานะเริ่มต้น -->
+                        <div style="display: flex; flex-wrap: wrap; gap: 14px;">
+                          <div style="flex: 1 1 220px;">
                             <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 5px;">
                               แผนกสังกัดปัจจุบัน <span style="color: var(--red-abnormal);">*</span>
                             </label>
-                            <select id="modalEquipCurrentDept" class="filter-input" style="width: 100%; font-weight: 600; padding: 7px 10px; background: #ffffff;" required>
+                            <select id="modalEquipCurrentDept" class="filter-input" style="width: 100%; font-weight: 600; padding: 8px 12px; background: #ffffff;" required>
                               <!-- Filled dynamically from DB departments -->
                             </select>
                           </div>
-                          <div>
+                          <div style="flex: 1 1 220px;">
                             <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 5px;">
                               ระดับความเสี่ยง <span style="color: var(--red-abnormal);">*</span>
                             </label>
-                            <select id="modalEquipRiskLevel" class="filter-input" style="width: 100%; font-weight: 600; padding: 7px 10px; background: #ffffff;" required>
+                            <select id="modalEquipRiskLevel" class="filter-input" style="width: 100%; font-weight: 600; padding: 8px 12px; background: #ffffff;" required>
                               <option value="high">⚠️ เสี่ยงมาก (ประเมินทุกวัน)</option>
                               <option value="low">🛡️ เสี่ยงน้อย (ประเมินเดือนละครั้ง)</option>
                             </select>
                           </div>
-                        </div>
-
-                        <div>
-                          <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 5px;">
-                            สถานะเริ่มต้นของเครื่อง
-                          </label>
-                          <select id="modalEquipStatus" class="filter-input" style="width: 100%; font-weight: 600; padding: 7px 10px; background: #ffffff;">
-                            <option value="ready">พร้อมใช้งาน (Ready)</option>
-                            <option value="abnormal">ไม่พร้อมใช้งาน / ชำรุด (Abnormal)</option>
-                          </select>
+                          <div style="flex: 1 1 220px;">
+                            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 5px;">
+                              สถานะเริ่มต้นของเครื่อง
+                            </label>
+                            <select id="modalEquipStatus" class="filter-input" style="width: 100%; font-weight: 600; padding: 8px 12px; background: #ffffff;">
+                              <option value="ready">พร้อมใช้งาน (Ready)</option>
+                              <option value="abnormal">ไม่พร้อมใช้งาน / ชำรุด (Abnormal)</option>
+                            </select>
+                          </div>
                         </div>
                       </div>
 
-                      <!-- Column 2: Checklist Form Selection & New Form Builder -->
-                      <div style="background: #ffffff; border: 1.5px solid #bfdbfe; border-radius: 14px; padding: 20px; box-shadow: 0 4px 14px rgba(0, 75, 147, 0.05);">
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
-                          <div style="font-size: 14px; font-weight: 700; color: var(--royal-blue); display: flex; align-items: center; gap: 8px;">
-                            <span class="material-icons-round" style="font-size: 20px;">fact_check</span>
+                      <!-- Section 2: Checklist Form Selection & New Form Builder (ข้อ 2 เรียงลงมาด้านล่าง) -->
+                      <div style="background: #ffffff; border: 1.5px solid #bfdbfe; border-radius: 14px; padding: 22px; box-shadow: 0 4px 14px rgba(0, 75, 147, 0.05);">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; flex-wrap: wrap; gap: 10px;">
+                          <div style="font-size: 14.5px; font-weight: 700; color: var(--royal-blue); display: flex; align-items: center; gap: 8px;">
+                            <span class="material-icons-round" style="font-size: 22px;">fact_check</span>
                             <span>2. แบบฟอร์มตรวจเช็คความพร้อม</span>
                           </div>
-                          <div style="display: flex; gap: 6px;">
-                            <button type="button" id="btnModeExistingForm" onclick="toggleNewFormBuilder(false)" class="btn-tool active" style="padding: 4px 10px; font-size: 11.5px; border-radius: 6px;">
+                          <div style="display: flex; gap: 8px;">
+                            <button type="button" id="btnModeExistingForm" onclick="toggleNewFormBuilder(false)" class="btn-tool active" style="padding: 6px 14px; font-size: 12px; border-radius: 8px; font-weight: 600;">
                               <span>📑 เลือกฟอร์มเดิม / คัดลอก</span>
                             </button>
-                            <button type="button" id="btnModeNewForm" onclick="toggleNewFormBuilder(true)" class="btn-tool" style="padding: 4px 10px; font-size: 11.5px; border-radius: 6px; color: var(--royal-blue); font-weight: 700;">
-                              <span class="material-icons-round" style="font-size: 14px;">add_circle</span>
+                            <button type="button" id="btnModeNewForm" onclick="toggleNewFormBuilder(true)" class="btn-tool" style="padding: 6px 14px; font-size: 12px; border-radius: 8px; color: var(--royal-blue); font-weight: 700;">
+                              <span class="material-icons-round" style="font-size: 16px;">add_circle</span>
                               <span>➕ สร้างฟอร์มใหม่</span>
                             </button>
                           </div>
