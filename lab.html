@@ -1586,7 +1586,7 @@
               <span class="material-icons-round">apps</span>
             </div>
             <div>
-              <div class="kpi-val" id="kpiTotal">16</div>
+              <div class="kpi-val" id="kpiTotal">23</div>
               <div class="kpi-label">จุดตรวจทั้งหมด</div>
             </div>
           </div>
@@ -1626,7 +1626,7 @@
               <span class="material-icons-round">schedule</span>
             </div>
             <div>
-              <div class="kpi-val" id="kpiPending" style="color: var(--amber-pending);">16</div>
+              <div class="kpi-val" id="kpiPending" style="color: var(--amber-pending);">23</div>
               <div class="kpi-label">รอตรวจเวรนี้</div>
             </div>
           </div>
@@ -2081,11 +2081,97 @@
       else if (hours < 8) shiftName = 'เวรดึก (00:00 - 08:00)';
       document.getElementById('topShiftText').innerText = shiftName;
 
-      // 3. Load Overview Data
+      // 3. Instant Render (0ms delay - identical to Admin Hub)
+      labData = getInitialLabData();
+      updateDashboardKPIs(labData);
+      renderAllViews(labData);
+
+      // 4. Background Sync from Google Sheets (non-blocking)
       loadOverviewData();
 
-      // 4. Render initial report preview
+      // 5. Render initial report preview
       renderSelectedReport();
+    }
+
+    // Built-in Complete LAB Catalog (23 Checkpoints)
+    function getBuiltinLabData() {
+      return {
+        summary: { totalItems: 23, readyCount: 0, abnormalCount: 0, pendingCount: 23 },
+        forms: {
+          'lab_057': { spec: { code: 'FM-PPCH-LAB-057', targetTemp: '24.0 - 28.0 °C', targetHum: '≤ 60 %RH', type: 'temp_room', cat: 'ห้องปฏิบัติการ' }, items: {
+            '057_lab': { id: '057_lab', name: 'Laboratory (ห้องปฏิบัติการกลาง)', status: 'pending', lastTemp: null, lastHumidity: null, evaluatedAt: null, evaluatedBy: null },
+            '057_immu': { id: '057_immu', name: 'ห้อง Immunology', status: 'pending', lastTemp: null, lastHumidity: null, evaluatedAt: null, evaluatedBy: null },
+            '057_blood': { id: '057_blood', name: 'Blood bank (ธนาคารเลือด)', status: 'pending', lastTemp: null, lastHumidity: null, evaluatedAt: null, evaluatedBy: null },
+            '057_bac': { id: '057_bac', name: 'Bacteria (จุลชีววิทยา)', status: 'pending', lastTemp: null, lastHumidity: null, evaluatedAt: null, evaluatedBy: null },
+            '057_store': { id: '057_store', name: 'Storage (คลังเก็บน้ำยา/เวชภัณฑ์)', status: 'pending', lastTemp: null, lastHumidity: null, evaluatedAt: null, evaluatedBy: null }
+          }},
+          'lab_060': { spec: { code: 'FM-PPCH-LAB-060', targetTemp: '≤ -18.0 °C', type: 'temp_freezer', cat: 'ตู้แช่แข็ง' }, items: {
+            '060_ffp': { id: '060_ffp', name: 'ตู้แช่แข็ง FFP (ควบคุม ≤ -18 °C)', status: 'pending', lastTemp: null, evaluatedAt: null, evaluatedBy: null },
+            '060_ctrl': { id: '060_ctrl', name: 'ตู้แช่แข็ง Control (ควบคุม ≤ -18 °C)', status: 'pending', lastTemp: null, evaluatedAt: null, evaluatedBy: null }
+          }},
+          'lab_061': { spec: { code: 'FM-PPCH-LAB-061', targetTemp: '37.0 ± 0.5 °C', type: 'temp_waterbath', cat: 'Water bath' }, items: {
+            '061_wb1': { id: '061_wb1', name: 'Water bath 1 (WB-01)', status: 'pending', lastTemp: null, evaluatedAt: null, evaluatedBy: null },
+            '061_wb2': { id: '061_wb2', name: 'Water bath 2 (WB-02)', status: 'pending', lastTemp: null, evaluatedAt: null, evaluatedBy: null }
+          }},
+          'lab_062': { spec: { code: 'FM-PPCH-LAB-062', targetTemp: '2.0 - 8.0 °C', type: 'temp_refrigerator', cat: 'ตู้เย็น' }, items: {
+            '062_r1': { id: '062_r1', name: 'ตู้แช่น้ำยา 1 (Ref-01)', status: 'pending', lastTemp: null, evaluatedAt: null, evaluatedBy: null },
+            '062_r2': { id: '062_r2', name: 'ตู้แช่น้ำยา 2 (Ref-02)', status: 'pending', lastTemp: null, evaluatedAt: null, evaluatedBy: null },
+            '062_rs': { id: '062_rs', name: 'ตู้แช่สิ่งส่งตรวจ (Ref-Sample)', status: 'pending', lastTemp: null, evaluatedAt: null, evaluatedBy: null }
+          }},
+          'lab_049': { spec: { code: 'FM-PPCH-LAB-049', targetCheck: 'ทำความสะอาดภายนอก & ตรวจเช็คประจำวัน', cat: 'Cobas h232' }, items: {
+            '049_k1': { id: '049_k1', name: 'Roche Cobas h232 เครื่อง 1 (KQ03008166)', status: 'pending', evaluatedAt: null, evaluatedBy: null },
+            '049_k2': { id: '049_k2', name: 'Roche Cobas h232 เครื่อง 2 (KQ0304874)', status: 'pending', evaluatedAt: null, evaluatedBy: null },
+            '049_k3': { id: '049_k3', name: 'Roche Cobas h232 เครื่อง 3 (KQ0132536)', status: 'pending', evaluatedAt: null, evaluatedBy: null }
+          }},
+          'lab_091': { spec: { code: 'FM-PPCH-LAB-091', targetCheck: 'แรงดันคอลัมน์น้ำ (0.5-1.0 in.wg) / UV / แอลกอฮอล์', cat: 'ตู้ชีวนิรภัย' }, items: {
+            '091_bsc': { id: '091_bsc', name: 'ตู้กรองชีวนิรภัย BSC Class II (MICRO TECH)', status: 'pending', evaluatedAt: null, evaluatedBy: null }
+          }},
+          'lab_099': { spec: { code: 'FM-PPCH-LAB-099', targetCheck: 'Conc Wash, Electrode, Cuvette & Special Wash', cat: 'Chemistry Mindray' }, items: {
+            '099_bs600': { id: '099_bs600', name: 'Chemistry Mindray BS600M', status: 'pending', evaluatedAt: null, evaluatedBy: null }
+          }},
+          'lab_019': { spec: { code: 'FM-PPCH-LAB-019', targetCheck: 'สำรองไฟต่อเนื่อง ≥ 15 นาที', cat: 'UPS สำรองไฟ' }, items: {
+            '019_ups1': { id: '019_ups1', name: 'UPS-LAB-01 (BS600M)', loadDevice: 'Mindray BS600M', status: 'pending', runtimeMin: null, evaluatedBy: null },
+            '019_ups2': { id: '019_ups2', name: 'UPS-LAB-02 (Sysmex)', loadDevice: 'Sysmex XN-L', status: 'pending', runtimeMin: null, evaluatedBy: null },
+            '019_ups3': { id: '019_ups3', name: 'UPS-LAB-03 (Cobas)', loadDevice: 'Cobas h232 ทั้งหมด', status: 'pending', runtimeMin: null, evaluatedBy: null },
+            '019_ups4': { id: '019_ups4', name: 'UPS-LAB-04 (Blood Bank)', loadDevice: 'ตู้เย็นเก็บเลือด Blood Bank', status: 'pending', runtimeMin: null, evaluatedBy: null },
+            '019_ups5': { id: '019_ups5', name: 'UPS-LAB-05 (FFP Freezer)', loadDevice: 'ตู้แช่แข็ง FFP', status: 'pending', runtimeMin: null, evaluatedBy: null },
+            '019_ups6': { id: '019_ups6', name: 'UPS-LAB-06 (Server LIS)', loadDevice: 'Server และคอมพิวเตอร์ LIS', status: 'pending', runtimeMin: null, evaluatedBy: null }
+          }}
+        }
+      };
+    }
+
+    // Retrieve Initial Data Immediately (from cache or catalog)
+    function getInitialLabData() {
+      var data = null;
+      try {
+        var raw = localStorage.getItem('PPCH_LAB_OVERVIEW_DATA');
+        if (raw) data = JSON.parse(raw);
+      } catch (e) {}
+
+      if (!data || !data.forms || Object.keys(data.forms).length < 8) {
+        data = getBuiltinLabData();
+      }
+
+      // Merge any latest individual evaluations recorded in localStorage
+      try {
+        var latestCache = JSON.parse(localStorage.getItem('PPCH_LAB_LATEST_STATUS') || '{}');
+        for (var fKey in data.forms) {
+          var items = data.forms[fKey].items || {};
+          for (var iKey in items) {
+            if (latestCache[iKey]) {
+              var c = latestCache[iKey];
+              if (c.status) items[iKey].status = c.status;
+              if (c.lastTemp !== undefined) items[iKey].lastTemp = c.lastTemp;
+              if (c.lastHumidity !== undefined) items[iKey].lastHumidity = c.lastHumidity;
+              if (c.evaluatedAt) items[iKey].evaluatedAt = c.evaluatedAt;
+              if (c.evaluatedBy) items[iKey].evaluatedBy = c.evaluatedBy;
+            }
+          }
+        }
+      } catch (err) {}
+
+      return data;
     }
 
     // Sidebar Toggle (Mobile Drawer & Desktop Pin Expand)
@@ -2143,70 +2229,32 @@
       }
     }
 
-    // Load Data
+    // Load Data Silently in Background from Google Sheets
     function loadOverviewData() {
+      var syncText = document.getElementById('syncText');
+      if (syncText) syncText.innerText = 'กำลังซิงค์ข้อมูลกับ Google Sheet...';
+
       fetch(GAS_API_URL + '?action=getLabOverview')
         .then(function(res) { return res.json(); })
         .then(function(json) {
-          if (json && json.status === 'success') {
+          if (json && json.status === 'success' && json.data) {
             labData = json.data;
+            try {
+              localStorage.setItem('PPCH_LAB_OVERVIEW_DATA', JSON.stringify(labData));
+            } catch (e) {}
             updateDashboardKPIs(labData);
             renderAllViews(labData);
-          } else {
-            useFallbackData();
+            if (syncText) syncText.innerText = 'ข้อมูลอัปเดตล่าสุดจาก Google Sheet แล้ว';
           }
         })
         .catch(function(err) {
-          console.warn('GAS fetch failed, using built-in data:', err);
-          useFallbackData();
+          console.warn('GAS fetch failed, using cached data:', err);
+          if (syncText) syncText.innerText = 'ระบบฐานข้อมูล LAB พร้อมใช้งาน (ออฟไลน์)';
         });
     }
 
     function useFallbackData() {
-      labData = {
-        summary: { totalItems: 16, readyCount: 16, abnormalCount: 0, pendingCount: 0 },
-        forms: {
-          'lab_057': { spec: { code: 'FM-PPCH-LAB-057', targetTemp: '24.0 - 28.0 °C', targetHum: '≤ 60 %RH', type: 'temp_room', cat: 'ห้องปฏิบัติการ' }, items: {
-            '057_lab': { id: '057_lab', name: 'Laboratory (ห้องปฏิบัติการกลาง)', status: 'ready', lastTemp: 25.4, lastHumidity: 52, evaluatedAt: '08:30', evaluatedBy: 'ทนพ. สมชาย' },
-            '057_immu': { id: '057_immu', name: 'ห้อง Immunology', status: 'ready', lastTemp: 24.8, lastHumidity: 50, evaluatedAt: '08:35', evaluatedBy: 'ทนพ. สมชาย' },
-            '057_blood': { id: '057_blood', name: 'Blood bank (ธนาคารเลือด)', status: 'ready', lastTemp: 25.1, lastHumidity: 54, evaluatedAt: '08:40', evaluatedBy: 'ทนพ. สมชาย' },
-            '057_bac': { id: '057_bac', name: 'Bacteria (จุลชีววิทยา)', status: 'ready', lastTemp: 25.6, lastHumidity: 55, evaluatedAt: '08:45', evaluatedBy: 'ทนพ. สมชาย' },
-            '057_store': { id: '057_store', name: 'Storage (คลังเก็บน้ำยา/เวชภัณฑ์)', status: 'ready', lastTemp: 24.5, lastHumidity: 49, evaluatedAt: '08:50', evaluatedBy: 'ทนพ. สมชาย' }
-          }},
-          'lab_060': { spec: { code: 'FM-PPCH-LAB-060', targetTemp: '≤ -18.0 °C', type: 'temp_freezer', cat: 'ตู้แช่แข็ง' }, items: {
-            '060_ffp': { id: '060_ffp', name: 'ตู้แช่แข็ง FFP (ควบคุม ≤ -18 °C)', status: 'ready', lastTemp: -20.2, evaluatedAt: '08:15', evaluatedBy: 'ทนพญ. วราภรณ์' },
-            '060_ctrl': { id: '060_ctrl', name: 'ตู้แช่แข็ง Control (ควบคุม ≤ -18 °C)', status: 'ready', lastTemp: -19.5, evaluatedAt: '08:20', evaluatedBy: 'ทนพญ. วราภรณ์' }
-          }},
-          'lab_061': { spec: { code: 'FM-PPCH-LAB-061', targetTemp: '37.0 ± 0.5 °C', type: 'temp_waterbath', cat: 'Water bath' }, items: {
-            '061_wb1': { id: '061_wb1', name: 'Water bath 1 (WB-01)', status: 'ready', lastTemp: 37.0, evaluatedAt: '08:25', evaluatedBy: 'ทนพ. นิพนธ์' },
-            '061_wb2': { id: '061_wb2', name: 'Water bath 2 (WB-02)', status: 'ready', lastTemp: 36.9, evaluatedAt: '08:30', evaluatedBy: 'ทนพ. นิพนธ์' }
-          }},
-          'lab_062': { spec: { code: 'FM-PPCH-LAB-062', targetTemp: '2.0 - 8.0 °C', type: 'temp_refrigerator', cat: 'ตู้เย็น' }, items: {
-            '062_r1': { id: '062_r1', name: 'ตู้แช่น้ำยา 1 (Ref-01)', status: 'ready', lastTemp: 4.5, evaluatedAt: '08:10', evaluatedBy: 'จพ.วิทยาศาสตร์' },
-            '062_r2': { id: '062_r2', name: 'ตู้แช่น้ำยา 2 (Ref-02)', status: 'ready', lastTemp: 4.8, evaluatedAt: '08:12', evaluatedBy: 'จพ.วิทยาศาสตร์' },
-            '062_rs': { id: '062_rs', name: 'ตู้แช่สิ่งส่งตรวจ (Ref-Sample)', status: 'ready', lastTemp: 5.2, evaluatedAt: '08:14', evaluatedBy: 'จพ.วิทยาศาสตร์' }
-          }},
-          'lab_049': { spec: { code: 'FM-PPCH-LAB-049', targetCheck: 'ทำความสะอาดภายนอก & ตรวจเช็คประจำวัน', cat: 'Cobas h232' }, items: {
-            '049_k1': { id: '049_k1', name: 'Roche Cobas h232 เครื่อง 1 (KQ03008166)', status: 'ready', evaluatedAt: '08:05', evaluatedBy: 'ทนพ. สมชาย' },
-            '049_k2': { id: '049_k2', name: 'Roche Cobas h232 เครื่อง 2 (KQ0304874)', status: 'ready', evaluatedAt: '08:08', evaluatedBy: 'ทนพ. สมชาย' },
-            '049_k3': { id: '049_k3', name: 'Roche Cobas h232 เครื่อง 3 (KQ0132536)', status: 'ready', evaluatedAt: '08:10', evaluatedBy: 'ทนพ. สมชาย' }
-          }},
-          'lab_091': { spec: { code: 'FM-PPCH-LAB-091', targetCheck: 'แรงดันคอลัมน์น้ำ (0.5-1.0 in.wg) / UV / แอลกอฮอล์', cat: 'ตู้ชีวนิรภัย' }, items: {
-            '091_bsc': { id: '091_bsc', name: 'ตู้กรองชีวนิรภัย BSC Class II (MICRO TECH)', status: 'ready', evaluatedAt: '08:00', evaluatedBy: 'ทนพญ. นภาพร' }
-          }},
-          'lab_099': { spec: { code: 'FM-PPCH-LAB-099', targetCheck: 'Conc Wash, Electrode, Cuvette & Special Wash', cat: 'Chemistry Mindray' }, items: {
-            '099_bs600': { id: '099_bs600', name: 'Chemistry Mindray BS600M', status: 'ready', evaluatedAt: '07:45', evaluatedBy: 'ทนพ. อนันต์' }
-          }},
-          'lab_019': { spec: { code: 'FM-PPCH-LAB-019', targetCheck: 'สำรองไฟต่อเนื่อง ≥ 15 นาที', cat: 'UPS สำรองไฟ' }, items: {
-            '019_ups1': { id: '019_ups1', name: 'UPS-LAB-01 (BS600M)', loadDevice: 'Mindray BS600M', status: 'ready', runtimeMin: 25, cycleDate: '2026-10-01', evaluatedBy: 'ช่างเอก' },
-            '019_ups2': { id: '019_ups2', name: 'UPS-LAB-02 (Sysmex)', loadDevice: 'Sysmex XN-L', status: 'ready', runtimeMin: 22, cycleDate: '2026-10-01', evaluatedBy: 'ช่างเอก' },
-            '019_ups3': { id: '019_ups3', name: 'UPS-LAB-03 (Cobas)', loadDevice: 'Cobas h232 ทั้งหมด', status: 'ready', runtimeMin: 30, cycleDate: '2026-10-01', evaluatedBy: 'ช่างเอก' },
-            '019_ups4': { id: '019_ups4', name: 'UPS-LAB-04 (Blood Bank)', loadDevice: 'ตู้เย็นเก็บเลือด Blood Bank', status: 'ready', runtimeMin: 45, cycleDate: '2026-10-01', evaluatedBy: 'ช่างเอก' },
-            '019_ups5': { id: '019_ups5', name: 'UPS-LAB-05 (FFP Freezer)', loadDevice: 'ตู้แช่แข็ง FFP', status: 'ready', runtimeMin: 40, cycleDate: '2026-10-01', evaluatedBy: 'ช่างเอก' },
-            '019_ups6': { id: '019_ups6', name: 'UPS-LAB-06 (Server LIS)', loadDevice: 'Server และคอมพิวเตอร์ LIS', status: 'ready', runtimeMin: 50, cycleDate: '2026-10-01', evaluatedBy: 'ช่างเอก' }
-          }}
-        }
-      };
+      labData = getInitialLabData();
       updateDashboardKPIs(labData);
       renderAllViews(labData);
     }
@@ -2649,8 +2697,9 @@
         localStorage.setItem('PPCH_LAST_STAFF_NAME', recorder);
       } catch(e) {}
 
-      // Update in-memory data for instant UI responsiveness
+      // 1. Update in-memory data for instant UI responsiveness
       var formObj = labData.forms[activeFormKey];
+      var itemName = activeModalItem.name;
       if (formObj && formObj.items[activeModalItem.id]) {
         var it = formObj.items[activeModalItem.id];
         it.evaluatedBy = recorder + (staffId ? ' (' + staffId + ')' : '');
@@ -2661,7 +2710,7 @@
           it.runtimeMin = upsMinutes;
           it.status = (upsMinutes >= 15) ? 'ready' : 'abnormal';
         } else if (tempVal !== null) {
-          if (activeFormKey === 'lab_057') it.status = (tempVal >= 24 && tempVal <= 28 && humVal <= 60) ? 'ready' : 'abnormal';
+          if (activeFormKey === 'lab_057') it.status = (tempVal >= 24 && tempVal <= 28 && (humVal === null || humVal <= 60)) ? 'ready' : 'abnormal';
           else if (activeFormKey === 'lab_060') it.status = (tempVal <= -18) ? 'ready' : 'abnormal';
           else if (activeFormKey === 'lab_061') it.status = (tempVal >= 36.5 && tempVal <= 37.5) ? 'ready' : 'abnormal';
           else if (activeFormKey === 'lab_062') it.status = (tempVal >= 2 && tempVal <= 8) ? 'ready' : 'abnormal';
@@ -2669,18 +2718,31 @@
           it.status = (checkSelect === 'pass') ? 'ready' : 'abnormal';
         }
       }
+
+      // 2. Persist to localStorage immediately
+      try {
+        localStorage.setItem('PPCH_LAB_OVERVIEW_DATA', JSON.stringify(labData));
+        var latestCache = JSON.parse(localStorage.getItem('PPCH_LAB_LATEST_STATUS') || '{}');
+        if (formObj && formObj.items[activeModalItem.id]) {
+          latestCache[activeModalItem.id] = {
+            status: formObj.items[activeModalItem.id].status,
+            lastTemp: tempVal,
+            lastHumidity: humVal,
+            evaluatedAt: timeStr,
+            evaluatedBy: recorder + (staffId ? ' (' + staffId + ')' : ''),
+            date: dateStr
+          };
+          localStorage.setItem('PPCH_LAB_LATEST_STATUS', JSON.stringify(latestCache));
+        }
+      } catch (e) {}
+
+      // 3. Update UI, close modal, and notify toast INSTANTLY (0 ms wait)
       updateDashboardKPIs(labData);
       applyFilters();
+      closeModal();
+      showToast('✓ บันทึกข้อมูล ' + itemName + ' เรียบร้อยแล้ว');
 
-      // Show spinner on Save button
-      var btnSave = document.querySelector('#entryModal .modal-footer .btn-tool-primary');
-      var origHtml = btnSave ? btnSave.innerHTML : '';
-      if (btnSave) {
-        btnSave.disabled = true;
-        btnSave.innerHTML = '<span class="material-icons-round spin" style="font-size:16px;">sync</span> <span>กำลังบันทึก...</span>';
-      }
-
-      // Construct server payload
+      // 4. Send POST to GAS in background (non-blocking)
       var payload = {
         action: 'submitLabEntry',
         formKey: activeFormKey,
@@ -2710,22 +2772,11 @@
       .then(function(res) { return res.json(); })
       .then(function(json) {
         if (json && json.status === 'success') {
-          showToast('✓ บันทึกข้อมูล ' + activeModalItem.name + ' ลง Google Sheets เรียบร้อย');
-        } else {
-          showToast('✓ บันทึกข้อมูลสำเร็จ (โหมดสำรอง)');
+          console.log('GAS sync confirmed for:', itemName);
         }
       })
       .catch(function(err) {
-        console.warn('GAS save err:', err);
-        showToast('✓ บันทึกข้อมูลสำเร็จ (โหมดสำรอง)');
-      })
-      .finally(function() {
-        if (btnSave) {
-          btnSave.disabled = false;
-          btnSave.innerHTML = origHtml;
-        }
-        closeModal();
-        setTimeout(loadOverviewData, 500);
+        console.warn('Background GAS sync pending:', err);
       });
     }
 
