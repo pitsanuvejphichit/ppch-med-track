@@ -1371,15 +1371,20 @@
     .plotted-table-sheet {
       width: 100%;
       border-collapse: collapse;
-      font-size: 10.5px;
+      table-layout: fixed;
+      font-size: 10px;
       text-align: center;
       border-top: 1.5px solid #000000;
     }
     .plotted-table-sheet td, .plotted-table-sheet th {
       border: 1px solid #000000;
-      padding: 3px 1px;
+      padding: 2px 1px;
       height: 22px;
       vertical-align: middle;
+      overflow: hidden;
+      text-overflow: clip;
+      white-space: nowrap;
+      box-sizing: border-box;
     }
     .graph-dot {
       cursor: pointer;
@@ -1396,25 +1401,136 @@
       display: none;
     }
 
-    /* Print View */
+    /* Checklist Table Styles for 31-day Medical Forms */
+    .checklist-table-sheet {
+      table-layout: fixed;
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .checklist-table-sheet th,
+    .checklist-table-sheet td {
+      overflow: hidden;
+      text-overflow: clip;
+      white-space: nowrap;
+      box-sizing: border-box;
+    }
+
+    /* Print View (Crisp Single A4 Page Output - Zero Blank Pages) */
     @media print {
-      body { background: #ffffff !important; }
-      .app-topbar, .app-sidebar, .page-filter-bar, .kpi-strip-5, #pageLoader, .btn-action-col, .no-print, .alert-banner-strip, .floating-action-wrapper {
+      @page {
+        size: A4 portrait;
+        margin: 5mm 6mm;
+      }
+      *, *::before, *::after {
+        box-shadow: none !important;
+        text-shadow: none !important;
+      }
+      html, body {
+        background: #ffffff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: auto !important;
+        color: #000000 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      /* Hide web navigation, filter bars, headers, modals */
+      .app-topbar,
+      .app-sidebar,
+      .page-filter-bar,
+      .kpi-strip-5,
+      #pageLoader,
+      .btn-action-col,
+      .no-print,
+      .alert-banner-strip,
+      .floating-action-wrapper,
+      .panel-header,
+      #toastNotice,
+      #qrModal,
+      .modal-overlay,
+      #sidebarBackdrop {
         display: none !important;
       }
-      .app-main-content { max-width: 100% !important; padding: 0 !important; }
-      .content-panel { border: none !important; box-shadow: none !important; }
-      .paper-sheet { border: none !important; box-shadow: none !important; padding: 0 !important; }
-      .graph-paper-container { border: 2px solid #000000 !important; box-shadow: none !important; max-width: 100% !important; padding: 10px !important; }
-      
+
+      /* Reset layout wrappers to allow smooth page rendering */
+      .app-layout-body {
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        min-height: auto !important;
+        width: 100% !important;
+      }
+      .app-main-content {
+        display: block !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .content-panel {
+        display: block !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: transparent !important;
+      }
+
+      /* Hide non-report views when printing reports */
+      #view_temp, #view_maint, #view_ups, #view_qr {
+        display: none !important;
+      }
+
+      /* Always show reports view during standard print */
+      #view_reports {
+        display: block !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: none !important;
+      }
+
+      #paperPreviewWrapper {
+        padding: 0 !important;
+        margin: 0 !important;
+        background: transparent !important;
+        overflow: visible !important;
+      }
+      #paperSheetContainer {
+        display: block !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: transparent !important;
+        width: 100% !important;
+      }
+      .paper-sheet {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+      }
+      .graph-paper-container {
+        border: 1.5px solid #000000 !important;
+        box-shadow: none !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        padding: 6px 8px !important;
+        margin: 0 auto !important;
+        box-sizing: border-box !important;
+        page-break-inside: avoid !important;
+      }
+
+      /* QR Batch Sticker Print Overrides */
+      body.printing-qr #view_reports,
+      body.printing-qr .app-main-content {
+        display: none !important;
+      }
       #qrBatchPrintArea.printing-active {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
         gap: 16px !important;
         padding: 10px !important;
-      }
-      #view_temp, #view_maint, #view_ups, #view_qr, #view_reports:not(.active-print) {
-        display: none !important;
       }
     }
 
@@ -1683,7 +1799,7 @@
                 <button type="button" onclick="exportCsv()" class="btn-action-icon" style="background: #f1f5f9; color: #475569; border-color: #cbd5e1;" title="ส่งออก CSV (UTF-8 BOM)">
                   <span class="material-icons-round">file_download</span>
                 </button>
-                <button type="button" onclick="window.print()" class="btn-action-icon" style="background: #f8fafc; color: #1e293b; border-color: #cbd5e1;" title="พิมพ์รายงาน A4">
+                <button type="button" onclick="printReportSheet()" class="btn-action-icon" style="background: #f8fafc; color: #1e293b; border-color: #cbd5e1;" title="พิมพ์รายงาน A4">
                   <span class="material-icons-round">print</span>
                 </button>
                 <button type="button" onclick="loadOverviewData()" class="btn-action-icon" style="background: var(--royal-subtle); color: var(--royal-blue); border-color: var(--border-blue-soft);" title="ซิงค์ข้อมูลกับ Google Sheets">
@@ -1835,7 +1951,7 @@
                   <span class="material-icons-round" style="font-size: 15px;">edit_note</span>
                   <span>กรอกผลจุดนี้</span>
                 </button>
-                <button type="button" onclick="window.print()" class="btn-tool btn-tool-primary">
+                <button type="button" onclick="printReportSheet()" class="btn-tool btn-tool-primary">
                   <span class="material-icons-round" style="font-size: 15px;">print</span>
                   <span>พิมพ์รายงาน A4</span>
                 </button>
@@ -1848,7 +1964,7 @@
           </div>
 
           <!-- Paper Preview Container (Plotted Graph & Official Sheet Simulation) -->
-          <div style="padding: 24px; background: #e2e8f0; overflow-x: auto;">
+          <div id="paperPreviewWrapper" style="padding: 24px; background: #e2e8f0; overflow-x: auto;">
             <div id="paperSheetContainer">
               <!-- Rendered by JS -->
             </div>
@@ -2778,9 +2894,11 @@
         });
       }
 
+      document.body.classList.add('printing-qr');
       printArea.classList.add('printing-active');
       window.print();
       setTimeout(function() {
+        document.body.classList.remove('printing-qr');
         printArea.classList.remove('printing-active');
       }, 1000);
     }
@@ -2833,12 +2951,32 @@
         }
       });
 
+      document.body.classList.add('printing-qr');
       printArea.classList.add('printing-active');
       window.print();
       setTimeout(function() {
+        document.body.classList.remove('printing-qr');
         printArea.classList.remove('printing-active');
       }, 1500);
     }
+
+    // Official A4 Report Sheet Print Function
+    function printReportSheet() {
+      if (currentView !== 'reports') {
+        switchView('reports');
+      }
+      renderSelectedReport();
+      setTimeout(function() {
+        window.print();
+      }, 80);
+    }
+
+    // Clean up print classes on window afterprint event
+    window.addEventListener('afterprint', function() {
+      document.body.classList.remove('printing-qr');
+      var printArea = document.getElementById('qrBatchPrintArea');
+      if (printArea) printArea.classList.remove('printing-active');
+    });
 
     // ==================== MONTHLY TEMPERATURE PLOTTED GRAPH ENGINE ====================
     // Strictly matching user uploaded spreadsheet media_1792038429083_1f6faac0.png
@@ -3145,7 +3283,8 @@
       for (var d = 1; d <= 31; d++) {
         var entry = dataMap[d];
         var staffVal = (entry && entry.staffName) ? entry.staffName : ((entry && entry.staff) ? entry.staff : '');
-        blockHtml += '<td style="font-size: 8.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="' + staffVal + '">' + staffVal + '</td>';
+        var staffSig = formatStaffSignature(staffVal);
+        blockHtml += '<td style="font-size: 8px; font-weight: 700; color: #1e293b; text-align: center; overflow: hidden; text-overflow: clip; white-space: nowrap;" title="' + (staffVal || '-') + '">' + staffSig + '</td>';
       }
       blockHtml += '      </tr>';
 
@@ -3156,25 +3295,44 @@
       return blockHtml;
     }
 
+    // Helper: Format staff initials for compact 31-day tables (e.g. 'สมชาย' -> 'สช')
+    function formatStaffSignature(name) {
+      if (!name) return '';
+      var clean = String(name).trim();
+      if (!clean) return '';
+      if (clean.length <= 2) return clean;
+      var map = {
+        'สมชาย': 'สช',
+        'วราภรณ์': 'วร',
+        'นิพนธ์': 'นพ',
+        'นภาพร': 'นภ',
+        'อนันต์': 'อน'
+      };
+      if (map[clean]) return map[clean];
+      return clean.slice(0, 2);
+    }
+
     // Helper: Generate day columns for checklist tables
     function generateDayCells(type, staffList) {
       staffList = staffList || ['สมชาย', 'วราภรณ์', 'นิพนธ์', 'นภาพร', 'อนันต์'];
       var cells = '';
       for (var d = 1; d <= 31; d++) {
         if (type === 'check') {
-          cells += '<td style="border: 1px solid #000000; padding: 2px 0; font-weight: 800; color: #059669; font-size: 11px; text-align: center;">✓</td>';
+          cells += '<td style="border: 1px solid #000000; padding: 0; height: 22px; font-weight: 800; color: #059669; font-size: 11px; text-align: center; vertical-align: middle;">✓</td>';
         } else if (type === 'weekly_check') {
           var isW = (d === 7 || d === 14 || d === 21 || d === 28);
-          cells += '<td style="border: 1px solid #000000; padding: 2px 0; font-weight: 800; color: ' + (isW ? '#059669' : '#cbd5e1') + '; font-size: 11px; text-align: center;">' + (isW ? '✓' : '-') + '</td>';
+          cells += '<td style="border: 1px solid #000000; padding: 0; height: 22px; font-weight: 800; color: ' + (isW ? '#059669' : '#cbd5e1') + '; font-size: 11px; text-align: center; vertical-align: middle;">' + (isW ? '✓' : '-') + '</td>';
         } else if (type === 'staff') {
-          var name = staffList[(d - 1) % staffList.length];
-          cells += '<td style="border: 1px solid #000000; padding: 2px 0; font-size: 8px; overflow: hidden; white-space: nowrap; text-align: center;" title="' + name + '">' + name + '</td>';
+          var fullName = staffList[(d - 1) % staffList.length];
+          var sign = formatStaffSignature(fullName);
+          cells += '<td style="border: 1px solid #000000; padding: 0; height: 24px; font-size: 8px; font-weight: 700; color: #1e293b; text-align: center; vertical-align: middle; overflow: hidden; text-overflow: clip; white-space: nowrap;" title="' + fullName + '">' + sign + '</td>';
         } else if (type === 'weekly_staff') {
           var isW = (d === 7 || d === 14 || d === 21 || d === 28);
-          var name = isW ? staffList[Math.floor(d / 7) % staffList.length] : '-';
-          cells += '<td style="border: 1px solid #000000; padding: 2px 0; font-size: 8px; overflow: hidden; white-space: nowrap; text-align: center; color: ' + (isW ? '#000000' : '#cbd5e1') + ';">' + name + '</td>';
+          var fullName = isW ? staffList[Math.floor(d / 7) % staffList.length] : '';
+          var sign = isW ? formatStaffSignature(fullName) : '-';
+          cells += '<td style="border: 1px solid #000000; padding: 0; height: 24px; font-size: 8px; font-weight: 700; color: ' + (isW ? '#1e293b' : '#cbd5e1') + '; text-align: center; vertical-align: middle; overflow: hidden; text-overflow: clip; white-space: nowrap;" title="' + (fullName || '-') + '">' + sign + '</td>';
         } else if (type === 'header') {
-          cells += '<th style="border: 1px solid #000000; width: 2.15%; padding: 3px 0; font-size: 9px; font-weight: 700; text-align: center;">' + d + '</th>';
+          cells += '<th style="border: 1px solid #000000; width: 1.838%; padding: 3px 0; font-size: 8.5px; font-weight: 700; text-align: center; vertical-align: middle;">' + d + '</th>';
         }
       }
       return cells;
@@ -3206,12 +3364,12 @@
 
       // Table
       html += '<div style="overflow-x: auto;">';
-      html += '  <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #000000; font-size: 9px; line-height: 1.3;">';
+      html += '  <table class="checklist-table-sheet" style="width: 100%; border-collapse: collapse; border: 1.5px solid #000000; font-size: 8.5px; line-height: 1.25; table-layout: fixed;">';
       html += '    <thead>';
       html += '      <tr style="background: #ffffff; font-weight: 700;">';
-      html += '        <th style="border: 1px solid #000000; padding: 4px; text-align: left; width: 235px;">รายการตรวจสอบ</th>';
-      html += '        <th style="border: 1px solid #000000; padding: 4px; text-align: center; width: 130px;">เกณฑ์ตรวจสอบ/ปฏิบัติ</th>';
-      html += '        <th style="border: 1px solid #000000; padding: 4px; text-align: center; width: 34px;">ความถี่</th>';
+      html += '        <th style="border: 1px solid #000000; padding: 4px 2px; text-align: left; width: 25%;">รายการตรวจสอบ</th>';
+      html += '        <th style="border: 1px solid #000000; padding: 4px 2px; text-align: center; width: 14%;">เกณฑ์ตรวจสอบ/ปฏิบัติ</th>';
+      html += '        <th style="border: 1px solid #000000; padding: 4px 2px; text-align: center; width: 4%;">ความถี่</th>';
       html += generateDayCells('header');
       html += '      </tr>';
       html += '    </thead>';
@@ -3269,8 +3427,8 @@
       html += '</div>';
 
       // Remarks
-      html += '<div style="font-size: 10px; font-weight: 600; margin: 8px 0 10px 0; line-height: 1.5;">';
-      html += '  <div>หมายเหตุ : &nbsp;&nbsp;&nbsp;&nbsp; <strong>☑ ปกติ / ทำแล้ว</strong> &nbsp;&nbsp;&nbsp;&nbsp; <strong>☒ ผิดปกติ / ไม่ได้ทำ</strong> &nbsp;&nbsp;&nbsp;&nbsp; <strong>D = ทำประจำวัน</strong> &nbsp;&nbsp;&nbsp;&nbsp; <strong>W = ทำประจำสัปดาห์</strong></div>';
+      html += '<div style="font-size: 9.5px; font-weight: 600; margin: 8px 0 10px 0; line-height: 1.4;">';
+      html += '  <div>หมายเหตุ : &nbsp;&nbsp;&nbsp;&nbsp; <strong>☑ ปกติ / ทำแล้ว</strong> &nbsp;&nbsp;&nbsp;&nbsp; <strong>☒ ผิดปกติ / ไม่ได้ทำ</strong> &nbsp;&nbsp;&nbsp;&nbsp; <strong>D = ทำประจำวัน</strong> &nbsp;&nbsp;&nbsp;&nbsp; <strong>W = ทำประจำสัปดาห์</strong> &nbsp;&nbsp;&nbsp;&nbsp; <strong>(สช=สมชาย, วร=วราภรณ์, นพ=นิพนธ์, นภ=นภาพร, อน=อนันต์)</strong></div>';
       html += '  <div>รายการ (2.) ใน Daily Maintenance ทำในกรณีมี Electrolyte</div>';
       html += '</div>';
 
@@ -3342,10 +3500,10 @@
         html += '    <span>Serial No.: <strong>' + m.sn + '</strong> (เครื่องที่ ' + m.no + ')</span>';
         html += '  </div>';
         html += '  <div style="overflow-x: auto;">';
-        html += '    <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #000000; font-size: 9px; line-height: 1.3;">';
+        html += '    <table class="checklist-table-sheet" style="width: 100%; border-collapse: collapse; border: 1.5px solid #000000; font-size: 8.5px; line-height: 1.25; table-layout: fixed;">';
         html += '      <thead>';
         html += '        <tr style="background: #ffffff; font-weight: 700;">';
-        html += '          <th style="border: 1px solid #000000; width: 140px; text-align: left; padding: 3px 6px;">Daily Maintenance</th>';
+        html += '          <th style="border: 1px solid #000000; width: 28%; text-align: left; padding: 3px 6px;">Daily Maintenance</th>';
         html += generateDayCells('header');
         html += '        </tr>';
         html += '      </thead>';
@@ -3366,7 +3524,7 @@
 
       // Footer
       html += '<div style="display: flex; justify-content: space-between; align-items: flex-end; font-size: 10px; margin-top: 14px;">';
-      html += '  <div>รหัสแบบฟอร์ม: <strong>FM-PPCH-LAB-049</strong> | โรงพยาบาลพิษณุเวช พิจิตร</div>';
+      html += '  <div>รหัสแบบฟอร์ม: <strong>FM-PPCH-LAB-049</strong> | โรงพยาบาลพิษณุเวช พิจิตร &nbsp;&nbsp; (สช=สมชาย, วร=วราภรณ์, นพ=นิพนธ์, นภ=นภาพร, อน=อนันต์)</div>';
       html += '  <div>ผู้ตรวจสอบ.......................................................................วันที่......./.........../.............</div>';
       html += '</div>';
 
@@ -3389,10 +3547,10 @@
 
       // Table 1: การบำรุงรักษารายวัน
       html += '<div style="overflow-x: auto; margin-bottom: 14px;">';
-      html += '  <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #000000; font-size: 9px; line-height: 1.3;">';
+      html += '  <table class="checklist-table-sheet" style="width: 100%; border-collapse: collapse; border: 1.5px solid #000000; font-size: 8.5px; line-height: 1.25; table-layout: fixed;">';
       html += '    <thead>';
       html += '      <tr style="background: #ffffff; font-weight: 700;">';
-      html += '        <th style="border: 1px solid #000000; text-align: left; padding: 4px 6px; width: 440px;">การบำรุงรักษารายวัน</th>';
+      html += '        <th style="border: 1px solid #000000; text-align: left; padding: 4px 6px; width: 38%;">การบำรุงรักษารายวัน</th>';
       html += generateDayCells('header');
       html += '      </tr>';
       html += '    </thead>';
@@ -3480,7 +3638,7 @@
 
       // Footer
       html += '<div style="display: flex; justify-content: space-between; align-items: flex-end; font-size: 10px;">';
-      html += '  <div>รหัสแบบฟอร์ม: <strong>FM-PPCH-LAB-091</strong> | โรงพยาบาลพิษณุเวช พิจิตร</div>';
+      html += '  <div>รหัสแบบฟอร์ม: <strong>FM-PPCH-LAB-091</strong> | โรงพยาบาลพิษณุเวช พิจิตร &nbsp;&nbsp; (สช=สมชาย, วร=วราภรณ์, นพ=นิพนธ์, นภ=นภาพร, อน=อนันต์)</div>';
       html += '  <div>ผู้ตรวจสอบ.......................................................................วันที่......./.........../.............</div>';
       html += '</div>';
 
