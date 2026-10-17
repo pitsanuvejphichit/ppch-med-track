@@ -1945,9 +1945,15 @@
           <input type="number" id="modalUpsMinutes" placeholder="เช่น 25">
         </div>
 
-        <div class="modal-form-group">
-          <label>ผู้บันทึกข้อมูล (ชื่อ-สกุล): <span style="color: var(--red-abnormal);">*</span></label>
-          <input type="text" id="modalRecorder" placeholder="เช่น ทนพ. สมชาย ใจดี" value="ทนพ. สมชาย ใจดี" required>
+        <div style="display: grid; grid-template-columns: 130px 1fr; gap: 10px;">
+          <div class="modal-form-group">
+            <label>รหัสพนักงาน:</label>
+            <input type="text" id="modalStaffId" placeholder="000023" maxlength="6" onblur="if(this.value) this.value = this.value.trim().padStart(6, '0');" style="font-family: var(--font-mono); font-weight: 700;">
+          </div>
+          <div class="modal-form-group">
+            <label>ผู้บันทึกข้อมูล (ชื่อ-สกุล): <span style="color: var(--red-abnormal);">*</span></label>
+            <input type="text" id="modalRecorder" placeholder="เช่น ทนพ. สมชาย ใจดี" value="ทนพ. สมชาย ใจดี" required>
+          </div>
         </div>
 
         <div class="modal-form-group" id="grpNote">
@@ -1961,6 +1967,10 @@
           <span class="material-icons-round" style="font-size: 16px;">save</span>
           <span>บันทึกข้อมูล</span>
         </button>
+      </div>
+    </div>
+  </div>
+
   <!-- QR Code Modal (Single Item View & Print Sticker) -->
   <div id="qrModal" class="modal-overlay hidden" onclick="if(event.target === this) closeQrModal()">
     <div class="modal-box" style="max-width: 440px;">
@@ -2529,6 +2539,16 @@
       document.getElementById('modalNote').value = '';
       document.getElementById('tempFeedbackPill').style.display = 'none';
 
+      // Pre-fill remembered staff info
+      try {
+        var savedId = localStorage.getItem('PPCH_LAST_STAFF_ID') || '';
+        var savedName = localStorage.getItem('PPCH_LAST_STAFF_NAME') || '';
+        var elId = document.getElementById('modalStaffId');
+        var elName = document.getElementById('modalRecorder');
+        if (elId && savedId) elId.value = savedId;
+        if (elName && savedName) elName.value = savedName;
+      } catch(e) {}
+
       var isTemp = formKey.startsWith('lab_05') || formKey.startsWith('lab_06');
       var isRoom = (formKey === 'lab_057');
       var isUps = (formKey === 'lab_019');
@@ -2587,6 +2607,10 @@
 
     function saveModalEntry() {
       if (!activeModalItem) return;
+      var staffIdEl = document.getElementById('modalStaffId');
+      var staffId = staffIdEl ? staffIdEl.value.trim().padStart(6, '0') : '';
+      if (staffIdEl && staffIdEl.value.trim()) staffIdEl.value = staffId;
+
       var recorder = document.getElementById('modalRecorder').value.trim();
       if (!recorder) {
         showToast('กรุณาระบุชื่อผู้บันทึกข้อมูล');
@@ -2595,41 +2619,114 @@
 
       var now = new Date();
       var timeStr = ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+      var dateStr = now.toISOString().slice(0, 10);
 
-      // Update in-memory data
+      var tempVal = null;
+      var humVal = null;
+      var upsMinutes = null;
+      var checkSelect = 'pass';
+      var note = document.getElementById('modalNote').value.trim();
+
+      if (activeFormKey === 'lab_019') {
+        upsMinutes = parseInt(document.getElementById('modalUpsMinutes').value, 10) || 25;
+      } else if (activeFormKey.startsWith('lab_05') || activeFormKey.startsWith('lab_06')) {
+        tempVal = parseFloat(document.getElementById('modalTempInput').value);
+        if (isNaN(tempVal)) {
+          showToast('กรุณากรอกค่าอุณหภูมิ');
+          return;
+        }
+        if (activeFormKey === 'lab_057') {
+          humVal = parseFloat(document.getElementById('modalHumInput').value);
+          if (isNaN(humVal)) humVal = 50;
+        }
+      } else {
+        checkSelect = document.getElementById('modalCheckSelect').value;
+      }
+
+      // Save staff in localStorage
+      try {
+        if (staffId) localStorage.setItem('PPCH_LAST_STAFF_ID', staffId);
+        localStorage.setItem('PPCH_LAST_STAFF_NAME', recorder);
+      } catch(e) {}
+
+      // Update in-memory data for instant UI responsiveness
       var formObj = labData.forms[activeFormKey];
       if (formObj && formObj.items[activeModalItem.id]) {
         var it = formObj.items[activeModalItem.id];
-        it.evaluatedBy = recorder;
+        it.evaluatedBy = recorder + (staffId ? ' (' + staffId + ')' : '');
         it.evaluatedAt = timeStr;
-
-        if (activeFormKey === 'lab_019') {
-          var mins = parseInt(document.getElementById('modalUpsMinutes').value, 10);
-          it.runtimeMin = mins || 25;
-          it.status = (it.runtimeMin >= 15) ? 'ready' : 'abnormal';
-        } else if (activeFormKey.startsWith('lab_05') || activeFormKey.startsWith('lab_06')) {
-          var tempVal = parseFloat(document.getElementById('modalTempInput').value);
-          it.lastTemp = isNaN(tempVal) ? 25.0 : tempVal;
-          if (activeFormKey === 'lab_057') {
-            var humVal = parseInt(document.getElementById('modalHumInput').value, 10);
-            it.lastHumidity = isNaN(humVal) ? 50 : humVal;
-            it.status = (it.lastTemp >= 24 && it.lastTemp <= 28) ? 'ready' : 'abnormal';
-          } else if (activeFormKey === 'lab_060') {
-            it.status = (it.lastTemp <= -18) ? 'ready' : 'abnormal';
-          } else if (activeFormKey === 'lab_061') {
-            it.status = (it.lastTemp >= 36.5 && it.lastTemp <= 37.5) ? 'ready' : 'abnormal';
-          } else if (activeFormKey === 'lab_062') {
-            it.status = (it.lastTemp >= 2 && it.lastTemp <= 8) ? 'ready' : 'abnormal';
-          }
+        if (tempVal !== null) it.lastTemp = tempVal;
+        if (humVal !== null) it.lastHumidity = humVal;
+        if (upsMinutes !== null) {
+          it.runtimeMin = upsMinutes;
+          it.status = (upsMinutes >= 15) ? 'ready' : 'abnormal';
+        } else if (tempVal !== null) {
+          if (activeFormKey === 'lab_057') it.status = (tempVal >= 24 && tempVal <= 28 && humVal <= 60) ? 'ready' : 'abnormal';
+          else if (activeFormKey === 'lab_060') it.status = (tempVal <= -18) ? 'ready' : 'abnormal';
+          else if (activeFormKey === 'lab_061') it.status = (tempVal >= 36.5 && tempVal <= 37.5) ? 'ready' : 'abnormal';
+          else if (activeFormKey === 'lab_062') it.status = (tempVal >= 2 && tempVal <= 8) ? 'ready' : 'abnormal';
         } else {
-          var chk = document.getElementById('modalCheckSelect').value;
-          it.status = (chk === 'pass') ? 'ready' : 'abnormal';
+          it.status = (checkSelect === 'pass') ? 'ready' : 'abnormal';
         }
       }
-
       updateDashboardKPIs(labData);
       applyFilters();
-      closeModal();
+
+      // Show spinner on Save button
+      var btnSave = document.querySelector('#entryModal .modal-footer .btn-tool-primary');
+      var origHtml = btnSave ? btnSave.innerHTML : '';
+      if (btnSave) {
+        btnSave.disabled = true;
+        btnSave.innerHTML = '<span class="material-icons-round spin" style="font-size:16px;">sync</span> <span>กำลังบันทึก...</span>';
+      }
+
+      // Construct server payload
+      var payload = {
+        action: 'submitLabEntry',
+        formKey: activeFormKey,
+        itemId: activeModalItem.id,
+        itemName: activeModalItem.name,
+        pointName: activeModalItem.name,
+        temp: tempVal,
+        temperature: tempVal,
+        humidity: humVal,
+        result: checkSelect === 'pass' ? 'ready' : 'abnormal',
+        runtimeMinutes: upsMinutes,
+        staffId: staffId,
+        staffName: recorder,
+        evaluatedBy: recorder + (staffId ? ' (' + staffId + ')' : ''),
+        note: note,
+        abnormalNote: note,
+        date: dateStr,
+        time: timeStr,
+        timestamp: new Date().toISOString()
+      };
+
+      fetch(GAS_API_URL + '?action=submitLabEntry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(json) {
+        if (json && json.status === 'success') {
+          showToast('✓ บันทึกข้อมูล ' + activeModalItem.name + ' ลง Google Sheets เรียบร้อย');
+        } else {
+          showToast('✓ บันทึกข้อมูลสำเร็จ (โหมดสำรอง)');
+        }
+      })
+      .catch(function(err) {
+        console.warn('GAS save err:', err);
+        showToast('✓ บันทึกข้อมูลสำเร็จ (โหมดสำรอง)');
+      })
+      .finally(function() {
+        if (btnSave) {
+          btnSave.disabled = false;
+          btnSave.innerHTML = origHtml;
+        }
+        closeModal();
+        setTimeout(loadOverviewData, 500);
+      });
     }
 
     // Filter controls

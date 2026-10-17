@@ -3784,7 +3784,7 @@
                 <thead>
                   <tr>
                     <th style="width: 125px;">รหัสครุภัณฑ์</th>
-                    <th>เครื่องมือแพทย์ & รุ่น</th>
+                    <th>เครื่องมือแพทย์</th>
                     <th style="width: 130px;">แผนกปัจจุบัน</th>
                     <th>อาการข้อบกพร่องที่พบ</th>
                     <th style="width: 140px;">ผู้แจ้ง / วันที่ตรวจพบ</th>
@@ -3878,7 +3878,6 @@
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
                           <div>
                             <div id="relocateDeviceName" style="font-size: 14px; font-weight: 700; color: var(--royal-blue);">-</div>
-                            <div id="relocateDeviceMeta" style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">รุ่น: - | S/N: -</div>
                           </div>
                           <span id="relocateDeviceAsset" class="asset-code-clean" style="font-size: 11.5px; white-space: nowrap !important; flex-shrink: 0;">-</span>
                         </div>
@@ -4118,39 +4117,32 @@
                           <span>1. ข้อมูลพื้นฐานเครื่องมือแพทย์</span>
                         </div>
 
-                        <!-- Row 1: รหัสเครื่อง & ชื่อเครื่องมือแพทย์ -->
+                        <!-- Row 1: รหัสเครื่อง & ชื่อเครื่องมือแพทย์ (พร้อม Datalist แนะนำจากเครื่องเดิม) -->
                         <div style="display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 14px;">
-                          <div style="flex: 1 1 260px;">
+                          <div style="flex: 1 1 240px;">
                             <label style="display: block; font-size: 12.5px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">
                               รหัสเครื่อง / ครุภัณฑ์ (Asset Code) <span style="color: var(--red-abnormal);">*</span>
                             </label>
                             <input type="text" id="modalEquipAssetCode" class="filter-input" style="width: 100%; font-family: var(--font-mono); font-weight: 700; font-size: 14px; padding: 8px 12px; background: #ffffff;" placeholder="เช่น EQ-68-DEF-001" required>
+                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+                              กำหนดสำหรับระบุจำนวนและแยกแต่ละเครื่อง
+                            </div>
                           </div>
-                          <div style="flex: 2 1 320px;">
+                          <div style="flex: 2 1 340px;">
                             <label style="display: block; font-size: 12.5px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">
                               ชื่อเครื่องมือแพทย์ (Equipment Name) <span style="color: var(--red-abnormal);">*</span>
                             </label>
-                            <input type="text" id="modalEquipName" class="filter-input" style="width: 100%; font-size: 14px; font-weight: 600; padding: 8px 12px; background: #ffffff;" placeholder="เช่น เครื่องกระตุกหัวใจ Defibrillator" required>
+                            <input type="text" id="modalEquipName" list="existingEquipmentNamesList" class="filter-input" style="width: 100%; font-size: 14px; font-weight: 600; padding: 8px 12px; background: #ffffff;" placeholder="เลือกจากชื่อเครื่องเดิมในระบบ หรือพิมพ์ชื่อใหม่..." oninput="onEquipNameInputChange()" onchange="onEquipNameInputChange()" required autocomplete="off">
+                            <datalist id="existingEquipmentNamesList">
+                              <!-- Populated dynamically with unique equipment names -->
+                            </datalist>
+                            <div style="font-size: 11px; color: var(--royal-blue); margin-top: 4px;" id="equipNameHint">
+                              💡 เลือกชื่อเครื่องเดิมเพื่อใช้แบบฟอร์มเดิมอัตโนมัติ หรือพิมพ์ชื่อใหม่เพื่อกำหนดฟอร์มใหม่
+                            </div>
                           </div>
                         </div>
 
-                        <!-- Row 2: รุ่น / ยี่ห้อ & Serial Number -->
-                        <div style="display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 14px;">
-                          <div style="flex: 1 1 260px;">
-                            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 5px;">
-                              รุ่น / ยี่ห้อ (Model)
-                            </label>
-                            <input type="text" id="modalEquipModel" class="filter-input" style="width: 100%; padding: 8px 12px; background: #ffffff;" placeholder="เช่น Mindray BeneHeart D3">
-                          </div>
-                          <div style="flex: 1 1 260px;">
-                            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 5px;">
-                              Serial Number (S/N)
-                            </label>
-                            <input type="text" id="modalEquipSerialNo" class="filter-input" style="width: 100%; font-family: var(--font-mono); padding: 8px 12px; background: #ffffff;" placeholder="เช่น SN-882910">
-                          </div>
-                        </div>
-
-                        <!-- Row 3: แผนกสังกัด, ระดับความเสี่ยง, สถานะเริ่มต้น -->
+                        <!-- Row 2: แผนกสังกัด, ระดับความเสี่ยง, สถานะเริ่มต้น (ตัด Model และ S/N ออกทั้งหมด) -->
                         <div style="display: flex; flex-wrap: wrap; gap: 14px;">
                           <div style="flex: 1 1 220px;">
                             <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 5px;">
@@ -4181,95 +4173,66 @@
                         </div>
                       </div>
 
-                      <!-- Section 2: Checklist Form Selection & New Form Builder (ข้อ 2 เรียงลงมาด้านล่าง) -->
+                      <!-- Section 2: แบบฟอร์มตรวจเช็คความพร้อม (ตรวจจับอัตโนมัติตามชื่อเครื่อง) -->
                       <div class="equipment-form-card" style="background: #ffffff; border: 1.5px solid #bfdbfe; border-radius: 14px; padding: 22px; box-shadow: 0 4px 14px rgba(0, 75, 147, 0.05);">
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; flex-wrap: wrap; gap: 10px;">
-                          <div style="font-size: 14.5px; font-weight: 700; color: var(--royal-blue); display: flex; align-items: center; gap: 8px;">
-                            <span class="material-icons-round" style="font-size: 22px;">fact_check</span>
-                            <span>2. แบบฟอร์มตรวจเช็คความพร้อม</span>
-                          </div>
-                          <div style="display: flex; gap: 8px;">
-                            <button type="button" id="btnModeExistingForm" onclick="toggleNewFormBuilder(false)" class="btn-tool btn-tool-primary active" style="padding: 6px 14px; font-size: 12px; border-radius: 8px; font-weight: 600;">
-                              <span class="material-icons-round" style="font-size: 16px;">library_books</span>
-                              <span>เลือกฟอร์มเดิม / คัดลอก</span>
-                            </button>
-                            <button type="button" id="btnModeNewForm" onclick="toggleNewFormBuilder(true)" class="btn-tool" style="padding: 6px 14px; font-size: 12px; border-radius: 8px; font-weight: 700;">
-                              <span class="material-icons-round" style="font-size: 16px;">add_circle</span>
-                              <span>สร้างฟอร์มใหม่</span>
-                            </button>
+                        <div style="font-size: 14.5px; font-weight: 700; color: var(--royal-blue); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+                          <span class="material-icons-round" style="font-size: 22px;">fact_check</span>
+                          <span>2. แบบฟอร์มตรวจเช็คความพร้อม</span>
+                        </div>
+
+                        <input type="hidden" id="modalEquipFormId" value="">
+
+                        <!-- State 1: Prompt before entering name -->
+                        <div id="boxFormEmptyPrompt" style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 12px; padding: 22px; text-align: center; color: var(--text-muted);">
+                          <span class="material-icons-round" style="font-size: 30px; color: #94a3b8; margin-bottom: 4px;">touch_app</span>
+                          <div style="font-size: 13px; font-weight: 600; color: var(--text-body);">กรุณาระบุหรือเลือก "ชื่อเครื่องมือแพทย์" ด้านบน</div>
+                          <div style="font-size: 11.5px; margin-top: 3px; color: #64748b;">
+                            ระบบจะตรวจสอบให้อัตโนมัติ: หากตรงกับชื่อเดิมจะดึงฟอร์มเดิมมาใช้ หรือหากเป็นเครื่องใหม่จะเปิดให้กรอกหัวข้อตรวจเช็คทันที
                           </div>
                         </div>
 
-                        <!-- Existing Form Selection View -->
-                        <div id="existingFormSelectSection">
-                          <div style="margin-bottom: 14px;">
-                            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">
-                              เลือกจากแบบฟอร์มที่มีในระบบ <span style="color: var(--red-abnormal);">*</span>
-                            </label>
-                            <select id="modalEquipFormId" class="filter-input" style="width: 100%; font-weight: 600; padding: 8px 12px; font-size: 13px;" onchange="onModalFormChange()" required>
-                              <!-- Populated via script -->
-                            </select>
+                        <!-- State 2: Existing Form Preview (เมื่อตรงกับชื่อเครื่องเดิมในระบบ) -->
+                        <div id="boxExistingFormPreview" style="display: none; background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 12px; padding: 16px;">
+                          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                              <span class="material-icons-round" style="color: #16a34a; font-size: 22px;">verified</span>
+                              <div>
+                                <div style="font-size: 13.5px; font-weight: 700; color: #15803d;" id="existingFormTitle">
+                                  ใช้แบบฟอร์มเดิมของเครื่องนี้
+                                </div>
+                                <div style="font-size: 11.5px; color: #166534;" id="existingFormSubtitle">
+                                  เครื่องมือชนิดนี้มีแบบฟอร์มตรวจเช็คในระบบแล้ว จะใช้เกณฑ์เดียวกันอัตโนมัติ
+                                </div>
+                              </div>
+                            </div>
+                            <span class="badge" id="existingFormItemsCountBadge" style="background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; font-weight: 700; font-size: 11.5px; padding: 3px 10px; border-radius: 999px;">0 หัวข้อ</span>
                           </div>
-
-                          <!-- Quick Copy from Existing Equipment Helper -->
-                          <div id="copyFromDeviceBox" style="background: #f8fafc; border: 1px dashed var(--border-main); border-radius: 10px; padding: 12px 14px; margin-top: 14px;">
-                            <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--royal-blue); margin-bottom: 6px;">
-                              <span class="material-icons-round" style="font-size: 16px;">content_copy</span>
-                              <span>หรือเลือกใช้ฟอร์มจากเครื่องมือเดิมที่มีอยู่:</span>
-                            </div>
-                            <select id="selectCopyFromDevice" class="filter-input" style="width: 100%; font-size: 12px; padding: 7px 10px; background: #ffffff;" onchange="onSelectCopyDevice(this.value)">
-                              <option value="">-- คัดลอกแบบฟอร์มจากเครื่องมือเดิมในระบบ --</option>
-                            </select>
-                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">
-                              💡 หากเป็นเครื่องมือชนิดเดียวกัน สามารถเลือกจากเครื่องเดิมเพื่อดึงเกณฑ์การตรวจเช็คมาใช้งานได้ทันที
-                            </div>
+                          <div id="existingFormItemsList" style="display: flex; flex-direction: column; gap: 6px; margin-top: 10px; padding: 10px 12px; background: #ffffff; border-radius: 8px; border: 1px solid #bbf7d0; max-height: 240px; overflow-y: auto;">
+                            <!-- Populated dynamically with checklist criteria -->
                           </div>
                         </div>
 
-                        <!-- New Form Builder Section (Spacious & Clean, In-Page) -->
-                        <div id="newFormBuilderSection" style="display: none; background: #f0f7ff; border: 1.5px solid #93c5fd; border-radius: 12px; padding: 16px; margin-top: 10px; animation: loaderPop 0.25s ease;">
-                          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #bfdbfe; padding-bottom: 8px; margin-bottom: 14px;">
-                            <div style="font-size: 13.5px; font-weight: 700; color: var(--royal-blue); display: flex; align-items: center; gap: 6px;">
-                              <span class="material-icons-round" style="font-size: 18px; color: var(--royal-blue);">playlist_add</span>
-                              <span>สร้างแบบฟอร์มตรวจเช็คใหม่ (New Evaluation Form)</span>
-                            </div>
-                            <button type="button" onclick="toggleNewFormBuilder(false)" style="background: none; border: none; color: #64748b; font-size: 11px; cursor: pointer; text-decoration: underline;">
-                              ยกเลิก (ใช้ฟอร์มเดิม)
-                            </button>
-                          </div>
-
-                          <div class="new-form-grid-2col" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
-                            <div>
-                              <label style="display: block; font-size: 11.5px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">
-                                ชื่อแบบฟอร์มตรวจเช็ค <span style="color: var(--red-abnormal);">*</span>
-                              </label>
-                              <input type="text" id="newFormName" class="filter-input" style="width: 100%; font-size: 13px; font-weight: 600; background: #ffffff;" placeholder="เช่น แบบตรวจเช็คเครื่อง Suction Unit">
-                            </div>
-                            <div>
-                              <label style="display: block; font-size: 11.5px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">
-                                ชื่อย่อ / ชนิดอุปกรณ์
-                              </label>
-                              <input type="text" id="newFormShortName" class="filter-input" style="width: 100%; font-size: 13px; background: #ffffff;" placeholder="เช่น Suction Unit">
+                        <!-- State 3: New Form Builder (เมื่อเป็นเครื่องมือใหม่) -->
+                        <div id="boxNewFormBuilder" style="display: none; background: #f8fafc; border: 1.5px solid #93c5fd; border-radius: 12px; padding: 16px;">
+                          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #e2e8f0;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                              <span class="material-icons-round" style="color: var(--royal-blue); font-size: 22px;">playlist_add</span>
+                              <div>
+                                <div style="font-size: 13.5px; font-weight: 700; color: var(--royal-blue);" id="newFormHeaderTitle">
+                                  กำหนดหัวข้อตรวจเช็คสำหรับเครื่องมือใหม่
+                                </div>
+                                <div style="font-size: 11.5px; color: var(--text-muted);">
+                                  ชื่อแบบฟอร์มจะใช้ชื่อเครื่องมือแพทย์นี้โดยอัตโนมัติ
+                                </div>
+                              </div>
                             </div>
                           </div>
 
-                          <div style="margin-bottom: 14px;">
-                            <label style="display: block; font-size: 11.5px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">
-                              หมวดหมู่อุปกรณ์
+                          <!-- Checklist Items List -->
+                          <div style="margin-bottom: 10px;">
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-main); margin-bottom: 8px;">
+                              รายการเกณฑ์การตรวจเช็คความพร้อม (Checklist Criteria) <span style="color: var(--red-abnormal);">*</span>
                             </label>
-                            <input type="text" id="newFormCategory" class="filter-input" style="width: 100%; font-size: 13px; background: #ffffff;" placeholder="เช่น เครื่องมือช่วยกู้ชีพและทางเดินหายใจ">
-                          </div>
-
-                          <!-- Dynamic Checklist Criteria List (No cramped modal scrollbars) -->
-                          <div>
-                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                              <label style="font-size: 12px; font-weight: 700; color: var(--royal-blue);">
-                                รายการเกณฑ์การตรวจเช็คความพร้อม (Checklist Criteria) <span style="color: var(--red-abnormal);">*</span>
-                              </label>
-                              <button type="button" onclick="loadDefaultTemplateItems()" class="btn-text-link" style="font-size: 11.5px; color: #0284c7; font-weight: 600; background: none; border: none; cursor: pointer;">
-                                ⚡ ใส่เกณฑ์มาตรฐาน 5 ข้อ
-                              </button>
-                            </div>
                             <div id="newFormItemsContainer" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
                               <!-- Populated dynamically via JS -->
                             </div>
@@ -5399,7 +5362,7 @@
 
             html += '<tr>' +
               '<td data-label="รหัสครุภัณฑ์"><span class="asset-code-clean">' + eq.assetCode + '</span></td>' +
-              '<td data-label="เครื่องมือแพทย์ & รุ่น"><div style="font-weight: 700; color: var(--text-main);">' + eq.name + '</div><div style="font-size: 11px; color: var(--text-muted);">รุ่น ' + (eq.model || '-') + '</div></td>' +
+              '<td data-label="เครื่องมือแพทย์"><div style="font-weight: 700; color: var(--text-main);">' + eq.name + '</div></td>' +
               '<td data-label="แผนกปัจจุบัน"><span style="font-weight: 500;">' + deptName + '</span></td>' +
               '<td data-label="อาการข้อบกพร่องที่พบ"><div style="color: #b91c1c; font-weight: 500; font-size: 12px; background: #fff5f5; padding: 5px 9px; border-radius: 6px; border: 1px solid #fed7d7;">' + (eq.abnormalReason || 'ตรวจพบความผิดปกติ') + '</div></td>' +
               '<td data-label="ผู้แจ้ง / วันที่ตรวจพบ"><div style="font-size: 12px; font-weight: 600; color: var(--text-main);">' + reporterText + '</div><div style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">' + reportedTime + '</div></td>' +
@@ -5469,7 +5432,7 @@
 
       document.getElementById('ackDeviceId').value = eq.id;
       document.getElementById('modalAckDeviceName').innerText = eq.name + ' (' + eq.assetCode + ')';
-      document.getElementById('modalAckDeviceMeta').innerText = 'รุ่น: ' + (eq.model || '-') + ' • แผนกปัจจุบัน: ' + window.PPCH_STORE.getDepartmentName(eq.currentDept);
+      document.getElementById('modalAckDeviceMeta').innerText = 'แผนกปัจจุบัน: ' + window.PPCH_STORE.getDepartmentName(eq.currentDept);
       document.getElementById('modalAckDefectReason').innerText = 'อาการข้อบกพร่องที่แจ้ง: ' + (eq.abnormalReason || 'ตรวจพบความผิดปกติ');
       document.getElementById('ackOfficerName').value = 'อาภากร บุญเกตกูล';
 
@@ -5511,7 +5474,7 @@
 
       document.getElementById('resolveDeviceId').value = eq.id;
       document.getElementById('modalResolveDeviceName').innerText = eq.name + ' (' + eq.assetCode + ')';
-      document.getElementById('modalResolveDeviceMeta').innerText = 'รุ่น: ' + (eq.model || '-') + ' • แผนกปัจจุบัน: ' + window.PPCH_STORE.getDepartmentName(eq.currentDept);
+      document.getElementById('modalResolveDeviceMeta').innerText = 'แผนกปัจจุบัน: ' + window.PPCH_STORE.getDepartmentName(eq.currentDept);
       document.getElementById('modalResolveDefectNote').innerText = 'อาการข้อบกพร่องที่แจ้ง: ' + (eq.abnormalReason || 'ตรวจพบความผิดปกติ');
 
       document.getElementById('resolveActionTaken').value = '';
@@ -5580,7 +5543,7 @@
 
       document.getElementById('allowUseDeviceId').value = eq.id;
       document.getElementById('modalAllowDeviceName').innerText = eq.name + ' (' + eq.assetCode + ')';
-      document.getElementById('modalAllowDeviceMeta').innerText = 'รุ่น: ' + (eq.model || '-') + ' • แผนกปัจจุบัน: ' + window.PPCH_STORE.getDepartmentName(eq.currentDept);
+      document.getElementById('modalAllowDeviceMeta').innerText = 'แผนกปัจจุบัน: ' + window.PPCH_STORE.getDepartmentName(eq.currentDept);
       document.getElementById('modalAllowDefectReason').innerText = 'ข้อบกพร่องที่พบ: ' + (eq.abnormalReason || 'ตรวจพบความผิดปกติ');
 
       document.getElementById('allowUseOfficerName').value = eq.allowUseBy || 'อาภากร บุญเกตกูล';
@@ -5819,8 +5782,7 @@
         if (search) {
           var mAsset = (eq.assetCode || '').toLowerCase().indexOf(search) !== -1;
           var mName = (eq.name || '').toLowerCase().indexOf(search) !== -1;
-          var mModel = (eq.model || '').toLowerCase().indexOf(search) !== -1;
-          if (!mAsset && !mName && !mModel) return false;
+          if (!mAsset && !mName) return false;
         }
 
         return true;
@@ -6087,9 +6049,7 @@
         var opt = document.createElement('option');
         opt.value = eq.id;
         var deptName = window.PPCH_STORE ? window.PPCH_STORE.getDepartmentName(eq.currentDept) : eq.currentDept;
-        var label = eq.assetCode;
-        if (eq.model) label += ' (รุ่น ' + eq.model + ')';
-        label += ' • ' + deptName;
+        var label = eq.assetCode + ' • ' + deptName;
         opt.innerText = label;
         codeSel.appendChild(opt);
       });
@@ -6228,8 +6188,7 @@
               '</div>' +
               '<div style="font-size: 17px; font-weight: 800; color: var(--royal-blue); line-height: 1.3;">' + eq.name + '</div>' +
               '<div style="font-size: 12.5px; color: var(--text-muted); margin-top: 4px;">' +
-                'รุ่น: <strong>' + (eq.model || '-') + '</strong> | S/N: <strong>' + (eq.serialNo || '-') + '</strong>' +
-                ' | แผนกรับผิดชอบ: <strong style="color: var(--royal-blue);">' + currentDeptName + '</strong>' +
+                'แผนกรับผิดชอบ: <strong style="color: var(--royal-blue);">' + currentDeptName + '</strong>' +
               '</div>' +
             '</div>' +
             '<div style="display: flex; gap: 8px;">' +
@@ -6403,7 +6362,7 @@
         var curEl = document.getElementById('relocateCurrentDept');
 
         if (nameEl) nameEl.innerText = eq.name;
-        if (metaEl) metaEl.innerText = 'รุ่น: ' + (eq.model || '-') + ' | S/N: ' + (eq.serialNo || '-');
+        if (metaEl) metaEl.innerText = '';
         if (assetEl) assetEl.innerText = eq.assetCode;
         if (homeEl) homeEl.innerText = homeDeptName;
         if (curEl) curEl.innerText = currentDeptName;
@@ -6420,7 +6379,7 @@
         var curEl = document.getElementById('relocateCurrentDept');
 
         if (nameEl) nameEl.innerText = '-';
-        if (metaEl) metaEl.innerText = 'รุ่น: - | S/N: -';
+        if (metaEl) metaEl.innerText = '';
         if (assetEl) assetEl.innerText = '-';
         if (homeEl) homeEl.innerText = '-';
         if (curEl) curEl.innerText = '-';
@@ -6472,8 +6431,7 @@
       var filtered = allEquipment.filter(function (eq) {
         if (!search) return true;
         return (eq.assetCode || '').toLowerCase().indexOf(search) !== -1 ||
-               (eq.name || '').toLowerCase().indexOf(search) !== -1 ||
-               (eq.model || '').toLowerCase().indexOf(search) !== -1;
+               (eq.name || '').toLowerCase().indexOf(search) !== -1;
       });
 
       var html = '';
@@ -6489,11 +6447,7 @@
               '<span class="equip-name">' + eq.name + '</span>' +
             '</div>' +
             '<div class="equip-meta-row">' +
-              '<span class="equip-meta-item">รุ่น: <strong style="color: var(--text-body);">' + (eq.model || '-') + '</strong></span>' +
-              '<span style="color: #cbd5e1;">|</span>' +
-              '<span class="equip-meta-item">S/N: <strong style="color: var(--text-body);">' + (eq.serialNo || '-') + '</strong></span>' +
-              '<span style="color: #cbd5e1;">•</span>' +
-              '<span class="equip-meta-item" style="color: var(--royal-blue); font-weight: 600;"><span class="material-icons-round" style="font-size: 15px; color: var(--royal-blue);">place</span> ' + deptName + '</span>' +
+              '<span class="equip-meta-item" style="color: var(--royal-blue); font-weight: 600;"><span class="material-icons-round" style="font-size: 15px; color: var(--royal-blue);">place</span> แผนก ' + deptName + '</span>' +
             '</div>' +
           '</div>' +
           '<div class="equip-card-actions">' +
@@ -6596,9 +6550,6 @@
         '</div>' +
         '<div style="font-size: 13.5px; font-weight: 700; color: #0f172a; margin-top: 4px; line-height: 1.3;">' +
           eq.name +
-        '</div>' +
-        '<div style="font-size: 11px; color: #475569; margin-top: 2px;">' +
-          'รุ่น: ' + (eq.model || '-') + ' | S/N: ' + (eq.serialNo || '-') +
         '</div>' +
         '<div style="font-size: 12px; font-weight: 700; color: #004b93; margin-top: 5px; background: #f8fafc; border: 1px solid #e2e8f0; padding: 3px 8px; border-radius: 4px; display: inline-block;">' +
           'แผนกรับผิดชอบ: ' + deptName +
@@ -7107,139 +7058,124 @@
         if (prevVal2) setFormSel.value = prevVal2;
       }
 
-      // 3. modalEquipFormId
-      var mFormSel = document.getElementById('modalEquipFormId');
-      if (mFormSel) {
-        var prevVal3 = mFormSel.value;
-        mFormSel.innerHTML = '';
-
-        var optGroupExisting = document.createElement('optgroup');
-        optGroupExisting.label = '── เลือกจากแบบฟอร์มเดิมในระบบ ──';
-        forms.forEach(function (f) {
-          var opt = document.createElement('option');
-          opt.value = f.id;
-          opt.innerText = (f.shortName ? (f.shortName + ' : ') : '') + f.name;
-          optGroupExisting.appendChild(opt);
-        });
-        mFormSel.appendChild(optGroupExisting);
-
-        var optGroupCustom = document.createElement('optgroup');
-        optGroupCustom.label = '── เครื่องมือใหม่ / สร้างฟอร์มใหม่ ──';
-        var optNew = document.createElement('option');
-        optNew.value = '__NEW_FORM__';
-        optNew.innerText = '➕ สร้างแบบฟอร์มตรวจเช็คใหม่สำหรับเครื่องมือนี้...';
-        optGroupCustom.appendChild(optNew);
-        mFormSel.appendChild(optGroupCustom);
-
-        if (prevVal3 && (prevVal3 === '__NEW_FORM__' || forms.some(function (f) { return f.id === prevVal3; }))) {
-          mFormSel.value = prevVal3;
-        } else if (forms.length > 0) {
-          mFormSel.value = forms[0].id;
-        }
-      }
-
-      populateCopyFromDeviceSelect();
     }
 
-    function populateCopyFromDeviceSelect() {
-      var sel = document.getElementById('selectCopyFromDevice');
-      if (!sel) return;
+    function populateEquipmentNamesDatalist() {
+      var datalist = document.getElementById('existingEquipmentNamesList');
+      if (!datalist) return;
       var allEq = (window.PPCH_STORE && window.PPCH_STORE.getEquipment) ? window.PPCH_STORE.getEquipment() : [];
-      sel.innerHTML = '<option value="">-- คัดลอกแบบฟอร์มจากเครื่องมือเดิมในระบบ --</option>';
-
-      var sorted = allEq.slice().sort(function (a, b) {
-        return (a.name || '').localeCompare(b.name || '');
+      var seen = {};
+      var uniqueNames = [];
+      allEq.forEach(function (eq) {
+        var nm = (eq.name || '').trim();
+        if (nm && !seen[nm.toLowerCase()]) {
+          seen[nm.toLowerCase()] = nm;
+          uniqueNames.push(nm);
+        }
       });
+      uniqueNames.sort(function (a, b) { return a.localeCompare(b); });
 
-      sorted.forEach(function (eq) {
-        var form = window.PPCH_STORE.getFormById(eq.formId);
-        var formLabel = form ? (form.shortName || form.name) : eq.formId;
+      datalist.innerHTML = '';
+      uniqueNames.forEach(function (name) {
         var opt = document.createElement('option');
-        opt.value = eq.id;
-        opt.innerText = eq.name + ' (' + eq.assetCode + ') → ใช้ฟอร์ม: ' + formLabel;
-        sel.appendChild(opt);
+        opt.value = name;
+        datalist.appendChild(opt);
       });
     }
 
-    function onSelectCopyDevice(deviceId) {
-      if (!deviceId) return;
-      var eq = window.PPCH_STORE ? window.PPCH_STORE.getEquipmentById(deviceId) : null;
-      if (!eq) return;
-
-      var mFormSel = document.getElementById('modalEquipFormId');
-      if (mFormSel) {
-        mFormSel.value = eq.formId;
-        toggleNewFormBuilder(false);
-      }
-
+    function onEquipNameInputChange() {
       var nameInput = document.getElementById('modalEquipName');
-      if (nameInput && !nameInput.value.trim()) {
-        nameInput.value = eq.name;
-      }
-      var modelInput = document.getElementById('modalEquipModel');
-      if (modelInput && !modelInput.value.trim()) {
-        modelInput.value = eq.model || '';
-      }
-      var riskSelect = document.getElementById('modalEquipRiskLevel');
-      if (riskSelect && eq.riskLevel) {
-        riskSelect.value = eq.riskLevel;
+      var name = nameInput ? nameInput.value.trim() : '';
+
+      var boxEmpty = document.getElementById('boxFormEmptyPrompt');
+      var boxExist = document.getElementById('boxExistingFormPreview');
+      var boxNew = document.getElementById('boxNewFormBuilder');
+      var hintEl = document.getElementById('equipNameHint');
+      var mFormId = document.getElementById('modalEquipFormId');
+
+      if (!name) {
+        if (boxEmpty) boxEmpty.style.display = 'block';
+        if (boxExist) boxExist.style.display = 'none';
+        if (boxNew) boxNew.style.display = 'none';
+        if (mFormId) mFormId.value = '';
+        if (hintEl) {
+          hintEl.innerHTML = '💡 เลือกชื่อเครื่องเดิมเพื่อใช้แบบฟอร์มเดิมอัตโนมัติ หรือพิมพ์ชื่อใหม่เพื่อกำหนดฟอร์มใหม่';
+          hintEl.style.color = 'var(--royal-blue)';
+        }
+        return;
       }
 
-      var form = window.PPCH_STORE.getFormById(eq.formId);
-      var formName = form ? (form.shortName || form.name) : eq.formId;
-      showToast('เลือกใช้แบบฟอร์ม "' + formName + '" ตามเครื่อง ' + eq.assetCode + ' เรียบร้อย');
-    }
+      var allEq = (window.PPCH_STORE && window.PPCH_STORE.getEquipment) ? window.PPCH_STORE.getEquipment() : [];
+      var matchedEq = null;
+      for (var i = 0; i < allEq.length; i++) {
+        if ((allEq[i].name || '').trim().toLowerCase() === name.toLowerCase()) {
+          matchedEq = allEq[i];
+          break;
+        }
+      }
 
-    function onModalFormChange() {
-      var val = document.getElementById('modalEquipFormId').value;
-      if (val === '__NEW_FORM__') {
-        toggleNewFormBuilder(true);
+      if (matchedEq && matchedEq.formId) {
+        // Match existing equipment -> Reuse existing form
+        if (boxEmpty) boxEmpty.style.display = 'none';
+        if (boxExist) boxExist.style.display = 'block';
+        if (boxNew) boxNew.style.display = 'none';
+        if (mFormId) mFormId.value = matchedEq.formId;
+
+        var mode = document.getElementById('modalEquipMode') ? document.getElementById('modalEquipMode').value : 'add';
+        if (mode === 'add' && matchedEq.riskLevel) {
+          var rSel = document.getElementById('modalEquipRiskLevel');
+          if (rSel) rSel.value = matchedEq.riskLevel;
+        }
+
+        var form = (window.PPCH_STORE && window.PPCH_STORE.getFormById) ? window.PPCH_STORE.getFormById(matchedEq.formId) : null;
+        var formTitle = document.getElementById('existingFormTitle');
+        var formSub = document.getElementById('existingFormSubtitle');
+        var countBadge = document.getElementById('existingFormItemsCountBadge');
+        var listContainer = document.getElementById('existingFormItemsList');
+
+        var items = (form && form.items) ? form.items : [];
+        if (formTitle) formTitle.innerText = 'ใช้แบบฟอร์มเดิม: ' + (form ? (form.name || form.shortName || name) : name);
+        if (formSub) formSub.innerText = 'มีเครื่องมือแพทย์ชื่อนี้ในระบบแล้ว จะใช้แบบฟอร์มตรวจเช็คเดียวกันอัตโนมัติ';
+        if (countBadge) countBadge.innerText = items.length + ' หัวข้อ';
+
+        if (listContainer) {
+          if (items.length > 0) {
+            var itemsHtml = '';
+            items.forEach(function (it, idx) {
+              var itemText = (typeof it === 'string') ? it : (it.title || it.label || it.name || '');
+              itemsHtml += '<div style="display: flex; align-items: flex-start; gap: 8px; font-size: 12.5px; color: var(--text-main); line-height: 1.4;">' +
+                '<span style="color: #16a34a; font-weight: 700; min-width: 20px;">' + (idx + 1) + '.</span>' +
+                '<span>' + escapeHtml(itemText) + '</span>' +
+              '</div>';
+            });
+            listContainer.innerHTML = itemsHtml;
+          } else {
+            listContainer.innerHTML = '<div style="color: var(--text-muted); font-size: 12px; font-style: italic;">ไม่มีหัวข้อตรวจเช็คระบุในแบบฟอร์มนี้</div>';
+          }
+        }
+
+        if (hintEl) {
+          hintEl.innerHTML = '✅ พบชื่อเครื่องเดิมในระบบ ("' + escapeHtml(matchedEq.name) + '") — ใช้แบบฟอร์มตรวจเช็คเดิมอัตโนมัติ';
+          hintEl.style.color = '#15803d';
+        }
       } else {
-        toggleNewFormBuilder(false);
-      }
-    }
+        // New equipment name -> Define new form
+        if (boxEmpty) boxEmpty.style.display = 'none';
+        if (boxExist) boxExist.style.display = 'none';
+        if (boxNew) boxNew.style.display = 'block';
+        if (mFormId) mFormId.value = '__NEW_FORM__';
 
-    function toggleNewFormBuilder(show) {
-      var section = document.getElementById('newFormBuilderSection');
-      var existSection = document.getElementById('existingFormSelectSection');
-      var btnExist = document.getElementById('btnModeExistingForm');
-      var btnNew = document.getElementById('btnModeNewForm');
-      var mFormSel = document.getElementById('modalEquipFormId');
-      if (!section) return;
+        var headerTitle = document.getElementById('newFormHeaderTitle');
+        if (headerTitle) headerTitle.innerText = 'กำหนดหัวข้อตรวจเช็คสำหรับ: ' + name;
 
-      if (show) {
-        section.style.display = 'block';
-        if (existSection) existSection.style.display = 'none';
-        if (btnExist) { btnExist.classList.remove('active', 'btn-tool-primary'); }
-        if (btnNew) { btnNew.classList.add('active', 'btn-tool-primary'); }
-        if (mFormSel) mFormSel.value = '__NEW_FORM__';
-
-        var equipName = (document.getElementById('modalEquipName') ? document.getElementById('modalEquipName').value : '').trim();
-        var formNameInput = document.getElementById('newFormName');
-        if (formNameInput && !formNameInput.value.trim() && equipName) {
-          formNameInput.value = 'แบบตรวจเช็ค ' + equipName;
-        }
-        var shortNameInput = document.getElementById('newFormShortName');
-        if (shortNameInput && !shortNameInput.value.trim() && equipName) {
-          shortNameInput.value = equipName;
+        var newContainer = document.getElementById('newFormItemsContainer');
+        if (newContainer && newContainer.children.length === 0) {
+          addNewChecklistItemRow('');
         }
 
-        var container = document.getElementById('newFormItemsContainer');
-        if (container && container.children.length === 0) {
-          loadDefaultTemplateItems();
-        }
-
-        setTimeout(function () {
-          if (formNameInput) formNameInput.focus();
-        }, 100);
-      } else {
-        section.style.display = 'none';
-        if (existSection) existSection.style.display = 'block';
-        if (btnExist) { btnExist.classList.add('active', 'btn-tool-primary'); }
-        if (btnNew) { btnNew.classList.remove('active', 'btn-tool-primary'); }
-        if (mFormSel && mFormSel.value === '__NEW_FORM__') {
-          var forms = (window.PPCH_STORE && window.PPCH_STORE.getForms) ? window.PPCH_STORE.getForms() : [];
-          if (forms.length > 0) mFormSel.value = forms[0].id;
+        if (hintEl) {
+          hintEl.innerHTML = '✨ เป็นเครื่องมือแพทย์ใหม่ — กำหนดเกณฑ์การตรวจเช็คด้านล่าง (ใช้ชื่อเครื่องนี้เป็นชื่อแบบฟอร์มโดยตรง)';
+          hintEl.style.color = 'var(--royal-blue)';
         }
       }
     }
@@ -7281,7 +7217,9 @@
       container.appendChild(row);
 
       renumberChecklistRows();
-      input.focus();
+      if (!initialText) {
+        setTimeout(function () { input.focus(); }, 50);
+      }
     }
 
     function renumberChecklistRows() {
@@ -7291,24 +7229,6 @@
       rows.forEach(function (r, idx) {
         var lbl = r.querySelector('.item-num-label');
         if (lbl) lbl.innerText = (idx + 1) + '.';
-      });
-    }
-
-    function loadDefaultTemplateItems() {
-      var container = document.getElementById('newFormItemsContainer');
-      if (!container) return;
-      container.innerHTML = '';
-
-      var defaultItems = [
-        'สภาพสายไฟ ปลั๊กไฟ และสายต่อเชื่อม ไม่ชำรุด ฉีกขาด หรือหักงอ',
-        'ระดับแบตเตอรี่สำรอง (Battery Status) เต็มหรือพร้อมใช้งานเมื่อเกิดไฟฟ้าดับ',
-        'ผลการทดสอบเปิดเครื่อง Self-Test ทำงานปกติ ไม่มี Error Code',
-        'ระบบส่งสัญญาณเตือนภาพและเสียง (Audio & Visual Alarm) ทำงานปกติ',
-        'ความสะอาดของตัวเครื่องและอุปกรณ์ประกอบ พร้อมใช้งานทันที'
-      ];
-
-      defaultItems.forEach(function (txt) {
-        addNewChecklistItemRow(txt);
       });
     }
 
@@ -7504,9 +7424,7 @@
       var filtered = equip.filter(function (eq) {
         if (search) {
           var sMatch = (eq.assetCode && eq.assetCode.toLowerCase().indexOf(search) !== -1) ||
-                       (eq.name && eq.name.toLowerCase().indexOf(search) !== -1) ||
-                       (eq.model && eq.model.toLowerCase().indexOf(search) !== -1) ||
-                       (eq.serialNo && eq.serialNo.toLowerCase().indexOf(search) !== -1);
+                       (eq.name && eq.name.toLowerCase().indexOf(search) !== -1);
           if (!sMatch) return false;
         }
         if (deptFilter !== 'all' && eq.currentDept !== deptFilter && eq.homeDept !== deptFilter) return false;
@@ -7583,27 +7501,15 @@
 
       document.getElementById('modalEquipAssetCode').value = '';
       document.getElementById('modalEquipName').value = '';
-      document.getElementById('modalEquipModel').value = '';
-      document.getElementById('modalEquipSerialNo').value = '';
       document.getElementById('modalEquipRiskLevel').value = 'high';
       document.getElementById('modalEquipStatus').value = 'ready';
 
-      // Reset new form builder
-      toggleNewFormBuilder(false);
-      var newFormNameInput = document.getElementById('newFormName');
-      if (newFormNameInput) newFormNameInput.value = '';
-      var newFormShortNameInput = document.getElementById('newFormShortName');
-      if (newFormShortNameInput) newFormShortNameInput.value = '';
-      var newFormCatInput = document.getElementById('newFormCategory');
-      if (newFormCatInput) newFormCatInput.value = '';
       var container = document.getElementById('newFormItemsContainer');
       if (container) container.innerHTML = '';
 
-      populateFormSelects();
       populateDepartmentSelects();
-
-      var copyBox = document.getElementById('copyFromDeviceBox');
-      if (copyBox) copyBox.style.display = 'block';
+      populateEquipmentNamesDatalist();
+      onEquipNameInputChange();
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
       setTimeout(function () {
@@ -7627,16 +7533,14 @@
 
       document.getElementById('modalEquipAssetCode').value = eq.assetCode || '';
       document.getElementById('modalEquipName').value = eq.name || '';
-      document.getElementById('modalEquipModel').value = eq.model || '';
-      document.getElementById('modalEquipSerialNo').value = eq.serialNo || '';
-      document.getElementById('modalEquipFormId').value = eq.formId || 'defibrillator';
+      document.getElementById('modalEquipFormId').value = eq.formId || '';
       document.getElementById('modalEquipRiskLevel').value = eq.riskLevel || (eq.frequency === 'monthly' ? 'low' : 'high');
       document.getElementById('modalEquipCurrentDept').value = eq.currentDept || 'CENTRAL';
       document.getElementById('modalEquipStatus').value = eq.status || 'ready';
 
-      toggleNewFormBuilder(false);
-      var copyBox = document.getElementById('copyFromDeviceBox');
-      if (copyBox) copyBox.style.display = 'none';
+      populateDepartmentSelects();
+      populateEquipmentNamesDatalist();
+      onEquipNameInputChange();
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
       setTimeout(function () {
@@ -7664,8 +7568,6 @@
       var dbId = document.getElementById('modalEquipDbId').value;
       var assetCode = document.getElementById('modalEquipAssetCode').value.trim();
       var name = document.getElementById('modalEquipName').value.trim();
-      var model = document.getElementById('modalEquipModel').value.trim();
-      var serialNo = document.getElementById('modalEquipSerialNo').value.trim();
       var formId = document.getElementById('modalEquipFormId').value;
       var riskLevel = document.getElementById('modalEquipRiskLevel').value;
       var currentDept = document.getElementById('modalEquipCurrentDept').value;
@@ -7681,18 +7583,8 @@
 
       var frequency = (riskLevel === 'low') ? 'monthly' : 'daily';
 
-      // Handle Custom Form Creation if selected
-      if (formId === '__NEW_FORM__') {
-        var nName = (document.getElementById('newFormName') ? document.getElementById('newFormName').value : '').trim();
-        var nShort = (document.getElementById('newFormShortName') ? document.getElementById('newFormShortName').value : '').trim();
-        var nCat = (document.getElementById('newFormCategory') ? document.getElementById('newFormCategory').value : '').trim();
-
-        if (!nName) {
-          showToast('กรุณากรอกชื่อแบบฟอร์มตรวจเช็คใหม่');
-          if (btn) btn.disabled = false;
-          return;
-        }
-
+      // Handle Custom Form Creation if new form or not set
+      if (formId === '__NEW_FORM__' || !formId) {
         var itemInputs = document.querySelectorAll('#newFormItemsContainer .item-text-input');
         var criteria = [];
         itemInputs.forEach(function (inp) {
@@ -7701,17 +7593,17 @@
         });
 
         if (criteria.length === 0) {
-          showToast('กรุณาระบุหัวข้อตรวจเช็คความพร้อมอย่างน้อย 1 ข้อ');
+          showToast('กรุณาระบุเกณฑ์การตรวจเช็คความพร้อมอย่างน้อย 1 ข้อ');
           if (btn) btn.disabled = false;
           return;
         }
 
-        var newFormId = 'custom_' + Date.now();
+        var newFormId = 'form_' + Date.now();
         var newFormObj = {
           id: newFormId,
-          name: nName,
-          shortName: nShort || nName,
-          category: nCat || 'เครื่องมือแพทย์ทั่วไป',
+          name: name,
+          shortName: name,
+          category: name,
           frequency: frequency,
           riskLevel: riskLevel,
           items: criteria
@@ -7726,14 +7618,13 @@
         }
 
         formId = newFormId;
-        populateFormSelects();
       }
 
       var itemPayload = {
         assetCode: assetCode,
         name: name,
-        model: model,
-        serialNo: serialNo,
+        model: '',
+        serialNo: '',
         formId: formId,
         riskLevel: riskLevel,
         frequency: frequency,
@@ -7873,7 +7764,6 @@
         '<th>ลำดับ</th>' +
         '<th>รหัสครุภัณฑ์</th>' +
         '<th>ชื่อเครื่องมือแพทย์</th>' +
-        '<th>รุ่น</th>' +
         '<th>แผนกรับผิดชอบ</th>' +
         '<th>วันที่ตรวจ</th>' +
         '<th>สถานะความพร้อม</th>' +
@@ -7922,7 +7812,6 @@
           '<td class="text-center">' + (idx + 1) + '</td>' +
           '<td class="text-center" style="font-weight: bold; mso-number-format:\'\\@\';">' + eq.assetCode + '</td>' +
           '<td style="font-weight: 600;">' + eq.name + '</td>' +
-          '<td>' + (eq.model || '-') + '</td>' +
           '<td>' + deptName + '</td>' +
           '<td class="text-center" style="mso-number-format:\'\\@\';">' + dateVal + '</td>' +
           '<td class="' + statusCls + '">' + statusTh + '</td>' +
@@ -7963,7 +7852,7 @@
 
       // UTF-8 BOM (\uFEFF) ensures Excel on Windows reads Thai text correctly
       var csv = '\uFEFF';
-      csv += 'ลำดับ,รหัสครุภัณฑ์,ชื่อเครื่องมือแพทย์,รุ่น,แผนกรับผิดชอบ,วันที่ตรวจ,สถานะความพร้อม,ผู้ตรวจเช็ค,เวลาที่ตรวจ,อาการข้อบกพร่อง,เงื่อนไขการอนุญาตให้ใช้งานต่อ,ผู้อนุญาต\n';
+      csv += 'ลำดับ,รหัสครุภัณฑ์,ชื่อเครื่องมือแพทย์,แผนกรับผิดชอบ,วันที่ตรวจ,สถานะความพร้อม,ผู้ตรวจเช็ค,เวลาที่ตรวจ,อาการข้อบกพร่อง,เงื่อนไขการอนุญาตให้ใช้งานต่อ,ผู้อนุญาต\n';
 
       allEquipment.forEach(function (eq, idx) {
         var ev = evalMapByDevice[eq.id] || evalMapByDevice[eq.assetCode];
@@ -8000,7 +7889,6 @@
           idx + 1,
           cleanCell(eq.assetCode),
           cleanCell(eq.name),
-          cleanCell(eq.model || '-'),
           cleanCell(deptName),
           cleanCell(dateVal),
           cleanCell(statusTh),
