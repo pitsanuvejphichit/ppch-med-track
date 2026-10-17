@@ -4050,12 +4050,83 @@
             <input type="text" id="modalEquipAssetCode" class="filter-input" style="width: 100%; font-family: var(--font-mono); font-weight: 700;" placeholder="เช่น EQ-68-DEF-001" required>
           </div>
           <div>
-            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">
-              แบบฟอร์มตรวจเช็ค <span style="color: var(--red-abnormal);">*</span>
-            </label>
-            <select id="modalEquipFormId" class="filter-input" style="width: 100%;" required>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+              <label style="font-size: 12px; font-weight: 600; color: var(--text-muted);">
+                แบบฟอร์มตรวจเช็ค <span style="color: var(--red-abnormal);">*</span>
+              </label>
+              <button type="button" id="btnToggleNewForm" onclick="toggleNewFormBuilder(true)" class="btn-text-link" style="font-size: 11px; color: var(--royal-blue); font-weight: 700; background: none; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 3px;" title="คลิกเพื่อสร้างแบบฟอร์มตรวจเช็คใหม่">
+                <span class="material-icons-round" style="font-size: 14px;">add_circle</span>
+                <span>+ สร้างฟอร์มใหม่</span>
+              </button>
+            </div>
+            <select id="modalEquipFormId" class="filter-input" style="width: 100%; font-weight: 600;" onchange="onModalFormChange()" required>
               <!-- Populated via script -->
             </select>
+          </div>
+        </div>
+
+        <!-- Quick Copy from Existing Equipment Helper -->
+        <div id="copyFromDeviceBox" style="background: #f8fafc; border: 1px dashed var(--border-main); border-radius: 8px; padding: 8px 12px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--text-muted); flex-shrink: 0;">
+            <span class="material-icons-round" style="font-size: 16px; color: var(--royal-blue);">content_copy</span>
+            <span>หรือเลือกใช้ฟอร์มจากเครื่องมือเดิม:</span>
+          </div>
+          <select id="selectCopyFromDevice" class="filter-input" style="flex: 1; font-size: 11.5px; padding: 4px 8px; background: #ffffff;" onchange="onSelectCopyDevice(this.value)">
+            <option value="">-- คัดลอกแบบฟอร์มจากเครื่องมือเดิมในระบบ --</option>
+          </select>
+        </div>
+
+        <!-- Inline New Form Builder Container -->
+        <div id="newFormBuilderSection" style="display: none; background: #f0f7ff; border: 1.5px solid #93c5fd; border-radius: 12px; padding: 14px 16px; margin-bottom: 14px; animation: loaderPop 0.25s ease;">
+          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #bfdbfe; padding-bottom: 8px; margin-bottom: 12px;">
+            <div style="font-size: 13.5px; font-weight: 700; color: var(--royal-blue); display: flex; align-items: center; gap: 6px;">
+              <span class="material-icons-round" style="font-size: 18px; color: var(--royal-blue);">playlist_add</span>
+              <span>สร้างแบบฟอร์มตรวจเช็คใหม่ (New Evaluation Form)</span>
+            </div>
+            <button type="button" onclick="toggleNewFormBuilder(false)" style="background: none; border: none; color: #64748b; font-size: 11px; cursor: pointer; text-decoration: underline;">
+              ยกเลิก (ใช้ฟอร์มเดิม)
+            </button>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+            <div>
+              <label style="display: block; font-size: 11px; font-weight: 600; color: var(--text-body); margin-bottom: 3px;">
+                ชื่อแบบฟอร์มตรวจเช็ค <span style="color: var(--red-abnormal);">*</span>
+              </label>
+              <input type="text" id="newFormName" class="filter-input" style="width: 100%; font-size: 12.5px; font-weight: 600; background: #ffffff;" placeholder="เช่น แบบตรวจเช็คเครื่อง Suction Unit">
+            </div>
+            <div>
+              <label style="display: block; font-size: 11px; font-weight: 600; color: var(--text-body); margin-bottom: 3px;">
+                ชื่อย่อ / ชนิดอุปกรณ์
+              </label>
+              <input type="text" id="newFormShortName" class="filter-input" style="width: 100%; font-size: 12.5px; background: #ffffff;" placeholder="เช่น Suction Unit">
+            </div>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <label style="display: block; font-size: 11px; font-weight: 600; color: var(--text-body); margin-bottom: 3px;">
+              หมวดหมู่อุปกรณ์
+            </label>
+            <input type="text" id="newFormCategory" class="filter-input" style="width: 100%; font-size: 12.5px; background: #ffffff;" placeholder="เช่น เครื่องมือช่วยกู้ชีพและทางเดินหายใจ">
+          </div>
+
+          <!-- Dynamic Checklist Items List -->
+          <div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+              <label style="font-size: 11.5px; font-weight: 700; color: var(--royal-blue);">
+                รายการเกณฑ์การตรวจเช็คความพร้อม (Checklist Criteria) <span style="color: var(--red-abnormal);">*</span>
+              </label>
+              <button type="button" onclick="loadDefaultTemplateItems()" class="btn-text-link" style="font-size: 11px; color: #0284c7; font-weight: 600; background: none; border: none; cursor: pointer;">
+                ⚡ ใส่เกณฑ์มาตรฐาน 5 ข้อ
+              </button>
+            </div>
+            <div id="newFormItemsContainer" style="display: flex; flex-direction: column; gap: 6px; max-height: 190px; overflow-y: auto; padding-right: 4px; margin-bottom: 8px;">
+              <!-- Populated dynamically via JS -->
+            </div>
+            <button type="button" onclick="addNewChecklistItemRow()" class="btn-tool" style="width: 100%; padding: 6px; font-size: 12px; justify-content: center; background: #ffffff; border: 1px dashed var(--royal-blue); color: var(--royal-blue);">
+              <span class="material-icons-round" style="font-size: 15px;">add</span>
+              <span>เพิ่มหัวข้อตรวจเช็ค (Add Criterion)</span>
+            </button>
           </div>
         </div>
 
@@ -6428,11 +6499,12 @@
     }
 
     function populateFormSelects() {
-      var forms = (window.PPCH_CONFIG && window.PPCH_CONFIG.forms) || [];
+      var forms = (window.PPCH_STORE && window.PPCH_STORE.getForms) ? window.PPCH_STORE.getForms() : ((window.PPCH_CONFIG && window.PPCH_CONFIG.forms) || []);
 
       // 1. filterCategory (Summary View)
       var catSel = document.getElementById('filterCategory');
-      if (catSel && catSel.children.length <= 1) {
+      if (catSel) {
+        var prevVal = catSel.value;
         catSel.innerHTML = '<option value="all">ทุกประเภท</option>';
         forms.forEach(function (f) {
           var opt = document.createElement('option');
@@ -6440,11 +6512,13 @@
           opt.innerText = f.shortName || f.name;
           catSel.appendChild(opt);
         });
+        if (prevVal) catSel.value = prevVal;
       }
 
       // 2. settingsFilterForm
       var setFormSel = document.getElementById('settingsFilterForm');
-      if (setFormSel && setFormSel.children.length <= 1) {
+      if (setFormSel) {
+        var prevVal2 = setFormSel.value;
         setFormSel.innerHTML = '<option value="all">ทุกแบบฟอร์ม</option>';
         forms.forEach(function (f) {
           var opt = document.createElement('option');
@@ -6452,19 +6526,203 @@
           opt.innerText = f.shortName || f.name;
           setFormSel.appendChild(opt);
         });
+        if (prevVal2) setFormSel.value = prevVal2;
       }
 
       // 3. modalEquipFormId
       var mFormSel = document.getElementById('modalEquipFormId');
-      if (mFormSel && mFormSel.children.length === 0) {
+      if (mFormSel) {
+        var prevVal3 = mFormSel.value;
         mFormSel.innerHTML = '';
+
+        var optGroupExisting = document.createElement('optgroup');
+        optGroupExisting.label = '── เลือกจากแบบฟอร์มเดิมในระบบ ──';
         forms.forEach(function (f) {
           var opt = document.createElement('option');
           opt.value = f.id;
-          opt.innerText = f.name;
-          mFormSel.appendChild(opt);
+          opt.innerText = (f.shortName ? (f.shortName + ' : ') : '') + f.name;
+          optGroupExisting.appendChild(opt);
         });
+        mFormSel.appendChild(optGroupExisting);
+
+        var optGroupCustom = document.createElement('optgroup');
+        optGroupCustom.label = '── เครื่องมือใหม่ / สร้างฟอร์มใหม่ ──';
+        var optNew = document.createElement('option');
+        optNew.value = '__NEW_FORM__';
+        optNew.innerText = '➕ สร้างแบบฟอร์มตรวจเช็คใหม่สำหรับเครื่องมือนี้...';
+        optGroupCustom.appendChild(optNew);
+        mFormSel.appendChild(optGroupCustom);
+
+        if (prevVal3 && (prevVal3 === '__NEW_FORM__' || forms.some(function (f) { return f.id === prevVal3; }))) {
+          mFormSel.value = prevVal3;
+        } else if (forms.length > 0) {
+          mFormSel.value = forms[0].id;
+        }
       }
+
+      populateCopyFromDeviceSelect();
+    }
+
+    function populateCopyFromDeviceSelect() {
+      var sel = document.getElementById('selectCopyFromDevice');
+      if (!sel) return;
+      var allEq = (window.PPCH_STORE && window.PPCH_STORE.getEquipment) ? window.PPCH_STORE.getEquipment() : [];
+      sel.innerHTML = '<option value="">-- คัดลอกแบบฟอร์มจากเครื่องมือเดิมในระบบ --</option>';
+
+      var sorted = allEq.slice().sort(function (a, b) {
+        return (a.name || '').localeCompare(b.name || '');
+      });
+
+      sorted.forEach(function (eq) {
+        var form = window.PPCH_STORE.getFormById(eq.formId);
+        var formLabel = form ? (form.shortName || form.name) : eq.formId;
+        var opt = document.createElement('option');
+        opt.value = eq.id;
+        opt.innerText = eq.name + ' (' + eq.assetCode + ') → ใช้ฟอร์ม: ' + formLabel;
+        sel.appendChild(opt);
+      });
+    }
+
+    function onSelectCopyDevice(deviceId) {
+      if (!deviceId) return;
+      var eq = window.PPCH_STORE ? window.PPCH_STORE.getEquipmentById(deviceId) : null;
+      if (!eq) return;
+
+      var mFormSel = document.getElementById('modalEquipFormId');
+      if (mFormSel) {
+        mFormSel.value = eq.formId;
+        toggleNewFormBuilder(false);
+      }
+
+      var nameInput = document.getElementById('modalEquipName');
+      if (nameInput && !nameInput.value.trim()) {
+        nameInput.value = eq.name;
+      }
+      var modelInput = document.getElementById('modalEquipModel');
+      if (modelInput && !modelInput.value.trim()) {
+        modelInput.value = eq.model || '';
+      }
+      var riskSelect = document.getElementById('modalEquipRiskLevel');
+      if (riskSelect && eq.riskLevel) {
+        riskSelect.value = eq.riskLevel;
+      }
+
+      var form = window.PPCH_STORE.getFormById(eq.formId);
+      var formName = form ? (form.shortName || form.name) : eq.formId;
+      showToast('เลือกใช้แบบฟอร์ม "' + formName + '" ตามเครื่อง ' + eq.assetCode + ' เรียบร้อย');
+    }
+
+    function onModalFormChange() {
+      var val = document.getElementById('modalEquipFormId').value;
+      if (val === '__NEW_FORM__') {
+        toggleNewFormBuilder(true);
+      } else {
+        toggleNewFormBuilder(false);
+      }
+    }
+
+    function toggleNewFormBuilder(show) {
+      var section = document.getElementById('newFormBuilderSection');
+      var mFormSel = document.getElementById('modalEquipFormId');
+      if (!section) return;
+
+      if (show) {
+        section.style.display = 'block';
+        if (mFormSel) mFormSel.value = '__NEW_FORM__';
+
+        var equipName = (document.getElementById('modalEquipName') ? document.getElementById('modalEquipName').value : '').trim();
+        var formNameInput = document.getElementById('newFormName');
+        if (formNameInput && !formNameInput.value.trim() && equipName) {
+          formNameInput.value = 'แบบตรวจเช็ค ' + equipName;
+        }
+        var shortNameInput = document.getElementById('newFormShortName');
+        if (shortNameInput && !shortNameInput.value.trim() && equipName) {
+          shortNameInput.value = equipName;
+        }
+
+        var container = document.getElementById('newFormItemsContainer');
+        if (container && container.children.length === 0) {
+          loadDefaultTemplateItems();
+        }
+
+        setTimeout(function () {
+          if (formNameInput) formNameInput.focus();
+        }, 100);
+      } else {
+        section.style.display = 'none';
+        if (mFormSel && mFormSel.value === '__NEW_FORM__') {
+          var forms = (window.PPCH_STORE && window.PPCH_STORE.getForms) ? window.PPCH_STORE.getForms() : [];
+          if (forms.length > 0) mFormSel.value = forms[0].id;
+        }
+      }
+    }
+
+    function addNewChecklistItemRow(initialText) {
+      var container = document.getElementById('newFormItemsContainer');
+      if (!container) return;
+
+      var row = document.createElement('div');
+      row.className = 'new-form-item-row';
+      row.style.cssText = 'display: flex; align-items: center; gap: 8px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 6px 10px;';
+
+      var numSpan = document.createElement('span');
+      numSpan.className = 'item-num-label';
+      numSpan.style.cssText = 'font-size: 11.5px; font-weight: 700; color: var(--royal-blue); min-width: 20px;';
+
+      var input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'filter-input item-text-input';
+      input.style.cssText = 'flex: 1; border: none; padding: 2px 4px; font-size: 12.5px; outline: none; background: transparent;';
+      input.placeholder = 'ระบุเกณฑ์การตรวจเช็คข้อนี้...';
+      input.value = initialText || '';
+
+      var delBtn = document.createElement('button');
+      delBtn.type = 'button';
+      delBtn.style.cssText = 'background: none; border: none; color: #94a3b8; cursor: pointer; padding: 2px; display: flex; align-items: center; border-radius: 4px;';
+      delBtn.title = 'ลบข้อนี้';
+      delBtn.innerHTML = '<span class="material-icons-round" style="font-size: 17px;">close</span>';
+      delBtn.onmouseover = function () { this.style.color = '#ef4444'; };
+      delBtn.onmouseout = function () { this.style.color = '#94a3b8'; };
+      delBtn.onclick = function () {
+        row.remove();
+        renumberChecklistRows();
+      };
+
+      row.appendChild(numSpan);
+      row.appendChild(input);
+      row.appendChild(delBtn);
+      container.appendChild(row);
+
+      renumberChecklistRows();
+      input.focus();
+    }
+
+    function renumberChecklistRows() {
+      var container = document.getElementById('newFormItemsContainer');
+      if (!container) return;
+      var rows = container.querySelectorAll('.new-form-item-row');
+      rows.forEach(function (r, idx) {
+        var lbl = r.querySelector('.item-num-label');
+        if (lbl) lbl.innerText = (idx + 1) + '.';
+      });
+    }
+
+    function loadDefaultTemplateItems() {
+      var container = document.getElementById('newFormItemsContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      var defaultItems = [
+        'สภาพสายไฟ ปลั๊กไฟ และสายต่อเชื่อม ไม่ชำรุด ฉีกขาด หรือหักงอ',
+        'ระดับแบตเตอรี่สำรอง (Battery Status) เต็มหรือพร้อมใช้งานเมื่อเกิดไฟฟ้าดับ',
+        'ผลการทดสอบเปิดเครื่อง Self-Test ทำงานปกติ ไม่มี Error Code',
+        'ระบบส่งสัญญาณเตือนภาพและเสียง (Audio & Visual Alarm) ทำงานปกติ',
+        'ความสะอาดของตัวเครื่องและอุปกรณ์ประกอบ พร้อมใช้งานทันที'
+      ];
+
+      defaultItems.forEach(function (txt) {
+        addNewChecklistItemRow(txt);
+      });
     }
 
     // ---------- DEPARTMENT CRUD ----------
@@ -6733,8 +6991,22 @@
       document.getElementById('modalEquipRiskLevel').value = 'high';
       document.getElementById('modalEquipStatus').value = 'ready';
 
+      // Reset new form builder
+      toggleNewFormBuilder(false);
+      var newFormNameInput = document.getElementById('newFormName');
+      if (newFormNameInput) newFormNameInput.value = '';
+      var newFormShortNameInput = document.getElementById('newFormShortName');
+      if (newFormShortNameInput) newFormShortNameInput.value = '';
+      var newFormCatInput = document.getElementById('newFormCategory');
+      if (newFormCatInput) newFormCatInput.value = '';
+      var container = document.getElementById('newFormItemsContainer');
+      if (container) container.innerHTML = '';
+
       populateFormSelects();
       populateDepartmentSelects();
+
+      var copyBox = document.getElementById('copyFromDeviceBox');
+      if (copyBox) copyBox.style.display = 'flex';
 
       document.getElementById('modalAddEditEquipment').classList.remove('hidden');
       setTimeout(function () { document.getElementById('modalEquipAssetCode').focus(); }, 100);
@@ -6756,6 +7028,10 @@
       document.getElementById('modalEquipRiskLevel').value = eq.riskLevel || (eq.frequency === 'monthly' ? 'low' : 'high');
       document.getElementById('modalEquipCurrentDept').value = eq.currentDept || 'CENTRAL';
       document.getElementById('modalEquipStatus').value = eq.status || 'ready';
+
+      toggleNewFormBuilder(false);
+      var copyBox = document.getElementById('copyFromDeviceBox');
+      if (copyBox) copyBox.style.display = 'none';
 
       document.getElementById('modalAddEditEquipment').classList.remove('hidden');
       setTimeout(function () { document.getElementById('modalEquipName').focus(); }, 100);
@@ -6787,6 +7063,54 @@
       if (btn) btn.disabled = true;
 
       var frequency = (riskLevel === 'low') ? 'monthly' : 'daily';
+
+      // Handle Custom Form Creation if selected
+      if (formId === '__NEW_FORM__') {
+        var nName = (document.getElementById('newFormName') ? document.getElementById('newFormName').value : '').trim();
+        var nShort = (document.getElementById('newFormShortName') ? document.getElementById('newFormShortName').value : '').trim();
+        var nCat = (document.getElementById('newFormCategory') ? document.getElementById('newFormCategory').value : '').trim();
+
+        if (!nName) {
+          showToast('กรุณากรอกชื่อแบบฟอร์มตรวจเช็คใหม่');
+          if (btn) btn.disabled = false;
+          return;
+        }
+
+        var itemInputs = document.querySelectorAll('#newFormItemsContainer .item-text-input');
+        var criteria = [];
+        itemInputs.forEach(function (inp) {
+          var t = inp.value.trim();
+          if (t) criteria.push(t);
+        });
+
+        if (criteria.length === 0) {
+          showToast('กรุณาระบุหัวข้อตรวจเช็คความพร้อมอย่างน้อย 1 ข้อ');
+          if (btn) btn.disabled = false;
+          return;
+        }
+
+        var newFormId = 'custom_' + Date.now();
+        var newFormObj = {
+          id: newFormId,
+          name: nName,
+          shortName: nShort || nName,
+          category: nCat || 'เครื่องมือแพทย์ทั่วไป',
+          frequency: frequency,
+          riskLevel: riskLevel,
+          items: criteria
+        };
+
+        if (window.PPCH_STORE && window.PPCH_STORE.saveCustomForm) {
+          window.PPCH_STORE.saveCustomForm(newFormObj);
+        }
+
+        if (window.PPCH_API && window.PPCH_API.createCustomForm) {
+          window.PPCH_API.createCustomForm(newFormObj);
+        }
+
+        formId = newFormId;
+        populateFormSelects();
+      }
 
       var itemPayload = {
         assetCode: assetCode,

@@ -173,21 +173,24 @@
       var pRepairs = supabaseFetch('repairs?select=*&order=created_at.desc&limit=200');
       var pTransfers = supabaseFetch('transfers?select=*&order=created_at.desc&limit=200');
       var pDepartments = supabaseFetch('departments?select=*&order=name.asc').catch(function () { return []; });
+      var pCustomForms = supabaseFetch('custom_forms?select=*&order=created_at.asc').catch(function () { return []; });
 
-      Promise.all([pEquipment, pEvaluations, pRepairs, pTransfers, pDepartments])
+      Promise.all([pEquipment, pEvaluations, pRepairs, pTransfers, pDepartments, pCustomForms])
         .then(function (results) {
           var eqList = (results[0] || []).map(mapEquipmentFromDb);
           var evList = (results[1] || []).map(mapEvaluationFromDb);
           var repList = (results[2] || []).map(mapRepairFromDb);
           var trfList = (results[3] || []).map(mapTransferFromDb);
           var deptList = results[4] || [];
+          var cfList = results[5] || [];
 
           var responseData = {
             equipment: eqList,
             evaluations: evList,
             repairs: repList,
             transfers: trfList,
-            departments: deptList
+            departments: deptList,
+            customForms: cfList
           };
 
           if (callback) {
@@ -606,6 +609,33 @@
           console.error('Supabase deleteDepartment error:', err);
           if (callback) callback({ success: false, message: err.message });
         });
+    },
+
+    // 5.2 Custom Evaluation Forms CRUD
+    createCustomForm: function (formObj, callback) {
+      if (!formObj || !formObj.id || !formObj.name) {
+        if (callback) callback({ success: false, message: 'กรุณากรอกข้อมูลแบบฟอร์มให้ครบถ้วน' });
+        return;
+      }
+      var row = {
+        id: formObj.id,
+        name: formObj.name,
+        short_name: formObj.shortName || formObj.name,
+        category: formObj.category || 'เครื่องมือแพทย์ทั่วไป',
+        frequency: formObj.frequency || 'daily',
+        risk_level: formObj.riskLevel || 'high',
+        items: formObj.items || []
+      };
+      supabaseFetch('custom_forms', {
+        method: 'POST',
+        body: row
+      }).then(function (res) {
+        if (callback) callback({ success: true, data: formObj });
+      }).catch(function (err) {
+        console.warn('Supabase createCustomForm error:', err);
+        // Fallback to local success so UI still continues seamlessly
+        if (callback) callback({ success: true, data: formObj, warning: err.message });
+      });
     },
 
     // 5.3 Equipment Management (CRUD)

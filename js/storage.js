@@ -14,10 +14,26 @@
     localStorage.removeItem('ppch_med_gas_url');
   } catch (e) {}
 
-  // Pure in-memory state for current browser session (Populated directly from Google Sheets API)
+  function loadLocalCustomForms() {
+    try {
+      var raw = localStorage.getItem('ppch_custom_forms_v1');
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveLocalCustomForms(forms) {
+    try {
+      localStorage.setItem('ppch_custom_forms_v1', JSON.stringify(forms));
+    } catch (e) {}
+  }
+
+  // Pure in-memory state for current browser session (Populated directly from Google Sheets / Supabase)
   var inMemoryData = {
     departments: (window.PPCH_CONFIG && window.PPCH_CONFIG.departments) ? JSON.parse(JSON.stringify(window.PPCH_CONFIG.departments)) : [],
     equipment: (window.PPCH_CONFIG && window.PPCH_CONFIG.initialEquipment) ? JSON.parse(JSON.stringify(window.PPCH_CONFIG.initialEquipment)) : [],
+    customForms: loadLocalCustomForms(),
     evaluations: [],
     transfers: [],
     repairs: []
@@ -92,6 +108,33 @@
         if (window.PPCH_CONFIG) {
           window.PPCH_CONFIG.departments = cloudData.departments;
         }
+      }
+      if (Array.isArray(cloudData.customForms)) {
+        var cloudMap = {};
+        cloudData.customForms.forEach(function (cf) {
+          if (cf && cf.id) {
+            cloudMap[cf.id] = {
+              id: cf.id,
+              name: cf.name,
+              shortName: cf.shortName || cf.short_name || cf.name,
+              category: cf.category || 'เครื่องมือแพทย์ทั่วไป',
+              frequency: cf.frequency || 'daily',
+              riskLevel: cf.riskLevel || cf.risk_level || 'high',
+              items: cf.items || []
+            };
+          }
+        });
+        (inMemoryData.customForms || []).forEach(function (lf) {
+          if (lf && lf.id && !cloudMap[lf.id]) {
+            cloudMap[lf.id] = lf;
+          }
+        });
+        var mergedList = [];
+        for (var cid in cloudMap) {
+          mergedList.push(cloudMap[cid]);
+        }
+        inMemoryData.customForms = mergedList;
+        saveLocalCustomForms(inMemoryData.customForms);
       }
 
       notifyUpdated();
@@ -244,12 +287,44 @@
       return inMemoryData.equipment;
     },
 
+    getForms: function () {
+      var standard = (window.PPCH_CONFIG && window.PPCH_CONFIG.forms) ? window.PPCH_CONFIG.forms : [];
+      var custom = inMemoryData.customForms || [];
+      var formMap = {};
+      standard.forEach(function (f) { if (f && f.id) formMap[f.id] = f; });
+      custom.forEach(function (f) { if (f && f.id) formMap[f.id] = f; });
+      var list = [];
+      for (var k in formMap) {
+        list.push(formMap[k]);
+      }
+      return list;
+    },
+
     getFormById: function (formId) {
-      var forms = (window.PPCH_CONFIG && window.PPCH_CONFIG.forms) || [];
-      for (var i = 0; i < forms.length; i++) {
-        if (forms[i].id === formId) return forms[i];
+      var all = this.getForms();
+      for (var i = 0; i < all.length; i++) {
+        if (all[i].id === formId) return all[i];
       }
       return null;
+    },
+
+    saveCustomForm: function (formObj) {
+      if (!formObj || !formObj.id) return false;
+      if (!inMemoryData.customForms) inMemoryData.customForms = [];
+      var idx = inMemoryData.customForms.findIndex(function (f) { return f.id === formObj.id; });
+      if (idx >= 0) {
+        inMemoryData.customForms[idx] = formObj;
+      } else {
+        inMemoryData.customForms.push(formObj);
+      }
+      saveLocalCustomForms(inMemoryData.customForms);
+      if (window.PPCH_CONFIG && window.PPCH_CONFIG.forms) {
+        var cIdx = window.PPCH_CONFIG.forms.findIndex(function (f) { return f.id === formObj.id; });
+        if (cIdx >= 0) window.PPCH_CONFIG.forms[cIdx] = formObj;
+        else window.PPCH_CONFIG.forms.push(formObj);
+      }
+      notifyUpdated();
+      return true;
     },
 
     // Record an Evaluation in memory (for immediate session responsiveness)
