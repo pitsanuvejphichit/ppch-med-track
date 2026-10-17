@@ -865,6 +865,9 @@
       animation: alertPulse 1.2s infinite alternate;
     }
 
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .spin { display: inline-block; animation: spin 1s linear infinite; }
+
     /* Fields */
     .cockpit-fields {
       display: flex;
@@ -1404,6 +1407,28 @@
                 </div>
               </div>
 
+              <!-- Humidity Dial Box (Only for Room Temp & Humidity checkpoints) -->
+              <div class="cockpit-dial-box status-normal" id="cockpitHumBox" style="display: none; margin-top: -4px;">
+                <div style="font-size: 11px; font-weight: 700; color: #004b93; margin-bottom: 6px; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                  <span class="material-icons-round" style="font-size: 14px;">water_drop</span>
+                  <span>ความชื้นสัมพัทธ์ห้อง (เป้าหมาย: ≤ 60 %RH)</span>
+                </div>
+                <div class="cockpit-dial-row">
+                  <button type="button" class="cockpit-step-btn" onclick="stepLiveHum(-5)">-5</button>
+                  <button type="button" class="cockpit-step-btn" onclick="stepLiveHum(-1)">-1</button>
+                  <div class="cockpit-input-wrap">
+                    <input type="number" id="inputHum" class="cockpit-temp-input" step="1" placeholder="50" oninput="onLiveHumInput()" onkeyup="onLiveHumInput()">
+                    <span class="cockpit-unit">%RH</span>
+                  </div>
+                  <button type="button" class="cockpit-step-btn" onclick="stepLiveHum(1)">+1</button>
+                  <button type="button" class="cockpit-step-btn" onclick="stepLiveHum(5)">+5</button>
+                </div>
+                <div class="cockpit-status-banner normal" id="speedHumStatusBanner">
+                  <span class="material-icons-round" style="font-size: 14px;">check_circle</span>
+                  <span id="speedHumStatusText">ความชื้นอยู่ในเกณฑ์ปกติ (≤ 60 %RH)</span>
+                </div>
+              </div>
+
               <!-- Compact Staff Inputs (2 columns) -->
               <div class="cockpit-fields-grid">
                 <div>
@@ -1632,7 +1657,7 @@
               </label>
               <textarea id="stdEvalNote" class="form-control-textarea" rows="2" placeholder="ระบุรายละเอียด (ถ้ามี)..."></textarea>
             </div>
-            <button type="button" onclick="submitStandardEvaluation()" class="btn-submit-main">
+            <button type="button" id="btnSubmitStd" onclick="submitStandardEvaluation()" class="btn-submit-main">
               <span class="material-icons-round">send</span>
               <span>บันทึกผลการตรวจเช็ค</span>
             </button>
@@ -1719,11 +1744,11 @@
     // 23 Checkpoints Database
     var LAB_ITEMS = {
       // 1. FM-PPCH-LAB-057: อุณหภูมิห้องแลป (5 จุด)
-      '057_lab': { id: '057_lab', name: 'Laboratory (ห้องปฏิบัติการกลาง)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: false, defaultTemp: 25.4 },
-      '057_immu': { id: '057_immu', name: 'ห้อง Immunology', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: false, defaultTemp: 24.8 },
-      '057_blood': { id: '057_blood', name: 'Blood bank (ธนาคารเลือด)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: false, defaultTemp: 25.1 },
-      '057_bac': { id: '057_bac', name: 'Bacteria (จุลชีววิทยา)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: false, defaultTemp: 25.6 },
-      '057_store': { id: '057_store', name: 'Storage (คลังเก็บน้ำยา/เวชภัณฑ์)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: false, defaultTemp: 24.5 },
+      '057_lab': { id: '057_lab', name: 'Laboratory (ห้องปฏิบัติการกลาง)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: true, humMax: 60, targetHum: '≤ 60 %RH', defaultTemp: 25.4, defaultHum: 50 },
+      '057_immu': { id: '057_immu', name: 'ห้อง Immunology', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: true, humMax: 60, targetHum: '≤ 60 %RH', defaultTemp: 24.8, defaultHum: 52 },
+      '057_blood': { id: '057_blood', name: 'Blood bank (ธนาคารเลือด)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: true, humMax: 60, targetHum: '≤ 60 %RH', defaultTemp: 25.1, defaultHum: 48 },
+      '057_bac': { id: '057_bac', name: 'Bacteria (จุลชีววิทยา)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: true, humMax: 60, targetHum: '≤ 60 %RH', defaultTemp: 25.6, defaultHum: 54 },
+      '057_store': { id: '057_store', name: 'Storage (คลังเก็บน้ำยา/เวชภัณฑ์)', code: 'FM-PPCH-LAB-057', cat: 'cat_room', catName: 'อุณหภูมิห้องแลป', type: 'temp_room', targetTemp: '24.0 - 28.0 °C', tempMin: 24.0, tempMax: 28.0, hasHumidity: true, humMax: 60, targetHum: '≤ 60 %RH', defaultTemp: 24.5, defaultHum: 49 },
 
       // 2. FM-PPCH-LAB-060: ตู้แช่แข็ง FFP & Control (2 จุด)
       '060_ffp': { id: '060_ffp', name: 'ตู้แช่แข็ง FFP (ควบคุม ≤ -18 °C)', code: 'FM-PPCH-LAB-060', cat: 'cat_freezer', catName: 'ตู้แช่แข็ง', type: 'temp_freezer', targetTemp: '≤ -18.0 °C', tempMin: -40.0, tempMax: -18.0, hasHumidity: false, defaultTemp: -20.2 },
@@ -1991,13 +2016,19 @@
       if (elCode) elCode.innerText = item.code;
       if (elCat) elCat.innerText = item.catName;
       if (elTitle) elTitle.innerText = item.name;
-      if (elSpec) elSpec.innerText = 'เกณฑ์มาตรฐาน: ' + (item.targetTemp || '-');
+      if (elSpec) elSpec.innerText = 'เกณฑ์มาตรฐาน: ' + (item.targetTemp || '-') + (item.hasHumidity ? (' | ความชื้น: ' + (item.targetHum || '≤ 60 %RH')) : '');
 
       var icon = 'thermostat';
       if (item.cat === 'cat_freezer') icon = 'ac_unit';
       else if (item.cat === 'cat_wb') icon = 'waves';
       else if (item.cat === 'cat_ref') icon = 'kitchen';
       if (elIcon) elIcon.innerText = icon;
+
+      // Show/hide humidity dial box
+      var humBox = document.getElementById('cockpitHumBox');
+      if (humBox) {
+        humBox.style.display = item.hasHumidity ? 'block' : 'none';
+      }
 
       // Month Buttons
       var monthList = document.getElementById('monthPillList');
@@ -2030,7 +2061,7 @@
       if (elMY) elMY.innerText = THAI_MONTHS_SHORT[activeMonth - 1] + ' ' + activeYear;
     }
 
-    // Load Month Sheet Data
+    // Load Month Sheet Data from Real GAS API (with local fallback)
     function loadMonthSheetData(itemId, year, month) {
       var storageKey = 'PPCH_LAB_SHEET_DATA_' + itemId + '_' + year + '_' + month;
       var raw = localStorage.getItem(storageKey);
@@ -2045,44 +2076,51 @@
           monthSheetData = { morning: {}, afternoon: {}, evening: {} };
         }
       } else {
-        // Seed realistic historical data up to activeDay
         monthSheetData = { morning: {}, afternoon: {}, evening: {} };
-        var defT = (currentItem && currentItem.defaultTemp !== undefined) ? currentItem.defaultTemp : 25.4;
-        var staffInit = localStorage.getItem('PPCH_LAST_STAFF_NAME') || '000023';
-
-        var pastDays = Math.min(activeDay, 28);
-        for (var d = 1; d <= pastDays; d++) {
-          var varianceM = (Math.sin(d * 1.5) * 0.4);
-          var varianceA = (Math.cos(d * 1.2) * 0.5) + 0.3;
-          var varianceE = (Math.sin(d * 0.8) * 0.3) - 0.2;
-          var mTemp = parseFloat((defT + varianceM).toFixed(1));
-          var aTemp = parseFloat((defT + varianceA).toFixed(1));
-          var eTemp = parseFloat((defT + varianceE).toFixed(1));
-
-          monthSheetData.morning[d] = {
-            temp: mTemp,
-            staff: staffInit,
-            time: '09:00'
-          };
-
-          monthSheetData.afternoon[d] = {
-            temp: aTemp,
-            staff: staffInit,
-            time: '17:00'
-          };
-
-          monthSheetData.evening[d] = {
-            temp: eTemp,
-            staff: staffInit,
-            time: '01:00'
-          };
-        }
       }
 
       updateKpiSummary();
       renderTrendSvg();
       renderMonthlyMatrix();
       selectDay(activeDay);
+
+      // Async fetch real historical month data from GAS Dedicated Database
+      var cleanYear = (year > 2500) ? (year - 543) : year;
+      var fetchUrl = GAS_API_URL + '?action=getLabMonthData&itemId=' + encodeURIComponent(itemId) + '&year=' + cleanYear + '&month=' + month;
+
+      fetch(fetchUrl)
+        .then(function(res) { return res.json(); })
+        .then(function(res) {
+          if (res && (res.success || res.status === 'success') && res.data) {
+            var shiftsObj = res.data.shifts || res.data;
+            ['morning', 'afternoon', 'evening'].forEach(function(sh) {
+              if (shiftsObj[sh]) {
+                if (!monthSheetData[sh]) monthSheetData[sh] = {};
+                Object.keys(shiftsObj[sh]).forEach(function(dayK) {
+                  var entry = shiftsObj[sh][dayK];
+                  if (entry) {
+                    if (entry.humidity !== undefined && entry.hum === undefined) {
+                      entry.hum = entry.humidity;
+                    }
+                    monthSheetData[sh][dayK] = entry;
+                  }
+                });
+              }
+            });
+
+            try {
+              localStorage.setItem(storageKey, JSON.stringify(monthSheetData));
+            } catch (err) {}
+
+            updateKpiSummary();
+            renderTrendSvg();
+            renderMonthlyMatrix();
+            selectDay(activeDay);
+          }
+        })
+        .catch(function(err) {
+          console.warn('Unable to fetch month data from GAS:', err);
+        });
     }
 
     // Update KPI Summary Strip
@@ -2293,8 +2331,10 @@
             var cls = inSpec ? 'normal' : 'abnormal';
             var staffTip = rec.staff ? ('&#10;ผู้ตรวจ: ' + rec.staff) : '';
             var noteTip = rec.note ? ('&#10;หมายเหตุ: ' + rec.note) : '';
-            var titleAttr = 'วันที่ ' + dayNum + ' (' + s.label + '): ' + rec.temp.toFixed(1) + ' °C' + staffTip + noteTip;
-            chipHtml = '<span class="matrix-temp-chip ' + cls + '" title="' + titleAttr + '">' + rec.temp.toFixed(1) + '</span>';
+            var humTip = (rec.hum !== undefined && rec.hum !== '') ? ('&#10;ความชื้น: ' + rec.hum + ' %RH') : '';
+            var titleAttr = 'วันที่ ' + dayNum + ' (' + s.label + '): ' + rec.temp.toFixed(1) + ' °C' + humTip + staffTip + noteTip;
+            var humSub = (rec.hum !== undefined && rec.hum !== '') ? ('<small style="display:block;font-size:9px;opacity:0.85;line-height:1;">' + rec.hum + '%</small>') : '';
+            chipHtml = '<span class="matrix-temp-chip ' + cls + '" title="' + titleAttr + '">' + rec.temp.toFixed(1) + humSub + '</span>';
           }
           tbHtml += '<td class="col-day-' + dayNum + isAct + '" onclick="selectShiftAndDay(\'' + s.key + '\', ' + dayNum + ')">' + chipHtml + '</td>';
         }
@@ -2331,25 +2371,29 @@
       document.querySelectorAll('.active-col').forEach(function(el) { el.classList.remove('active-col'); });
       document.querySelectorAll('.col-day-' + activeDay).forEach(function(el) { el.classList.add('active-col'); });
 
-      // Populate Dial Input & Staff inputs
+      // Populate Dial Input, Humidity & Staff inputs
       var rec = (monthSheetData[currentShift] && monthSheetData[currentShift][activeDay]) ? monthSheetData[currentShift][activeDay] : null;
       var inputTemp = document.getElementById('inputTemp');
+      var inputHum = document.getElementById('inputHum');
       var evalNote = document.getElementById('evalNote');
       var staffIdInput = document.getElementById('staffId');
       var staffNameInput = document.getElementById('staffName');
 
       if (rec) {
-        if (inputTemp) inputTemp.value = (rec.temp !== undefined) ? rec.temp : '';
+        if (inputTemp) inputTemp.value = (rec.temp !== undefined && rec.temp !== '') ? rec.temp : '';
+        if (inputHum) inputHum.value = (rec.hum !== undefined && rec.hum !== '') ? rec.hum : ((rec.humidity !== undefined && rec.humidity !== '') ? rec.humidity : '');
         if (evalNote) evalNote.value = rec.note || '';
         if (rec.staffId && staffIdInput) staffIdInput.value = rec.staffId;
         else if (rec.staff && staffIdInput && rec.staff.match(/^\d{6}/)) staffIdInput.value = rec.staff.slice(0, 6);
         if (rec.staffName && staffNameInput) staffNameInput.value = rec.staffName;
       } else {
         if (inputTemp) inputTemp.value = (currentItem && currentItem.defaultTemp !== undefined) ? currentItem.defaultTemp : '';
+        if (inputHum) inputHum.value = (currentItem && currentItem.defaultHum !== undefined) ? currentItem.defaultHum : '';
         if (evalNote) evalNote.value = '';
       }
 
       updateActiveMarkerLive();
+      updateHumFeedbackLive();
     }
 
     // Real-Time Temperature Input Handling
@@ -2367,6 +2411,63 @@
       renderTrendSvg();
       renderMonthlyMatrix();
       updateKpiSummary();
+    }
+
+    // Real-Time Humidity Input Handling
+    function onLiveHumInput() {
+      if (!currentItem) return;
+      var inputEl = document.getElementById('inputHum');
+      var val = parseFloat(inputEl.value);
+
+      if (!monthSheetData[currentShift]) monthSheetData[currentShift] = {};
+      if (!monthSheetData[currentShift][activeDay]) monthSheetData[currentShift][activeDay] = {};
+      monthSheetData[currentShift][activeDay].hum = isNaN(val) ? '' : val;
+
+      updateHumFeedbackLive();
+      renderMonthlyMatrix();
+    }
+
+    // Micro-Steppers for Humidity
+    function stepLiveHum(delta) {
+      var el = document.getElementById('inputHum');
+      var val = parseFloat(el.value);
+      if (isNaN(val)) val = (currentItem && currentItem.defaultHum !== undefined) ? currentItem.defaultHum : 50;
+      el.value = Math.max(0, Math.min(100, Math.round(val + delta)));
+      onLiveHumInput();
+    }
+
+    // Update Humidity Glow & Banner Feedback
+    function updateHumFeedbackLive() {
+      if (!currentItem || !currentItem.hasHumidity) return;
+      var humInput = document.getElementById('inputHum');
+      var val = parseFloat(humInput.value);
+      var humBox = document.getElementById('cockpitHumBox');
+      var banner = document.getElementById('speedHumStatusBanner');
+      var text = document.getElementById('speedHumStatusText');
+
+      if (isNaN(val)) {
+        if (humBox) humBox.className = 'cockpit-dial-box status-normal';
+        if (banner) banner.className = 'cockpit-status-banner normal';
+        if (text) text.innerText = 'ระบุความชื้นห้อง (เกณฑ์ ≤ ' + (currentItem.humMax || 60) + ' %RH)';
+        return;
+      }
+
+      var maxHum = currentItem.humMax || 60;
+      var isPass = (val <= maxHum);
+
+      if (humBox) {
+        humBox.className = 'cockpit-dial-box ' + (isPass ? 'status-normal' : 'status-abnormal');
+      }
+      if (banner) {
+        banner.className = 'cockpit-status-banner ' + (isPass ? 'normal' : 'abnormal');
+      }
+      if (text) {
+        if (isPass) {
+          text.innerText = 'ความชื้นปกติ (' + val + ' %RH • ≤ ' + maxHum + ' %RH)';
+        } else {
+          text.innerText = 'ความชื้นเกินเกณฑ์ (' + val + ' %RH • > ' + maxHum + ' %RH)';
+        }
+      }
     }
 
     // Update Dial Glow & Banner Feedback
@@ -2573,14 +2674,23 @@
       }
 
       var humVal = null;
+      if (currentItem.hasHumidity) {
+        var rawHum = parseFloat(document.getElementById('inputHum').value);
+        if (!isNaN(rawHum)) humVal = rawHum;
+      }
+
       var note = document.getElementById('evalNote').value.trim();
       var config = getScaleConfig(currentItem);
       var isPass = (tempVal >= config.safeMin && tempVal <= config.safeMax);
+      if (humVal !== null && currentItem.humMax && humVal > currentItem.humMax) {
+        isPass = false;
+      }
 
       // Update in-memory monthSheetData
       if (!monthSheetData[currentShift]) monthSheetData[currentShift] = {};
       monthSheetData[currentShift][activeDay] = {
         temp: tempVal,
+        hum: humVal,
         staffId: staffId,
         staffName: staffName,
         staff: staffName + ' (' + staffId + ')',
@@ -2604,6 +2714,7 @@
 
       // Create evaluation event payload
       var evalData = {
+        action: 'submitLabEntry',
         itemId: currentItem.id,
         itemName: currentItem.name,
         formCode: currentItem.code,
@@ -2641,15 +2752,40 @@
         localStorage.setItem('PPCH_LAB_LATEST_STATUS', JSON.stringify(latestCache));
       } catch (err) {}
 
-      // Push to GAS async
-      try {
-        fetch(GAS_API_URL + '?action=saveLabRecord', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(evalData),
-          mode: 'no-cors'
-        }).catch(function(e) {});
-      } catch (e) {}
+      // UI Loading state
+      var btnSubmit = document.getElementById('btnSubmitEval');
+      var origBtnHtml = btnSubmit ? btnSubmit.innerHTML : '';
+      if (btnSubmit) {
+        btnSubmit.disabled = true;
+        btnSubmit.innerHTML = '<span class="material-icons-round spin" style="font-size: 17px;">sync</span> <span>กำลังบันทึกลงชีท...</span>';
+      }
+
+      // Push to GAS Dedicated Database
+      fetch(GAS_API_URL + '?action=submitLabEntry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(evalData)
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(res) {
+        if (res && res.success) {
+          showToast('✓ บันทึกลง Google Sheets เรียบร้อยแล้ว');
+          // Reload month sheet data to sync
+          loadMonthSheetData(currentItem.id, activeYear, activeMonth);
+        } else {
+          showToast(res && res.error ? ('คำเตือน: ' + res.error) : 'บันทึกในเครื่องแล้ว');
+        }
+      })
+      .catch(function(err) {
+        console.warn('GAS Push fallback:', err);
+        showToast('บันทึกในเครื่องเรียบร้อยแล้ว (ออฟไลน์)');
+      })
+      .finally(function() {
+        if (btnSubmit) {
+          btnSubmit.disabled = false;
+          btnSubmit.innerHTML = origBtnHtml;
+        }
+      });
 
       // Advance Stepper & Show confirmation slip
       updateStepper(3);
@@ -2682,6 +2818,7 @@
 
       var isOverallPass = true;
       var evalData = {
+        action: 'submitLabEntry',
         itemId: currentItem.id,
         itemName: currentItem.name,
         formCode: currentItem.code,
@@ -2743,14 +2880,38 @@
         localStorage.setItem('PPCH_LAB_LATEST_STATUS', JSON.stringify(latestCache));
       } catch (err) {}
 
-      try {
-        fetch(GAS_API_URL + '?action=saveLabRecord', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(evalData),
-          mode: 'no-cors'
-        }).catch(function(e) {});
-      } catch (e) {}
+      // UI Loading state
+      var btnSubmit = document.getElementById('btnSubmitStd');
+      var origBtnHtml = btnSubmit ? btnSubmit.innerHTML : '';
+      if (btnSubmit) {
+        btnSubmit.disabled = true;
+        btnSubmit.innerHTML = '<span class="material-icons-round spin" style="font-size: 17px;">sync</span> <span>กำลังบันทึกข้อมูล...</span>';
+      }
+
+      // Push to GAS
+      fetch(GAS_API_URL + '?action=submitLabEntry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(evalData)
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(res) {
+        if (res && res.success) {
+          showToast('✓ บันทึกผลการตรวจเช็คลง Google Sheets สำเร็จ');
+        } else {
+          showToast(res && res.error ? ('คำเตือน: ' + res.error) : 'บันทึกในเครื่องแล้ว');
+        }
+      })
+      .catch(function(err) {
+        console.warn('GAS Push fallback:', err);
+        showToast('บันทึกในเครื่องเรียบร้อย (ออฟไลน์)');
+      })
+      .finally(function() {
+        if (btnSubmit) {
+          btnSubmit.disabled = false;
+          btnSubmit.innerHTML = origBtnHtml;
+        }
+      });
 
       updateStepper(3);
       showConfirmationSlip(evalData);
