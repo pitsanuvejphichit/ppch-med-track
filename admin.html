@@ -909,12 +909,14 @@
       color: var(--text-muted);
     }
 
-    .device-table {
+    .device-table,
+    .data-table-modern {
       width: 100%;
       border-collapse: collapse;
       text-align: left;
     }
-    .device-table th {
+    .device-table th,
+    .data-table-modern th {
       background: #f8fafc;
       color: var(--text-body);
       font-size: 11.5px;
@@ -923,7 +925,8 @@
       border-bottom: 1px solid var(--border-main);
       white-space: nowrap;
     }
-    .device-table td {
+    .device-table td,
+    .data-table-modern td {
       padding: 10px 12px;
       border-bottom: 1px solid var(--border-subtle);
       font-size: 12.5px;
@@ -931,10 +934,12 @@
       vertical-align: middle;
       transition: background 0.1s;
     }
-    .device-table tbody tr:hover td {
+    .device-table tbody tr:hover td,
+    .data-table-modern tbody tr:hover td {
       background: #f8fafc;
     }
-    .device-table tbody tr:last-child td {
+    .device-table tbody tr:last-child td,
+    .data-table-modern tbody tr:last-child td {
       border-bottom: none;
     }
 
@@ -1193,7 +1198,8 @@
       align-items: center;
       justify-content: center;
     }
-    .device-table tbody tr:has(.floating-action-wrapper.open) {
+    .device-table tbody tr:has(.floating-action-wrapper.open),
+    .data-table-modern tbody tr:has(.floating-action-wrapper.open) {
       z-index: 30;
       position: relative;
     }
@@ -3549,72 +3555,297 @@
 
           <!-- TAB 2: การจัดการเครื่องมือแพทย์ -->
           <div id="settingsPanelEquipment" style="display: none;">
-            <div class="content-panel">
-              <div class="panel-header" style="flex-wrap: wrap; gap: 10px;">
-                <div>
-                  <div class="panel-title" style="display: flex; align-items: center; gap: 8px;">
-                    <span class="material-icons-round" style="color: var(--royal-blue);">precision_manufacturing</span>
-                    <span>จัดการข้อมูลเครื่องมือแพทย์ (Equipment Master)</span>
+            
+            <!-- SUB-VIEW 1: Equipment Master List -->
+            <div id="equipmentListView">
+              <div class="content-panel">
+                <div class="panel-header" style="flex-wrap: wrap; gap: 10px;">
+                  <div>
+                    <div class="panel-title" style="display: flex; align-items: center; gap: 8px;">
+                      <span class="material-icons-round" style="color: var(--royal-blue);">precision_manufacturing</span>
+                      <span>จัดการข้อมูลเครื่องมือแพทย์ (Equipment Master)</span>
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                      เพิ่ม ลบ หรือแก้ไขรายการเครื่องมือแพทย์ รหัสเครื่อง และแผนกสังกัด
+                    </div>
                   </div>
-                  <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
-                    เพิ่ม ลบ หรือแก้ไขรายการเครื่องมือแพทย์ รหัสเครื่อง แบบฟอร์มตรวจ และแผนกสังกัด
+                  <div style="display: flex; gap: 8px; align-items: center;">
+                    <button type="button" onclick="openAddEquipmentPage()" class="btn-tool btn-tool-primary" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-weight: 600;">
+                      <span class="material-icons-round" style="font-size: 18px;">add_circle</span>
+                      <span>เพิ่มเครื่องมือแพทย์ใหม่</span>
+                    </button>
                   </div>
                 </div>
-                <div style="display: flex; gap: 8px; align-items: center;">
-                  <button type="button" onclick="openAddEquipmentModal()" class="btn-tool btn-tool-primary" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px;">
-                    <span class="material-icons-round" style="font-size: 18px;">add_circle</span>
-                    <span>เพิ่มเครื่องมือแพทย์</span>
-                  </button>
-                </div>
-              </div>
 
-              <!-- Filter / Search bar for equipment -->
-              <div class="settings-filter-bar" style="padding: 10px 16px; background: #f8fafc; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; flex: 1; width: 100%;">
-                  <div class="search-input-box" style="flex: 1; min-width: 200px;">
-                    <span class="material-icons-round">search</span>
-                    <input type="text" id="equipSearchInput" placeholder="ค้นหารหัสเครื่อง, ชื่อ, รุ่น, S/N..." oninput="renderEquipmentSettingsTable()">
+                <!-- Filter / Search bar for equipment -->
+                <div class="settings-filter-bar" style="padding: 10px 16px; background: #f8fafc; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                  <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; flex: 1; width: 100%;">
+                    <div class="search-input-box" style="flex: 1; min-width: 200px;">
+                      <span class="material-icons-round">search</span>
+                      <input type="text" id="equipSearchInput" placeholder="ค้นหารหัสเครื่อง หรือ ชื่อเครื่อง..." oninput="renderEquipmentSettingsTable()">
+                    </div>
+                    <select id="settingsFilterDept" class="filter-input" onchange="renderEquipmentSettingsTable()" style="max-width: 200px;">
+                      <option value="all">ทุกแผนก</option>
+                    </select>
+                    <select id="settingsFilterRisk" class="filter-input" onchange="renderEquipmentSettingsTable()" style="max-width: 180px;">
+                      <option value="all">ทุกระดับความเสี่ยง</option>
+                      <option value="high">⚠️ เสี่ยงมาก (ทุกวัน)</option>
+                      <option value="low">🛡️ เสี่ยงน้อย (เดือนละครั้ง)</option>
+                    </select>
+                    <select id="settingsFilterForm" class="filter-input" onchange="renderEquipmentSettingsTable()" style="max-width: 200px;">
+                      <option value="all">ทุกแบบฟอร์ม</option>
+                    </select>
                   </div>
-                  <select id="settingsFilterDept" class="filter-input" onchange="renderEquipmentSettingsTable()" style="max-width: 200px;">
-                    <option value="all">ทุกแผนก</option>
-                  </select>
-                  <select id="settingsFilterRisk" class="filter-input" onchange="renderEquipmentSettingsTable()" style="max-width: 180px;">
-                    <option value="all">ทุกระดับความเสี่ยง</option>
-                    <option value="high">⚠️ เสี่ยงมาก (ทุกวัน)</option>
-                    <option value="low">🛡️ เสี่ยงน้อย (เดือนละครั้ง)</option>
-                  </select>
-                  <select id="settingsFilterForm" class="filter-input" onchange="renderEquipmentSettingsTable()" style="max-width: 200px;">
-                    <option value="all">ทุกแบบฟอร์ม</option>
-                  </select>
+                  <div style="font-size: 12px; color: var(--text-muted); white-space: nowrap;" id="equipSummaryCountText">
+                    แสดง 0 เครื่อง
+                  </div>
                 </div>
-                <div style="font-size: 12px; color: var(--text-muted); white-space: nowrap;" id="equipSummaryCountText">
-                  แสดง 0 เครื่อง
-                </div>
-              </div>
 
-              <!-- Equipment Table -->
-              <div class="table-responsive" style="overflow-x: auto;">
-                <table class="data-table-modern">
-                  <thead>
-                    <tr>
-                      <th style="width: 50px; text-align: center;">ลำดับ</th>
-                      <th style="width: 140px;">รหัสเครื่อง</th>
-                      <th>ชื่อเครื่องมือแพทย์</th>
-                      <th style="width: 140px;">รุ่น / ยี่ห้อ</th>
-                      <th style="width: 120px;">Serial No.</th>
-                      <th style="width: 150px; text-align: center;">ระดับความเสี่ยง</th>
-                      <th style="width: 170px;">แบบฟอร์มตรวจ</th>
-                      <th style="width: 150px;">แผนกปัจจุบัน</th>
-                      <th style="width: 110px; text-align: center;">สถานะ</th>
-                      <th style="width: 120px; text-align: center;">จัดการ</th>
-                    </tr>
-                  </thead>
-                  <tbody id="equipmentSettingsTableBody">
-                    <!-- Injected via JS -->
-                  </tbody>
-                </table>
+                <!-- Equipment Table (Streamlined 6 Columns: ลำดับ, รหัสเครื่อง, ชื่อ, ระดับความเสี่ยง, แผนกปัจจุบัน, จัดการ) -->
+                <div class="table-responsive" style="overflow-x: auto;">
+                  <table class="data-table-modern">
+                    <thead>
+                      <tr>
+                        <th style="width: 50px; text-align: center;">ลำดับ</th>
+                        <th style="width: 150px;">รหัสเครื่อง</th>
+                        <th>ชื่อเครื่องมือแพทย์</th>
+                        <th style="width: 160px; text-align: center;">ระดับความเสี่ยง</th>
+                        <th style="width: 160px;">แผนกปัจจุบัน</th>
+                        <th style="width: 100px; text-align: center;">จัดการ</th>
+                      </tr>
+                    </thead>
+                    <tbody id="equipmentSettingsTableBody">
+                      <!-- Injected via JS -->
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
+
+            <!-- SUB-VIEW 2: Dedicated In-Page Form View (หน้าเว็บปกติ ไม่เอาแบบป็อปอัพ) -->
+            <div id="equipmentFormView" style="display: none;">
+              <div class="content-panel" style="margin-bottom: 24px;">
+                <!-- Header Toolbar with Back Button -->
+                <div class="panel-header" style="padding: 14px 20px; background: #ffffff; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+                  <div style="display: flex; align-items: center; gap: 12px;">
+                    <button type="button" onclick="closeEquipmentFormPage()" class="btn-tool" style="padding: 7px 14px; border-radius: 8px; font-weight: 600; background: #f8fafc;" title="ย้อนกลับไปหน้ารายการ">
+                      <span class="material-icons-round" style="font-size: 18px; color: var(--royal-blue);">arrow_back</span>
+                      <span>กลับหน้ารายการ</span>
+                    </button>
+                    <div style="height: 24px; width: 1px; background: var(--border-main);"></div>
+                    <div>
+                      <div style="font-size: 16px; font-weight: 700; color: var(--royal-blue); display: flex; align-items: center; gap: 8px;">
+                        <span class="material-icons-round" style="color: var(--royal-blue); font-size: 22px;">precision_manufacturing</span>
+                        <span id="equipmentFormPageTitle">เพิ่มเครื่องมือแพทย์ใหม่</span>
+                      </div>
+                      <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                        บันทึกข้อมูลเครื่องมือแพทย์เข้าสู่ระบบ พร้อมกำหนดแบบฟอร์มตรวจเช็คความพร้อม
+                      </div>
+                    </div>
+                  </div>
+                  <div style="display: flex; gap: 8px; align-items: center;">
+                    <button type="button" onclick="closeEquipmentFormPage()" class="btn-tool" style="padding: 8px 16px;">
+                      ยกเลิก
+                    </button>
+                    <button type="button" onclick="document.getElementById('formAddEditEquipment').requestSubmit()" class="btn-tool btn-tool-primary" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; font-weight: 600;">
+                      <span class="material-icons-round" style="font-size: 18px;">save</span>
+                      <span>บันทึกข้อมูลเครื่อง</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Main Form Body -->
+                <div style="padding: 24px;">
+                  <form id="formAddEditEquipment" onsubmit="saveEquipment(event)">
+                    <input type="hidden" id="modalEquipMode" value="add">
+                    <input type="hidden" id="modalEquipDbId" value="">
+
+                    <!-- Two-Column Responsive Layout -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px; align-items: start;">
+                      
+                      <!-- Column 1: Equipment Profile Information -->
+                      <div style="background: #f8fafc; border: 1px solid var(--border-main); border-radius: 14px; padding: 20px;">
+                        <div style="font-size: 14px; font-weight: 700; color: var(--royal-blue); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                          <span class="material-icons-round" style="font-size: 20px;">badge</span>
+                          <span>1. ข้อมูลพื้นฐานเครื่องมือแพทย์</span>
+                        </div>
+
+                        <div style="margin-bottom: 14px;">
+                          <label style="display: block; font-size: 12.5px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">
+                            รหัสเครื่อง / ครุภัณฑ์ (Asset Code) <span style="color: var(--red-abnormal);">*</span>
+                          </label>
+                          <input type="text" id="modalEquipAssetCode" class="filter-input" style="width: 100%; font-family: var(--font-mono); font-weight: 700; font-size: 14px; padding: 8px 12px; background: #ffffff;" placeholder="เช่น EQ-68-DEF-001" required>
+                        </div>
+
+                        <div style="margin-bottom: 14px;">
+                          <label style="display: block; font-size: 12.5px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">
+                            ชื่อเครื่องมือแพทย์ (Equipment Name) <span style="color: var(--red-abnormal);">*</span>
+                          </label>
+                          <input type="text" id="modalEquipName" class="filter-input" style="width: 100%; font-size: 14px; font-weight: 600; padding: 8px 12px; background: #ffffff;" placeholder="เช่น เครื่องกระตุกหัวใจ Defibrillator" required>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+                          <div>
+                            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 5px;">
+                              รุ่น / ยี่ห้อ (Model)
+                            </label>
+                            <input type="text" id="modalEquipModel" class="filter-input" style="width: 100%; padding: 7px 10px; background: #ffffff;" placeholder="เช่น Mindray BeneHeart D3">
+                          </div>
+                          <div>
+                            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 5px;">
+                              Serial Number (S/N)
+                            </label>
+                            <input type="text" id="modalEquipSerialNo" class="filter-input" style="width: 100%; font-family: var(--font-mono); padding: 7px 10px; background: #ffffff;" placeholder="เช่น SN-882910">
+                          </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+                          <div>
+                            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 5px;">
+                              แผนกสังกัดปัจจุบัน <span style="color: var(--red-abnormal);">*</span>
+                            </label>
+                            <select id="modalEquipCurrentDept" class="filter-input" style="width: 100%; font-weight: 600; padding: 7px 10px; background: #ffffff;" required>
+                              <!-- Filled dynamically from DB departments -->
+                            </select>
+                          </div>
+                          <div>
+                            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 5px;">
+                              ระดับความเสี่ยง <span style="color: var(--red-abnormal);">*</span>
+                            </label>
+                            <select id="modalEquipRiskLevel" class="filter-input" style="width: 100%; font-weight: 600; padding: 7px 10px; background: #ffffff;" required>
+                              <option value="high">⚠️ เสี่ยงมาก (ประเมินทุกวัน)</option>
+                              <option value="low">🛡️ เสี่ยงน้อย (ประเมินเดือนละครั้ง)</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div>
+                          <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 5px;">
+                            สถานะเริ่มต้นของเครื่อง
+                          </label>
+                          <select id="modalEquipStatus" class="filter-input" style="width: 100%; font-weight: 600; padding: 7px 10px; background: #ffffff;">
+                            <option value="ready">พร้อมใช้งาน (Ready)</option>
+                            <option value="abnormal">ไม่พร้อมใช้งาน / ชำรุด (Abnormal)</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <!-- Column 2: Checklist Form Selection & New Form Builder -->
+                      <div style="background: #ffffff; border: 1.5px solid #bfdbfe; border-radius: 14px; padding: 20px; box-shadow: 0 4px 14px rgba(0, 75, 147, 0.05);">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
+                          <div style="font-size: 14px; font-weight: 700; color: var(--royal-blue); display: flex; align-items: center; gap: 8px;">
+                            <span class="material-icons-round" style="font-size: 20px;">fact_check</span>
+                            <span>2. แบบฟอร์มตรวจเช็คความพร้อม</span>
+                          </div>
+                          <div style="display: flex; gap: 6px;">
+                            <button type="button" id="btnModeExistingForm" onclick="toggleNewFormBuilder(false)" class="btn-tool active" style="padding: 4px 10px; font-size: 11.5px; border-radius: 6px;">
+                              <span>📑 เลือกฟอร์มเดิม / คัดลอก</span>
+                            </button>
+                            <button type="button" id="btnModeNewForm" onclick="toggleNewFormBuilder(true)" class="btn-tool" style="padding: 4px 10px; font-size: 11.5px; border-radius: 6px; color: var(--royal-blue); font-weight: 700;">
+                              <span class="material-icons-round" style="font-size: 14px;">add_circle</span>
+                              <span>➕ สร้างฟอร์มใหม่</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        <!-- Existing Form Selection View -->
+                        <div id="existingFormSelectSection">
+                          <div style="margin-bottom: 14px;">
+                            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">
+                              เลือกจากแบบฟอร์มที่มีในระบบ <span style="color: var(--red-abnormal);">*</span>
+                            </label>
+                            <select id="modalEquipFormId" class="filter-input" style="width: 100%; font-weight: 600; padding: 8px 12px; font-size: 13px;" onchange="onModalFormChange()" required>
+                              <!-- Populated via script -->
+                            </select>
+                          </div>
+
+                          <!-- Quick Copy from Existing Equipment Helper -->
+                          <div id="copyFromDeviceBox" style="background: #f8fafc; border: 1px dashed var(--border-main); border-radius: 10px; padding: 12px 14px; margin-top: 14px;">
+                            <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--royal-blue); margin-bottom: 6px;">
+                              <span class="material-icons-round" style="font-size: 16px;">content_copy</span>
+                              <span>หรือเลือกใช้ฟอร์มจากเครื่องมือเดิมที่มีอยู่:</span>
+                            </div>
+                            <select id="selectCopyFromDevice" class="filter-input" style="width: 100%; font-size: 12px; padding: 7px 10px; background: #ffffff;" onchange="onSelectCopyDevice(this.value)">
+                              <option value="">-- คัดลอกแบบฟอร์มจากเครื่องมือเดิมในระบบ --</option>
+                            </select>
+                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">
+                              💡 หากเป็นเครื่องมือชนิดเดียวกัน สามารถเลือกจากเครื่องเดิมเพื่อดึงเกณฑ์การตรวจเช็คมาใช้งานได้ทันที
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- New Form Builder Section (Spacious & Clean, In-Page) -->
+                        <div id="newFormBuilderSection" style="display: none; background: #f0f7ff; border: 1.5px solid #93c5fd; border-radius: 12px; padding: 16px; margin-top: 10px; animation: loaderPop 0.25s ease;">
+                          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #bfdbfe; padding-bottom: 8px; margin-bottom: 14px;">
+                            <div style="font-size: 13.5px; font-weight: 700; color: var(--royal-blue); display: flex; align-items: center; gap: 6px;">
+                              <span class="material-icons-round" style="font-size: 18px; color: var(--royal-blue);">playlist_add</span>
+                              <span>สร้างแบบฟอร์มตรวจเช็คใหม่ (New Evaluation Form)</span>
+                            </div>
+                            <button type="button" onclick="toggleNewFormBuilder(false)" style="background: none; border: none; color: #64748b; font-size: 11px; cursor: pointer; text-decoration: underline;">
+                              ยกเลิก (ใช้ฟอร์มเดิม)
+                            </button>
+                          </div>
+
+                          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                            <div>
+                              <label style="display: block; font-size: 11.5px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">
+                                ชื่อแบบฟอร์มตรวจเช็ค <span style="color: var(--red-abnormal);">*</span>
+                              </label>
+                              <input type="text" id="newFormName" class="filter-input" style="width: 100%; font-size: 13px; font-weight: 600; background: #ffffff;" placeholder="เช่น แบบตรวจเช็คเครื่อง Suction Unit">
+                            </div>
+                            <div>
+                              <label style="display: block; font-size: 11.5px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">
+                                ชื่อย่อ / ชนิดอุปกรณ์
+                              </label>
+                              <input type="text" id="newFormShortName" class="filter-input" style="width: 100%; font-size: 13px; background: #ffffff;" placeholder="เช่น Suction Unit">
+                            </div>
+                          </div>
+
+                          <div style="margin-bottom: 14px;">
+                            <label style="display: block; font-size: 11.5px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">
+                              หมวดหมู่อุปกรณ์
+                            </label>
+                            <input type="text" id="newFormCategory" class="filter-input" style="width: 100%; font-size: 13px; background: #ffffff;" placeholder="เช่น เครื่องมือช่วยกู้ชีพและทางเดินหายใจ">
+                          </div>
+
+                          <!-- Dynamic Checklist Criteria List (No cramped modal scrollbars) -->
+                          <div>
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                              <label style="font-size: 12px; font-weight: 700; color: var(--royal-blue);">
+                                รายการเกณฑ์การตรวจเช็คความพร้อม (Checklist Criteria) <span style="color: var(--red-abnormal);">*</span>
+                              </label>
+                              <button type="button" onclick="loadDefaultTemplateItems()" class="btn-text-link" style="font-size: 11.5px; color: #0284c7; font-weight: 600; background: none; border: none; cursor: pointer;">
+                                ⚡ ใส่เกณฑ์มาตรฐาน 5 ข้อ
+                              </button>
+                            </div>
+                            <div id="newFormItemsContainer" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+                              <!-- Populated dynamically via JS -->
+                            </div>
+                            <button type="button" onclick="addNewChecklistItemRow()" class="btn-tool" style="width: 100%; padding: 8px; font-size: 12.5px; justify-content: center; background: #ffffff; border: 1px dashed var(--royal-blue); color: var(--royal-blue); font-weight: 600;">
+                              <span class="material-icons-round" style="font-size: 16px;">add</span>
+                              <span>เพิ่มหัวข้อตรวจเช็ค (Add Criterion)</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <!-- Bottom Actions Bar -->
+                    <div style="display: flex; gap: 10px; justify-content: flex-end; padding-top: 20px; margin-top: 24px; border-top: 1px solid var(--border-subtle);">
+                      <button type="button" onclick="closeEquipmentFormPage()" class="btn-tool" style="padding: 9px 20px; font-size: 13px;">
+                        ยกเลิก
+                      </button>
+                      <button type="submit" id="btnSaveEquipment" class="btn-tool btn-tool-primary" style="display: inline-flex; align-items: center; gap: 8px; padding: 9px 24px; font-size: 13px; font-weight: 700;">
+                        <span class="material-icons-round" style="font-size: 18px;">save</span>
+                        <span>บันทึกข้อมูลเครื่องมือแพทย์</span>
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
           </div>
 
           <!-- TAB 3: การตั้งค่า LINE Developers (Messaging API) -->
@@ -4031,171 +4262,7 @@
     </div>
   </div>
 
-  <!-- Modal: เพิ่ม / แก้ไขเครื่องมือแพทย์ -->
-  <div id="modalAddEditEquipment" class="modal-overlay hidden no-print" onclick="if(event.target === this) closeEquipmentModal()">
-    <div class="modal-box" style="max-width: 580px; text-align: left;">
-      <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 10px; margin-bottom: 14px;">
-        <div style="font-size: 15px; font-weight: 700; color: var(--royal-blue); display: flex; align-items: center; gap: 8px;">
-          <span class="material-icons-round" style="color: var(--royal-blue);">medical_services</span>
-          <span id="modalEquipTitle">เพิ่มเครื่องมือแพทย์ใหม่</span>
-        </div>
-        <button onclick="closeEquipmentModal()" style="border: none; background: transparent; cursor: pointer; color: var(--text-muted);"><span class="material-icons-round">close</span></button>
-      </div>
 
-      <form id="formAddEditEquipment" onsubmit="saveEquipment(event)">
-        <input type="hidden" id="modalEquipMode" value="add">
-        <input type="hidden" id="modalEquipDbId" value="">
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
-          <div>
-            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">
-              รหัสเครื่อง (Asset Code) <span style="color: var(--red-abnormal);">*</span>
-            </label>
-            <input type="text" id="modalEquipAssetCode" class="filter-input" style="width: 100%; font-family: var(--font-mono); font-weight: 700;" placeholder="เช่น EQ-68-DEF-001" required>
-          </div>
-          <div>
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-              <label style="font-size: 12px; font-weight: 600; color: var(--text-muted);">
-                แบบฟอร์มตรวจเช็ค <span style="color: var(--red-abnormal);">*</span>
-              </label>
-              <button type="button" id="btnToggleNewForm" onclick="toggleNewFormBuilder(true)" class="btn-text-link" style="font-size: 11px; color: var(--royal-blue); font-weight: 700; background: none; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 3px;" title="คลิกเพื่อสร้างแบบฟอร์มตรวจเช็คใหม่">
-                <span class="material-icons-round" style="font-size: 14px;">add_circle</span>
-                <span>+ สร้างฟอร์มใหม่</span>
-              </button>
-            </div>
-            <select id="modalEquipFormId" class="filter-input" style="width: 100%; font-weight: 600;" onchange="onModalFormChange()" required>
-              <!-- Populated via script -->
-            </select>
-          </div>
-        </div>
-
-        <!-- Quick Copy from Existing Equipment Helper -->
-        <div id="copyFromDeviceBox" style="background: #f8fafc; border: 1px dashed var(--border-main); border-radius: 8px; padding: 8px 12px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
-          <div style="display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--text-muted); flex-shrink: 0;">
-            <span class="material-icons-round" style="font-size: 16px; color: var(--royal-blue);">content_copy</span>
-            <span>หรือเลือกใช้ฟอร์มจากเครื่องมือเดิม:</span>
-          </div>
-          <select id="selectCopyFromDevice" class="filter-input" style="flex: 1; font-size: 11.5px; padding: 4px 8px; background: #ffffff;" onchange="onSelectCopyDevice(this.value)">
-            <option value="">-- คัดลอกแบบฟอร์มจากเครื่องมือเดิมในระบบ --</option>
-          </select>
-        </div>
-
-        <!-- Inline New Form Builder Container -->
-        <div id="newFormBuilderSection" style="display: none; background: #f0f7ff; border: 1.5px solid #93c5fd; border-radius: 12px; padding: 14px 16px; margin-bottom: 14px; animation: loaderPop 0.25s ease;">
-          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #bfdbfe; padding-bottom: 8px; margin-bottom: 12px;">
-            <div style="font-size: 13.5px; font-weight: 700; color: var(--royal-blue); display: flex; align-items: center; gap: 6px;">
-              <span class="material-icons-round" style="font-size: 18px; color: var(--royal-blue);">playlist_add</span>
-              <span>สร้างแบบฟอร์มตรวจเช็คใหม่ (New Evaluation Form)</span>
-            </div>
-            <button type="button" onclick="toggleNewFormBuilder(false)" style="background: none; border: none; color: #64748b; font-size: 11px; cursor: pointer; text-decoration: underline;">
-              ยกเลิก (ใช้ฟอร์มเดิม)
-            </button>
-          </div>
-
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
-            <div>
-              <label style="display: block; font-size: 11px; font-weight: 600; color: var(--text-body); margin-bottom: 3px;">
-                ชื่อแบบฟอร์มตรวจเช็ค <span style="color: var(--red-abnormal);">*</span>
-              </label>
-              <input type="text" id="newFormName" class="filter-input" style="width: 100%; font-size: 12.5px; font-weight: 600; background: #ffffff;" placeholder="เช่น แบบตรวจเช็คเครื่อง Suction Unit">
-            </div>
-            <div>
-              <label style="display: block; font-size: 11px; font-weight: 600; color: var(--text-body); margin-bottom: 3px;">
-                ชื่อย่อ / ชนิดอุปกรณ์
-              </label>
-              <input type="text" id="newFormShortName" class="filter-input" style="width: 100%; font-size: 12.5px; background: #ffffff;" placeholder="เช่น Suction Unit">
-            </div>
-          </div>
-
-          <div style="margin-bottom: 12px;">
-            <label style="display: block; font-size: 11px; font-weight: 600; color: var(--text-body); margin-bottom: 3px;">
-              หมวดหมู่อุปกรณ์
-            </label>
-            <input type="text" id="newFormCategory" class="filter-input" style="width: 100%; font-size: 12.5px; background: #ffffff;" placeholder="เช่น เครื่องมือช่วยกู้ชีพและทางเดินหายใจ">
-          </div>
-
-          <!-- Dynamic Checklist Items List -->
-          <div>
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
-              <label style="font-size: 11.5px; font-weight: 700; color: var(--royal-blue);">
-                รายการเกณฑ์การตรวจเช็คความพร้อม (Checklist Criteria) <span style="color: var(--red-abnormal);">*</span>
-              </label>
-              <button type="button" onclick="loadDefaultTemplateItems()" class="btn-text-link" style="font-size: 11px; color: #0284c7; font-weight: 600; background: none; border: none; cursor: pointer;">
-                ⚡ ใส่เกณฑ์มาตรฐาน 5 ข้อ
-              </button>
-            </div>
-            <div id="newFormItemsContainer" style="display: flex; flex-direction: column; gap: 6px; max-height: 190px; overflow-y: auto; padding-right: 4px; margin-bottom: 8px;">
-              <!-- Populated dynamically via JS -->
-            </div>
-            <button type="button" onclick="addNewChecklistItemRow()" class="btn-tool" style="width: 100%; padding: 6px; font-size: 12px; justify-content: center; background: #ffffff; border: 1px dashed var(--royal-blue); color: var(--royal-blue);">
-              <span class="material-icons-round" style="font-size: 15px;">add</span>
-              <span>เพิ่มหัวข้อตรวจเช็ค (Add Criterion)</span>
-            </button>
-          </div>
-        </div>
-
-        <div style="margin-bottom: 12px;">
-          <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">
-            ชื่อเครื่องมือแพทย์ (Equipment Name) <span style="color: var(--red-abnormal);">*</span>
-          </label>
-          <input type="text" id="modalEquipName" class="filter-input" style="width: 100%; font-size: 13.5px; font-weight: 600;" placeholder="เช่น เครื่องกระตุกหัวใจ Defibrillator" required>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
-          <div>
-            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">
-              รุ่น / ยี่ห้อ (Model)
-            </label>
-            <input type="text" id="modalEquipModel" class="filter-input" style="width: 100%;" placeholder="เช่น Mindray BeneHeart D3">
-          </div>
-          <div>
-            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">
-              Serial Number (S/N)
-            </label>
-            <input type="text" id="modalEquipSerialNo" class="filter-input" style="width: 100%; font-family: var(--font-mono);" placeholder="เช่น SN-882910">
-          </div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
-          <div>
-            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">
-              แผนกสังกัดปัจจุบัน <span style="color: var(--red-abnormal);">*</span>
-            </label>
-            <select id="modalEquipCurrentDept" class="filter-input" style="width: 100%; font-weight: 600;" required>
-              <!-- Filled dynamically from DB departments -->
-            </select>
-          </div>
-          <div>
-            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">
-              ระดับความเสี่ยง (ความถี่การตรวจ) <span style="color: var(--red-abnormal);">*</span>
-            </label>
-            <select id="modalEquipRiskLevel" class="filter-input" style="width: 100%; font-weight: 600;" required>
-              <option value="high">⚠️ เสี่ยงมาก (ประเมินทุกวัน)</option>
-              <option value="low">🛡️ เสี่ยงน้อย (ประเมินเดือนละครั้ง)</option>
-            </select>
-          </div>
-        </div>
-
-        <div style="margin-bottom: 16px;">
-          <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">
-            สถานะความพร้อม
-          </label>
-          <select id="modalEquipStatus" class="filter-input" style="width: 100%; font-weight: 600;">
-            <option value="ready">พร้อมใช้งาน (Ready)</option>
-            <option value="abnormal">ไม่พร้อมใช้งาน / ชำรุด (Abnormal)</option>
-          </select>
-        </div>
-
-        <div style="display: flex; gap: 8px; justify-content: flex-end; padding-top: 10px; border-top: 1px solid var(--border-subtle);">
-          <button type="button" onclick="closeEquipmentModal()" class="btn-tool">ยกเลิก</button>
-          <button type="submit" id="btnSaveEquipment" class="btn-tool btn-tool-primary" style="display: inline-flex; align-items: center; gap: 6px;">
-            <span class="material-icons-round" style="font-size: 16px;">save</span>
-            <span>บันทึกข้อมูล</span>
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
 
   <!-- Toast Notice -->
   <div id="toastNotice">
@@ -6270,6 +6337,11 @@
       if (tabKey === 'departments') {
         renderDepartmentsTable();
       } else if (tabKey === 'equipment') {
+        var listEl = document.getElementById('equipmentListView');
+        var formEl = document.getElementById('equipmentFormView');
+        if (listEl && (!formEl || formEl.style.display !== 'block')) {
+          listEl.style.display = 'block';
+        }
         renderEquipmentSettingsTable();
       } else if (tabKey === 'line') {
         loadLineSettingsIntoAdmin();
@@ -6627,11 +6699,17 @@
 
     function toggleNewFormBuilder(show) {
       var section = document.getElementById('newFormBuilderSection');
+      var existSection = document.getElementById('existingFormSelectSection');
+      var btnExist = document.getElementById('btnModeExistingForm');
+      var btnNew = document.getElementById('btnModeNewForm');
       var mFormSel = document.getElementById('modalEquipFormId');
       if (!section) return;
 
       if (show) {
         section.style.display = 'block';
+        if (existSection) existSection.style.display = 'none';
+        if (btnExist) { btnExist.classList.remove('active', 'btn-tool-primary'); }
+        if (btnNew) { btnNew.classList.add('active', 'btn-tool-primary'); }
         if (mFormSel) mFormSel.value = '__NEW_FORM__';
 
         var equipName = (document.getElementById('modalEquipName') ? document.getElementById('modalEquipName').value : '').trim();
@@ -6654,6 +6732,9 @@
         }, 100);
       } else {
         section.style.display = 'none';
+        if (existSection) existSection.style.display = 'block';
+        if (btnExist) { btnExist.classList.add('active', 'btn-tool-primary'); }
+        if (btnNew) { btnNew.classList.remove('active', 'btn-tool-primary'); }
         if (mFormSel && mFormSel.value === '__NEW_FORM__') {
           var forms = (window.PPCH_STORE && window.PPCH_STORE.getForms) ? window.PPCH_STORE.getForms() : [];
           if (forms.length > 0) mFormSel.value = forms[0].id;
@@ -6935,14 +7016,12 @@
       if (bEquip) bEquip.innerText = equip.length;
 
       if (filtered.length === 0) {
-        tbody.innerHTML = '<tr class="table-empty-row"><td colspan="10" style="text-align: center; padding: 30px; color: var(--text-muted); font-size: 13px;">ไม่พบเครื่องมือแพทย์ที่ตรงกับเงื่อนไขการค้นหา</td></tr>';
+        tbody.innerHTML = '<tr class="table-empty-row"><td colspan="6" style="text-align: center; padding: 30px; color: var(--text-muted); font-size: 13px;">ไม่พบเครื่องมือแพทย์ที่ตรงกับเงื่อนไขการค้นหา</td></tr>';
         return;
       }
 
       var html = '';
       filtered.forEach(function (eq, idx) {
-        var formObj = window.PPCH_STORE ? window.PPCH_STORE.getFormById(eq.formId) : null;
-        var formName = formObj ? (formObj.shortName || formObj.name) : (eq.formId || '-');
         var deptName = window.PPCH_STORE ? window.PPCH_STORE.getDepartmentName(eq.currentDept) : (eq.currentDept || '-');
 
         var eqRisk = eq.riskLevel || (eq.frequency === 'monthly' ? 'low' : 'high');
@@ -6950,43 +7029,48 @@
           ? '<span style="background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; padding: 2px 7px; border-radius: 4px; font-weight: 600; font-size: 11px; display: inline-flex; align-items: center; gap: 3px;"><span class="material-icons-round" style="font-size: 13px;">warning</span>เสี่ยงมาก (ทุกวัน)</span>'
           : '<span style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; padding: 2px 7px; border-radius: 4px; font-weight: 600; font-size: 11px; display: inline-flex; align-items: center; gap: 3px;"><span class="material-icons-round" style="font-size: 13px;">verified_user</span>เสี่ยงน้อย (เดือนละครั้ง)</span>';
 
-        var isReady = (eq.status === 'ready');
-        var statusBadge = isReady
-          ? '<span style="background: #ecfdf5; color: var(--green-ready); padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px;">พร้อมใช้งาน</span>'
-          : '<span style="background: #fef2f2; color: var(--red-abnormal); padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px;">ชำรุด</span>';
+        // Floating Action Speed Dial for dense rows (Khun Nick's signature rule)
+        var actionsHtml = '<div class="floating-action-wrapper" onmouseenter="handleFloatingEnter(this)" onmouseleave="handleFloatingLeave(this)">' +
+          '<button type="button" class="btn-floating-trigger" onclick="toggleFloatingMenu(this, event)" title="เมนูจัดการ (คลิกหรือชี้เพื่อเปิด 2 รายการ)">' +
+            '<span class="material-icons-round trigger-icon">more_horiz</span>' +
+            '<span class="floating-badge-count">2</span>' +
+          '</button>' +
+          '<div class="floating-action-tray">' +
+            '<button type="button" onclick="openEditEquipmentPage(\'' + escapeHtml(eq.id) + '\')" class="btn-action-icon" style="background: #eff6ff; color: var(--royal-blue); border-color: #bfdbfe;" title="แก้ไขข้อมูลเครื่อง">' +
+              '<span class="material-icons-round">edit</span>' +
+            '</button>' +
+            '<button type="button" onclick="deleteEquipmentConfirm(\'' + escapeHtml(eq.id) + '\')" class="btn-action-icon" style="background: #fef2f2; color: var(--red-abnormal); border-color: #fecaca;" title="ลบเครื่องมือ">' +
+              '<span class="material-icons-round">delete</span>' +
+            '</button>' +
+            '<button type="button" class="btn-floating-close" onclick="closeFloatingMenu(this, event)" title="หุบเก็บ">' +
+              '<span class="material-icons-round">close</span>' +
+            '</button>' +
+          '</div>' +
+        '</div>';
 
         html += '<tr>' +
           '<td data-label="ลำดับ" style="text-align: center; color: var(--text-muted); font-size: 12px;">' + (idx + 1) + '</td>' +
-          '<td data-label="รหัสเครื่อง"><span style="font-family: var(--font-mono); font-weight: 700; font-size: 12px; color: var(--royal-blue);">' + escapeHtml(eq.assetCode) + '</span></td>' +
+          '<td data-label="รหัสเครื่อง"><span style="font-family: var(--font-mono); font-weight: 700; font-size: 12px; color: var(--royal-blue); background: var(--royal-subtle); padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border-blue-soft);">' + escapeHtml(eq.assetCode) + '</span></td>' +
           '<td data-label="ชื่อเครื่องมือแพทย์" style="font-weight: 600; color: var(--text-main); font-size: 13px;">' + escapeHtml(eq.name) + '</td>' +
-          '<td data-label="รุ่น / ยี่ห้อ" style="color: var(--text-body); font-size: 12px;">' + escapeHtml(eq.model || '-') + '</td>' +
-          '<td data-label="Serial No." style="font-family: var(--font-mono); font-size: 11.5px; color: var(--text-muted);">' + escapeHtml(eq.serialNo || '-') + '</td>' +
           '<td data-label="ระดับความเสี่ยง" style="text-align: center;">' + riskBadge + '</td>' +
-          '<td data-label="แบบฟอร์มตรวจ"><span style="font-size: 11.5px; background: var(--royal-subtle); color: var(--royal-blue); padding: 2px 6px; border-radius: 4px;">' + escapeHtml(formName) + '</span></td>' +
           '<td data-label="แผนกปัจจุบัน" style="font-weight: 500; font-size: 12.5px; color: var(--text-main);">' + escapeHtml(deptName) + '</td>' +
-          '<td data-label="สถานะ" style="text-align: center;">' + statusBadge + '</td>' +
-          '<td data-label="จัดการ" style="text-align: center;">' +
-            '<div style="display: flex; gap: 6px; justify-content: center;">' +
-              '<button type="button" onclick="openEditEquipmentModal(\'' + escapeHtml(eq.id) + '\')" class="btn-tool" style="padding: 4px 8px; font-size: 11px; height: 28px;" title="แก้ไขเครื่องมือ">' +
-                '<span class="material-icons-round" style="font-size: 14px; color: var(--royal-blue);">edit</span>' +
-                '<span>แก้ไข</span>' +
-              '</button>' +
-              '<button type="button" onclick="deleteEquipmentConfirm(\'' + escapeHtml(eq.id) + '\')" class="btn-tool" style="padding: 4px 8px; font-size: 11px; height: 28px; color: var(--red-abnormal); border-color: #fecaca;" title="ลบเครื่องมือ">' +
-                '<span class="material-icons-round" style="font-size: 14px; color: var(--red-abnormal);">delete</span>' +
-                '<span>ลบ</span>' +
-              '</button>' +
-            '</div>' +
-          '</td>' +
+          '<td data-label="จัดการ" style="text-align: center;">' + actionsHtml + '</td>' +
         '</tr>';
       });
 
       tbody.innerHTML = html;
     }
 
-    function openAddEquipmentModal() {
+    // In-Page Dedicated Form Handlers (No Popup Modal)
+    function openAddEquipmentPage() {
+      var listEl = document.getElementById('equipmentListView');
+      var formEl = document.getElementById('equipmentFormView');
+      if (listEl) listEl.style.display = 'none';
+      if (formEl) formEl.style.display = 'block';
+
       document.getElementById('modalEquipMode').value = 'add';
       document.getElementById('modalEquipDbId').value = '';
-      document.getElementById('modalEquipTitle').innerText = 'เพิ่มเครื่องมือแพทย์ใหม่';
+      document.getElementById('equipmentFormPageTitle').innerText = 'เพิ่มเครื่องมือแพทย์ใหม่';
 
       document.getElementById('modalEquipAssetCode').value = '';
       document.getElementById('modalEquipName').value = '';
@@ -7010,19 +7094,27 @@
       populateDepartmentSelects();
 
       var copyBox = document.getElementById('copyFromDeviceBox');
-      if (copyBox) copyBox.style.display = 'flex';
+      if (copyBox) copyBox.style.display = 'block';
 
-      document.getElementById('modalAddEditEquipment').classList.remove('hidden');
-      setTimeout(function () { document.getElementById('modalEquipAssetCode').focus(); }, 100);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(function () {
+        var codeInp = document.getElementById('modalEquipAssetCode');
+        if (codeInp) codeInp.focus();
+      }, 100);
     }
 
-    function openEditEquipmentModal(deviceId) {
+    function openEditEquipmentPage(deviceId) {
       var eq = window.PPCH_STORE ? window.PPCH_STORE.getEquipmentById(deviceId) : null;
       if (!eq) return;
 
+      var listEl = document.getElementById('equipmentListView');
+      var formEl = document.getElementById('equipmentFormView');
+      if (listEl) listEl.style.display = 'none';
+      if (formEl) formEl.style.display = 'block';
+
       document.getElementById('modalEquipMode').value = 'edit';
       document.getElementById('modalEquipDbId').value = eq.id;
-      document.getElementById('modalEquipTitle').innerText = 'แก้ไขข้อมูลเครื่อง (' + eq.assetCode + ')';
+      document.getElementById('equipmentFormPageTitle').innerText = 'แก้ไขข้อมูลเครื่อง (' + eq.assetCode + ')';
 
       document.getElementById('modalEquipAssetCode').value = eq.assetCode || '';
       document.getElementById('modalEquipName').value = eq.name || '';
@@ -7037,13 +7129,25 @@
       var copyBox = document.getElementById('copyFromDeviceBox');
       if (copyBox) copyBox.style.display = 'none';
 
-      document.getElementById('modalAddEditEquipment').classList.remove('hidden');
-      setTimeout(function () { document.getElementById('modalEquipName').focus(); }, 100);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(function () {
+        var nameInp = document.getElementById('modalEquipName');
+        if (nameInp) nameInp.focus();
+      }, 100);
     }
 
-    function closeEquipmentModal() {
-      document.getElementById('modalAddEditEquipment').classList.add('hidden');
+    function closeEquipmentFormPage() {
+      var listEl = document.getElementById('equipmentListView');
+      var formEl = document.getElementById('equipmentFormView');
+      if (formEl) formEl.style.display = 'none';
+      if (listEl) listEl.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+
+    // Backwards-compatibility aliases
+    function openAddEquipmentModal() { openAddEquipmentPage(); }
+    function openEditEquipmentModal(deviceId) { openEditEquipmentPage(deviceId); }
+    function closeEquipmentModal() { closeEquipmentFormPage(); }
 
     function saveEquipment(event) {
       if (event) event.preventDefault();
@@ -7137,7 +7241,7 @@
           if (res && res.success) {
             var created = res.data || itemPayload;
             if (window.PPCH_STORE) window.PPCH_STORE.addEquipment(created);
-            closeEquipmentModal();
+            closeEquipmentFormPage();
             showToast('เพิ่มเครื่องมือแพทย์ "' + assetCode + '" เรียบร้อย');
             loadData();
           } else {
@@ -7149,7 +7253,7 @@
           if (btn) btn.disabled = false;
           if (res && res.success) {
             if (window.PPCH_STORE) window.PPCH_STORE.updateEquipment(dbId, itemPayload);
-            closeEquipmentModal();
+            closeEquipmentFormPage();
             showToast('แก้ไขเครื่องมือแพทย์ "' + assetCode + '" เรียบร้อย');
             loadData();
           } else {
