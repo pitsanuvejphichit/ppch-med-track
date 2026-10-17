@@ -4830,6 +4830,31 @@
 
       applyFilters();
       renderDirectoryView();
+
+      // Direct deep-link navigation from LINE Flex Message
+      if (!window.__ppchHandledDeepLink) {
+        window.__ppchHandledDeepLink = true;
+        try {
+          var urlParams = new URLSearchParams(window.location.search);
+          var viewParam = urlParams.get('view');
+          var actionParam = urlParams.get('action');
+          var deviceIdParam = urlParams.get('id');
+
+          if (viewParam && typeof switchView === 'function') {
+            switchView(viewParam);
+          }
+          if (actionParam === 'ack' && deviceIdParam) {
+            setTimeout(function () {
+              if (typeof openAcknowledgeModal === 'function') {
+                openAcknowledgeModal(deviceIdParam);
+              }
+            }, 350);
+          }
+        } catch (e) {
+          console.warn('Deep link error:', e);
+        }
+      }
+
       if (currentView === 'dashboard') {
         renderDashboardView();
       } else if (currentView === 'defective') {
