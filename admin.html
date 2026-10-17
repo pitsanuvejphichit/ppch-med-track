@@ -4282,6 +4282,10 @@
                     <span class="material-icons-round" style="font-size: 18px; color: #06c755;">send</span>
                     <span>ทดสอบส่ง LINE Flex Message</span>
                   </button>
+                  <button type="button" onclick="sendSummaryChartFromAdmin()" id="btnSendSummaryChart" class="btn-tool" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-color: #0284c7; color: #0284c7;">
+                    <span class="material-icons-round" style="font-size: 18px; color: #0284c7;">bar_chart</span>
+                    <span>ส่งกราฟสรุปความพร้อม (Flex Chart)</span>
+                  </button>
                   <button type="button" onclick="saveLineSettingsFromAdmin()" id="btnSaveLineSettings" class="btn-tool btn-tool-primary" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px;">
                     <span class="material-icons-round" style="font-size: 18px;">save</span>
                     <span>บันทึกการตั้งค่า LINE</span>
@@ -6924,6 +6928,25 @@
             btn.innerHTML = '<span class="material-icons-round" style="font-size: 18px; color: #06c755;">send</span> <span>ทดสอบส่ง LINE Flex Message</span>';
           }
           showToast('ส่งข้อความทดสอบ LINE Flex Message เรียบร้อยแล้ว กรุณาตรวจสอบใน LINE');
+        });
+      }
+    }
+
+    function sendSummaryChartFromAdmin() {
+      var btn = document.getElementById('btnSendSummaryChart');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="material-icons-round" style="font-size: 18px; animation: spin 1s infinite linear;">refresh</span> กำลังส่งกราฟสรุป...';
+      }
+
+      var operator = (window.currentUser && window.currentUser.name) ? window.currentUser.name : 'ผู้ดูแลระบบ (Admin)';
+      if (window.PPCH_API && window.PPCH_API.sendSummaryChartAlert) {
+        window.PPCH_API.sendSummaryChartAlert(operator, function (res) {
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<span class="material-icons-round" style="font-size: 18px; color: #0284c7;">bar_chart</span> <span>ส่งกราฟสรุปความพร้อม (Flex Chart)</span>';
+          }
+          showToast('ส่งรายงานกราฟสรุปความพร้อมใช้งานไปยัง LINE เรียบร้อยแล้ว');
         });
       }
     }

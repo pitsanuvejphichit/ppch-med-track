@@ -821,6 +821,17 @@
       });
     },
 
+    sendSummaryChartAlert: function (operator, callback) {
+      var gasUrl = this.getGasEndpoint();
+      if (!gasUrl) {
+        if (callback) callback({ success: false, message: 'ยังไม่ได้ระบุ Web App URL ของ Google Apps Script' });
+        return;
+      }
+      this.postToGas({ action: 'sendSummaryChart', operator: operator || 'Admin' }, function (res) {
+        if (callback) callback(res);
+      });
+    },
+
     // 9. Fetch LINE Settings from Google Sheets
     fetchLineSettings: function (callback) {
       var gasUrl = this.getGasEndpoint();
