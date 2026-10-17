@@ -276,6 +276,32 @@
       padding: 18px;
     }
 
+    @media (max-width: 640px) {
+      .topbar-subtitle {
+        display: none !important;
+      }
+      .eval-card-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 8px !important;
+        padding: 10px 14px !important;
+      }
+      .eval-card-title {
+        font-size: 13.5px !important;
+        line-height: 1.4 !important;
+      }
+      .eval-header-badges {
+        width: 100% !important;
+      }
+      .eval-card-body {
+        padding: 14px !important;
+      }
+      .eval-container {
+        padding: 0 10px !important;
+        margin: 12px auto 30px auto !important;
+      }
+    }
+
     .form-control-select, .form-control-input {
       width: 100%;
       background: #f8fafc;
@@ -662,7 +688,7 @@
         <div class="brand-divider"></div>
         <div class="brand-badge-pill">Med Track</div>
       </div>
-      <span style="font-size: 12.5px; color: var(--text-muted); margin-left: 6px;">ระบบเครื่องมือแพทย์ / กรอกแบบตรวจเช็ค</span>
+      <span class="topbar-subtitle" style="font-size: 12.5px; color: var(--text-muted); margin-left: 6px;">ระบบเครื่องมือแพทย์ / กรอกแบบตรวจเช็ค</span>
     </div>
 
     <div>
@@ -701,7 +727,7 @@
           <span class="material-icons-round" style="color: var(--royal-blue); font-size: 18px;">medical_services</span>
           <span id="formNameHeading">แบบตรวจเช็คเครื่องมือแพทย์</span>
         </div>
-        <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+        <div class="eval-header-badges" style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
           <span id="badgeRiskPill" style="display: none; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px;">-</span>
           <span id="badgeCategoryPill" style="font-size: 11px; font-weight: 700; color: var(--royal-blue); background: var(--royal-subtle); padding: 3px 8px; border-radius: 4px; border: 1px solid var(--border-blue-soft);">-</span>
         </div>
