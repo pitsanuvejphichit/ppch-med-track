@@ -1239,16 +1239,80 @@
       transform-origin: center;
     }
 
-    /* Print styles */
+    /* Print Header & Signatures hidden on normal screen */
+    .print-official-header,
+    .print-official-signatures {
+      display: none !important;
+    }
+
+    /* Print styles (A4 Landscape for 31-Day Wide Medical Sheet) */
+    @page {
+      size: A4 landscape;
+      margin: 8mm 10mm;
+    }
     @media print {
-      body { background: #ffffff; font-size: 10pt; }
-      .app-topbar, .eval-stepper-bar, .no-print, .cockpit-entry-card, .checkpoint-hero, .btn-cockpit-sub, .btn-cockpit-save { display: none !important; }
-      .cockpit-layout { display: block !important; }
-      .cockpit-left { display: none !important; }
-      .cockpit-right { width: 100% !important; }
-      .cockpit-chart-card, .cockpit-matrix-card { box-shadow: none !important; border: 1px solid #000 !important; page-break-inside: avoid; }
-      .matrix-scroll-wrap { overflow: visible !important; border: none !important; }
-      .matrix-table { width: 100% !important; min-width: 0 !important; font-size: 8pt !important; }
+      body {
+        background: #ffffff !important;
+        font-size: 9.5pt;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .app-topbar, .eval-stepper-bar, .no-print, .cockpit-left, .btn-cockpit-sub, .btn-cockpit-save, .cockpit-entry-card, .checkpoint-hero, #pageLoader, #toastNotice, .modal-overlay, #sidebarBackdrop {
+        display: none !important;
+      }
+      .cockpit-layout {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .cockpit-right {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .print-official-header {
+        display: flex !important;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 2px solid #002e6e;
+        padding-bottom: 8px;
+        margin-bottom: 12px;
+      }
+      .print-official-signatures {
+        display: flex !important;
+        justify-content: space-around;
+        align-items: flex-end;
+        margin-top: 16px;
+        page-break-inside: avoid;
+      }
+      .cockpit-chart-card,
+      .cockpit-matrix-card {
+        box-shadow: none !important;
+        border: 1.5px solid #002e6e !important;
+        page-break-inside: avoid !important;
+        margin-bottom: 10px !important;
+      }
+      .matrix-scroll-wrap {
+        overflow: visible !important;
+        border: none !important;
+      }
+      .matrix-table {
+        width: 100% !important;
+        min-width: 0 !important;
+        font-size: 8pt !important;
+      }
+      .matrix-th-title, .matrix-day-hdr, .matrix-avg-col {
+        padding: 4px 2px !important;
+      }
+      .matrix-table td {
+        padding: 3px 1px !important;
+      }
+      .matrix-temp-chip {
+        font-size: 7.5pt !important;
+        padding: 1px 3px !important;
+      }
       .slip-overlay { position: static; background: transparent; backdrop-filter: none; padding: 0; }
       .slip-card { box-shadow: none; border: 1px solid #000000; max-width: 100%; border-radius: 0; }
       .slip-header { background: #ffffff !important; color: #000000 !important; border-bottom: 2px solid #000000; }
@@ -1548,6 +1612,25 @@
           <!-- RIGHT COLUMN: Interactive Trend Chart (Top) + 31-Day Matrix Table (Bottom) -->
           <div class="cockpit-right">
             
+            <!-- Official Hospital Print Header (Visible ONLY on Landscape Print) -->
+            <div class="print-official-header" id="printOfficialHeader">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <img src="logo.png" style="height: 44px; width: auto;" alt="Logo โรงพยาบาลพิษณุเวช">
+                <div>
+                  <div style="font-size: 15px; font-weight: 800; color: #002e6e; line-height: 1.2;">โรงพยาบาลพิษณุเวช พิจิตร</div>
+                  <div style="font-size: 11px; font-weight: 600; color: #475569;">แบบบันทึกผลการตรวจเช็คอุณหภูมิประจำเดือน (Monthly Temperature Log Sheet)</div>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 14.5px; font-weight: 800; color: #0f172a;" id="printHeaderItemName">Laboratory (ห้องปฏิบัติการกลาง)</div>
+                <div style="font-size: 10.5px; color: #64748b; font-weight: 600;">
+                  <span id="printHeaderFormCode">FM-PPCH-LAB-057</span> | 
+                  <span id="printHeaderMonthYear">ประจำเดือน ตุลาคม 2569</span> | 
+                  <span id="printHeaderTarget">เกณฑ์: 24.0 – 28.0 °C</span>
+                </div>
+              </div>
+            </div>
+
             <!-- Trend Chart Card (Separated into 3 Distinct Shift Graphs) -->
             <div class="cockpit-chart-card">
               <div class="cockpit-chart-hdr">
@@ -1662,6 +1745,20 @@
                     <!-- 3 Shift Rows: Morning, Afternoon, Evening -->
                   </tbody>
                 </table>
+              </div>
+            <!-- Official Print Signatures (Visible ONLY on Landscape Print) -->
+            <div class="print-official-signatures">
+              <div style="text-align: center; width: 240px;">
+                <div style="border-bottom: 1px dotted #000; height: 32px; margin-bottom: 6px;"></div>
+                <div style="font-size: 11px; font-weight: 700;">( ............................................................ )</div>
+                <div style="font-size: 10px; color: #475569; margin-top: 2px;">ผู้ตรวจเช็คประจำผลัด / เจ้าหน้าที่</div>
+                <div style="font-size: 10px; color: #64748b;">วันที่ ........ / ........ / ................</div>
+              </div>
+              <div style="text-align: center; width: 240px;">
+                <div style="border-bottom: 1px dotted #000; height: 32px; margin-bottom: 6px;"></div>
+                <div style="font-size: 11px; font-weight: 700;">( ............................................................ )</div>
+                <div style="font-size: 10px; color: #475569; margin-top: 2px;">ผู้ตรวจสอบ / หัวหน้าแผนก</div>
+                <div style="font-size: 10px; color: #64748b;">วันที่ ........ / ........ / ................</div>
               </div>
             </div>
 
@@ -2116,6 +2213,20 @@
 
       // Initialize selectable Day, Month, Year date controls & month pills
       populateCockpitDateControls();
+      updatePrintHeader();
+    }
+
+    function updatePrintHeader() {
+      if (!currentItem) return;
+      var elItem = document.getElementById('printHeaderItemName');
+      var elCode = document.getElementById('printHeaderFormCode');
+      var elMY = document.getElementById('printHeaderMonthYear');
+      var elTarget = document.getElementById('printHeaderTarget');
+
+      if (elItem) elItem.innerText = currentItem.name;
+      if (elCode) elCode.innerText = currentItem.code;
+      if (elMY) elMY.innerText = 'ประจำเดือน ' + (THAI_MONTHS_FULL[activeMonth - 1] || '') + ' ' + activeYear;
+      if (elTarget) elTarget.innerText = 'เกณฑ์: ' + (currentItem.targetTemp || currentItem.target || currentItem.targetCheck || '-');
     }
 
     // Load Month Sheet Data from Supabase PostgreSQL (< 100ms) with GAS Sheet Fallback
@@ -2774,6 +2885,7 @@
 
       updateDayDropdownOptions();
       syncCockpitDateDisplay();
+      if (typeof updatePrintHeader === 'function') updatePrintHeader();
 
       if (monthChanged && currentItem) {
         loadMonthSheetData(currentItem.id, activeYear, activeMonth);

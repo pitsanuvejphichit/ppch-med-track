@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>PPCH บันทึกผลการตรวจเช็คเครื่องมือ แผนกเวชศาสตร์ฟื้นฟู (PT Check-in) | โรงพยาบาลพิษณุเวช</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <style>
+    /* ==================== PPCH PHYSICAL THERAPY THEME ==================== */
+    :root {
+      --pt-navy: #002e6e;
+      --pt-blue: #004b93;
+      --pt-teal: #0d9488;
+      --pt-emerald: #059669;
+      --pt-light-teal: #14b8a6;
+      --pt-subtle: #f0fdfa;
+      --pt-glow: rgba(13, 148, 136, 0.16);
+
+      --canvas-bg: #f4f8fa;
+      --surface-white: #ffffff;
+      --border-main: #e2e8f0;
+      --border-subtle: #edf2f7;
+      --border-teal-soft: #99f6e4;
+
+      --text-main: #0f172a;
+      --text-body: #334155;
+      --text-muted: #64748b;
+
+      --font-main: 'Prompt', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'Inter', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-main);
+      background-color: var(--canvas-bg);
+      color: var(--text-body);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 60px;
+    }
+
+    /* Top Navigation Bar */
+    .app-topbar {
+      height: 56px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-main);
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+    .topbar-badge {
+      font-size: 11px;
+      font-weight: 700;
+      color: #ffffff;
+      background: var(--pt-teal);
+      padding: 3px 8px;
+      border-radius: 9999px;
+    }
+
+    /* Container */
+    .container {
+      max-width: 980px;
+      margin: 18px auto;
+      padding: 0 16px;
+    }
+
+    /* Card styling */
+    .eval-card {
+      background: var(--surface-white);
+      border-radius: 14px;
+      border: 1px solid var(--border-main);
+      box-shadow: 0 4px 16px rgba(0, 46, 110, 0.05);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+    }
+
+    /* Hero Checkpoint Banner */
+    .pt-hero-card {
+      background: linear-gradient(135deg, #002e6e 0%, #004b93 60%, #0d9488 100%);
+      border-radius: 12px;
+      padding: 16px 20px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    /* Date controls styling */
+    .cockpit-date-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+    .btn-date-nav {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      border: 1px solid var(--border-main);
+      background: #f8fafc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #475569;
+    }
+    .btn-date-nav:hover { background: #e2e8f0; }
+    .cockpit-date-select {
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--pt-navy);
+      border-radius: 6px;
+      padding: 3px 6px;
+      outline: none;
+      cursor: pointer;
+    }
+    .btn-date-today {
+      padding: 0 8px;
+      height: 28px;
+      border-radius: 6px;
+      border: 1px solid var(--border-main);
+      background: #f8fafc;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--pt-blue);
+      cursor: pointer;
+    }
+
+    /* Checkbox & Checklist Items */
+    .checklist-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 16px 0;
+    }
+    .checklist-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: #f8fafc;
+      border: 1px solid var(--border-main);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .checklist-row:hover {
+      background: #f0fdfa;
+      border-color: #99f6e4;
+    }
+    .checklist-row.checked {
+      background: #ecfdf5;
+      border-color: #6ee7b7;
+    }
+    .checklist-checkbox {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--pt-emerald);
+      cursor: pointer;
+    }
+    .checklist-text {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text-main);
+      flex: 1;
+    }
+
+    /* Buttons */
+    .btn-quick-pass {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #a7f3d0;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-quick-pass:hover {
+      background: #d1fae5;
+    }
+    .btn-submit-main {
+      width: 100%;
+      height: 48px;
+      background: linear-gradient(135deg, #0d9488 0%, #004b93 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+      transition: all 0.2s ease;
+    }
+    .btn-submit-main:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(13, 148, 136, 0.4);
+    }
+    .btn-submit-main:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .btn-repair-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+      color: #be123c;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .btn-repair-link:hover {
+      background: #ffe4e6;
+    }
+
+    /* Form Fields */
+    .form-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+      display: block;
+    }
+    .form-input, .form-select {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-main);
+      font-size: 13.5px;
+      color: var(--text-main);
+      font-family: inherit;
+      outline: none;
+      transition: all 0.15s ease;
+    }
+    .form-input:focus, .form-select:focus {
+      border-color: var(--pt-teal);
+      box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.15);
+    }
+
+    /* Monthly Matrix Table */
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      text-align: center;
+    }
+    .matrix-table th, .matrix-table td {
+      border: 1px solid #e2e8f0;
+      padding: 6px 3px;
+    }
+    .matrix-table th {
+      background: #f8fafc;
+      color: #475569;
+      font-weight: 700;
+    }
+    .matrix-status-cell.ready { background: #ecfdf5; color: #047857; font-weight: 700; }
+    .matrix-status-cell.abnormal { background: #fef2f2; color: #b91c1c; font-weight: 700; }
+    .matrix-status-cell.pending { background: #f8fafc; color: #94a3b8; }
+
+    /* Print Header & Signatures hidden on normal screen */
+    .print-official-header,
+    .print-official-signatures {
+      display: none !important;
+    }
+
+    /* Print styles (A4 Landscape) */
+    @page {
+      size: A4 landscape;
+      margin: 8mm 10mm;
+    }
+    @media print {
+      body {
+        background: #ffffff !important;
+        font-size: 9.5pt;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .app-topbar, .no-print, .btn-submit-main, .btn-repair-link, .btn-quick-pass, #pageLoader, #toastNotice {
+        display: none !important;
+      }
+      .eval-card {
+        box-shadow: none !important;
+        border: 1px solid #002e6e !important;
+        margin-bottom: 10px !important;
+        page-break-inside: avoid;
+      }
+      .print-official-header {
+        display: flex !important;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 2px solid #002e6e;
+        padding-bottom: 8px;
+        margin-bottom: 12px;
+      }
+      .print-official-signatures {
+        display: flex !important;
+        justify-content: space-around;
+        align-items: flex-end;
+        margin-top: 20px;
+        page-break-inside: avoid;
+      }
+    }
+
+    /* Toast Notification */
+    #toastNotice {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      z-index: 2000;
+      transform: translateY(60px);
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+    #toastNotice.show {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Topbar -->
+  <header class="app-topbar no-print">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <a href="pt.html" class="topbar-brand">
+        <img src="logo.png" style="height: 32px; width: auto;" alt="Logo">
+        <span style="font-size: 14px; font-weight: 800; color: var(--pt-navy);">เวชศาสตร์ฟื้นฟู & กายภาพบำบัด</span>
+      </a>
+      <span class="topbar-badge">PT Check-in</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <a href="pt.html" style="font-size: 12.5px; font-weight: 700; color: var(--pt-blue); text-decoration: none; display: flex; align-items: center; gap: 4px;">
+        <span class="material-icons-round" style="font-size: 16px;">dashboard</span>
+        <span>แดชบอร์ด PT</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Step 1: Equipment Selector Card -->
+    <section class="eval-card no-print" id="cardSelector">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+        <h2 style="font-size: 15px; font-weight: 800; color: var(--pt-navy); display: flex; align-items: center; gap: 6px;">
+          <span class="material-icons-round" style="color: var(--pt-teal);">tune</span>
+          <span>เลือกเครื่องมือแพทย์แผนกเวชศาสตร์ฟื้นฟู (กายภาพบำบัด)</span>
+        </h2>
+        <span style="font-size: 11.5px; font-weight: 600; color: var(--text-muted);">11 รายการ</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px;">
+        <div>
+          <label class="form-label">หมวดหมู่เครื่องมือ</label>
+          <select id="selectCategory" class="form-select" onchange="onCategoryChanged()">
+            <option value="all">-- ทุกหมวดหมู่ (11 เครื่องมือ) --</option>
+            <option value="traction">เครื่องดึงกระดูก (Traction)</option>
+            <option value="laser">เลเซอร์บำบัด (High Intensity Laser)</option>
+            <option value="ultrasound">อัลตราซาวด์บำบัด (US BTL / Combine)</option>
+            <option value="shockwave">คลื่นกระแทก (Radial Shock Wave)</option>
+            <option value="heat">ความร้อน (Hydrocollator Hot Pack)</option>
+            <option value="respiratory">ทางเดินหายใจ (Ultraneb Nebulizer)</option>
+            <option value="motion">ฝึกการเคลื่อนไหว (CPM)</option>
+            <option value="vibrator">เครื่องสั่นนวดกล้ามเนื้อ (Vibrator)</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label">เลือกเครื่องมือ</label>
+          <select id="selectItem" class="form-select" onchange="onItemSelected(this.value)">
+            <!-- Populated by JS -->
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Step 2: Main Evaluation Card -->
+    <section class="eval-card" id="cardForm" style="display: none;">
+      <!-- Official Hospital Print Header (Visible ONLY on Landscape Print) -->
+      <div class="print-official-header" id="printOfficialHeader">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <img src="logo.png" style="height: 44px; width: auto;" alt="Logo โรงพยาบาลพิษณุเวช">
+          <div>
+            <div style="font-size: 15px; font-weight: 800; color: #002e6e; line-height: 1.2;">โรงพยาบาลพิษณุเวช พิจิตร</div>
+            <div style="font-size: 11px; font-weight: 600; color: #475569;">แบบฟอร์มตรวจเช็คความพร้อมใช้ของเครื่องมือแผนกเวชศาสตร์ฟื้นฟู 2026</div>
+          </div>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-size: 14.5px; font-weight: 800; color: #0f172a;" id="printHeaderItemName">เครื่องมือแผนกกายภาพ</div>
+          <div style="font-size: 10.5px; color: #64748b; font-weight: 600;">
+            <span id="printHeaderFormCode">PT-EQ-01</span> | 
+            <span id="printHeaderMonthYear">ประจำเดือน ตุลาคม 2569</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Banner -->
+      <div class="pt-hero-card">
+        <div>
+          <div style="font-size: 11.5px; opacity: 0.9; display: flex; align-items: center; gap: 6px;">
+            <span class="material-icons-round" style="font-size: 14px;">verified</span>
+            <span id="heroItemCode">PT-EQ-01</span>
+            <span>•</span>
+            <span id="heroCatName">แผนกเวชศาสตร์ฟื้นฟู</span>
+          </div>
+          <div style="font-size: 17px; font-weight: 800; margin-top: 2px; display: flex; align-items: center; gap: 8px;">
+            <span class="material-icons-round" id="heroIcon" style="font-size: 22px; color: #5eead4;">medical_services</span>
+            <span id="heroItemName">Cervical and Pelvic Traction</span>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;" class="no-print">
+          <button type="button" onclick="window.print()" class="btn-date-nav" title="พิมพ์รายงานแนวนอน A4" style="color: var(--pt-navy); background: #ffffff; width: auto; padding: 0 10px; height: 32px; font-weight: 700; font-size: 11.5px; gap: 4px; display: inline-flex;">
+            <span class="material-icons-round" style="font-size: 16px;">print</span>
+            <span>พิมพ์ A4 แนวนอน</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Date & Staff Row -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--border-main);">
+        <!-- Date Picker Row: Selectable Day, Month, Year -->
+        <div>
+          <label class="form-label">วันที่ตรวจเช็ค</label>
+          <div class="cockpit-date-row">
+            <button type="button" class="btn-date-nav" onclick="triggerNativeDatePicker()" title="เลือกจากปฏิทิน" style="color: var(--pt-teal); background: #f0fdfa; border-color: #99f6e4;">
+              <span class="material-icons-round" style="font-size: 16px;">calendar_month</span>
+            </button>
+            <button type="button" class="btn-date-nav" onclick="navDay(-1)" title="วันก่อนหน้า">
+              <span class="material-icons-round" style="font-size: 16px;">chevron_left</span>
+            </button>
+            <select id="speedDaySelect" onchange="onDayDropdownChanged()" class="cockpit-date-select" title="เลือกวัน" style="font-family: var(--font-mono); font-weight: 800; min-width: 48px;">
+              <!-- 01 to 31 -->
+            </select>
+            <select id="speedMonthSelect" onchange="onMonthDropdownChanged()" class="cockpit-date-select" title="เลือกเดือน" style="font-weight: 700;">
+              <!-- ม.ค. ถึง ธ.ค. -->
+            </select>
+            <select id="speedYearSelect" onchange="onYearDropdownChanged()" class="cockpit-date-select" title="เลือกปี พ.ศ." style="font-family: var(--font-mono); font-weight: 700;">
+              <!-- 2567 .. 2571 -->
+            </select>
+            <button type="button" class="btn-date-nav" onclick="navDay(1)" title="วันถัดไป">
+              <span class="material-icons-round" style="font-size: 16px;">chevron_right</span>
+            </button>
+            <button type="button" class="btn-date-today" onclick="navToday()">วันนี้</button>
+            <input type="date" id="cockpitNativeDatePicker" onchange="onNativeDatePicked(this.value)" style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;">
+          </div>
+        </div>
+
+        <!-- Staff Member Selection -->
+        <div>
+          <label class="form-label">ผู้ตรวจเครื่อง (เจ้าหน้าที่กายภาพบำบัด) *</label>
+          <select id="staffNameSelect" class="form-select" onchange="onStaffSelectChanged(this.value)">
+            <option value="">-- กรุณาเลือกผู้ตรวจเครื่อง --</option>
+            <option value="แพรไพลิน">แพรไพลิน</option>
+            <option value="จากัณธิฬา">จากัณธิฬา</option>
+            <option value="วิสสุตา">วิสสุตา</option>
+            <option value="ชนนิกานต์">ชนนิกานต์</option>
+            <option value="ชานิสา">ชานิสา</option>
+            <option value="other">ระบุชื่ออื่น...</option>
+          </select>
+          <input type="text" id="staffNameCustom" class="form-input" placeholder="พิมพ์ชื่อ-สกุล ผู้ตรวจ..." style="display: none; margin-top: 6px;">
+        </div>
+      </div>
+
+      <!-- Checklist Header & Quick Select All -->
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+        <span style="font-size: 13px; font-weight: 800; color: var(--pt-navy);">รายการตรวจสอบความพร้อมใช้งาน (Checklist)</span>
+        <button type="button" onclick="selectAllChecklist()" class="btn-quick-pass no-print">
+          <span class="material-icons-round" style="font-size: 16px;">done_all</span>
+          <span>เลือกปกติทั้งหมด (All Pass)</span>
+        </button>
+      </div>
+
+      <!-- Interactive Checklist Rows Container -->
+      <div class="checklist-group" id="checklistContainer">
+        <!-- Injected by JS -->
+      </div>
+
+      <!-- Extra Parameter: Hydrocollator Temperature -->
+      <div id="extraHydroSection" style="display: none; margin: 16px 0; padding: 14px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+          <span style="font-size: 13px; font-weight: 700; color: #92400e;">อุณหภูมิก่อนเปิดเครื่อง Hydrocollator (เกณฑ์มาตรฐาน: 64.0 – 67.0 °C)</span>
+          <span id="hydroTempBadge" style="font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: #fef3c7; color: #92400e;">รอระบุค่า</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <input type="number" id="inputHydroTemp" class="form-input" style="max-width: 140px; font-family: var(--font-mono); font-weight: 700;" step="0.1" placeholder="65.5" oninput="validateHydroTemp()">
+          <span style="font-size: 14px; font-weight: 700; color: #78350f;">°C</span>
+        </div>
+      </div>
+
+      <!-- Note / Remarks -->
+      <div style="margin: 16px 0;">
+        <label class="form-label">หมายเหตุ / การแก้ไข (ไม่บังคับกรอก)</label>
+        <input type="text" id="evalNote" class="form-input" placeholder="ระบุรายละเอียดเพิ่มเติม (ถ้ามี)...">
+      </div>
+
+      <!-- Action Buttons Row -->
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 20px;" class="no-print">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdwkF04kruAmIkad7Enxav5H_IgnxGwO3bfSmMzLaxF36buNA/viewform?usp=header" target="_blank" class="btn-repair-link" title="เปิด Google Form แจ้งซ่อมเครื่องมือ">
+          <span class="material-icons-round" style="font-size: 16px;">report_problem</span>
+          <span>แจ้งปัญหา/ส่งซ่อมเครื่องมือ</span>
+        </a>
+
+        <div style="display: flex; align-items: center; gap: 10px; width: 60%; max-width: 320px;">
+          <button type="button" id="btnSubmitEval" onclick="submitEvaluation()" class="btn-submit-main">
+            <span class="material-icons-round">save</span>
+            <span>บันทึกผลตรวจเช็ค</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Monthly Inspection Matrix (Day 1-31) -->
+      <div style="margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border-main);">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+          <h3 style="font-size: 13.5px; font-weight: 800; color: var(--pt-navy); display: flex; align-items: center; gap: 6px;">
+            <span class="material-icons-round" style="color: var(--pt-teal); font-size: 18px;">calendar_month</span>
+            <span>ตารางบันทึกการตรวจเช็คประจำเดือน (31 Days Matrix)</span>
+          </h3>
+          <span id="matrixMonthLabel" style="font-size: 12px; font-weight: 700; color: #64748b;">ตุลาคม 2569</span>
+        </div>
+
+        <div style="overflow-x: auto; border: 1px solid var(--border-main); border-radius: 8px;">
+          <table class="matrix-table" id="matrixTable">
+            <thead id="matrixThead"></thead>
+            <tbody id="matrixTbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Official Print Signatures (Visible ONLY on Landscape Print) -->
+      <div class="print-official-signatures">
+        <div style="text-align: center; width: 240px;">
+          <div style="border-bottom: 1px dotted #000; height: 32px; margin-bottom: 6px;"></div>
+          <div style="font-size: 11px; font-weight: 700;">( ............................................................ )</div>
+          <div style="font-size: 10px; color: #475569; margin-top: 2px;">ผู้ตรวจเช็คประจำวัน / เจ้าหน้าที่กายภาพบำบัด</div>
+          <div style="font-size: 10px; color: #64748b;">วันที่ ........ / ........ / ................</div>
+        </div>
+        <div style="text-align: center; width: 240px;">
+          <div style="border-bottom: 1px dotted #000; height: 32px; margin-bottom: 6px;"></div>
+          <div style="font-size: 11px; font-weight: 700;">( ............................................................ )</div>
+          <div style="font-size: 10px; color: #475569; margin-top: 2px;">ผู้ตรวจสอบ / หัวหน้าแผนกเวชศาสตร์ฟื้นฟู</div>
+          <div style="font-size: 10px; color: #64748b;">วันที่ ........ / ........ / ................</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Toast Notice -->
+  <div id="toastNotice">
+    <span class="material-icons-round" style="color: #34d399; font-size: 18px;">check_circle</span>
+    <span id="toastMsg">บันทึกข้อมูลเรียบร้อย</span>
+  </div>
+
+  <!-- PT Supabase API Connector -->
+  <script src="js/pt-api.js"></script>
+
+  <script>
+    // 11 Physical Therapy Machines Database (Direct from Google Form)
+    var PT_ITEMS = {
+      'pt_cervical': {
+        id: 'pt_cervical',
+        name: 'Cervical and Pelvic Traction',
+        thaiName: 'เครื่องดึงคอและดึงหลัง',
+        code: 'PT-EQ-01',
+        cat: 'traction',
+        catName: 'เครื่องดึงกระดูก',
+        icon: 'accessible_forward',
+        checklist: [
+          'การทำความสะอาด (ตัวเครื่อง, สายไฟ)',
+          'สภาพตัวเครื่อง (ปกติ)',
+          'สภาพล้อ/เบรก (ปกติ)',
+          'สภาพสายไฟ (ปกติ)',
+          'หน้าจอแสดงผล (ปกติ)',
+          'สัญญาณไฟ/เตือน (ปกติ)',
+          'สติ๊กเกอร์ Code (มี)',
+          'คู่มือการใช้งานอย่างย่อ (มี)'
+        ]
+      },
+      'pt_laser': {
+        id: 'pt_laser',
+        name: 'High Intensity Laser (HPLT)',
+        thaiName: 'เครื่องเลเซอร์กำลังสูง',
+        code: 'PT-EQ-02',
+        cat: 'laser',
+        catName: 'เลเซอร์บำบัด',
+        icon: 'flash_on',
+        checklist: [
+          'การทำความสะอาด (ตัวเครื่อง, สายไฟ, Handpiece, แว่นตา)',
+          'สภาพตัวเครื่อง (ปกติ)',
+          'สภาพล้อ/เบรก (ปกติ)',
+          'สภาพสายไฟ (ปกติ)',
+          'การทำงานของปุ่มต่างๆ (ปกติ)',
+          'หน้าจอแสดงผล (ปกติ)',
+          'สัญญาณไฟ/เตือน (ปกติ)',
+          'เวชภัณฑ์ (แอลกอฮอล์)',
+          'สติ๊กเกอร์ Code (มี)',
+          'คู่มือการใช้งานอย่างย่อ (มี)'
+        ]
+      },
+      'pt_us_btl': {
+        id: 'pt_us_btl',
+        name: 'Ultrasound (BTL)',
+        thaiName: 'เครื่องอัลตราซาวด์ BTL',
+        code: 'PT-EQ-03',
+        cat: 'ultrasound',
+        catName: 'อัลตราซาวด์บำบัด',
+        icon: 'waves',
+        checklist: [
+          'การทำความสะอาด (ตัวเครื่อง, สายไฟ, Handpiece)',
+          'สภาพตัวเครื่อง (ปกติ)',
+          'สภาพสายไฟ (ปกติ)',
+          'ประสิทธิภาพการทำงานของสายไฟ channel 1 (electrode test: > 70%)',
+          'ประสิทธิภาพการทำงานของสายไฟ channel 2 (electrode test: > 70%)',
+          'การทำงานของปุ่มต่างๆ (ปกติ)',
+          'หน้าจอแสดงผล (ปกติ)',
+          'สัญญาณไฟ/เตือน (ปกติ)',
+          'เวชภัณฑ์ (แอลกอฮอล์, ผ้าเช็ดเจล, US Gel)',
+          'สติ๊กเกอร์ Code (มี)',
+          'คู่มือการใช้งานอย่างย่อ (มี)'
+        ]
+      },
+      'pt_us_combine': {
+        id: 'pt_us_combine',
+        name: 'US Combine (Enraf)',
+        thaiName: 'เครื่องอัลตราซาวด์คอมบาย Enraf',
+        code: 'PT-EQ-04',
+        cat: 'ultrasound',
+        catName: 'อัลตราซาวด์บำบัด',
+        icon: 'grain',
+        checklist: [
+          'การทำความสะอาด (ตัวเครื่อง, สายไฟ, Handpiece, รถเข็น)',
+          'สภาพตัวเครื่อง (ปกติ)',
+          'สภาพสายไฟ (ปกติ)',
+          'ประสิทธิภาพการทำงานของสายไฟ channel 1 (electrode test: ปรับ intensity ตัวเลขไม่กระพริบ)',
+          'ประสิทธิภาพการทำงานของสายไฟ channel 2 (electrode test: ปรับ intensity ตัวเลขไม่กระพริบ)',
+          'การทำงานของปุ่มต่างๆ (ปกติ)',
+          'หน้าจอแสดงผล (ปกติ)',
+          'สัญญาณไฟ/เตือน (ปกติ)',
+          'เวชภัณฑ์ (แอลกอฮอล์, ผ้าเช็ดเจล, US Gel)',
+          'สติ๊กเกอร์ Code (มี)',
+          'คู่มือการใช้งานอย่างย่อ (มี)'
+        ]
+      },
+      'pt_shockwave': {
+        id: 'pt_shockwave',
+        name: 'Radial Shock Wave',
+        thaiName: 'เครื่องกระตุ้นคลื่นกระแทก Shock Wave',
+        code: 'PT-EQ-05',
+        cat: 'shockwave',
+        catName: 'คลื่นกระแทก',
+        icon: 'offline_bolt',
+        checklist: [
+          'การทำความสะอาด (ตัวเครื่อง, สายไฟ, Transmitter)',
+          'สภาพตัวเครื่อง (ปกติ)',
+          'สภาพล้อ/เบรก (ปกติ)',
+          'สภาพสายไฟ (ปกติ)',
+          'การทำงานของปุ่มต่างๆ (ปกติ)',
+          'หน้าจอแสดงผล (ปกติ)',
+          'เวชภัณฑ์ (แอลกอฮอล์, ผ้าเช็ดเจล, US Gel)',
+          'สติ๊กเกอร์ Code (มี)',
+          'คู่มือการใช้งานอย่างย่อ (มี)'
+        ]
+      },
+      'pt_hydro': {
+        id: 'pt_hydro',
+        name: 'Hydrocollator (Hot pack)',
+        thaiName: 'หม้อต้มแผ่นประคบร้อน',
+        code: 'PT-EQ-06',
+        cat: 'heat',
+        catName: 'ความร้อนบำบัด',
+        icon: 'hot_tub',
+        targetTemp: '64.0 - 67.0 °C',
+        hasTemp: true,
+        checklist: [
+          'การทำความสะอาด (ตัวเครื่อง, สายไฟ, Handpiece, แว่นตา)',
+          'สภาพตัวเครื่อง (ปกติ)',
+          'สภาพล้อ/เบรก (ปกติ)',
+          'สภาพสายไฟ (ปกติ)',
+          'อุณหภูมิก่อนเปิดเครื่อง (64 - 67 องศาเซลเซียส)',
+          'สติ๊กเกอร์ Code (มี)',
+          'คู่มือการใช้งานอย่างย่อ (มี)'
+        ]
+      },
+      'pt_nebulizer': {
+        id: 'pt_nebulizer',
+        name: 'Ultraneb Nebulizer',
+        thaiName: 'เครื่องพ่นละอองยา',
+        code: 'PT-EQ-07',
+        cat: 'respiratory',
+        catName: 'ทางเดินหายใจ',
+        icon: 'air',
+        checklist: [
+          'การทำความสะอาด (ตัวเครื่อง, สายไฟ, รถเข็น)',
+          'สภาพตัวเครื่อง (ปกติ)',
+          'สภาพล้อ/เบรก (ปกติ)',
+          'สภาพสายไฟ (ปกติ)',
+          'การทำงานของปุ่มต่างๆ (ปกติ)',
+          'สัญญาณไฟ/เตือน (ปกติ)',
+          'สติ๊กเกอร์ Code (มี)'
+        ]
+      },
+      'pt_cpm': {
+        id: 'pt_cpm',
+        name: 'Continuous Passive Motion (CPM)',
+        thaiName: 'เครื่องฝึกการเคลื่อนไหวข้อเข่า',
+        code: 'PT-EQ-08',
+        cat: 'motion',
+        catName: 'ฝึกการเคลื่อนไหว',
+        icon: 'transfer_within_a_station',
+        checklist: [
+          'การทำความสะอาด (ตัวเครื่อง, สายไฟ, รถเข็น)',
+          'สภาพตัวเครื่อง (ปกติ)',
+          'สภาพล้อ/เบรก (ปกติ)',
+          'สภาพสายไฟ (ปกติ)',
+          'การทำงานของปุ่มต่างๆ (ปกติ)',
+          'หน้าจอแสดงผล (ปกติ)',
+          'สัญญาณไฟ/เตือน (ปกติ)',
+          'สติ๊กเกอร์ Code (มี)',
+          'คู่มือการใช้งานอย่างย่อ (มี)'
+        ]
+      },
+      'pt_vib_small_old': {
+        id: 'pt_vib_small_old',
+        name: 'เครื่อง Vibrator (เครื่องเล็กเก่า)',
+        thaiName: 'เครื่องสั่นนวด (เครื่องเล็กเก่า)',
+        code: 'PT-EQ-09',
+        cat: 'vibrator',
+        catName: 'เครื่องสั่นนวด',
+        icon: 'vibration',
+        checklist: [
+          'การทำความสะอาด (ตัวเครื่อง, สายไฟ)',
+          'สภาพตัวเครื่อง (ปกติ)',
+          'สภาพสายไฟ (ปกติ)',
+          'สติ๊กเกอร์ Code (มี)'
+        ]
+      },
+      'pt_vib_small_new': {
+        id: 'pt_vib_small_new',
+        name: 'เครื่อง Vibrator (เครื่องเล็กใหม่)',
+        thaiName: 'เครื่องสั่นนวด (เครื่องเล็กใหม่)',
+        code: 'PT-EQ-10',
+        cat: 'vibrator',
+        catName: 'เครื่องสั่นนวด',
+        icon: 'vibration',
+        checklist: [
+          'การทำความสะอาด (ตัวเครื่อง, สายไฟ)',
+          'สภาพตัวเครื่อง (ปกติ)',
+          'สภาพสายไฟ (ปกติ)',
+          'สติ๊กเกอร์ Code (มี)'
+        ]
+      },
+      'pt_vib_large': {
+        id: 'pt_vib_large',
+        name: 'เครื่อง Vibrator (เครื่องใหญ่)',
+        thaiName: 'เครื่องสั่นนวด (เครื่องใหญ่)',
+        code: 'PT-EQ-11',
+        cat: 'vibrator',
+        catName: 'เครื่องสั่นนวด',
+        icon: 'vibration',
+        checklist: [
+          'การทำความสะอาด (ตัวเครื่อง, สายไฟ)',
+          'สภาพตัวเครื่อง (ปกติ)',
+          'สภาพสายไฟ (ปกติ)',
+          'สติ๊กเกอร์ Code (มี)'
+        ]
+      }
+    };
+
+    var currentItem = null;
+    var _initDate = new Date();
+    var activeYear = _initDate.getFullYear() + 543;
+    var activeMonth = _initDate.getMonth() + 1; // 1 to 12
+    var activeDay = _initDate.getDate(); // 1 to 31
+    var monthlyMatrixData = {};
+
+    var THAI_MONTHS_SHORT = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+    var THAI_MONTHS_FULL = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+
+    document.addEventListener('DOMContentLoaded', function () {
+      initPage();
+    });
+
+    function initPage() {
+      populateSelectorOptions('all');
+      populateCockpitDateControls();
+
+      // Check URL query parameters
+      var params = new URLSearchParams(window.location.search);
+      var queryId = params.get('itemId') || params.get('id');
+
+      if (queryId && PT_ITEMS[queryId]) {
+        selectItemDirect(queryId);
+      } else {
+        document.getElementById('cardSelector').style.display = 'block';
+        document.getElementById('cardForm').style.display = 'none';
+      }
+    }
+
+    function populateSelectorOptions(catFilter) {
+      var sel = document.getElementById('selectItem');
+      sel.innerHTML = '<option value="">-- กรุณาเลือกเครื่องมือ --</option>';
+      for (var key in PT_ITEMS) {
+        var it = PT_ITEMS[key];
+        if (catFilter === 'all' || it.cat === catFilter) {
+          var opt = document.createElement('option');
+          opt.value = it.id;
+          opt.textContent = it.code + ' : ' + it.name + ' (' + it.thaiName + ')';
+          sel.appendChild(opt);
+        }
+      }
+    }
+
+    function onCategoryChanged() {
+      var cat = document.getElementById('selectCategory').value;
+      populateSelectorOptions(cat);
+    }
+
+    function onItemSelected(id) {
+      if (!id || !PT_ITEMS[id]) return;
+      selectItemDirect(id);
+    }
+
+    function selectItemDirect(id) {
+      currentItem = PT_ITEMS[id];
+      if (!currentItem) return;
+
+      document.getElementById('cardForm').style.display = 'block';
+
+      // Update Hero
+      document.getElementById('heroItemCode').innerText = currentItem.code;
+      document.getElementById('heroCatName').innerText = currentItem.catName;
+      document.getElementById('heroItemName').innerText = currentItem.name;
+      document.getElementById('heroIcon').innerText = currentItem.icon;
+
+      // Update Print Header
+      updatePrintHeader();
+
+      // Render Checklist
+      renderChecklist(currentItem.checklist);
+
+      // Check special items (Hydrocollator)
+      var hydroSec = document.getElementById('extraHydroSection');
+      if (currentItem.hasTemp) {
+        hydroSec.style.display = 'block';
+      } else {
+        hydroSec.style.display = 'none';
+      }
+
+      // Load monthly history
+      loadMonthlyMatrix(currentItem.id, activeYear, activeMonth);
+    }
+
+    function renderChecklist(checklist) {
+      var cont = document.getElementById('checklistContainer');
+      cont.innerHTML = '';
+      checklist.forEach(function (chk, idx) {
+        var row = document.createElement('label');
+        row.className = 'checklist-row checked';
+        row.innerHTML = '<input type="checkbox" class="checklist-checkbox" id="chk_' + idx + '" checked onchange="onChecklistToggled(this)">' +
+                        '<span class="checklist-text">' + chk + '</span>';
+        cont.appendChild(row);
+      });
+    }
+
+    function onChecklistToggled(cb) {
+      var row = cb.closest('.checklist-row');
+      if (row) {
+        row.classList.toggle('checked', cb.checked);
+      }
+    }
+
+    function selectAllChecklist() {
+      document.querySelectorAll('.checklist-checkbox').forEach(function (cb) {
+        cb.checked = true;
+        var row = cb.closest('.checklist-row');
+        if (row) row.classList.add('checked');
+      });
+      showToast('✓ เลือกปกติทุกรายการเรียบร้อยแล้ว');
+    }
+
+    function onStaffSelectChanged(val) {
+      var customInp = document.getElementById('staffNameCustom');
+      if (val === 'other') {
+        customInp.style.display = 'block';
+        customInp.focus();
+      } else {
+        customInp.style.display = 'none';
+      }
+    }
+
+    function validateHydroTemp() {
+      var inp = document.getElementById('inputHydroTemp');
+      var badge = document.getElementById('hydroTempBadge');
+      var val = parseFloat(inp.value);
+      if (isNaN(val)) {
+        badge.innerText = 'รอระบุค่า';
+        badge.style.background = '#fef3c7';
+        badge.style.color = '#92400e';
+      } else if (val >= 64.0 && val <= 67.0) {
+        badge.innerText = '✓ อยู่ในเกณฑ์ปกติ (64.0 - 67.0 °C)';
+        badge.style.background = '#d1fae5';
+        badge.style.color = '#047857';
+      } else {
+        badge.innerText = '⚠ นอกเกณฑ์มาตรฐาน (64.0 - 67.0 °C)';
+        badge.style.background = '#fee2e2';
+        badge.style.color = '#b91c1c';
+      }
+    }
+
+    // Date navigation & controls
+    function triggerNativeDatePicker() {
+      var inp = document.getElementById('cockpitNativeDatePicker');
+      if (!inp) return;
+      if (inp.showPicker) inp.showPicker();
+      else inp.click();
+    }
+
+    function getDaysInMonth(yearBE, month) {
+      var ceYear = yearBE > 2500 ? (yearBE - 543) : yearBE;
+      return new Date(ceYear, month, 0).getDate();
+    }
+
+    function populateCockpitDateControls() {
+      var currentYearBE = new Date().getFullYear() + 543;
+      var yearSelect = document.getElementById('speedYearSelect');
+      if (yearSelect) {
+        yearSelect.innerHTML = '';
+        for (var y = currentYearBE - 2; y <= currentYearBE + 1; y++) {
+          var optY = document.createElement('option');
+          optY.value = y;
+          optY.textContent = y;
+          if (y === activeYear) optY.selected = true;
+          yearSelect.appendChild(optY);
+        }
+      }
+
+      var monthSelect = document.getElementById('speedMonthSelect');
+      if (monthSelect) {
+        monthSelect.innerHTML = '';
+        THAI_MONTHS_SHORT.forEach(function (mName, idx) {
+          var mNum = idx + 1;
+          var optM = document.createElement('option');
+          optM.value = mNum;
+          optM.textContent = mName;
+          if (mNum === activeMonth) optM.selected = true;
+          monthSelect.appendChild(optM);
+        });
+      }
+
+      updateDayDropdownOptions();
+      syncCockpitDateDisplay();
+    }
+
+    function updateDayDropdownOptions() {
+      var daySelect = document.getElementById('speedDaySelect');
+      if (!daySelect) return;
+      var maxD = getDaysInMonth(activeYear, activeMonth);
+      if (activeDay > maxD) activeDay = maxD;
+      daySelect.innerHTML = '';
+      for (var d = 1; d <= maxD; d++) {
+        var optD = document.createElement('option');
+        optD.value = d;
+        optD.textContent = String(d).padStart(2, '0');
+        if (d === activeDay) optD.selected = true;
+        daySelect.appendChild(optD);
+      }
+    }
+
+    function syncCockpitDateDisplay() {
+      var daySelect = document.getElementById('speedDaySelect');
+      if (daySelect && parseInt(daySelect.value, 10) !== activeDay) daySelect.value = activeDay;
+
+      var monthSelect = document.getElementById('speedMonthSelect');
+      if (monthSelect && parseInt(monthSelect.value, 10) !== activeMonth) monthSelect.value = activeMonth;
+
+      var yearSelect = document.getElementById('speedYearSelect');
+      if (yearSelect && parseInt(yearSelect.value, 10) !== activeYear) yearSelect.value = activeYear;
+
+      var nativePicker = document.getElementById('cockpitNativeDatePicker');
+      if (nativePicker) {
+        var ceYear = activeYear > 2500 ? (activeYear - 543) : activeYear;
+        nativePicker.value = ceYear + '-' + String(activeMonth).padStart(2, '0') + '-' + String(activeDay).padStart(2, '0');
+      }
+
+      var mLabel = document.getElementById('matrixMonthLabel');
+      if (mLabel) mLabel.innerText = (THAI_MONTHS_FULL[activeMonth - 1] || '') + ' ' + activeYear;
+
+      updatePrintHeader();
+    }
+
+    function onDayDropdownChanged() {
+      var d = parseInt(document.getElementById('speedDaySelect').value, 10);
+      if (!isNaN(d)) activeDay = d;
+      syncCockpitDateDisplay();
+    }
+
+    function onMonthDropdownChanged() {
+      var m = parseInt(document.getElementById('speedMonthSelect').value, 10);
+      if (!isNaN(m)) switchMonthAndYear(m, activeYear);
+    }
+
+    function onYearDropdownChanged() {
+      var y = parseInt(document.getElementById('speedYearSelect').value, 10);
+      if (!isNaN(y)) switchMonthAndYear(activeMonth, y);
+    }
+
+    function onNativeDatePicked(val) {
+      if (!val) return;
+      var parts = val.split('-');
+      if (parts.length === 3) {
+        var ceYear = parseInt(parts[0], 10);
+        var m = parseInt(parts[1], 10);
+        var d = parseInt(parts[2], 10);
+        activeDay = d;
+        switchMonthAndYear(m, ceYear + 543, d);
+      }
+    }
+
+    function switchMonthAndYear(newMonth, newYear, optDay) {
+      activeMonth = newMonth;
+      activeYear = newYear;
+      var maxD = getDaysInMonth(activeYear, activeMonth);
+      if (optDay) activeDay = Math.min(maxD, optDay);
+      else if (activeDay > maxD) activeDay = maxD;
+
+      updateDayDropdownOptions();
+      syncCockpitDateDisplay();
+
+      if (currentItem) {
+        loadMonthlyMatrix(currentItem.id, activeYear, activeMonth);
+      }
+    }
+
+    function navDay(delta) {
+      var ceYear = activeYear > 2500 ? (activeYear - 543) : activeYear;
+      var dt = new Date(ceYear, activeMonth - 1, activeDay);
+      dt.setDate(dt.getDate() + delta);
+      var newYearBE = dt.getFullYear() + 543;
+      var newMonth = dt.getMonth() + 1;
+      var newDay = dt.getDate();
+
+      if (newYearBE !== activeYear || newMonth !== activeMonth) {
+        switchMonthAndYear(newMonth, newYearBE, newDay);
+      } else {
+        activeDay = newDay;
+        syncCockpitDateDisplay();
+      }
+    }
+
+    function navToday() {
+      var now = new Date();
+      var todayYearBE = now.getFullYear() + 543;
+      var todayMonth = now.getMonth() + 1;
+      var todayDay = now.getDate();
+
+      if (todayYearBE !== activeYear || todayMonth !== activeMonth) {
+        switchMonthAndYear(todayMonth, todayYearBE, todayDay);
+      } else {
+        activeDay = todayDay;
+        syncCockpitDateDisplay();
+      }
+    }
+
+    function updatePrintHeader() {
+      if (!currentItem) return;
+      var elItem = document.getElementById('printHeaderItemName');
+      var elCode = document.getElementById('printHeaderFormCode');
+      var elMY = document.getElementById('printHeaderMonthYear');
+
+      if (elItem) elItem.innerText = currentItem.name + ' (' + currentItem.thaiName + ')';
+      if (elCode) elCode.innerText = currentItem.code;
+      if (elMY) elMY.innerText = 'ประจำเดือน ' + (THAI_MONTHS_FULL[activeMonth - 1] || '') + ' ' + activeYear;
+    }
+
+    // Submit Evaluation
+    function submitEvaluation() {
+      if (!currentItem) return;
+
+      var staffSelect = document.getElementById('staffNameSelect').value;
+      var staffCustom = document.getElementById('staffNameCustom').value.trim();
+      var staffName = (staffSelect === 'other') ? staffCustom : staffSelect;
+
+      if (!staffName) {
+        alert('กรุณาเลือกหรือระบุชื่อผู้ตรวจเครื่อง');
+        document.getElementById('staffNameSelect').focus();
+        return;
+      }
+
+      var allCheckboxes = document.querySelectorAll('.checklist-checkbox');
+      var checklistResults = {};
+      var allPassed = true;
+
+      allCheckboxes.forEach(function (cb, idx) {
+        var text = currentItem.checklist[idx] || ('ข้อที่ ' + (idx + 1));
+        checklistResults[text] = cb.checked ? 'pass' : 'fail';
+        if (!cb.checked) allPassed = false;
+      });
+
+      var tempVal = null;
+      if (currentItem.hasTemp) {
+        tempVal = parseFloat(document.getElementById('inputHydroTemp').value);
+        if (!isNaN(tempVal)) {
+          if (tempVal < 64.0 || tempVal > 67.0) allPassed = false;
+        }
+      }
+
+      var status = allPassed ? 'ready' : 'abnormal';
+      var note = document.getElementById('evalNote').value.trim();
+      var ceYear = activeYear > 2500 ? (activeYear - 543) : activeYear;
+      var dateStr = ceYear + '-' + String(activeMonth).padStart(2, '0') + '-' + String(activeDay).padStart(2, '0');
+
+      var evalData = {
+        itemId: currentItem.id,
+        itemCode: currentItem.code,
+        itemName: currentItem.name,
+        date: dateStr,
+        time: new Date().toTimeString().slice(0, 5),
+        staffName: staffName,
+        status: status,
+        checklistResults: checklistResults,
+        temperature: tempVal,
+        note: note,
+        timestamp: dateStr + 'T' + new Date().toTimeString().slice(0, 8) + 'Z'
+      };
+
+      var btn = document.getElementById('btnSubmitEval');
+      var origHtml = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="material-icons-round" style="animation: spin 1s infinite linear;">sync</span> <span>กำลังบันทึกข้อมูล...</span>';
+
+      window.PPCH_PT_API.submitPtEvaluation(evalData, function (res) {
+        btn.disabled = false;
+        btn.innerHTML = origHtml;
+        if (res && res.success) {
+          showToast('✓ บันทึกผลการตรวจเช็ค ' + currentItem.name + ' เรียบร้อยแล้ว');
+          loadMonthlyMatrix(currentItem.id, activeYear, activeMonth);
+        } else {
+          showToast('✓ บันทึกผลตรวจเช็คเรียบร้อยแล้ว (ออฟไลน์)');
+        }
+      });
+    }
+
+    // Monthly Matrix Render
+    function loadMonthlyMatrix(itemId, year, month) {
+      window.PPCH_PT_API.fetchMonthlyHistory(itemId, year, month, function (res) {
+        monthlyMatrixData = (res && res.data) ? res.data : {};
+        renderMatrixTable();
+      });
+    }
+
+    function renderMatrixTable() {
+      var thead = document.getElementById('matrixThead');
+      var tbody = document.getElementById('matrixTbody');
+      var maxD = getDaysInMonth(activeYear, activeMonth);
+
+      var thHtml = '<tr><th style="min-width: 140px; text-align: left; padding-left: 10px;">เครื่องมือ / วันที่</th>';
+      for (var d = 1; d <= maxD; d++) {
+        var isAct = (d === activeDay) ? ' style="background: #e0f2fe; color: #0369a1;"' : '';
+        thHtml += '<th' + isAct + '>' + d + '</th>';
+      }
+      thHtml += '</tr>';
+      thead.innerHTML = thHtml;
+
+      var tbHtml = '<tr><td style="text-align: left; font-weight: 700; color: #002e6e; padding-left: 10px;">' + (currentItem ? currentItem.name : 'ผลการตรวจ') + '</td>';
+      for (var d = 1; d <= maxD; d++) {
+        var rec = monthlyMatrixData[d];
+        var cellCls = 'pending';
+        var cellText = '-';
+        if (rec) {
+          cellCls = (rec.status === 'ready' || rec.status === 'pass') ? 'ready' : 'abnormal';
+          cellText = (cellCls === 'ready') ? '✓' : '✗';
+        }
+        tbHtml += '<td class="matrix-status-cell ' + cellCls + '">' + cellText + '</td>';
+      }
+      tbHtml += '</tr>';
+      tbody.innerHTML = tbHtml;
+    }
+
+    function showToast(msg) {
+      var t = document.getElementById('toastNotice');
+      var m = document.getElementById('toastMsg');
+      if (m) m.innerText = msg;
+      if (t) {
+        t.classList.add('show');
+        setTimeout(function () { t.classList.remove('show'); }, 3000);
+      }
+    }
+  </script>
+</body>
+</html>
