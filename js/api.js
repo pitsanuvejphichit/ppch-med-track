@@ -822,6 +822,17 @@
       });
     },
 
+    testLineLabAlert: function (operator, callback) {
+      var gasUrl = this.getGasEndpoint();
+      if (!gasUrl) {
+        if (callback) callback({ success: false, message: 'ยังไม่ได้ระบุ Web App URL ของ Google Apps Script' });
+        return;
+      }
+      this.postToGas({ action: 'testLabLine', operator: operator || 'Admin' }, function (res) {
+        if (callback) callback(res);
+      });
+    },
+
     sendSummaryChartAlert: function (operator, callback) {
       var gasUrl = this.getGasEndpoint();
       if (!gasUrl) {

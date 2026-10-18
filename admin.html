@@ -4277,10 +4277,14 @@
                     ระบบส่งข้อความแจ้งเตือนความผิดปกติ การย้ายแผนก และการซ่อมบำรุง ผ่าน LINE Official Account / Bot (ทดแทน LINE Notify)
                   </div>
                 </div>
-                <div style="display: flex; gap: 8px; align-items: center;">
+                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
                   <button type="button" onclick="testLineDevFromAdmin()" id="btnTestLineDev" class="btn-tool" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-color: #06c755; color: #05963f;">
                     <span class="material-icons-round" style="font-size: 18px; color: #06c755;">send</span>
-                    <span>ทดสอบส่ง LINE Flex Message</span>
+                    <span>ทดสอบส่งกลุ่มช่าง (Biomed)</span>
+                  </button>
+                  <button type="button" onclick="testLineLabFromAdmin()" id="btnTestLineLab" class="btn-tool" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-color: #0e7490; color: #0e7490;">
+                    <span class="material-icons-round" style="font-size: 18px; color: #0e7490;">biotech</span>
+                    <span>ทดสอบส่งกลุ่ม LAB</span>
                   </button>
                   <button type="button" onclick="sendSummaryChartFromAdmin()" id="btnSendSummaryChart" class="btn-tool" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-color: #0284c7; color: #0284c7;">
                     <span class="material-icons-round" style="font-size: 18px; color: #0284c7;">bar_chart</span>
@@ -4299,10 +4303,10 @@
                 <div style="background: var(--bg-surface, #ffffff); border: 1px solid var(--border-subtle, #e2e8f0); border-radius: 12px; padding: 16px;">
                   <div style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
                     <span class="material-icons-round" style="color: var(--royal-blue); font-size: 18px;">vpn_key</span>
-                    <span>LINE Channel Access Token &amp; กลุ่มผู้รับการแจ้งเตือน</span>
+                    <span>LINE Channel Access Token &amp; กลุ่มผู้รับการแจ้งเตือน (แยกกลุ่มตามภารกิจ)</span>
                   </div>
 
-                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
                     <!-- Channel Access Token -->
                     <div style="display: flex; flex-direction: column; gap: 6px;">
                       <label style="font-size: 12px; font-weight: 600; color: var(--text-secondary);">
@@ -4315,20 +4319,35 @@
                         </button>
                       </div>
                       <div style="font-size: 11px; color: var(--text-muted);">
-                        ออก Token ได้จาก LINE Developers Console &gt; Channel Settings &gt; Messaging API &gt; Channel access token (long-lived)
+                        ออก Token ได้จาก LINE Developers Console &gt; Messaging API
                       </div>
                     </div>
 
-                    <!-- Target ID (Group ID or BROADCAST) -->
+                    <!-- Target ID Group 1: Biomed -->
                     <div style="display: flex; flex-direction: column; gap: 6px;">
-                      <label style="font-size: 12px; font-weight: 600; color: var(--text-secondary);">
-                        Target ID (Group ID หรือ User ID)
+                      <label style="font-size: 12px; font-weight: 600; color: var(--text-secondary); display: flex; align-items: center; gap: 4px;">
+                        <span class="material-icons-round" style="font-size: 16px; color: #0284c7;">build</span>
+                        <span>กลุ่ม 1: เครื่องมือแพทย์/ช่าง (Biomed Group ID)</span>
                       </label>
                       <div style="position: relative; display: flex; align-items: center;">
-                        <input type="text" id="lineDevTargetId" placeholder="เช่น Cxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx หรือ BROADCAST" style="width: 100%; padding: 9px 12px; border: 1px solid var(--border-main); border-radius: 8px; font-family: monospace; font-size: 12px;">
+                        <input type="text" id="lineDevTargetId" placeholder="เช่น Cxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" style="width: 100%; padding: 9px 12px; border: 1px solid var(--border-main); border-radius: 8px; font-family: monospace; font-size: 12px;">
                       </div>
                       <div style="font-size: 11px; color: var(--text-muted);">
-                        💡 นำบอทเข้ากลุ่มไลน์ หรือพิมพ์คำว่า <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px;">id</code> ในกลุ่ม ระบบ Webhook จะดึง Group ID มาบันทึกให้อัตโนมัติ (ใส่ <code>BROADCAST</code> เพื่อส่งหาผู้ติดตามทุกคน)
+                        รับแจ้งเตือน: เครื่องมือแพทย์ชำรุดทุกแผนก + สรุปภาพรวมประจำวัน
+                      </div>
+                    </div>
+
+                    <!-- Target ID Group 2: LAB -->
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                      <label style="font-size: 12px; font-weight: 600; color: var(--text-secondary); display: flex; align-items: center; gap: 4px;">
+                        <span class="material-icons-round" style="font-size: 16px; color: #0e7490;">science</span>
+                        <span>กลุ่ม 2: แผนก LAB (Lab Group ID)</span>
+                      </label>
+                      <div style="position: relative; display: flex; align-items: center;">
+                        <input type="text" id="lineLabTargetId" placeholder="เช่น Cxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" style="width: 100%; padding: 9px 12px; border: 1px solid var(--border-main); border-radius: 8px; font-family: monospace; font-size: 12px;">
+                      </div>
+                      <div style="font-size: 11px; color: var(--text-muted);">
+                        รับแจ้งเตือน: เครื่องมือแลปชำรุด + อุณหภูมิห้อง/ตู้แช่หลุดเกณฑ์ (พิมพ์ <code>แลป</code> ในกลุ่มเพื่อผูกอัตโนมัติ)
                       </div>
                     </div>
                   </div>
@@ -6863,6 +6882,7 @@
             lineSettingsCache = res.data;
             var tInput = document.getElementById('lineDevToken');
             var idInput = document.getElementById('lineDevTargetId');
+            var labInput = document.getElementById('lineLabTargetId');
             var chkAbn = document.getElementById('lineAlertAbnormal');
             var chkTrf = document.getElementById('lineAlertTransfer');
             var chkRes = document.getElementById('lineAlertResolve');
@@ -6870,6 +6890,7 @@
 
             if (tInput) tInput.value = res.data.channelAccessToken || '';
             if (idInput) idInput.value = res.data.targetId || '';
+            if (labInput) labInput.value = res.data.labTargetId || '';
             if (chkAbn) chkAbn.checked = res.data.alertAbnormal !== false;
             if (chkTrf) chkTrf.checked = res.data.alertTransfer !== false;
             if (chkRes) chkRes.checked = res.data.alertResolve !== false;
@@ -6898,6 +6919,7 @@
     function saveLineSettingsFromAdmin() {
       var tInput = document.getElementById('lineDevToken');
       var idInput = document.getElementById('lineDevTargetId');
+      var labInput = document.getElementById('lineLabTargetId');
       var chkAbn = document.getElementById('lineAlertAbnormal');
       var chkTrf = document.getElementById('lineAlertTransfer');
       var chkRes = document.getElementById('lineAlertResolve');
@@ -6906,6 +6928,7 @@
 
       var token = tInput ? tInput.value.trim() : '';
       var targetId = idInput ? idInput.value.trim() : '';
+      var labTargetId = labInput ? labInput.value.trim() : '';
       var alertAbn = chkAbn ? chkAbn.checked : true;
       var alertTrf = chkTrf ? chkTrf.checked : true;
       var alertRes = chkRes ? chkRes.checked : true;
@@ -6920,6 +6943,7 @@
         window.PPCH_API.saveLineSettings({
           channelAccessToken: token,
           targetId: targetId,
+          labTargetId: labTargetId,
           alertAbnormal: alertAbn,
           alertTransfer: alertTrf,
           alertResolve: alertRes,
@@ -6958,9 +6982,28 @@
         window.PPCH_API.testLineDevAlert(operator, function (res) {
           if (btn) {
             btn.disabled = false;
-            btn.innerHTML = '<span class="material-icons-round" style="font-size: 18px; color: #06c755;">send</span> <span>ทดสอบส่ง LINE Flex Message</span>';
+            btn.innerHTML = '<span class="material-icons-round" style="font-size: 18px; color: #06c755;">send</span> <span>ทดสอบส่งกลุ่มช่าง (Biomed)</span>';
           }
-          showToast('ส่งข้อความทดสอบ LINE Flex Message เรียบร้อยแล้ว กรุณาตรวจสอบใน LINE');
+          showToast('ส่งข้อความทดสอบไปยังกลุ่มเครื่องมือแพทย์/ช่าง เรียบร้อยแล้วค่ะ');
+        });
+      }
+    }
+
+    function testLineLabFromAdmin() {
+      var btn = document.getElementById('btnTestLineLab');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="material-icons-round" style="font-size: 18px; animation: spin 1s infinite linear;">refresh</span> กำลังส่งทดสอบ...';
+      }
+
+      var operator = (window.currentUser && window.currentUser.name) ? window.currentUser.name : 'ผู้ดูแลระบบ (Admin)';
+      if (window.PPCH_API && window.PPCH_API.testLineLabAlert) {
+        window.PPCH_API.testLineLabAlert(operator, function (res) {
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<span class="material-icons-round" style="font-size: 18px; color: #0e7490;">biotech</span> <span>ทดสอบส่งกลุ่ม LAB</span>';
+          }
+          showToast('ส่งข้อความทดสอบไปยังกลุ่มแผนก LAB เรียบร้อยแล้วค่ะ');
         });
       }
     }
