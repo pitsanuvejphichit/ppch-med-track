@@ -696,6 +696,7 @@
     .status-symbol-btn.symbol-ready { background: #ecfdf5; color: #059669; border-color: #a7f3d0; }
     .status-symbol-btn.symbol-abnormal { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
     .status-symbol-btn.symbol-pending { background: #fffbeb; color: #d97706; border-color: #fde68a; }
+    .status-symbol-btn.symbol-conditional { background: #fffbeb; color: #d97706; border-color: #fde68a; }
 
     /* Floating Speed Dial */
     .floating-action-wrapper {
@@ -790,11 +791,40 @@
       padding: 0;
     }
     .btn-action-icon .material-icons-round { font-size: 16px; }
-    .btn-action-icon:hover { transform: translateY(-1px) scale(1.08); }
-    .btn-action-icon.eval-btn { background: #eff6ff; color: var(--royal-blue); border-color: #bfdbfe; }
-    .btn-action-icon.qr-btn { background: #f8fafc; color: #475569; border-color: #e2e8f0; }
-    .btn-action-icon.repair-btn { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
-    .btn-action-icon.close-btn { background: #f1f5f9; color: #64748b; }
+    .btn-action-icon:hover { transform: translateY(-1px) scale(1.08); box-shadow: 0 3px 8px rgba(0, 75, 147, 0.18); }
+    .btn-action-icon.btn-icon-eval {
+      background: linear-gradient(135deg, var(--royal-blue) 0%, var(--royal-light) 100%);
+      color: #ffffff;
+      border-color: var(--royal-blue);
+    }
+    .btn-action-icon.btn-icon-eval:hover {
+      background: linear-gradient(135deg, #003b75 0%, #004b93 100%);
+      color: #ffffff;
+    }
+    .btn-action-icon.btn-icon-qr { background: #f8fafc; color: #475569; border-color: #e2e8f0; }
+    .btn-action-icon.btn-icon-qr:hover { background: #eff6ff; color: var(--royal-blue); border-color: #bfdbfe; }
+    .btn-action-icon.btn-icon-repair { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
+    .btn-action-icon.btn-icon-repair:hover { background: #fee2e2; color: #b91c1c; }
+    .btn-floating-close {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: none;
+      background: #f1f5f9;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      margin-left: 2px;
+      transition: all 0.15s;
+      padding: 0;
+    }
+    .btn-floating-close:hover {
+      background: #fee2e2;
+      color: var(--red-abnormal);
+    }
+    .btn-floating-close .material-icons-round { font-size: 14px; }
 
     /* Modals */
     .modal-overlay {
@@ -927,7 +957,7 @@
           <span>Cloud Supabase</span>
         </div>
         <a href="eval-pt.html" target="_blank" class="btn-topbar-cta" title="เปิดแบบตรวจเช็คความพร้อมใช้ประจำวัน">
-          <span class="material-icons-round">edit_document</span>
+          <span class="material-icons-round">assignment</span>
           <span>ตรวจเช็คประจำวัน</span>
         </a>
       </div>
@@ -964,20 +994,7 @@
 
         <div class="sidebar-divider"></div>
 
-        <div class="sidebar-section-title">ระบบที่เกี่ยวข้อง</div>
         <nav class="sidebar-nav">
-          <a href="lab.html" target="_blank" class="nav-btn" title="เปิดระบบห้องปฏิบัติการ LAB">
-            <span class="material-icons-round">science</span>
-            <span class="nav-text">หน้าแผนก LAB</span>
-          </a>
-          <a href="admin.html" target="_blank" class="nav-btn" title="เปิดหน้า Admin เครื่องมือแพทย์ส่วนกลาง">
-            <span class="material-icons-round">medical_services</span>
-            <span class="nav-text">Admin เครื่องมือแพทย์</span>
-          </a>
-          <a href="https://docs.google.com/forms/d/e/1FAIpQLSdwkF04kruAmIkad7Enxav5H_IgnxGwO3bfSmMzLaxF36buNA/viewform?usp=header" target="_blank" class="nav-btn" style="color: #f87171;" title="แจ้งซ่อมเครื่องมือแพทย์ (Google Form)">
-            <span class="material-icons-round">build</span>
-            <span class="nav-text">แจ้งซ่อมเครื่องมือแพทย์</span>
-          </a>
           <a href="index.html" class="nav-btn" title="กลับหน้าแรก">
             <span class="material-icons-round">logout</span>
             <span class="nav-text">ออกจากระบบ</span>
@@ -1544,7 +1561,7 @@
       var filtered = liveEquipmentList.filter(function (it) {
         if (currentSummaryFilter === 'ready' && it.status !== 'ready') return false;
         if (currentSummaryFilter === 'pending' && it.status !== 'pending') return false;
-        if (currentSummaryFilter === 'abnormal' && it.status !== 'abnormal') return false;
+        if (currentSummaryFilter === 'abnormal' && (it.status !== 'abnormal' && it.status !== 'in_progress' && it.status !== 'conditional_ready')) return false;
 
         if (summarySearchQuery) {
           var eq = ptEquipmentMap[it.id] || {};
@@ -1568,10 +1585,13 @@
         var eq = ptEquipmentMap[it.id] || {};
         var statusBadge = '';
 
-        if (it.status === 'ready') {
+        if (it.status === 'conditional_ready' || it.isConditional) {
+          statusBadge = '<button type="button" class="status-symbol-btn symbol-conditional" onclick="switchView(\'defective\')" title="อนุญาตให้ใช้งานต่อ (รอซ่อมบำรุง)">' +
+            '<span class="material-icons-round">build_circle</span></button>';
+        } else if (it.status === 'ready') {
           statusBadge = '<button type="button" class="status-symbol-btn symbol-ready" onclick="viewSummaryDetail(\'' + it.id + '\')" title="พร้อมใช้งานวันนี้">' +
             '<span class="material-icons-round">check_circle</span></button>';
-        } else if (it.status === 'abnormal') {
+        } else if (it.status === 'abnormal' || it.status === 'in_progress') {
           statusBadge = '<button type="button" class="status-symbol-btn symbol-abnormal" onclick="viewSummaryDetail(\'' + it.id + '\')" title="พบปัญหา: ' + (it.abnormalReason || '-') + '">' +
             '<span class="material-icons-round">cancel</span></button>';
         } else {
@@ -1598,22 +1618,22 @@
           '<td style="text-align: center;">' + statusBadge + '</td>' +
           '<td>' + evalInfo + '</td>' +
           '<td style="text-align: center;">' +
-            '<div class="floating-action-wrapper" id="wrap_' + it.id + '">' +
+            '<div class="floating-action-wrapper" id="wrap_' + it.id + '" onmouseenter="handleSpeedDialEnter(this)" onmouseleave="handleSpeedDialLeave(this)">' +
               '<button type="button" class="btn-floating-trigger" onclick="toggleSpeedDial(\'' + it.id + '\', event)" title="เมนูจัดการ">' +
                 '<span class="material-icons-round trigger-icon">more_horiz</span>' +
                 '<span class="floating-badge-count">3</span>' +
               '</button>' +
               '<div class="floating-action-tray">' +
-                '<a href="eval-pt.html?itemId=' + (eq.formId || it.id) + '" target="_blank" class="btn-action-icon eval-btn" title="บันทึกตรวจเช็ค">' +
-                  '<span class="material-icons-round">edit_document</span>' +
+                '<a href="eval-pt.html?itemId=' + (eq.formId || it.id) + '" target="_blank" class="btn-action-icon btn-icon-eval" title="เปิดหน้าตรวจเช็ค">' +
+                  '<span class="material-icons-round">assignment</span>' +
                 '</a>' +
-                '<button type="button" class="btn-action-icon qr-btn" onclick="printSingleStickerDirect(\'' + it.id + '\')" title="พิมพ์ QR Code สติ๊กเกอร์">' +
+                '<button type="button" class="btn-action-icon btn-icon-qr" onclick="printSingleStickerDirect(\'' + it.id + '\')" title="พิมพ์ QR Code สติ๊กเกอร์">' +
                   '<span class="material-icons-round">qr_code_2</span>' +
                 '</button>' +
-                '<a href="https://docs.google.com/forms/d/e/1FAIpQLSdwkF04kruAmIkad7Enxav5H_IgnxGwO3bfSmMzLaxF36buNA/viewform?usp=header" target="_blank" class="btn-action-icon repair-btn" title="แจ้งซ่อม">' +
+                '<a href="https://docs.google.com/forms/d/e/1FAIpQLSdwkF04kruAmIkad7Enxav5H_IgnxGwO3bfSmMzLaxF36buNA/viewform?usp=header" target="_blank" class="btn-action-icon btn-icon-repair" title="แจ้งซ่อม">' +
                   '<span class="material-icons-round">build</span>' +
                 '</a>' +
-                '<button type="button" class="btn-action-icon close-btn" onclick="closeSpeedDial(\'' + it.id + '\', event)" title="ปิด">' +
+                '<button type="button" class="btn-floating-close" onclick="closeSpeedDial(\'' + it.id + '\', event)" title="กดเพื่อเก็บ">' +
                   '<span class="material-icons-round">close</span>' +
                 '</button>' +
               '</div>' +
@@ -1625,28 +1645,30 @@
       tbody.innerHTML = html;
     }
 
-    var activeSpeedDialId = null;
+    function handleSpeedDialEnter(w) {
+      if (w._timer) clearTimeout(w._timer);
+      w.classList.add('open');
+    }
+    function handleSpeedDialLeave(w) {
+      w._timer = setTimeout(function () {
+        w.classList.remove('open');
+      }, 1000);
+    }
     function toggleSpeedDial(id, e) {
       if (e) e.stopPropagation();
-      if (activeSpeedDialId && activeSpeedDialId !== id) closeSpeedDial(activeSpeedDialId);
       var w = document.getElementById('wrap_' + id);
       if (!w) return;
-      var isOpen = w.classList.contains('open');
-      if (isOpen) {
-        closeSpeedDial(id);
-      } else {
-        w.classList.add('open');
-        activeSpeedDialId = id;
-      }
+      w.classList.toggle('open');
     }
     function closeSpeedDial(id, e) {
       if (e) e.stopPropagation();
       var w = document.getElementById('wrap_' + id);
       if (w) w.classList.remove('open');
-      if (activeSpeedDialId === id) activeSpeedDialId = null;
     }
     document.addEventListener('click', function () {
-      if (activeSpeedDialId) closeSpeedDial(activeSpeedDialId);
+      document.querySelectorAll('.floating-action-wrapper.open').forEach(function (w) {
+        w.classList.remove('open');
+      });
     });
 
     function openEvalPage(id) {
@@ -1695,7 +1717,7 @@
             stText +
           '</div>' +
           '<a href="eval-pt.html?itemId=' + eq.formId + '" target="_blank" class="btn-tool btn-tool-primary">' +
-            '<span class="material-icons-round">edit_document</span><span>ตรวจเช็คเครื่องนี้</span>' +
+            '<span class="material-icons-round">assignment</span><span>ตรวจเช็คเครื่องนี้</span>' +
           '</a>' +
         '</div>' +
       '</div>';
@@ -1744,8 +1766,8 @@
           liveDefectiveList = res.defectiveList || [];
           liveRepairHistory = res.repairHistory || [];
 
-          var reportedCount = liveDefectiveList.filter(function (x) { return x.repair_status === 'reported'; }).length;
-          var inProgressCount = liveDefectiveList.filter(function (x) { return x.repair_status === 'in_progress'; }).length;
+          var reportedCount = liveDefectiveList.filter(function (x) { return x.repair_status === 'reported' && x.status !== 'conditional_ready'; }).length;
+          var inProgressCount = liveDefectiveList.filter(function (x) { return x.repair_status === 'in_progress' || x.status === 'conditional_ready'; }).length;
           var resolvedCount = liveRepairHistory.length;
 
           document.getElementById('kpiDefectTotal').textContent = liveDefectiveList.length;
@@ -1776,13 +1798,22 @@
       var html = '';
       liveDefectiveList.forEach(function (eq) {
         var isUnderFix = (eq.repair_status === 'in_progress' || eq.status === 'in_progress');
-        var statusBadge = isUnderFix
-          ? '<div><span style="color: var(--amber-pending); font-weight: 700;"><span class="material-icons-round" style="font-size: 14px; vertical-align: -2px;">build</span> กำลังดำเนินการแก้ไข</span><div style="font-size: 11px; color: var(--text-muted);">' + (eq.repair_acknowledged_by ? 'โดย ' + eq.repair_acknowledged_by : '') + '</div></div>'
-          : '<span style="color: var(--red-abnormal); font-weight: 700;"><span class="material-icons-round" style="font-size: 14px; vertical-align: -2px;">error</span> พบข้อบกพร่อง (รอรับทราบ)</span>';
+        var isConditional = (eq.status === 'conditional_ready');
+        var statusBadge = '';
+        var actionBtns = '';
 
-        var actionBtns = isUnderFix
-          ? '<button type="button" class="btn-tool btn-tool-primary" style="background: var(--green-ready); border-color: var(--green-ready);" onclick="openResolveModal(\'' + eq.id + '\')"><span class="material-icons-round" style="font-size: 14px;">task_alt</span><span>ส่งคืนความพร้อมใช้</span></button>'
-          : '<button type="button" class="btn-tool btn-tool-primary" onclick="openAckModal(\'' + eq.id + '\')"><span class="material-icons-round" style="font-size: 14px;">thumb_up</span><span>รับทราบงานซ่อม</span></button>';
+        if (isUnderFix) {
+          var ackInfo = eq.repair_acknowledged_by ? '<div style="font-size: 11px; color: #b45309; margin-top: 2px;">โดย ' + eq.repair_acknowledged_by + '</div>' : '';
+          var condInfo = isConditional ? '<div style="margin-top: 3px;"><span class="badge-status" style="font-size: 10px; color: #b45309; background: #fffbeb; border: 1px solid #fde68a; padding: 2px 6px; border-radius: 4px; display: inline-flex; align-items: center; gap: 3px;"><span class="material-icons-round" style="font-size: 12px;">published_with_changes</span> อนุญาตให้ใช้งานต่อ</span></div>' : '';
+          statusBadge = '<div><span style="color: var(--amber-pending); font-weight: 700;"><span class="material-icons-round" style="font-size: 14px; vertical-align: -2px;">build</span> กำลังดำเนินการแก้ไข</span>' + ackInfo + condInfo + '</div>';
+          actionBtns = '<button type="button" class="btn-tool btn-tool-primary" style="background: var(--green-ready); border-color: var(--green-ready);" onclick="openResolveModal(\'' + eq.id + '\')"><span class="material-icons-round" style="font-size: 14px;">task_alt</span><span>ส่งคืนความพร้อมใช้</span></button>';
+        } else if (isConditional) {
+          statusBadge = '<div><span class="badge-status" style="color: #b45309; background: #fffbeb; border: 1px solid #fde68a; font-weight: 700; padding: 3px 8px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px;"><span class="material-icons-round" style="font-size: 14px;">published_with_changes</span> อนุญาตให้ใช้งานต่อ (รอซ่อม)</span><div style="font-size: 10.5px; color: #b45309; margin-top: 2px;">โดย ' + (eq.repair_acknowledged_by || 'เจ้าหน้าที่') + '</div></div>';
+          actionBtns = '<button type="button" class="btn-tool btn-tool-primary" style="background: var(--green-ready); border-color: var(--green-ready);" onclick="openResolveModal(\'' + eq.id + '\')"><span class="material-icons-round" style="font-size: 14px;">task_alt</span><span>ส่งคืนความพร้อมใช้</span></button>';
+        } else {
+          statusBadge = '<span style="color: var(--red-abnormal); font-weight: 700;"><span class="material-icons-round" style="font-size: 14px; vertical-align: -2px;">error</span> พบข้อบกพร่อง (รอรับทราบ)</span>';
+          actionBtns = '<button type="button" class="btn-tool btn-tool-primary" onclick="openAckModal(\'' + eq.id + '\')"><span class="material-icons-round" style="font-size: 14px;">thumb_up</span><span>รับทราบงานซ่อม</span></button>';
+        }
 
         html += '<tr>' +
           '<td><span class="asset-code-pill">' + (eq.asset_code || eq.id) + '</span></td>' +

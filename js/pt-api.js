@@ -73,7 +73,13 @@
             }
 
             var currentStatus = 'pending';
-            if (eq.status === 'abnormal' || (recentEv && recentEv.result === 'abnormal')) {
+            if (eq.status === 'conditional_ready') {
+              currentStatus = 'conditional_ready';
+              abnormalCount++;
+            } else if (eq.status === 'in_progress' || eq.repair_status === 'in_progress') {
+              currentStatus = 'in_progress';
+              abnormalCount++;
+            } else if (eq.status === 'abnormal' || (recentEv && recentEv.result === 'abnormal')) {
               currentStatus = 'abnormal';
               abnormalCount++;
             } else if (isEvaluatedToday && (eq.status === 'ready' || recentEv.result === 'ready')) {
@@ -90,7 +96,9 @@
               name: eq.name,
               formId: eq.form_id,
               status: currentStatus,
+              isConditional: (eq.status === 'conditional_ready'),
               repairStatus: eq.repair_status || 'ready',
+              repairAcknowledgedBy: eq.repair_acknowledged_by || '',
               abnormalReason: eq.abnormal_reason || (recentEv ? recentEv.abnormal_note : ''),
               evaluatedAt: recentEv ? recentEv.evaluated_at : eq.last_evaluated_at,
               evaluatedBy: recentEv ? recentEv.evaluated_by : eq.last_evaluated_by,
@@ -192,12 +200,15 @@
 
     // 3. Fetch Defective PT Equipment & Repairs
     fetchDefectiveList: function (callback) {
-      var pEq = supabaseFetch('equipment?home_dept=eq.REHAB&status=in.(abnormal,in_progress)&order=id.asc').catch(function () { return []; });
+      var pEq = supabaseFetch('equipment?home_dept=eq.REHAB&order=id.asc').catch(function () { return []; });
       var pRepairs = supabaseFetch('repairs?department=eq.REHAB&order=reported_at.desc&limit=50').catch(function () { return []; });
 
       Promise.all([pEq, pRepairs])
         .then(function (res) {
-          var defectiveEquipment = res[0] || [];
+          var allPtEq = res[0] || [];
+          var defectiveEquipment = allPtEq.filter(function (eq) {
+            return eq.status === 'abnormal' || eq.status === 'in_progress' || eq.status === 'conditional_ready' || eq.repair_status === 'reported' || eq.repair_status === 'in_progress';
+          });
           var repairHistory = (res[1] || []).filter(function (r) { return !!r.resolved_at; });
           var activeRepairs = (res[1] || []).filter(function (r) { return !r.resolved_at; });
 
