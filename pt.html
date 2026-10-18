@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>PPCH ระบบบริหารจัดการเครื่องมือ แผนกเวชศาสตร์ฟื้นฟู (กายภาพบำบัด) | โรงพยาบาลพิษณุเวช</title>
-  
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -15,382 +16,788 @@
   <script src="js/qrcode.min.js"></script>
 
   <style>
-    /* ==================== PPCH PHYSICAL THERAPY THEME ==================== */
+    /* ==================== PPCH DEEP ROYAL BLUE & CRISP WHITE THEME ==================== */
     :root {
-      --pt-navy: #002e6e;
-      --pt-blue: #004b93;
-      --pt-teal: #0d9488;
-      --pt-emerald: #059669;
-      --pt-light-teal: #14b8a6;
-      --pt-subtle: #f0fdfa;
-      --pt-glow: rgba(13, 148, 136, 0.16);
+      --royal-dark: #002e6e;
+      --royal-blue: #004b93;
+      --royal-hover: #003a73;
+      --royal-light: #0284c7;
+      --royal-subtle: #f0f7ff;
+      --royal-glow: rgba(0, 75, 147, 0.16);
 
-      --canvas-bg: #f4f8fa;
+      --canvas-bg: #f4f7fb;
       --surface-white: #ffffff;
       --border-main: #e2e8f0;
       --border-subtle: #edf2f7;
-      --border-teal-soft: #99f6e4;
+      --border-focus: #004b93;
+      --border-blue-soft: #bfdbfe;
 
       --text-main: #0f172a;
       --text-body: #334155;
       --text-muted: #64748b;
+      --text-light: #94a3b8;
 
-      --font-main: 'Prompt', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --green-ready: #059669;
+      --green-bg: #ecfdf5;
+      --green-border: #a7f3d0;
+
+      --amber-pending: #d97706;
+      --amber-bg: #fffbeb;
+      --amber-border: #fde68a;
+
+      --red-abnormal: #dc2626;
+      --red-bg: #fef2f2;
+      --red-border: #fecaca;
+
+      --font-sans: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono: 'Inter', monospace;
+      color-scheme: light;
+      accent-color: #004b93;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    ::selection {
+      background-color: var(--royal-blue);
+      color: #ffffff;
+    }
+
+    html {
+      scrollbar-color: #94a3b8 #f1f5f9;
+      scrollbar-width: thin;
+    }
+
     body {
-      font-family: var(--font-main);
       background-color: var(--canvas-bg);
-      color: var(--text-body);
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
-      display: flex;
-    }
-
-    /* Left Sticky Sidebar */
-    .app-sidebar {
-      width: 250px;
-      height: 100vh;
-      position: sticky;
-      top: 0;
-      background: #ffffff;
-      border-right: 1px solid var(--border-main);
-      display: flex;
-      flex-direction: column;
-      flex-shrink: 0;
-      z-index: 50;
-    }
-    .sidebar-header {
-      padding: 16px;
-      border-bottom: 1px solid var(--border-subtle);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .sidebar-nav {
-      padding: 12px 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      flex: 1;
-      overflow-y: auto;
-    }
-    .sidebar-section-title {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      padding: 8px 12px 4px 12px;
-      letter-spacing: 0.5px;
-    }
-    .nav-btn {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 9px 12px;
-      border-radius: 8px;
-      border: none;
-      background: transparent;
-      color: var(--text-body);
-      font-family: inherit;
+      color: var(--text-main);
+      font-family: var(--font-sans);
       font-size: 13px;
-      font-weight: 500;
-      text-decoration: none;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      width: 100%;
-      text-align: left;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
-    .nav-btn:hover {
-      background: #f1f5f9;
-      color: var(--pt-blue);
-    }
-    .nav-btn.active {
-      background: var(--pt-subtle);
-      color: var(--pt-teal);
-      font-weight: 700;
-      border-left: 3px solid var(--pt-teal);
-    }
-    .nav-btn .material-icons-round { font-size: 18px; }
 
-    /* Main Content Area */
-    .app-main {
-      flex: 1;
+    .app-wrapper {
       display: flex;
       flex-direction: column;
-      min-width: 0;
-      overflow-y: auto;
+      min-height: 100vh;
     }
 
-    /* Topbar */
-    .app-topbar {
-      height: 60px;
-      background: #ffffff;
-      border-bottom: 1px solid var(--border-main);
-      padding: 0 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 40;
-    }
-    .topbar-title {
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--pt-navy);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /* Content Container */
-    .app-content {
-      padding: 20px 24px;
-      max-width: 1360px;
-      width: 100%;
-      margin: 0 auto;
-    }
-
-    /* 5 KPI Metric Strip */
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 14px;
-      margin-bottom: 20px;
-    }
-    .kpi-card {
-      background: #ffffff;
-      border: 1px solid var(--border-main);
-      border-radius: 12px;
-      padding: 14px 18px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-      transition: all 0.2s ease;
-    }
-    .kpi-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 14px rgba(0, 46, 110, 0.06);
-    }
-    .kpi-icon-box {
-      width: 44px;
-      height: 44px;
-      border-radius: 10px;
+    /* ==================== PHITSANUVEJ CSS MEDICAL CROSS LOADER ==================== */
+    #pageLoader {
+      position: fixed;
+      inset: 0;
+      background: rgba(244, 247, 251, 0.95);
+      backdrop-filter: blur(8px);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
+      z-index: 9999;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
     }
+    #pageLoader.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loader-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 38px 46px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 46, 110, 0.08);
+      min-width: 290px;
+      animation: loaderPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .css-logo-loader {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      margin: 10px auto 30px;
+      transform: scale(1.4);
+      transform-origin: center;
+    }
+
+    .logo-petal {
+      position: absolute;
+      animation: loadingPulse 1.6s ease-in-out infinite;
+      will-change: transform, opacity;
+    }
+    .logo-petal.outer { background: #1e5387; border-radius: 6px; }
+    .logo-petal.inner { background: #5faee3; border-radius: 5px; }
+
+    .logo-petal.outer.top { top: 0px; left: 30px; width: 20px; height: 24px; animation-delay: 0s; }
+    .logo-petal.inner.top-right { top: 14px; right: 14px; width: 20px; height: 20px; animation-delay: 0.2s; }
+    .logo-petal.outer.right { top: 30px; right: 0px; width: 24px; height: 20px; animation-delay: 0.4s; }
+    .logo-petal.inner.bottom-right { bottom: 14px; right: 14px; width: 20px; height: 20px; animation-delay: 0.6s; }
+    .logo-petal.outer.bottom { bottom: 0px; left: 30px; width: 20px; height: 24px; animation-delay: 0.8s; }
+    .logo-petal.inner.bottom-left { bottom: 14px; left: 14px; width: 20px; height: 20px; animation-delay: 1.0s; }
+    .logo-petal.outer.left { top: 30px; left: 0px; width: 24px; height: 20px; animation-delay: 1.2s; }
+    .logo-petal.inner.top-left { top: 14px; left: 14px; width: 20px; height: 20px; animation-delay: 1.4s; }
+
+    @keyframes loadingPulse {
+      0%, 100% { transform: scale(1); opacity: 0.35; }
+      50% { transform: scale(1.15); opacity: 1; filter: drop-shadow(0 0 6px rgba(95, 174, 227, 0.8)); }
+    }
+    @keyframes loaderPop {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* ==================== 1. TOPBAR ==================== */
+    .app-topbar {
+      height: 56px;
+      background: #ffffff;
+      border-bottom: 2px solid var(--royal-blue);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0, 46, 110, 0.05);
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .btn-sidebar-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #f8fafc;
+      border: 1px solid var(--border-main);
+      color: var(--royal-blue);
+      cursor: pointer;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+    .btn-sidebar-toggle:hover {
+      background: var(--royal-subtle);
+      border-color: #93c5fd;
+    }
+    .btn-sidebar-toggle .material-icons-round { font-size: 22px; }
+
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-logo-img {
+      height: 36px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .brand-divider {
+      width: 1px;
+      height: 22px;
+      background: var(--border-main);
+    }
+
+    .brand-badge-pill {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--royal-blue);
+      background: var(--royal-subtle);
+      border: 1px solid var(--border-blue-soft);
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    .topbar-breadcrumbs {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      margin-left: 6px;
+    }
+    .bread-parent { color: var(--text-muted); }
+    .bread-sep { color: var(--text-light); }
+    .bread-current {
+      color: var(--royal-blue);
+      font-weight: 600;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status-realtime-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--royal-blue);
+      background: var(--royal-subtle);
+      border: 1px solid var(--border-blue-soft);
+      padding: 4px 10px;
+      border-radius: 9999px;
+    }
+    .pulse-indicator-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green-ready);
+      box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.2);
+      animation: pulse-dot 1.8s infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.7; }
+    }
+
+    .btn-topbar-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #ffffff;
+      background: linear-gradient(135deg, var(--royal-blue) 0%, var(--royal-hover) 100%);
+      border: 1px solid var(--royal-blue);
+      text-decoration: none;
+      box-shadow: 0 2px 6px rgba(0, 46, 110, 0.2);
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-topbar-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 46, 110, 0.3);
+    }
+    .btn-topbar-cta .material-icons-round { font-size: 18px; }
+
+    /* ==================== 2. BODY LAYOUT ==================== */
+    .app-layout-body {
+      display: flex;
+      flex: 1;
+      min-height: calc(100vh - 56px);
+      align-items: flex-start;
+    }
+
+    /* ==================== MINI COLLAPSIBLE STICKY SIDEBAR ==================== */
+    .app-sidebar {
+      width: 68px;
+      background: linear-gradient(180deg, #001f44 0%, #001733 100%);
+      border-right: 1px solid rgba(0, 50, 110, 0.4);
+      padding: 14px 8px;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      position: sticky;
+      top: 56px;
+      height: calc(100vh - 56px);
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 95;
+      align-self: flex-start;
+      transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                  box-shadow 0.25s ease;
+    }
+    @media (min-width: 993px) {
+      .app-sidebar:hover,
+      .app-sidebar.is-expanded {
+        width: 240px;
+        box-shadow: 4px 0 20px rgba(0, 15, 45, 0.2);
+      }
+    }
+    .app-sidebar::-webkit-scrollbar { width: 4px; }
+    .app-sidebar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.18);
+      border-radius: 4px;
+    }
+
+    .sidebar-section-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 6px 8px 4px 8px;
+      white-space: nowrap;
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: opacity 0.15s ease, max-height 0.2s ease, padding 0.2s ease;
+    }
+    .app-sidebar:hover .sidebar-section-title,
+    .app-sidebar.is-expanded .sidebar-section-title {
+      opacity: 1;
+      max-height: 24px;
+      padding: 10px 8px 4px 8px;
+    }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      color: #cbd5e1;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.15s;
+      white-space: nowrap;
+      margin-bottom: 2px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      background: transparent;
+      width: 100%;
+    }
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+    }
+    .nav-btn.active {
+      background: rgba(2, 132, 199, 0.25);
+      border-color: rgba(56, 189, 248, 0.4);
+      color: #38bdf8;
+      font-weight: 600;
+    }
+    .nav-btn .material-icons-round {
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .nav-text {
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .app-sidebar:hover .nav-text,
+    .app-sidebar.is-expanded .nav-text {
+      opacity: 1;
+    }
+
+    /* ==================== 3. MAIN CONTENT ==================== */
+    .app-main-content {
+      flex: 1;
+      min-width: 0;
+      padding: 16px 24px;
+    }
+
+    /* KPI Strip 5 Cards (Identical to lab.html & admin.html) */
+    .kpi-strip-5 {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+      width: 100%;
+    }
+    @media (max-width: 1100px) {
+      .kpi-strip-5 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 640px) {
+      .kpi-strip-5 { grid-template-columns: 1fr; }
+    }
+
+    .kpi-card {
+      background: #ffffff;
+      border: 1px solid var(--border-main);
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 1px 3px rgba(0, 46, 110, 0.03);
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: #93c5fd;
+      box-shadow: 0 6px 16px rgba(0, 75, 147, 0.08);
+    }
+    .kpi-card.active-kpi {
+      border-color: var(--royal-blue);
+      box-shadow: 0 0 0 2px var(--royal-blue);
+      background: var(--royal-subtle);
+    }
+
+    .kpi-icon-box {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 19px;
+      flex-shrink: 0;
+    }
+    .kpi-icon-blue { background: #eff6ff; color: var(--royal-blue); }
+    .kpi-icon-green { background: #ecfdf5; color: var(--green-ready); }
+    .kpi-icon-red { background: #fef2f2; color: var(--red-abnormal); }
+    .kpi-icon-amber { background: #fffbeb; color: var(--amber-pending); }
+
     .kpi-val {
-      font-size: 22px;
+      font-size: 19px;
       font-weight: 800;
       color: var(--text-main);
       line-height: 1.1;
       font-family: var(--font-mono);
     }
     .kpi-label {
-      font-size: 11.5px;
-      font-weight: 600;
+      font-size: 11px;
+      font-weight: 500;
       color: var(--text-muted);
       margin-top: 2px;
     }
 
-    /* Single-Row Streamlined Filter Toolbar */
-    .filter-toolbar {
+    /* ==================== SINGLE-ROW STREAMLINED FILTER TOOLBAR ==================== */
+    .page-filter-bar {
       background: #ffffff;
       border: 1px solid var(--border-main);
-      border-radius: 12px;
-      padding: 10px 16px;
-      margin-bottom: 18px;
+      border-radius: 10px;
+      padding: 8px 12px;
+      margin-bottom: 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: nowrap;
       overflow-x: auto;
+      box-shadow: 0 1px 3px rgba(0, 46, 110, 0.02);
     }
-    .search-box {
-      position: relative;
-      min-width: 260px;
-      max-width: 340px;
-    }
-    .search-input {
-      width: 100%;
-      height: 38px;
-      padding: 0 12px 0 34px;
-      border-radius: 8px;
-      border: 1px solid var(--border-main);
-      font-size: 13px;
-      font-family: inherit;
-      outline: none;
-      transition: all 0.15s ease;
-    }
-    .search-input:focus {
-      border-color: var(--pt-teal);
-      box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.15);
-    }
-    .search-icon {
-      position: absolute;
-      left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-muted);
-      font-size: 18px;
-      pointer-events: none;
-    }
-
-    /* Category Filter Pills */
-    .pill-group {
+    .filter-left-controls {
       display: flex;
       align-items: center;
-      gap: 6px;
-      overflow-x: auto;
-    }
-    .pill-btn {
-      padding: 6px 12px;
-      border-radius: 9999px;
-      border: 1px solid var(--border-main);
-      background: #f8fafc;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-body);
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.15s ease;
-    }
-    .pill-btn:hover { background: #e2e8f0; }
-    .pill-btn.active {
-      background: var(--pt-teal);
-      color: #ffffff;
-      border-color: var(--pt-teal);
-    }
-
-    /* Single-Row Horizontal Strip Cards */
-    .equipment-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .strip-card {
-      background: #ffffff;
-      border: 1px solid var(--border-main);
-      border-radius: 12px;
-      padding: 12px 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      transition: all 0.18s ease;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-    }
-    .strip-card:hover {
-      border-color: #99f6e4;
-      box-shadow: 0 6px 16px rgba(13, 148, 136, 0.08);
-      transform: translateX(2px);
-    }
-    .strip-left {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      min-width: 0;
+      gap: 8px;
+      flex-wrap: nowrap;
       flex: 1;
     }
-    .strip-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 10px;
-      background: #f0fdfa;
-      color: var(--pt-teal);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      flex-shrink: 0;
-    }
-    .strip-info {
-      min-width: 0;
-    }
-    .strip-code {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--pt-blue);
-      background: #eff6ff;
-      padding: 1px 6px;
-      border-radius: 4px;
-      display: inline-block;
-      margin-bottom: 2px;
-    }
-    .strip-title {
-      font-size: 14.5px;
-      font-weight: 700;
-      color: var(--text-main);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .strip-sub {
-      font-size: 11.5px;
-      color: var(--text-muted);
-    }
-
-    /* Status Circle Symbol Buttons */
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      border-radius: 9999px;
-      font-size: 12px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-    .status-badge.ready { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
-    .status-badge.abnormal { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
-    .status-badge.pending { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
-
-    /* Action Buttons */
-    .strip-actions {
+    .search-input-box {
       display: flex;
       align-items: center;
       gap: 6px;
-      flex-shrink: 0;
-    }
-    .action-btn {
-      height: 34px;
-      padding: 0 12px;
-      border-radius: 6px;
-      border: 1px solid var(--border-main);
       background: #f8fafc;
-      color: var(--text-body);
+      border: 1px solid var(--border-main);
+      border-radius: 6px;
+      padding: 5px 10px;
+      min-width: 220px;
+      max-width: 300px;
+      flex: 1;
+      transition: all 0.15s;
+    }
+    .search-input-box:focus-within {
+      background: #ffffff;
+      border-color: var(--royal-blue);
+      box-shadow: 0 0 0 2px rgba(0, 75, 147, 0.12);
+    }
+    .search-input-box .material-icons-round {
+      font-size: 17px;
+      color: var(--text-light);
+    }
+    .search-input-box input {
+      border: none;
+      background: transparent;
+      outline: none;
       font-family: inherit;
       font-size: 12px;
+      color: var(--text-main);
+      width: 100%;
+    }
+
+    .filter-pill-btn {
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: #f1f5f9;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .filter-pill-btn:hover {
+      background: #e2e8f0;
+      color: var(--text-main);
+    }
+    .filter-pill-btn.active {
+      background: var(--royal-blue);
+      color: #ffffff;
       font-weight: 600;
+    }
+
+    .filter-right-tools {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .btn-tool {
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.15s ease;
-    }
-    .action-btn:hover {
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-body);
       background: #ffffff;
-      border-color: var(--pt-teal);
-      color: var(--pt-teal);
+      border: 1px solid var(--border-main);
+      cursor: pointer;
+      transition: all 0.15s;
+      text-decoration: none;
+      white-space: nowrap;
     }
-    .action-btn.primary {
-      background: var(--pt-teal);
+    .btn-tool:hover {
+      background: var(--royal-subtle);
+      border-color: var(--border-blue-soft);
+      color: var(--royal-blue);
+    }
+    .btn-tool-primary {
+      background: var(--royal-blue);
       color: #ffffff;
-      border-color: var(--pt-teal);
+      border-color: var(--royal-blue);
+      font-weight: 600;
     }
-    .action-btn.primary:hover {
-      background: #0f766e;
+    .btn-tool-primary:hover {
+      background: var(--royal-hover);
+      color: #ffffff;
     }
 
-    /* Modal Overlay & Card */
+    /* Content Panel & Tables (Matching admin.html / lab.html) */
+    .content-panel {
+      background: #ffffff;
+      border: 1px solid var(--border-main);
+      border-radius: 10px;
+      box-shadow: 0 1px 3px rgba(0, 46, 110, 0.02);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .panel-header {
+      padding: 10px 14px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border-main);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .panel-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .device-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    .device-table th {
+      background: #f8fafc;
+      color: var(--text-body);
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-main);
+      white-space: nowrap;
+    }
+    .device-table td {
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 12.5px;
+      color: var(--text-main);
+      vertical-align: middle;
+      transition: background 0.1s;
+    }
+    .device-table tbody tr:hover td {
+      background: #f8fafc;
+    }
+    .device-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .asset-code-pill {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--royal-blue);
+      background: var(--royal-subtle);
+      border: 1px solid var(--border-blue-soft);
+      padding: 2px 7px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    /* ==================== SYMBOL-BASED STATUS BUTTONS ==================== */
+    .status-symbol-btn {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 1.5px solid transparent;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      user-select: none;
+      vertical-align: middle;
+    }
+    .status-symbol-btn .material-icons-round { font-size: 20px; }
+    .status-symbol-btn:hover {
+      transform: scale(1.15);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+    }
+    .status-symbol-btn.symbol-ready {
+      background: #ecfdf5;
+      color: #059669;
+      border-color: #a7f3d0;
+    }
+    .status-symbol-btn.symbol-abnormal {
+      background: #fef2f2;
+      color: #dc2626;
+      border-color: #fecaca;
+    }
+    .status-symbol-btn.symbol-pending {
+      background: #fffbeb;
+      color: #d97706;
+      border-color: #fde68a;
+    }
+
+    /* ==================== FLOATING SPEED DIAL ACTION MENU ==================== */
+    .floating-action-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .device-table tbody tr:has(.floating-action-wrapper.open) {
+      z-index: 30;
+      position: relative;
+    }
+
+    .btn-floating-trigger {
+      position: relative;
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 1.5px solid var(--border-main);
+      color: var(--royal-blue);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0, 46, 110, 0.08);
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 0;
+    }
+    .btn-floating-trigger:hover {
+      background: var(--royal-subtle);
+      border-color: var(--border-blue-soft);
+      transform: scale(1.08);
+      box-shadow: 0 3px 8px rgba(0, 75, 147, 0.18);
+    }
+    .btn-floating-trigger .trigger-icon { font-size: 18px; }
+    .floating-badge-count {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      background: var(--royal-blue);
+      color: #ffffff;
+      font-size: 9.5px;
+      font-weight: 700;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid #ffffff;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .floating-action-tray {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%) scale(0.9);
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 10px 25px -4px rgba(0, 46, 110, 0.22), 0 4px 10px -2px rgba(0, 0, 0, 0.08);
+      border-radius: 20px;
+      padding: 3px 6px;
+      display: none;
+      align-items: center;
+      gap: 5px;
+      z-index: 150;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1), transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
+    }
+    .floating-action-wrapper.open .floating-action-tray {
+      display: inline-flex;
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(-50%) scale(1);
+    }
+    .floating-action-wrapper.open .btn-floating-trigger {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .btn-action-icon {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 1px solid transparent;
+      text-decoration: none;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      padding: 0;
+      flex-shrink: 0;
+      vertical-align: middle;
+    }
+    .btn-action-icon .material-icons-round { font-size: 16px; }
+    .btn-action-icon:hover {
+      transform: translateY(-1px) scale(1.08);
+      box-shadow: 0 3px 8px rgba(0, 75, 147, 0.18);
+    }
+    .btn-action-icon.eval-btn { background: #eff6ff; color: var(--royal-blue); border-color: #bfdbfe; }
+    .btn-action-icon.qr-btn { background: #f8fafc; color: #475569; border-color: #e2e8f0; }
+    .btn-action-icon.repair-btn { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
+    .btn-action-icon.close-btn { background: #f1f5f9; color: #64748b; }
+
+    /* Modal Styling */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -402,516 +809,692 @@
       z-index: 1000;
       opacity: 0;
       visibility: hidden;
-      transition: all 0.2s ease;
+      transition: all 0.2s;
     }
-    .modal-overlay.active {
+    .modal-overlay.open {
       opacity: 1;
       visibility: visible;
     }
-    .modal-card {
+    .modal-box {
       background: #ffffff;
-      border-radius: 14px;
-      max-width: 500px;
-      width: 90%;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0, 46, 110, 0.18);
+      border: 1px solid var(--border-main);
       padding: 24px;
-      box-shadow: 0 20px 40px rgba(0, 46, 110, 0.2);
+      max-width: 460px;
+      width: 90%;
+      text-align: center;
+      position: relative;
     }
+    .btn-modal-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 20px;
+    }
+    .btn-modal-close:hover { color: #0f172a; }
 
-    /* Print Overrides */
-    @page {
-      size: A4 landscape;
-      margin: 6mm 8mm;
-    }
+    /* Print Preview & Hidden Elements */
     @media print {
-      body { background: #ffffff !important; }
-      .app-sidebar, .app-topbar, .filter-toolbar, .no-print, .strip-actions, #toastNotice, .modal-overlay {
+      @page {
+        size: A4 landscape;
+        margin: 8mm 10mm;
+      }
+      body {
+        background: #ffffff !important;
+        font-size: 11px !important;
+      }
+      .app-topbar, .app-sidebar, .page-filter-bar, .floating-action-wrapper, .no-print {
         display: none !important;
       }
-      .app-main { width: 100% !important; }
-      .app-content { padding: 0 !important; max-width: 100% !important; }
-      .strip-card {
-        border: 1px solid #002e6e !important;
+      .app-main-content {
+        padding: 0 !important;
+        width: 100% !important;
+      }
+      .content-panel {
+        border: 1px solid #000000 !important;
         box-shadow: none !important;
-        page-break-inside: avoid;
-        margin-bottom: 6px;
       }
-      body.printing-qr-sticker .app-main,
-      body.printing-qr-sticker .app-content {
-        display: none !important;
-      }
-      body.printing-qr-sticker #qrPrintSingleContainer {
-        display: flex !important;
-        justify-content: center;
-        padding-top: 15mm;
+      .device-table th, .device-table td {
+        border: 1px solid #cbd5e1 !important;
+        padding: 6px 8px !important;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Left Sticky Sidebar -->
-  <aside class="app-sidebar no-print">
-    <div class="sidebar-header">
-      <img src="logo.png" style="height: 38px; width: auto;" alt="Logo โรงพยาบาลพิษณุเวช">
-      <div>
-        <div style="font-size: 13.5px; font-weight: 800; color: var(--pt-navy); line-height: 1.2;">โรงพยาบาลพิษณุเวช</div>
-        <div style="font-size: 10px; font-weight: 600; color: var(--text-muted);">แผนกเวชศาสตร์ฟื้นฟู</div>
+  <!-- Loading Screen -->
+  <div id="pageLoader">
+    <div class="loader-card">
+      <div class="css-logo-loader">
+        <div class="logo-petal outer top"></div>
+        <div class="logo-petal inner top-right"></div>
+        <div class="logo-petal outer right"></div>
+        <div class="logo-petal inner bottom-right"></div>
+        <div class="logo-petal outer bottom"></div>
+        <div class="logo-petal inner bottom-left"></div>
+        <div class="logo-petal outer left"></div>
+        <div class="logo-petal inner top-left"></div>
+      </div>
+      <div style="margin-top: 14px;">
+        <div style="font-size: 16px; font-weight: 700; color: #004b93; margin-bottom: 4px;">
+          ระบบเครื่องมือ แผนกเวชศาสตร์ฟื้นฟู
+        </div>
+        <div style="font-size: 12px; font-weight: 500; color: #64748b;">
+          โรงพยาบาลพิษณุเวช (Physical Therapy)
+        </div>
       </div>
     </div>
+  </div>
 
-    <div class="sidebar-section-title">เมนูแผนกกายภาพ</div>
-    <nav class="sidebar-nav">
-      <a href="#overview" class="nav-btn active">
-        <span class="material-icons-round">dashboard</span>
-        <span>ภาพรวม & 11 เครื่องมือ</span>
-      </a>
-      <a href="eval-pt.html" target="_blank" class="nav-btn" style="color: var(--pt-teal); font-weight: 700;">
-        <span class="material-icons-round">qr_code_scanner</span>
-        <span>ฟอร์มตรวจเช็ค (Check-in)</span>
-        <span class="material-icons-round" style="margin-left: auto; font-size: 14px;">open_in_new</span>
-      </a>
-      <button type="button" onclick="batchPrintAllQrs()" class="nav-btn">
-        <span class="material-icons-round">qr_code_2</span>
-        <span>พิมพ์ QR สติ๊กเกอร์ทั้งหมด</span>
-      </button>
-      <button type="button" onclick="window.print()" class="nav-btn">
-        <span class="material-icons-round">print</span>
-        <span>พิมพ์รายงาน A4 แนวนอน</span>
-      </button>
-      <button type="button" onclick="exportExcel()" class="nav-btn">
-        <span class="material-icons-round">file_download</span>
-        <span>ส่งออก Excel (UTF-8 BOM)</span>
-      </button>
-    </nav>
+  <div class="app-wrapper">
 
-    <div class="sidebar-section-title">ระบบโรงพยาบาล</div>
-    <nav class="sidebar-nav" style="flex: none; padding-bottom: 16px;">
-      <a href="lab.html" target="_blank" class="nav-btn">
-        <span class="material-icons-round" style="color: #0284c7;">biotech</span>
-        <span>แผนก Laboratory</span>
-        <span class="material-icons-round" style="margin-left: auto; font-size: 14px;">open_in_new</span>
-      </a>
-      <a href="admin.html" target="_blank" class="nav-btn">
-        <span class="material-icons-round" style="color: #64748b;">medical_services</span>
-        <span>Admin เครื่องมือแพทย์</span>
-        <span class="material-icons-round" style="margin-left: auto; font-size: 14px;">open_in_new</span>
-      </a>
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdwkF04kruAmIkad7Enxav5H_IgnxGwO3bfSmMzLaxF36buNA/viewform?usp=header" target="_blank" class="nav-btn" style="color: #be123c;">
-        <span class="material-icons-round">report_problem</span>
-        <span>แจ้งซ่อมเครื่องมือแพทย์</span>
-        <span class="material-icons-round" style="margin-left: auto; font-size: 14px;">open_in_new</span>
-      </a>
-      <a href="index.html" class="nav-btn">
-        <span class="material-icons-round">home</span>
-        <span>หน้าแรกพอร์ทัล</span>
-      </a>
-    </nav>
-  </aside>
-
-  <!-- Main Workstation -->
-  <div class="app-main">
+    <!-- Topbar (Matching admin.html / lab.html) -->
     <header class="app-topbar no-print">
-      <div class="topbar-title">
-        <span class="material-icons-round" style="color: var(--pt-teal);">fitness_center</span>
-        <span>ระบบบริหารจัดการเครื่องมือ แผนกเวชศาสตร์ฟื้นฟู (กายภาพบำบัด)</span>
+      <div class="topbar-left">
+        <button type="button" class="btn-sidebar-toggle" onclick="toggleSidebar()" title="ย่อ/ขยายเมนู">
+          <span class="material-icons-round">menu</span>
+        </button>
+        <div class="topbar-brand">
+          <img src="logo.png" alt="โรงพยาบาลพิษณุเวช" class="brand-logo-img">
+          <div class="brand-divider"></div>
+          <div class="brand-badge-pill">PPCH PT (กายภาพบำบัด)</div>
+        </div>
+        <div class="topbar-breadcrumbs">
+          <span class="bread-parent">ระบบเครื่องมือแพทย์</span>
+          <span class="bread-sep">/</span>
+          <span class="bread-current">แผนกเวชศาสตร์ฟื้นฟู</span>
+        </div>
       </div>
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <a href="eval-pt.html" target="_blank" class="action-btn primary">
-          <span class="material-icons-round">qr_code_scanner</span>
+
+      <div class="topbar-right">
+        <div class="status-realtime-badge" title="เชื่อมต่อข้อมูล Supabase Cloud PostgreSQL">
+          <div class="pulse-indicator-dot"></div>
+          <span>Cloud Supabase</span>
+        </div>
+        <a href="eval-pt.html" target="_blank" class="btn-topbar-cta" title="เปิดแบบตรวจเช็คความพร้อมใช้ประจำวัน">
+          <span class="material-icons-round">edit_document</span>
           <span>ตรวจเช็คประจำวัน</span>
         </a>
       </div>
     </header>
 
-    <main class="app-content">
-      <!-- 5 KPI Cards -->
-      <section class="kpi-grid">
-        <div class="kpi-card">
-          <div class="kpi-icon-box" style="background: #eff6ff; color: #0284c7;">
-            <span class="material-icons-round">medical_services</span>
+    <div class="app-layout-body">
+
+      <!-- Mini Collapsible Sticky Sidebar (Matching admin.html / lab.html) -->
+      <aside class="app-sidebar no-print" id="appSidebar">
+        <div class="sidebar-section-title">เมนูแผนกกายภาพ</div>
+        <a href="#overview" class="nav-btn active" title="ภาพรวม & 11 เครื่องมือ">
+          <span class="material-icons-round">dashboard</span>
+          <span class="nav-text">ภาพรวม 11 เครื่องมือ</span>
+        </a>
+        <a href="eval-pt.html" target="_blank" class="nav-btn" style="color: #60a5fa; font-weight: 600;" title="แบบฟอร์มตรวจเช็คประจำวัน">
+          <span class="material-icons-round">qr_code_scanner</span>
+          <span class="nav-text">ฟอร์มตรวจเช็ค (Check-in)</span>
+        </a>
+        <button type="button" class="nav-btn" onclick="openAllQrModal()" title="พิมพ์ QR Code สติ๊กเกอร์ทั้งหมด">
+          <span class="material-icons-round">qr_code_2</span>
+          <span class="nav-text">พิมพ์ QR Code ทั้งหมด</span>
+        </button>
+        <button type="button" class="nav-btn" onclick="window.print()" title="พิมพ์รายงานแนวนอน (Landscape)">
+          <span class="material-icons-round">print</span>
+          <span class="nav-text">พิมพ์รายงานแนวนอน</span>
+        </button>
+        <button type="button" class="nav-btn" onclick="exportExcelPt()" title="ส่งออกข้อมูล Excel (UTF-8 BOM)">
+          <span class="material-icons-round">file_download</span>
+          <span class="nav-text">ส่งออก Excel (UTF-8 BOM)</span>
+        </button>
+
+        <div class="sidebar-section-title" style="margin-top: 14px;">ระบบโรงพยาบาล</div>
+        <a href="lab.html" target="_blank" class="nav-btn" title="เปิดระบบห้องปฏิบัติการ LAB">
+          <span class="material-icons-round">science</span>
+          <span class="nav-text">แผนก Laboratory</span>
+        </a>
+        <a href="admin.html" target="_blank" class="nav-btn" title="เปิดหน้าจัดการเครื่องมือแพทย์รวม">
+          <span class="material-icons-round">medical_services</span>
+          <span class="nav-text">Admin เครื่องมือแพทย์</span>
+        </a>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdwkF04kruAmIkad7Enxav5H_IgnxGwO3bfSmMzLaxF36buNA/viewform?usp=header" target="_blank" class="nav-btn" style="color: #f87171;" title="แจ้งซ่อมเครื่องมือแพทย์">
+          <span class="material-icons-round">build</span>
+          <span class="nav-text">แจ้งซ่อมเครื่องมือแพทย์</span>
+        </a>
+        <a href="index.html" class="nav-btn" title="กลับหน้าแรกพอร์ทัล">
+          <span class="material-icons-round">home</span>
+          <span class="nav-text">หน้าแรกพอร์ทัล</span>
+        </a>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="app-main-content">
+
+        <!-- 1. KPI Strip 5 Cards (Identical to lab.html & admin.html) -->
+        <div class="kpi-strip-5 no-print">
+          <div class="kpi-card" onclick="setFilter('all')">
+            <div class="kpi-icon-box kpi-icon-blue">
+              <span class="material-icons-round">medical_services</span>
+            </div>
+            <div>
+              <div class="kpi-val" id="kpiTotal">11</div>
+              <div class="kpi-label">เครื่องมือทั้งหมด</div>
+            </div>
           </div>
-          <div>
-            <div class="kpi-val" id="kpiTotal">11</div>
-            <div class="kpi-label">เครื่องมือทั้งหมด</div>
+
+          <div class="kpi-card" onclick="setFilter('ready')">
+            <div class="kpi-icon-box kpi-icon-green">
+              <span class="material-icons-round">check_circle</span>
+            </div>
+            <div>
+              <div class="kpi-val" id="kpiReady">0</div>
+              <div class="kpi-label">พร้อมใช้งานวันนี้</div>
+            </div>
+          </div>
+
+          <div class="kpi-card" onclick="setFilter('abnormal')">
+            <div class="kpi-icon-box kpi-icon-red">
+              <span class="material-icons-round">error</span>
+            </div>
+            <div>
+              <div class="kpi-val" id="kpiAbnormal">0</div>
+              <div class="kpi-label">พบปัญหา / ส่งซ่อม</div>
+            </div>
+          </div>
+
+          <div class="kpi-card" onclick="setFilter('pending')">
+            <div class="kpi-icon-box kpi-icon-amber">
+              <span class="material-icons-round">schedule</span>
+            </div>
+            <div>
+              <div class="kpi-val" id="kpiPending">11</div>
+              <div class="kpi-label">รอตรวจเช็ควันนี้</div>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-icon-box kpi-icon-green">
+              <span class="material-icons-round">trending_up</span>
+            </div>
+            <div>
+              <div class="kpi-val" id="kpiRate">0%</div>
+              <div class="kpi-label">อัตราความพร้อมใช้งาน</div>
+            </div>
           </div>
         </div>
 
-        <div class="kpi-card">
-          <div class="kpi-icon-box" style="background: #ecfdf5; color: #059669;">
-            <span class="material-icons-round">check_circle</span>
+        <!-- 2. Single-Row Streamlined Filter Toolbar -->
+        <div class="page-filter-bar no-print">
+          <div class="filter-left-controls">
+            <div class="search-input-box">
+              <span class="material-icons-round">search</span>
+              <input type="text" id="searchInput" placeholder="ค้นหาชื่อเครื่องมือ, รหัส..." oninput="onSearchChange()">
+            </div>
+
+            <button type="button" class="filter-pill-btn active" id="btnFilterAll" onclick="setFilter('all')">
+              ทั้งหมด (11)
+            </button>
+            <button type="button" class="filter-pill-btn" id="btnFilterReady" onclick="setFilter('ready')">
+              พร้อมใช้งาน
+            </button>
+            <button type="button" class="filter-pill-btn" id="btnFilterPending" onclick="setFilter('pending')">
+              รอตรวจเช็ค
+            </button>
+            <button type="button" class="filter-pill-btn" id="btnFilterAbnormal" onclick="setFilter('abnormal')">
+              พบปัญหา
+            </button>
           </div>
-          <div>
-            <div class="kpi-val" id="kpiReady">0</div>
-            <div class="kpi-label">พร้อมใช้งานวันนี้</div>
+
+          <div class="filter-right-tools">
+            <button type="button" class="btn-tool" onclick="reloadPtData()" title="รีเฟรชข้อมูล">
+              <span class="material-icons-round" style="font-size: 16px;">refresh</span>
+              <span>รีเฟรช</span>
+            </button>
+            <button type="button" class="btn-tool" onclick="exportExcelPt()" title="ส่งออก Excel">
+              <span class="material-icons-round" style="font-size: 16px; color: #059669;">table_view</span>
+              <span>Excel</span>
+            </button>
           </div>
         </div>
 
-        <div class="kpi-card">
-          <div class="kpi-icon-box" style="background: #fef2f2; color: #dc2626;">
-            <span class="material-icons-round">error</span>
+        <!-- 3. Medical Equipment Table (Clean, Standardized Design) -->
+        <div class="content-panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="material-icons-round" style="color: var(--royal-blue); font-size: 18px;">format_list_bulleted</span>
+              <span>รายการเครื่องมือแพทย์ แผนกเวชศาสตร์ฟื้นฟู (11 รายการ)</span>
+            </div>
+            <div style="font-size: 11px; color: var(--text-muted);" id="tableCountText">แสดง 11 จาก 11 เครื่อง</div>
           </div>
-          <div>
-            <div class="kpi-val" id="kpiAbnormal">0</div>
-            <div class="kpi-label">พบปัญหา / ส่งซ่อม</div>
+
+          <div style="overflow-x: auto;">
+            <table class="device-table">
+              <thead>
+                <tr>
+                  <th style="width: 100px;">รหัสเครื่อง</th>
+                  <th>ชื่อเครื่องมือแพทย์</th>
+                  <th style="width: 140px;">หมวดหมู่</th>
+                  <th style="width: 150px; text-align: center;">สถานะวันนี้</th>
+                  <th style="width: 170px;">ตรวจเช็คล่าสุด</th>
+                  <th style="width: 90px; text-align: center;">จัดการ</th>
+                </tr>
+              </thead>
+              <tbody id="ptEquipmentTableBody">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
           </div>
         </div>
 
-        <div class="kpi-card">
-          <div class="kpi-icon-box" style="background: #fffbeb; color: #d97706;">
-            <span class="material-icons-round">schedule</span>
-          </div>
-          <div>
-            <div class="kpi-val" id="kpiPending">11</div>
-            <div class="kpi-label">รอตรวจเช็ค</div>
-          </div>
-        </div>
+      </main>
 
-        <div class="kpi-card">
-          <div class="kpi-icon-box" style="background: #f0fdfa; color: #0d9488;">
-            <span class="material-icons-round">trending_up</span>
-          </div>
-          <div>
-            <div class="kpi-val" id="kpiReadyRate">0%</div>
-            <div class="kpi-label">อัตราความพร้อมใช้</div>
-          </div>
-        </div>
-      </section>
+    </div>
 
-      <!-- Single-Row Streamlined Filter Toolbar -->
-      <section class="filter-toolbar no-print">
-        <div class="search-box">
-          <span class="material-icons-round search-icon">search</span>
-          <input type="text" id="searchInput" class="search-input" placeholder="ค้นหาชื่อเครื่องมือ, รหัส..." oninput="filterItems()">
-        </div>
-
-        <div class="pill-group" id="categoryPillGroup">
-          <button type="button" class="pill-btn active" onclick="setCategoryFilter('all')">ทั้งหมด (11)</button>
-          <button type="button" class="pill-btn" onclick="setCategoryFilter('traction')">ดึงกระดูก</button>
-          <button type="button" class="pill-btn" onclick="setCategoryFilter('laser')">เลเซอร์ HPLT</button>
-          <button type="button" class="pill-btn" onclick="setCategoryFilter('ultrasound')">อัลตราซาวด์</button>
-          <button type="button" class="pill-btn" onclick="setCategoryFilter('shockwave')">ช็อกเวฟ</button>
-          <button type="button" class="pill-btn" onclick="setCategoryFilter('heat')">ความร้อน Hot Pack</button>
-          <button type="button" class="pill-btn" onclick="setCategoryFilter('respiratory')">พ่นยา</button>
-          <button type="button" class="pill-btn" onclick="setCategoryFilter('motion')">ฝึกงอเข่า CPM</button>
-          <button type="button" class="pill-btn" onclick="setCategoryFilter('vibrator')">สั่นนวด</button>
-        </div>
-      </section>
-
-      <!-- 11 Physical Therapy Horizontal Strip Cards -->
-      <section class="equipment-list" id="equipmentList">
-        <!-- Rendered by JS -->
-      </section>
-    </main>
   </div>
 
-  <!-- Single QR Code Print Container (Visible only when printing single sticker) -->
-  <div id="qrPrintSingleContainer" style="display: none;"></div>
-
-  <!-- Batch QR Print Container -->
-  <div id="qrPrintBatchContainer" style="display: none;"></div>
-
-  <!-- QR Modal Preview -->
+  <!-- QR Code Single Sticker Print Modal (Page 1 Only - Zero Clutter) -->
   <div class="modal-overlay" id="qrModal">
-    <div class="modal-card">
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
-        <h3 style="font-size: 15px; font-weight: 800; color: var(--pt-navy);" id="qrModalTitle">QR Code ประจำเครื่องมือ</h3>
-        <button type="button" onclick="closeQrModal()" style="border: none; background: transparent; cursor: pointer;">
-          <span class="material-icons-round" style="color: var(--text-muted);">close</span>
-        </button>
+    <div class="modal-box">
+      <button type="button" class="btn-modal-close" onclick="closeQrModal()">&times;</button>
+      <div style="font-size: 15px; font-weight: 700; color: var(--royal-blue); margin-bottom: 2px;" id="qrModalTitle">
+        QR Code ตรวจเช็คเครื่องมือ
+      </div>
+      <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;" id="qrModalSub">
+        สแกนเพื่อบันทึกผลการตรวจเช็คประจำวัน
       </div>
 
-      <div id="qrModalCanvas" style="display: flex; justify-content: center; margin: 16px 0;"></div>
+      <div id="qrCodeContainer" style="display: flex; justify-content: center; margin: 16px 0;"></div>
 
-      <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 18px;">
-        <button type="button" onclick="copyQrLink()" class="action-btn" style="flex: 1; justify-content: center;">
-          <span class="material-icons-round">content_copy</span>
-          <span>คัดลอกลิงก์</span>
+      <div style="font-size: 12px; font-weight: 600; color: var(--text-body); margin-bottom: 16px;" id="qrModalAssetCode">
+        PT-EQ-01
+      </div>
+
+      <div style="display: flex; gap: 8px; justify-content: center;">
+        <button type="button" class="btn-tool btn-tool-primary" onclick="printSingleSticker()">
+          <span class="material-icons-round" style="font-size: 16px;">print</span>
+          <span>พิมพ์สติ๊กเกอร์ (หน้าเดียว)</span>
         </button>
-        <button type="button" onclick="printSingleSticker()" class="action-btn primary" style="flex: 1; justify-content: center;">
-          <span class="material-icons-round">print</span>
-          <span>พิมพ์สติ๊กเกอร์</span>
-        </button>
+        <button type="button" class="btn-tool" onclick="closeQrModal()">ปิด</button>
       </div>
     </div>
   </div>
 
-  <!-- Toast Notice -->
-  <div id="toastNotice">
-    <span class="material-icons-round" style="color: #34d399; font-size: 18px;">check_circle</span>
-    <span id="toastMsg">ดำเนินการเรียบร้อย</span>
-  </div>
-
-  <!-- PT Supabase API Connector -->
   <script src="js/pt-api.js"></script>
-
   <script>
-    var PT_ITEMS = {
-      'pt_cervical': { id: 'pt_cervical', name: 'Cervical and Pelvic Traction', thaiName: 'เครื่องดึงคอและดึงหลัง', code: 'PT-EQ-01', cat: 'traction', catName: 'เครื่องดึงกระดูก', icon: 'accessible_forward' },
-      'pt_laser': { id: 'pt_laser', name: 'High Intensity Laser (HPLT)', thaiName: 'เครื่องเลเซอร์กำลังสูง', code: 'PT-EQ-02', cat: 'laser', catName: 'เลเซอร์บำบัด', icon: 'flash_on' },
-      'pt_us_btl': { id: 'pt_us_btl', name: 'Ultrasound (BTL)', thaiName: 'เครื่องอัลตราซาวด์บำบัด BTL', code: 'PT-EQ-03', cat: 'ultrasound', catName: 'อัลตราซาวด์บำบัด', icon: 'waves' },
-      'pt_us_combine': { id: 'pt_us_combine', name: 'US Combine (Enraf)', thaiName: 'เครื่องอัลตราซาวด์คอมบาย Enraf', code: 'PT-EQ-04', cat: 'ultrasound', catName: 'อัลตราซาวด์บำบัด', icon: 'grain' },
-      'pt_shockwave': { id: 'pt_shockwave', name: 'Radial Shock Wave', thaiName: 'เครื่องกระตุ้นคลื่นกระแทก Shock Wave', code: 'PT-EQ-05', cat: 'shockwave', catName: 'คลื่นกระแทก', icon: 'offline_bolt' },
-      'pt_hydro': { id: 'pt_hydro', name: 'Hydrocollator (Hot pack)', thaiName: 'หม้อต้มแผ่นประคบร้อน', code: 'PT-EQ-06', cat: 'heat', catName: 'ความร้อนบำบัด', icon: 'hot_tub' },
-      'pt_nebulizer': { id: 'pt_nebulizer', name: 'Ultraneb Nebulizer', thaiName: 'เครื่องพ่นละอองยา', code: 'PT-EQ-07', cat: 'respiratory', catName: 'ทางเดินหายใจ', icon: 'air' },
-      'pt_cpm': { id: 'pt_cpm', name: 'Continuous Passive Motion (CPM)', thaiName: 'เครื่องฝึกการเคลื่อนไหวข้อเข่า', code: 'PT-EQ-08', cat: 'motion', catName: 'ฝึกการเคลื่อนไหว', icon: 'transfer_within_a_station' },
-      'pt_vib_small_old': { id: 'pt_vib_small_old', name: 'เครื่อง Vibrator (เครื่องเล็กเก่า)', thaiName: 'เครื่องสั่นนวด (เครื่องเล็กเก่า)', code: 'PT-EQ-09', cat: 'vibrator', catName: 'เครื่องสั่นนวด', icon: 'vibration' },
-      'pt_vib_small_new': { id: 'pt_vib_small_new', name: 'เครื่อง Vibrator (เครื่องเล็กใหม่)', thaiName: 'เครื่องสั่นนวด (เครื่องเล็กใหม่)', code: 'PT-EQ-10', cat: 'vibrator', catName: 'เครื่องสั่นนวด', icon: 'vibration' },
-      'pt_vib_large': { id: 'pt_vib_large', name: 'เครื่อง Vibrator (เครื่องใหญ่)', thaiName: 'เครื่องสั่นนวด (เครื่องใหญ่)', code: 'PT-EQ-11', cat: 'vibrator', catName: 'เครื่องสั่นนวด', icon: 'vibration' }
-    };
+    /* ==================== PT 11 EQUIPMENT MASTER DATA ==================== */
+    var PT_EQUIPMENT = [
+      { id: 'pt_cervical', code: 'PT-01', name: 'Cervical and Pelvic Traction', thaiName: 'เครื่องดึงคอและหลัง', cat: 'traction', catName: 'เครื่องดึงกระดูก' },
+      { id: 'pt_laser', code: 'PT-02', name: 'High Intensity Laser (HPLT)', thaiName: 'เครื่องเลเซอร์กำลังสูง', cat: 'laser', catName: 'เลเซอร์บำบัด' },
+      { id: 'pt_us_btl', code: 'PT-03', name: 'Ultrasound (BTL)', thaiName: 'เครื่องอัลตราซาวด์ BTL', cat: 'ultrasound', catName: 'อัลตราซาวด์' },
+      { id: 'pt_us_combine', code: 'PT-04', name: 'US Combine (Enraf)', thaiName: 'เครื่องอัลตราซาวด์คอมบายน์', cat: 'ultrasound', catName: 'อัลตราซาวด์' },
+      { id: 'pt_shockwave', code: 'PT-05', name: 'Radial Shock Wave', thaiName: 'เครื่องคลื่นกระแทก', cat: 'shockwave', catName: 'คลื่นกระแทก' },
+      { id: 'pt_hydro', code: 'PT-06', name: 'Hydrocollator (Hot pack)', thaiName: 'หม้อต้มแผ่นความร้อน', cat: 'heat', catName: 'ความร้อนบำบัด' },
+      { id: 'pt_nebulizer', code: 'PT-07', name: 'Ultraneb Nebulizer', thaiName: 'เครื่องพ่นละอองยา', cat: 'respiratory', catName: 'เครื่องพ่นยา' },
+      { id: 'pt_cpm', code: 'PT-08', name: 'Continuous Passive Motion (CPM)', thaiName: 'เครื่องฝึกงอข้อเข่า', cat: 'exercise', catName: 'เครื่องฝึกออกกำลัง' },
+      { id: 'pt_vib_small_old', code: 'PT-09', name: 'เครื่อง Vibrator (เครื่องเล็กเก่า)', thaiName: 'เครื่องนวดสั่น เล็กเก่า', cat: 'vibrator', catName: 'เครื่องนวดสั่น' },
+      { id: 'pt_vib_small_new', code: 'PT-10', name: 'เครื่อง Vibrator (เครื่องเล็กใหม่)', thaiName: 'เครื่องนวดสั่น เล็กใหม่', cat: 'vibrator', catName: 'เครื่องนวดสั่น' },
+      { id: 'pt_vib_large', code: 'PT-11', name: 'เครื่อง Vibrator (เครื่องใหญ่)', thaiName: 'เครื่องนวดสั่น ขนาดใหญ่', cat: 'vibrator', catName: 'เครื่องนวดสั่น' }
+    ];
 
-    var currentCategoryFilter = 'all';
-    var activeModalItem = null;
-    var currentItemStatus = {};
+    var ptEquipmentMap = {};
+    PT_EQUIPMENT.forEach(function (e) { ptEquipmentMap[e.id] = e; });
 
-    document.addEventListener('DOMContentLoaded', function () {
-      loadOverviewData();
+    var currentFilter = 'all';
+    var currentSearch = '';
+    var liveDataMap = {};
+    var activeQrItem = null;
+
+    /* Initialize */
+    window.addEventListener('DOMContentLoaded', function () {
+      initApp();
     });
 
-    function loadOverviewData() {
-      window.PPCH_PT_API.fetchTodayOverview(PT_ITEMS, function (res) {
-        if (res && res.data) {
-          currentItemStatus = res.data.items || {};
-          updateKpis(res.data.summary);
-        }
-        renderEquipmentList();
-      });
+    function initApp() {
+      renderTable();
+      reloadPtData();
+    }
+
+    function toggleSidebar() {
+      var sb = document.getElementById('appSidebar');
+      if (sb) sb.classList.toggle('is-expanded');
+    }
+
+    /* Load Data from Supabase */
+    function reloadPtData() {
+      var loader = document.getElementById('pageLoader');
+      if (loader) loader.classList.remove('hidden');
+
+      if (window.PPCH_PT_API && window.PPCH_PT_API.fetchTodayOverview) {
+        window.PPCH_PT_API.fetchTodayOverview(ptEquipmentMap, function (res) {
+          if (loader) loader.classList.add('hidden');
+          if (res && res.items) {
+            liveDataMap = res.items;
+            updateKpis(res);
+            renderTable();
+          }
+        });
+      } else {
+        setTimeout(function () {
+          if (loader) loader.classList.add('hidden');
+        }, 400);
+      }
     }
 
     function updateKpis(summary) {
-      if (!summary) return;
-      document.getElementById('kpiTotal').innerText = summary.total;
-      document.getElementById('kpiReady').innerText = summary.ready;
-      document.getElementById('kpiAbnormal').innerText = summary.abnormal;
-      document.getElementById('kpiPending').innerText = summary.pending;
-      document.getElementById('kpiReadyRate').innerText = summary.readyRate + '%';
+      document.getElementById('kpiTotal').textContent = summary.total || 11;
+      document.getElementById('kpiReady').textContent = summary.readyCount || 0;
+      document.getElementById('kpiAbnormal').textContent = summary.abnormalCount || 0;
+      document.getElementById('kpiPending').textContent = summary.pendingCount || 0;
+      document.getElementById('kpiRate').textContent = (summary.readyRate || 0) + '%';
     }
 
-    function renderEquipmentList() {
-      var cont = document.getElementById('equipmentList');
-      cont.innerHTML = '';
-      var searchVal = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+    /* Filters & Search */
+    function setFilter(f) {
+      currentFilter = f;
+      document.getElementById('btnFilterAll').classList.toggle('active', f === 'all');
+      document.getElementById('btnFilterReady').classList.toggle('active', f === 'ready');
+      document.getElementById('btnFilterPending').classList.toggle('active', f === 'pending');
+      document.getElementById('btnFilterAbnormal').classList.toggle('active', f === 'abnormal');
+      renderTable();
+    }
 
-      for (var key in PT_ITEMS) {
-        var it = PT_ITEMS[key];
-        var info = currentItemStatus[it.id] || { status: 'pending' };
+    function onSearchChange() {
+      currentSearch = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+      renderTable();
+    }
 
-        // Category filter
-        if (currentCategoryFilter !== 'all' && it.cat !== currentCategoryFilter) continue;
+    /* Render Device Table */
+    function renderTable() {
+      var tbody = document.getElementById('ptEquipmentTableBody');
+      if (!tbody) return;
 
-        // Search filter
-        if (searchVal) {
-          var matchName = it.name.toLowerCase().includes(searchVal);
-          var matchThai = it.thaiName.toLowerCase().includes(searchVal);
-          var matchCode = it.code.toLowerCase().includes(searchVal);
-          if (!matchName && !matchThai && !matchCode) continue;
+      var filtered = PT_EQUIPMENT.filter(function (eq) {
+        var live = liveDataMap[eq.id] || { status: 'pending' };
+        
+        // Filter by Status
+        if (currentFilter === 'ready' && live.status !== 'ready') return false;
+        if (currentFilter === 'pending' && live.status !== 'pending') return false;
+        if (currentFilter === 'abnormal' && live.status !== 'abnormal') return false;
+
+        // Filter by Search
+        if (currentSearch) {
+          var matchText = (eq.code + ' ' + eq.name + ' ' + eq.thaiName + ' ' + eq.catName).toLowerCase();
+          if (matchText.indexOf(currentSearch) === -1) return false;
         }
+        return true;
+      });
 
+      document.getElementById('tableCountText').textContent = 'แสดง ' + filtered.length + ' จาก 11 เครื่อง';
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 36px; color: var(--text-muted);">' +
+          '<span class="material-icons-round" style="font-size: 32px; color: #cbd5e1; display: block; margin-bottom: 6px;">search_off</span>' +
+          'ไม่พบเครื่องมือแพทย์ที่ตรงกับเงื่อนไข</td></tr>';
+        return;
+      }
+
+      var html = '';
+      filtered.forEach(function (eq, idx) {
+        var live = liveDataMap[eq.id] || { status: 'pending', evaluatedAt: null, evaluatedBy: null, note: null };
         var statusBadge = '';
-        if (info.status === 'ready') {
-          statusBadge = '<span class="status-badge ready"><span class="material-icons-round" style="font-size: 14px;">check_circle</span> พร้อมใช้งาน</span>';
-        } else if (info.status === 'abnormal') {
-          statusBadge = '<span class="status-badge abnormal"><span class="material-icons-round" style="font-size: 14px;">cancel</span> ผิดปกติ/แจ้งซ่อม</span>';
+        var statusTooltip = '';
+
+        if (live.status === 'ready') {
+          statusBadge = '<button type="button" class="status-symbol-btn symbol-ready" onclick="viewDetails(\'' + eq.id + '\')" title="พร้อมใช้งานวันนี้">' +
+            '<span class="material-icons-round">check_circle</span></button>';
+        } else if (live.status === 'abnormal') {
+          statusBadge = '<button type="button" class="status-symbol-btn symbol-abnormal" onclick="viewDetails(\'' + eq.id + '\')" title="พบปัญหา / ผิดปกติ: ' + (live.note || '-') + '">' +
+            '<span class="material-icons-round">cancel</span></button>';
         } else {
-          statusBadge = '<span class="status-badge pending"><span class="material-icons-round" style="font-size: 14px;">schedule</span> รอตรวจเช็ควันนี้</span>';
+          statusBadge = '<button type="button" class="status-symbol-btn symbol-pending" onclick="openEval(\'' + eq.id + '\')" title="ยังไม่ได้รับการตรวจเช็ควันนี้ (คลิกเพื่อตรวจเช็ค)">' +
+            '<span class="material-icons-round">schedule</span></button>';
         }
 
-        var staffInfo = info.evaluatedBy ? ('ผู้ตรวจ: ' + info.evaluatedBy) : 'ยังไม่มีผู้ตรวจวันนี้';
+        var evalText = '-';
+        if (live.evaluatedBy) {
+          var timeStr = live.evaluatedAt ? new Date(live.evaluatedAt).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) : '';
+          evalText = '<div style="font-weight: 600; color: var(--text-main);">' + live.evaluatedBy + '</div>' +
+                     '<div style="font-size: 11px; color: var(--text-muted);">' + (timeStr ? timeStr + ' น.' : '') + '</div>';
+        } else {
+          evalText = '<span style="color: var(--amber-pending); font-size: 11px;">รอตรวจเช็ค</span>';
+        }
 
-        var card = document.createElement('div');
-        card.className = 'strip-card';
-        card.innerHTML = 
-          '<div class="strip-left">' +
-            '<div class="strip-icon"><span class="material-icons-round">' + it.icon + '</span></div>' +
-            '<div class="strip-info">' +
-              '<span class="strip-code">' + it.code + '</span>' +
-              '<div class="strip-title">' + it.name + ' <span style="font-weight: 500; font-size: 13px; color: #64748b;">(' + it.thaiName + ')</span></div>' +
-              '<div class="strip-sub">' + staffInfo + '</div>' +
-            '</div>' +
-          '</div>' +
-          '<div style="display: flex; align-items: center; gap: 14px;">' +
-            statusBadge +
-            '<div class="strip-actions">' +
-              '<button type="button" onclick="openQrModal(\'' + it.id + '\')" class="action-btn" title="ดู & พิมพ์ QR Code ประจำเครื่อง">' +
-                '<span class="material-icons-round">qr_code_2</span>' +
-                '<span>QR</span>' +
+        html += '<tr>' +
+          '<td><span class="asset-code-pill">' + eq.code + '</span></td>' +
+          '<td>' +
+            '<div style="font-weight: 700; color: var(--text-main); font-size: 13px;">' + eq.name + '</div>' +
+            '<div style="font-size: 11px; color: var(--text-muted);">' + eq.thaiName + '</div>' +
+          '</td>' +
+          '<td><span style="font-size: 11.5px; color: var(--text-body); background: #f1f5f9; padding: 2px 8px; border-radius: 4px;">' + eq.catName + '</span></td>' +
+          '<td style="text-align: center;">' + statusBadge + '</td>' +
+          '<td>' + evalText + '</td>' +
+          '<td style="text-align: center;">' +
+            '<div class="floating-action-wrapper" id="flowrap_' + eq.id + '">' +
+              '<button type="button" class="btn-floating-trigger" onclick="toggleFloatingTray(\'' + eq.id + '\', event)" title="เมนูจัดการ">' +
+                '<span class="material-icons-round trigger-icon">more_horiz</span>' +
+                '<span class="floating-badge-count">3</span>' +
               '</button>' +
-              '<a href="eval-pt.html?itemId=' + it.id + '" target="_blank" class="action-btn primary" title="เปิดหน้าตรวจเช็คเครื่องมือ">' +
-                '<span class="material-icons-round">edit_document</span>' +
-                '<span>ตรวจเช็ค</span>' +
-              '</a>' +
-              '<a href="https://docs.google.com/forms/d/e/1FAIpQLSdwkF04kruAmIkad7Enxav5H_IgnxGwO3bfSmMzLaxF36buNA/viewform?usp=header" target="_blank" class="action-btn" style="color: #be123c;" title="แจ้งซ่อม">' +
-                '<span class="material-icons-round">build</span>' +
-              '</a>' +
+              '<div class="floating-action-tray">' +
+                '<a href="eval-pt.html?itemId=' + eq.id + '" target="_blank" class="btn-action-icon eval-btn" title="บันทึกตรวจเช็ค">' +
+                  '<span class="material-icons-round">edit_document</span>' +
+                '</a>' +
+                '<button type="button" class="btn-action-icon qr-btn" onclick="openQrModal(\'' + eq.id + '\')" title="QR Code สติ๊กเกอร์">' +
+                  '<span class="material-icons-round">qr_code_2</span>' +
+                '</button>' +
+                '<a href="https://docs.google.com/forms/d/e/1FAIpQLSdwkF04kruAmIkad7Enxav5H_IgnxGwO3bfSmMzLaxF36buNA/viewform?usp=header" target="_blank" class="btn-action-icon repair-btn" title="แจ้งซ่อมเครื่อง">' +
+                  '<span class="material-icons-round">build</span>' +
+                '</a>' +
+                '<button type="button" class="btn-action-icon close-btn" onclick="closeFloatingTray(\'' + eq.id + '\', event)" title="ปิด">' +
+                  '<span class="material-icons-round">close</span>' +
+                '</button>' +
+              '</div>' +
             '</div>' +
-          '</div>';
-        cont.appendChild(card);
+          '</td>' +
+        '</tr>';
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    /* Floating Speed Dial Logic */
+    var activeTrayId = null;
+    var trayCloseTimer = null;
+
+    function toggleFloatingTray(id, e) {
+      if (e) e.stopPropagation();
+      if (activeTrayId && activeTrayId !== id) {
+        closeFloatingTray(activeTrayId);
+      }
+      var wrap = document.getElementById('flowrap_' + id);
+      if (!wrap) return;
+
+      var isOpen = wrap.classList.contains('open');
+      if (isOpen) {
+        closeFloatingTray(id);
+      } else {
+        wrap.classList.add('open');
+        activeTrayId = id;
+        setupAutoClose(wrap, id);
       }
     }
 
-    function setCategoryFilter(cat) {
-      currentCategoryFilter = cat;
-      document.querySelectorAll('.pill-btn').forEach(function (btn) {
-        btn.classList.remove('active');
-      });
-      if (event && event.target) event.target.classList.add('active');
-      renderEquipmentList();
+    function closeFloatingTray(id, e) {
+      if (e) e.stopPropagation();
+      var wrap = document.getElementById('flowrap_' + id);
+      if (wrap) wrap.classList.remove('open');
+      if (activeTrayId === id) activeTrayId = null;
+      if (trayCloseTimer) clearTimeout(trayCloseTimer);
     }
 
-    function filterItems() {
-      renderEquipmentList();
+    function setupAutoClose(elem, id) {
+      elem.onmouseleave = function () {
+        trayCloseTimer = setTimeout(function () {
+          closeFloatingTray(id);
+        }, 1200);
+      };
+      elem.onmouseenter = function () {
+        if (trayCloseTimer) clearTimeout(trayCloseTimer);
+      };
     }
 
-    // QR Modal & Sticker Printing
+    document.addEventListener('click', function () {
+      if (activeTrayId) closeFloatingTray(activeTrayId);
+    });
+
+    /* Open Evaluation */
+    function openEval(id) {
+      window.open('eval-pt.html?itemId=' + id, '_blank');
+    }
+
+    function viewDetails(id) {
+      var live = liveDataMap[id];
+      if (!live) return;
+      var msg = 'เครื่อง: ' + (ptEquipmentMap[id] ? ptEquipmentMap[id].name : id) + '\n' +
+                'สถานะ: ' + (live.status === 'ready' ? 'พร้อมใช้งานปกติ' : 'พบปัญหา / ไม่พร้อมใช้') + '\n' +
+                'ผู้ตรวจ: ' + (live.evaluatedBy || '-') + '\n' +
+                'เวลา: ' + (live.evaluatedAt ? new Date(live.evaluatedAt).toLocaleString('th-TH') : '-') + '\n' +
+                (live.note ? ('หมายเหตุ/อาการ: ' + live.note) : '');
+      alert(msg);
+    }
+
+    /* QR Code Modal (Page 1 Only - Zero Clutter) */
     function openQrModal(id) {
-      activeModalItem = PT_ITEMS[id];
-      if (!activeModalItem) return;
+      var eq = ptEquipmentMap[id];
+      if (!eq) return;
+      activeQrItem = eq;
 
-      document.getElementById('qrModalTitle').innerText = activeModalItem.name + ' (' + activeModalItem.code + ')';
-      var qrBox = document.getElementById('qrModalCanvas');
-      qrBox.innerHTML = '';
+      document.getElementById('qrModalTitle').textContent = eq.name;
+      document.getElementById('qrModalSub').textContent = eq.thaiName;
+      document.getElementById('qrModalAssetCode').textContent = 'รหัสเครื่อง: ' + eq.code;
 
-      var url = getDirectQrUrl(activeModalItem.id);
-      new QRCode(qrBox, {
-        text: url,
-        width: 175,
-        height: 175,
-        colorDark: "#002e6e",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-      });
+      var qrContainer = document.getElementById('qrCodeContainer');
+      qrContainer.innerHTML = '';
 
-      document.getElementById('qrModal').classList.add('active');
-    }
+      var checkinUrl = window.location.origin + window.location.pathname.replace('pt.html', 'eval-pt.html') + '?itemId=' + eq.id;
 
-    function closeQrModal() {
-      document.getElementById('qrModal').classList.remove('active');
-    }
-
-    function getDirectQrUrl(id) {
-      var base = window.location.href.split('?')[0].replace('pt.html', 'eval-pt.html');
-      return base + '?itemId=' + id;
-    }
-
-    function copyQrLink() {
-      if (!activeModalItem) return;
-      var url = getDirectQrUrl(activeModalItem.id);
-      navigator.clipboard.writeText(url).then(function () {
-        showToast('✓ คัดลอกลิงก์เรียบร้อยแล้ว');
-      });
-    }
-
-    // Print Single Sticker (Page 1 Only, No criteria, Clean Hospital Branding)
-    function printSingleSticker() {
-      if (!activeModalItem) return;
-      var printArea = document.getElementById('qrPrintSingleContainer');
-      printArea.innerHTML = '';
-
-      var sticker = document.createElement('div');
-      sticker.style.cssText = 'border: 2.5px solid #002e6e; border-radius: 14px; padding: 18px 22px; width: 340px; margin: 0 auto; text-align: center; background: #ffffff; font-family: Prompt, sans-serif; box-sizing: border-box; page-break-inside: avoid;';
-      sticker.innerHTML = 
-        '<div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px;">' +
-          '<img src="logo.png" style="height: 38px; width: auto;" alt="Logo">' +
-          '<div style="text-align: left;">' +
-            '<div style="font-size: 14px; font-weight: 800; color: #002e6e; line-height: 1.2;">โรงพยาบาลพิษณุเวช</div>' +
-            '<div style="font-size: 10.5px; color: #0d9488; font-weight: 700;">เวชศาสตร์ฟื้นฟู & กายภาพบำบัด</div>' +
-          '</div>' +
-        '</div>' +
-        '<div style="border-top: 1.5px solid #004b93; margin: 8px 0 12px 0;"></div>' +
-        '<div style="font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 8px; line-height: 1.35;">' +
-          activeModalItem.name +
-        '</div>' +
-        '<div id="tempSingleQrBox" style="margin: 8px auto; display: inline-block; padding: 10px; border: 1.5px solid #cbd5e1; border-radius: 10px; background: #ffffff;"></div>' +
-        '<div style="font-size: 12px; font-weight: 700; color: #002e6e; margin-top: 6px;">' +
-          '📱 สแกนเพื่อบันทึกผลการตรวจเช็ค' +
-        '</div>';
-
-      printArea.appendChild(sticker);
-      var qrBox = sticker.querySelector('#tempSingleQrBox');
-      new QRCode(qrBox, {
-        text: getDirectQrUrl(activeModalItem.id),
-        width: 175,
-        height: 175,
-        colorDark: "#002e6e",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-      });
-
-      document.body.classList.add('printing-qr-sticker');
-      window.print();
-      setTimeout(function () {
-        document.body.classList.remove('printing-qr-sticker');
-        printArea.innerHTML = '';
-      }, 1000);
-    }
-
-    // Batch Print All 11 QRs on A4
-    function batchPrintAllQrs() {
-      var printArea = document.getElementById('qrPrintBatchContainer');
-      printArea.innerHTML = '';
-      printArea.style.cssText = 'display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; padding: 10px;';
-
-      for (var key in PT_ITEMS) {
-        var it = PT_ITEMS[key];
-        var itemDiv = document.createElement('div');
-        itemDiv.style.cssText = 'border: 2px solid #002e6e; border-radius: 12px; padding: 12px; text-align: center; background: #ffffff; page-break-inside: avoid;';
-        itemDiv.innerHTML = 
-          '<div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 4px;">' +
-            '<img src="logo.png" style="height: 28px; width: auto;" alt="Logo">' +
-            '<div style="text-align: left;">' +
-              '<div style="font-size: 11.5px; font-weight: 800; color: #002e6e; line-height: 1.1;">โรงพยาบาลพิษณุเวช</div>' +
-              '<div style="font-size: 9px; color: #0d9488; font-weight: 700;">เวชศาสตร์ฟื้นฟู</div>' +
-            '</div>' +
-          '</div>' +
-          '<div style="border-top: 1px solid #004b93; margin: 4px 0 6px 0;"></div>' +
-          '<div style="font-size: 13px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">' + it.name + '</div>' +
-          '<div id="batchQr_' + it.id + '" style="margin: 4px auto; display: inline-block; padding: 6px; border: 1px solid #cbd5e1; border-radius: 6px;"></div>' +
-          '<div style="font-size: 10px; font-weight: 700; color: #002e6e;">📱 สแกนเพื่อบันทึกผล</div>';
-
-        printArea.appendChild(itemDiv);
-        var qrBox = itemDiv.querySelector('#batchQr_' + it.id);
-        new QRCode(qrBox, {
-          text: getDirectQrUrl(it.id),
-          width: 130,
-          height: 130,
-          colorDark: "#002e6e",
-          colorLight: "#ffffff"
+      if (window.QRCode) {
+        new QRCode(qrContainer, {
+          text: checkinUrl,
+          width: 170,
+          height: 170,
+          colorDark: '#002e6e',
+          colorLight: '#ffffff',
+          correctLevel: QRCode.CorrectLevel.H
         });
       }
 
-      window.print();
-      setTimeout(function () {
-        printArea.innerHTML = '';
-        printArea.style.display = 'none';
-      }, 1500);
+      document.getElementById('qrModal').classList.add('open');
     }
 
-    // Export Excel with UTF-8 BOM (\uFEFF)
-    function exportExcel() {
-      var csv = '\uFEFF';
-      csv += 'รหัสเครื่องมือ,ชื่อเครื่องมือ (อังกฤษ),ชื่อเครื่องมือ (ไทย),หมวดหมู่,สถานะวันนี้,ผู้ตรวจล่าสุด,เวลาบันทึก\n';
+    function closeQrModal() {
+      document.getElementById('qrModal').classList.remove('open');
+      activeQrItem = null;
+    }
 
-      for (var key in PT_ITEMS) {
-        var it = PT_ITEMS[key];
-        var info = currentItemStatus[it.id] || {};
-        var st = info.status === 'ready' ? 'พร้อมใช้งาน' : (info.status === 'abnormal' ? 'ผิดปกติ' : 'รอตรวจเช็ค');
-        csv += '"' + it.code + '","' + it.name + '","' + it.thaiName + '","' + it.catName + '","' + st + '","' + (info.evaluatedBy || '-') + '","' + (info.evaluatedAt || '-') + '"\n';
-      }
+    function printSingleSticker() {
+      if (!activeQrItem) return;
+      var eq = activeQrItem;
+      var checkinUrl = window.location.origin + window.location.pathname.replace('pt.html', 'eval-pt.html') + '?itemId=' + eq.id;
 
-      var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      var printWindow = window.open('', '_blank', 'width=520,height=520');
+      printWindow.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>QR Sticker - ' + eq.code + '</title>' +
+        '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
+        '<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;700&family=Inter:wght@600;700&display=swap" rel="stylesheet">' +
+        '<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script>' +
+        '<style>' +
+        '@page { size: 80mm 80mm; margin: 0; }' +
+        'html, body { width: 100%; height: 100%; margin: 0; padding: 0; font-family: "Prompt", sans-serif; display: flex; align-items: center; justify-content: center; background: #ffffff; }' +
+        '.sticker-card { width: 72mm; height: 72mm; border: 2px solid #002e6e; border-radius: 12px; padding: 8px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: space-between; text-align: center; }' +
+        '.brand-header { font-size: 13px; font-weight: 700; color: #002e6e; line-height: 1.2; }' +
+        '.brand-sub { font-size: 10px; color: #64748b; font-weight: 500; }' +
+        '.qr-box { margin: 4px 0; }' +
+        '.code-badge { font-family: "Inter", monospace; font-size: 13px; font-weight: 700; color: #ffffff; background: #004b93; padding: 3px 10px; border-radius: 4px; letter-spacing: 0.5px; }' +
+        '.name-text { font-size: 11px; font-weight: 600; color: #0f172a; max-width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }' +
+        '</style></head><body>' +
+        '<div class="sticker-card">' +
+          '<div>' +
+            '<div class="brand-header">โรงพยาบาลพิษณุเวช</div>' +
+            '<div class="brand-sub">แผนกเวชศาสตร์ฟื้นฟู (กายภาพบำบัด)</div>' +
+          '</div>' +
+          '<div id="pQr" class="qr-box"></div>' +
+          '<div class="name-text">' + eq.name + '</div>' +
+          '<div class="code-badge">' + eq.code + '</div>' +
+        '</div>' +
+        '<script>' +
+          'new QRCode(document.getElementById("pQr"), { text: "' + checkinUrl + '", width: 130, height: 130, colorDark: "#002e6e", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });' +
+          'setTimeout(function(){ window.print(); window.close(); }, 400);' +
+        '<\/script></body></html>');
+      printWindow.document.close();
+    }
+
+    function openAllQrModal() {
+      var printWindow = window.open('', '_blank', 'width=800,height=900');
+      var cardsHtml = '';
+
+      PT_EQUIPMENT.forEach(function (eq) {
+        var checkinUrl = window.location.origin + window.location.pathname.replace('pt.html', 'eval-pt.html') + '?itemId=' + eq.id;
+        cardsHtml += '<div class="qr-item">' +
+          '<div class="h-name">รพ.พิษณุเวช - กายภาพบำบัด</div>' +
+          '<div id="qr_' + eq.id + '" class="qr-render"></div>' +
+          '<div class="item-title">' + eq.name + '</div>' +
+          '<div class="item-code">' + eq.code + '</div>' +
+        '</div>';
+      });
+
+      printWindow.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>พิมพ์ QR Code ทั้งหมด 11 เครื่อง</title>' +
+        '<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;700&family=Inter:wght@600;700&display=swap" rel="stylesheet">' +
+        '<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script>' +
+        '<style>' +
+        '@page { size: A4 portrait; margin: 10mm; }' +
+        'body { font-family: "Prompt", sans-serif; margin: 0; padding: 0; background: #fff; }' +
+        '.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }' +
+        '.qr-item { border: 1.5px solid #002e6e; border-radius: 8px; padding: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; height: 58mm; box-sizing: border-box; }' +
+        '.h-name { font-size: 10.5px; font-weight: 700; color: #002e6e; }' +
+        '.qr-render { margin: 4px 0; }' +
+        '.item-title { font-size: 9.5px; font-weight: 600; color: #0f172a; max-width: 95%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }' +
+        '.item-code { font-family: "Inter", monospace; font-size: 11px; font-weight: 700; color: #fff; background: #004b93; padding: 2px 8px; border-radius: 4px; }' +
+        '</style></head><body>' +
+        '<div style="text-align: center; margin-bottom: 12px; font-size: 14px; font-weight: 700; color: #002e6e;">สติ๊กเกอร์ QR Code เครื่องมือ แผนกเวชศาสตร์ฟื้นฟู (กายภาพบำบัด) 11 รายการ</div>' +
+        '<div class="grid">' + cardsHtml + '</div>' +
+        '<script>' +
+          JSON.stringify(PT_EQUIPMENT) + '.forEach(function(e){' +
+            'var u = "' + window.location.origin + window.location.pathname.replace('pt.html', 'eval-pt.html') + '?itemId=" + e.id;' +
+            'new QRCode(document.getElementById("qr_" + e.id), { text: u, width: 100, height: 100, colorDark: "#002e6e", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });' +
+          '});' +
+          'setTimeout(function(){ window.print(); }, 600);' +
+        '<\/script></body></html>');
+      printWindow.document.close();
+    }
+
+    /* Export to Excel (UTF-8 BOM Guaranteed) */
+    function exportExcelPt() {
+      var csvContent = '\uFEFF'; // UTF-8 BOM
+      csvContent += 'รหัสเครื่อง,ชื่อเครื่องมือแพทย์,ชื่อภาษาไทย,หมวดหมู่,สถานะความพร้อมวันนี้,ผู้ตรวจเช็ค,เวลาที่ตรวจเช็ค\n';
+
+      PT_EQUIPMENT.forEach(function (eq) {
+        var live = liveDataMap[eq.id] || { status: 'pending', evaluatedBy: '-', evaluatedAt: null };
+        var stText = live.status === 'ready' ? 'พร้อมใช้งาน' : (live.status === 'abnormal' ? 'พบปัญหา' : 'รอตรวจเช็ค');
+        var timeStr = live.evaluatedAt ? new Date(live.evaluatedAt).toLocaleString('th-TH') : '-';
+
+        csvContent += '"' + eq.code + '",' +
+                      '"' + eq.name + '",' +
+                      '"' + eq.thaiName + '",' +
+                      '"' + eq.catName + '",' +
+                      '"' + stText + '",' +
+                      '"' + (live.evaluatedBy || '-') + '",' +
+                      '"' + timeStr + '"\n';
+      });
+
+      var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      var url = URL.createObjectURL(blob);
       var link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'รายงานเครื่องมือแผนกกายภาพ_' + new Date().toISOString().slice(0, 10) + '.csv';
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'PPCH_กายภาพบำบัด_รายงานความพร้อมใช้_' + new Date().toISOString().slice(0, 10) + '.csv');
+      document.body.appendChild(link);
       link.click();
-    }
-
-    function showToast(msg) {
-      var t = document.getElementById('toastNotice');
-      var m = document.getElementById('toastMsg');
-      if (m) m.innerText = msg;
-      if (t) {
-        t.classList.add('show');
-        setTimeout(function () { t.classList.remove('show'); }, 3000);
-      }
+      document.body.removeChild(link);
     }
   </script>
 </body>
