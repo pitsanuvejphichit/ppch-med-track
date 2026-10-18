@@ -1093,18 +1093,16 @@
       var note = (document.getElementById('evalNoteInput').value || '').trim();
 
       var evalPayload = {
-        department: 'PT',
-        device_id: selectedItemId,
-        device_name: def.name,
-        evaluated_by: staffName,
-        evaluated_at: evalDate + 'T' + new Date().toTimeString().slice(0, 8) + 'Z',
+        department: 'REHAB',
+        deviceId: def.code,
+        deviceAsset: def.code,
+        deviceName: def.name,
+        formId: selectedItemId,
+        evaluatedBy: staffName,
+        evaluatedAt: evalDate + 'T' + new Date().toTimeString().slice(0, 8) + 'Z',
         result: resultStatus,
         answers: currentAnswers,
-        abnormal_note: note + (isHydro ? (' [อุณหภูมิ ' + hydroTemp + ' °C]') : ''),
-        meta: {
-          ptCode: def.code,
-          hydroTemp: hydroTemp
-        }
+        abnormalNote: note + (isHydro ? (' [อุณหภูมิ ' + hydroTemp + ' °C]') : '')
       };
 
       var btn = document.getElementById('btnSubmitForm');
@@ -1117,12 +1115,11 @@
           btn.innerHTML = '<span class="material-icons-round">cloud_upload</span> <span>บันทึกผลการตรวจเช็ค</span>';
 
           if (err) {
-            alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' + err.message);
+            alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' + (err.message || JSON.stringify(err)));
           } else {
             showToast('✓ บันทึกผลตรวจเช็ค ' + def.name + ' สำเร็จแล้ว');
             updateStepper(3);
 
-            // Smooth redirect or reset after 1.2s
             setTimeout(function () {
               if (window.opener && !window.opener.closed) {
                 try { window.opener.reloadPtData(); } catch (e) {}

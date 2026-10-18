@@ -344,45 +344,6 @@
       100% { left: 140%; }
     }
 
-    /* Secondary Department Quick Launch */
-    .dept-quick-group {
-      display: flex;
-      gap: 12px;
-      width: 100%;
-      max-width: 360px;
-      margin-top: 14px;
-      z-index: 2;
-      position: relative;
-    }
-    .btn-dept-quick {
-      flex: 1;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: 10px 14px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 600;
-      text-decoration: none;
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(0, 75, 147, 0.18);
-      color: var(--brand-blue);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .btn-dept-quick:hover {
-      background: #ffffff;
-      border-color: var(--brand-sky);
-      color: var(--brand-navy);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 14px -3px rgba(2, 132, 199, 0.25);
-    }
-    .btn-dept-quick .material-icons-round {
-      font-size: 18px;
-    }
-
     /* ==================== ACCESSIBILITY: REDUCED MOTION ==================== */
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
@@ -420,10 +381,6 @@
         font-size: 17px;
         width: 100%;
       }
-      .dept-quick-group {
-        flex-direction: column;
-        gap: 8px;
-      }
     }
   </style>
 </head>
@@ -458,21 +415,9 @@
 
         <!-- 3. ปุ่มเข้าสู่ระบบ (เปิดไปยังหน้า admin ด้วยอนิเมชั่นสลับหน้า) -->
         <button id="btnEnter" class="btn-enter" onclick="handleEnter(event)">
-          <span class="btn-text">เข้าสู่ระบบภาพรวม</span>
+          <span class="btn-text">เข้าสู่ระบบ</span>
           <span class="material-icons-round btn-icon">arrow_forward</span>
         </button>
-
-        <!-- 4. ทางลัดเปิดตรงแยกตามแผนกเฉพาะทาง -->
-        <div class="dept-quick-group">
-          <a href="lab.html" class="btn-dept-quick" title="เปิดระบบห้องปฏิบัติการ LAB">
-            <span class="material-icons-round" style="color: #4f46e5;">biotech</span>
-            <span>แผนก LAB</span>
-          </a>
-          <a href="pt.html" class="btn-dept-quick" title="เปิดระบบแผนกเวชศาสตร์ฟื้นฟู/กายภาพบำบัด">
-            <span class="material-icons-round" style="color: #0d9488;">accessibility_new</span>
-            <span>แผนกกายภาพ</span>
-          </a>
-        </div>
 
       </div>
     </main>
