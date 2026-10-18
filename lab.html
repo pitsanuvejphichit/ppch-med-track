@@ -1578,16 +1578,56 @@
         page-break-inside: avoid !important;
       }
 
-      /* QR Batch Sticker Print Overrides */
+      /* QR Sticker Print Overrides (Single & Batch) - Guaranteed Page 1 Only */
+      body.printing-qr .app-wrapper,
+      body.printing-qr .app-layout-body,
+      body.printing-qr .app-main-content,
       body.printing-qr #view_reports,
-      body.printing-qr .app-main-content {
+      body.printing-qr #view_summary,
+      body.printing-qr #view_qr,
+      body.printing-qr .modal-overlay,
+      body.printing-qr #pageLoader {
         display: none !important;
+        height: 0 !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
       }
-      #qrBatchPrintArea.printing-active {
+
+      body.printing-qr {
+        background: #ffffff !important;
+        height: auto !important;
+        min-height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      /* Single QR sticker print styling - Starts right at top of Page 1 */
+      body.printing-single-qr #qrBatchPrintArea {
+        display: flex !important;
+        align-items: flex-start !important;
+        justify-content: center !important;
+        width: 100% !important;
+        padding: 10mm 0 0 0 !important;
+        margin: 0 !important;
+        page-break-after: avoid !important;
+        page-break-inside: avoid !important;
+      }
+
+      body.printing-single-qr .single-sticker-card {
+        page-break-inside: avoid !important;
+        page-break-after: avoid !important;
+        page-break-before: avoid !important;
+        margin: 0 auto !important;
+      }
+
+      /* Batch QR stickers print styling */
+      body.printing-batch-qr #qrBatchPrintArea {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 16px !important;
-        padding: 10px !important;
+        gap: 14px !important;
+        padding: 8px !important;
       }
     }
 
@@ -2904,26 +2944,21 @@
       printArea.innerHTML = '';
 
       var sticker = document.createElement('div');
-      sticker.style.cssText = 'border: 2.5px solid #002e6e; border-radius: 14px; padding: 20px; width: 340px; margin: 40px auto; text-align: center; background: #ffffff; font-family: Prompt, sans-serif;';
-      sticker.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 6px;">' +
-        '<img src="logo.png" style="height: 36px; width: auto;" alt="Logo">' +
+      sticker.className = 'single-sticker-card';
+      sticker.style.cssText = 'border: 2.5px solid #002e6e; border-radius: 14px; padding: 18px 22px; width: 340px; margin: 0 auto; text-align: center; background: #ffffff; font-family: Prompt, sans-serif; box-sizing: border-box; page-break-inside: avoid;';
+      sticker.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px;">' +
+        '<img src="logo.png" style="height: 38px; width: auto;" alt="Logo">' +
         '<div style="text-align: left;">' +
-          '<div style="font-size: 13px; font-weight: 800; color: #002e6e; line-height: 1.2;">โรงพยาบาลพิษณุเวช</div>' +
-          '<div style="font-size: 10px; color: #64748b; font-weight: 500;">LABORATORY • จุดตรวจความพร้อมใช้</div>' +
+          '<div style="font-size: 14px; font-weight: 800; color: #002e6e; line-height: 1.2;">โรงพยาบาลพิษณุเวช</div>' +
+          '<div style="font-size: 10.5px; color: #64748b; font-weight: 600;">LABORATORY • จุดตรวจความพร้อมใช้</div>' +
         '</div>' +
       '</div>' +
-      '<div style="border-top: 1.5px solid #004b93; margin: 6px 0 10px 0;"></div>' +
-      '<div style="font-size: 11px; font-weight: 700; color: #004b93; background: #f0f7ff; border: 1px solid #bfdbfe; padding: 2px 8px; border-radius: 4px; display: inline-block;">' +
-        cp.code +
-      '</div>' +
-      '<div style="font-size: 14.5px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.3;">' +
+      '<div style="border-top: 1.5px solid #004b93; margin: 8px 0 12px 0;"></div>' +
+      '<div style="font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 8px; line-height: 1.35;">' +
         cp.name +
       '</div>' +
-      '<div style="font-size: 11.5px; font-weight: 600; color: #059669; margin-top: 3px;">' +
-        'เกณฑ์มาตรฐาน: ' + cp.target +
-      '</div>' +
-      '<div id="printQrTempCanvas" style="margin: 12px auto 8px; display: inline-block; padding: 8px; border: 1px solid #cbd5e1; border-radius: 8px; background: #ffffff;"></div>' +
-      '<div style="font-size: 11.5px; font-weight: 700; color: #002e6e;">' +
+      '<div id="printQrTempCanvas" style="margin: 8px auto; display: inline-block; padding: 10px; border: 1.5px solid #cbd5e1; border-radius: 10px; background: #ffffff;"></div>' +
+      '<div style="font-size: 12px; font-weight: 700; color: #002e6e; margin-top: 6px;">' +
         '📱 สแกนเพื่อบันทึกผลการตรวจเช็ค' +
       '</div>';
 
@@ -2932,20 +2967,19 @@
       if (window.QRCode) {
         new QRCode(qrBox, {
           text: qrUrl,
-          width: 170,
-          height: 170,
+          width: 175,
+          height: 175,
           colorDark: "#002e6e",
           colorLight: "#ffffff",
           correctLevel: QRCode.CorrectLevel.H
         });
       }
 
-      document.body.classList.add('printing-qr');
-      printArea.classList.add('printing-active');
+      document.body.classList.add('printing-qr', 'printing-single-qr');
       window.print();
       setTimeout(function() {
-        document.body.classList.remove('printing-qr');
-        printArea.classList.remove('printing-active');
+        document.body.classList.remove('printing-qr', 'printing-single-qr');
+        printArea.innerHTML = '';
       }, 1000);
     }
 
@@ -2960,25 +2994,19 @@
         sticker.className = 'qr-sticker-item';
         sticker.style.cssText = 'border: 2px solid #002e6e; border-radius: 12px; padding: 14px; text-align: center; background: #ffffff; font-family: Prompt, sans-serif; box-sizing: border-box; page-break-inside: avoid; margin-bottom: 12px;';
         
-        sticker.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 4px;">' +
+        sticker.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 6px;">' +
           '<img src="logo.png" style="height: 28px; width: auto;" alt="Logo">' +
           '<div style="text-align: left;">' +
             '<div style="font-size: 11.5px; font-weight: 800; color: #002e6e; line-height: 1.1;">โรงพยาบาลพิษณุเวช</div>' +
             '<div style="font-size: 9px; color: #64748b;">LABORATORY • จุดตรวจที่ ' + (idx + 1) + '/23</div>' +
           '</div>' +
         '</div>' +
-        '<div style="border-top: 1px solid #004b93; margin: 4px 0 6px 0;"></div>' +
-        '<div style="font-size: 9.5px; font-weight: 700; color: #004b93; background: #f0f7ff; border: 1px solid #bfdbfe; padding: 1px 6px; border-radius: 4px; display: inline-block;">' +
-          cp.code +
-        '</div>' +
-        '<div style="font-size: 12.5px; font-weight: 800; color: #0f172a; margin-top: 4px; line-height: 1.2;">' +
+        '<div style="border-top: 1px solid #004b93; margin: 4px 0 8px 0;"></div>' +
+        '<div style="font-size: 13.5px; font-weight: 800; color: #0f172a; margin-bottom: 6px; line-height: 1.25;">' +
           cp.name +
         '</div>' +
-        '<div style="font-size: 10px; font-weight: 600; color: #059669; margin-top: 2px;">' +
-          'เกณฑ์: ' + cp.target +
-        '</div>' +
-        '<div id="batchQr_' + cp.id + '" style="margin: 8px auto 6px; display: inline-block; padding: 4px; border: 1px solid #cbd5e1; border-radius: 6px; background: #ffffff;"></div>' +
-        '<div style="font-size: 10px; font-weight: 700; color: #002e6e;">' +
+        '<div id="batchQr_' + cp.id + '" style="margin: 4px auto 6px; display: inline-block; padding: 6px; border: 1px solid #cbd5e1; border-radius: 6px; background: #ffffff;"></div>' +
+        '<div style="font-size: 10.5px; font-weight: 700; color: #002e6e;">' +
           '📱 สแกนเพื่อบันทึกผล' +
         '</div>';
 
@@ -2997,12 +3025,11 @@
         }
       });
 
-      document.body.classList.add('printing-qr');
-      printArea.classList.add('printing-active');
+      document.body.classList.add('printing-qr', 'printing-batch-qr');
       window.print();
       setTimeout(function() {
-        document.body.classList.remove('printing-qr');
-        printArea.classList.remove('printing-active');
+        document.body.classList.remove('printing-qr', 'printing-batch-qr');
+        printArea.innerHTML = '';
       }, 1500);
     }
 

@@ -763,15 +763,25 @@
       font-weight: 700;
       color: #334155;
     }
-    .cockpit-day-select {
-      border: none;
-      background: transparent;
-      font-size: 13.5px;
-      font-weight: 800;
+    .cockpit-day-select,
+    .cockpit-date-select {
+      border: 1px solid var(--border-blue-soft);
+      background: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
       color: #004b93;
-      font-family: var(--font-mono);
+      border-radius: 6px;
+      padding: 3px 6px;
       outline: none;
       cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .cockpit-date-select:hover {
+      border-color: var(--royal-blue);
+    }
+    .cockpit-date-select:focus {
+      border-color: var(--royal-blue);
+      box-shadow: 0 0 0 2px rgba(0, 75, 147, 0.15);
     }
     .btn-date-today {
       padding: 0 8px;
@@ -1438,21 +1448,29 @@
                   </button>
                 </div>
 
-                <!-- Date Picker Row -->
-                <div class="cockpit-date-row" style="margin-bottom: 0; display: flex; align-items: center; gap: 6px;">
-                  <span class="material-icons-round" style="font-size: 16px; color: var(--royal-blue);">calendar_today</span>
+                <!-- Date Picker Row: Selectable Day, Month, Year for Historical Entries -->
+                <div class="cockpit-date-row" style="margin-bottom: 0; display: flex; align-items: center; gap: 5px; flex-wrap: wrap;">
+                  <button type="button" class="btn-date-nav" onclick="triggerNativeDatePicker()" title="เลือกจากปฏิทิน" style="color: var(--royal-blue); background: #eff6ff; border-color: #bfdbfe;">
+                    <span class="material-icons-round" style="font-size: 16px;">calendar_month</span>
+                  </button>
                   <span style="font-size: 12px; font-weight: 700; color: #334155;">วันที่:</span>
-                  <button type="button" class="cockpit-nav-btn" onclick="navDay(-1)" title="วันก่อนหน้า" style="width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--border-main); background: #f8fafc; cursor: pointer;">
+                  <button type="button" class="btn-date-nav" onclick="navDay(-1)" title="วันก่อนหน้า">
                     <span class="material-icons-round" style="font-size: 16px;">chevron_left</span>
                   </button>
-                  <select id="speedDaySelect" onchange="onDayDropdownChanged()" class="cockpit-day-select" style="font-size: 14px; font-weight: 800; color: #004b93; font-family: var(--font-mono); padding: 2px 6px; border: 1px solid var(--border-blue-soft); border-radius: 6px; background: #ffffff;">
-                    <!-- 1 to 31 options -->
+                  <select id="speedDaySelect" onchange="onDayDropdownChanged()" class="cockpit-date-select" title="เลือกวัน" style="font-family: var(--font-mono); font-weight: 800; min-width: 48px;">
+                    <!-- 01 to 31 -->
                   </select>
-                  <button type="button" class="cockpit-nav-btn" onclick="navDay(1)" title="วันถัดไป" style="width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--border-main); background: #f8fafc; cursor: pointer;">
+                  <select id="speedMonthSelect" onchange="onMonthDropdownChanged()" class="cockpit-date-select" title="เลือกเดือน" style="font-weight: 700;">
+                    <!-- ม.ค. ถึง ธ.ค. -->
+                  </select>
+                  <select id="speedYearSelect" onchange="onYearDropdownChanged()" class="cockpit-date-select" title="เลือกปี พ.ศ." style="font-family: var(--font-mono); font-weight: 700;">
+                    <!-- 2567 .. 2571 -->
+                  </select>
+                  <button type="button" class="btn-date-nav" onclick="navDay(1)" title="วันถัดไป">
                     <span class="material-icons-round" style="font-size: 16px;">chevron_right</span>
                   </button>
-                  <span id="speedMonthYearText" style="font-size: 12px; font-weight: 700; color: #64748b; margin-left: 2px;">ต.ค. 2569</span>
-                  <button type="button" class="cockpit-today-btn" onclick="navToday()" style="padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border-main); background: #f8fafc; font-size: 11.5px; font-weight: 700; color: #004b93; cursor: pointer;">วันนี้</button>
+                  <button type="button" class="btn-date-today" onclick="navToday()">วันนี้</button>
+                  <input type="date" id="cockpitNativeDatePicker" onchange="onNativeDatePicked(this.value)" style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;">
                 </div>
               </div>
 
@@ -1851,9 +1869,10 @@
 
     var currentItem = null;
     var currentShift = 'morning'; // 'morning' | 'afternoon' | 'evening'
-    var activeYear = 2569;
-    var activeMonth = 10; // 1 to 12 (October)
-    var activeDay = new Date().getDate(); // 1 to 31
+    var _initDate = new Date();
+    var activeYear = _initDate.getFullYear() + 543;
+    var activeMonth = _initDate.getMonth() + 1; // 1 to 12
+    var activeDay = _initDate.getDate(); // 1 to 31
     var monthSheetData = {
       morning: {},
       afternoon: {},
@@ -2095,35 +2114,8 @@
       var humBox = document.getElementById('cockpitHumBox');
       if (humBox) humBox.style.display = 'none';
 
-      // Month Buttons
-      var monthList = document.getElementById('monthPillList');
-      if (monthList) {
-        monthList.innerHTML = '';
-        THAI_MONTHS_SHORT.forEach(function(mName, idx) {
-          var mNum = idx + 1;
-          var btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = 'month-text-btn' + (mNum === activeMonth ? ' active' : '');
-          btn.innerText = mName;
-          btn.onclick = function() { switchMonth(mNum); };
-          monthList.appendChild(btn);
-        });
-      }
-
-      // Populate Day Dropdown
-      var daySelect = document.getElementById('speedDaySelect');
-      if (daySelect) {
-        daySelect.innerHTML = '';
-        for (var d = 1; d <= 31; d++) {
-          var opt = document.createElement('option');
-          opt.value = d;
-          opt.textContent = String(d).padStart(2, '0');
-          if (d === activeDay) opt.selected = true;
-          daySelect.appendChild(opt);
-        }
-      }
-      var elMY = document.getElementById('speedMonthYearText');
-      if (elMY) elMY.innerText = THAI_MONTHS_SHORT[activeMonth - 1] + ' ' + activeYear;
+      // Initialize selectable Day, Month, Year date controls & month pills
+      populateCockpitDateControls();
     }
 
     // Load Month Sheet Data from Supabase PostgreSQL (< 100ms) with GAS Sheet Fallback
@@ -2475,13 +2467,18 @@
       selectDay(d);
     }
 
-    // Select Active Day (1 to 31)
+    // Select Active Day
     function selectDay(d) {
-      activeDay = Math.max(1, Math.min(31, d));
+      var maxD = (typeof getDaysInMonth === 'function') ? getDaysInMonth(activeYear, activeMonth) : 31;
+      activeDay = Math.max(1, Math.min(maxD, d));
 
-      // Update speedDaySelect
-      var daySelect = document.getElementById('speedDaySelect');
-      if (daySelect) daySelect.value = activeDay;
+      // Sync date displays & native picker
+      if (typeof syncCockpitDateDisplay === 'function') {
+        syncCockpitDateDisplay();
+      } else {
+        var daySelect = document.getElementById('speedDaySelect');
+        if (daySelect) daySelect.value = activeDay;
+      }
 
       // Highlight active column in matrix table
       document.querySelectorAll('.active-col').forEach(function(el) { el.classList.remove('active-col'); });
@@ -2621,33 +2618,201 @@
       renderTrendSvg();
     }
 
-    // Day Navigation
-    function navDay(delta) {
-      var newD = activeDay + delta;
-      if (newD < 1) newD = 31;
-      if (newD > 31) newD = 1;
-      selectDay(newD);
+    // Trigger Native HTML5 Date Picker
+    function triggerNativeDatePicker() {
+      var inp = document.getElementById('cockpitNativeDatePicker');
+      if (!inp) return;
+      if (inp.showPicker) {
+        inp.showPicker();
+      } else {
+        inp.focus();
+        inp.click();
+      }
     }
 
-    function navToday() {
-      selectDay(new Date().getDate());
+    // Number of days in given BE year and month (1-12)
+    function getDaysInMonth(yearBE, month) {
+      var ceYear = yearBE > 2500 ? (yearBE - 543) : yearBE;
+      return new Date(ceYear, month, 0).getDate();
     }
 
+    // Populate all date dropdowns (Day, Month, Year) & sync states
+    function populateCockpitDateControls() {
+      // 1. Year Dropdown (2 years back to 1 year ahead)
+      var currentYearBE = new Date().getFullYear() + 543;
+      var yearSelect = document.getElementById('speedYearSelect');
+      if (yearSelect) {
+        yearSelect.innerHTML = '';
+        var startY = currentYearBE - 2;
+        var endY = currentYearBE + 1;
+        for (var y = startY; y <= endY; y++) {
+          var optY = document.createElement('option');
+          optY.value = y;
+          optY.textContent = y;
+          if (y === activeYear) optY.selected = true;
+          yearSelect.appendChild(optY);
+        }
+      }
+
+      // 2. Month Dropdown (1 to 12)
+      var monthSelect = document.getElementById('speedMonthSelect');
+      if (monthSelect) {
+        monthSelect.innerHTML = '';
+        THAI_MONTHS_SHORT.forEach(function(mName, idx) {
+          var mNum = idx + 1;
+          var optM = document.createElement('option');
+          optM.value = mNum;
+          optM.textContent = mName;
+          if (mNum === activeMonth) optM.selected = true;
+          monthSelect.appendChild(optM);
+        });
+      }
+
+      // 3. Month pills below matrix
+      var monthList = document.getElementById('monthPillList');
+      if (monthList) {
+        monthList.innerHTML = '';
+        THAI_MONTHS_SHORT.forEach(function(mName, idx) {
+          var mNum = idx + 1;
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'month-text-btn' + (mNum === activeMonth ? ' active' : '');
+          btn.innerText = mName;
+          btn.onclick = function() { switchMonth(mNum); };
+          monthList.appendChild(btn);
+        });
+      }
+
+      // 4. Day Dropdown
+      updateDayDropdownOptions();
+
+      // 5. Sync displays
+      syncCockpitDateDisplay();
+    }
+
+    // Update Day dropdown based on max days in activeMonth
+    function updateDayDropdownOptions() {
+      var daySelect = document.getElementById('speedDaySelect');
+      if (!daySelect) return;
+      var maxD = getDaysInMonth(activeYear, activeMonth);
+      if (activeDay > maxD) activeDay = maxD;
+      daySelect.innerHTML = '';
+      for (var d = 1; d <= maxD; d++) {
+        var optD = document.createElement('option');
+        optD.value = d;
+        optD.textContent = String(d).padStart(2, '0');
+        if (d === activeDay) optD.selected = true;
+        daySelect.appendChild(optD);
+      }
+    }
+
+    // Sync all date dropdowns and native date picker
+    function syncCockpitDateDisplay() {
+      var daySelect = document.getElementById('speedDaySelect');
+      if (daySelect && parseInt(daySelect.value, 10) !== activeDay) daySelect.value = activeDay;
+
+      var monthSelect = document.getElementById('speedMonthSelect');
+      if (monthSelect && parseInt(monthSelect.value, 10) !== activeMonth) monthSelect.value = activeMonth;
+
+      var yearSelect = document.getElementById('speedYearSelect');
+      if (yearSelect && parseInt(yearSelect.value, 10) !== activeYear) yearSelect.value = activeYear;
+
+      var nativePicker = document.getElementById('cockpitNativeDatePicker');
+      if (nativePicker) {
+        var ceYear = activeYear > 2500 ? (activeYear - 543) : activeYear;
+        nativePicker.value = ceYear + '-' + String(activeMonth).padStart(2, '0') + '-' + String(activeDay).padStart(2, '0');
+      }
+
+      var elMY = document.getElementById('speedMonthYearText');
+      if (elMY) elMY.innerText = THAI_MONTHS_SHORT[activeMonth - 1] + ' ' + activeYear;
+
+      document.querySelectorAll('.month-text-btn').forEach(function(b, idx) {
+        b.classList.toggle('active', (idx + 1) === activeMonth);
+      });
+    }
+
+    // Handlers for User-Selected Day, Month, Year
     function onDayDropdownChanged() {
-      var val = parseInt(document.getElementById('speedDaySelect').value);
+      var val = parseInt(document.getElementById('speedDaySelect').value, 10);
       if (!isNaN(val)) selectDay(val);
     }
 
-    // Month Switcher
-    function switchMonth(m) {
-      activeMonth = m;
-      document.querySelectorAll('.month-text-btn').forEach(function(b, idx) {
-        b.classList.toggle('active', (idx + 1) === m);
-      });
-      var elMY = document.getElementById('speedMonthYearText');
-      if (elMY) elMY.innerText = THAI_MONTHS_SHORT[activeMonth - 1] + ' ' + activeYear;
-      if (currentItem) {
+    function onMonthDropdownChanged() {
+      var m = parseInt(document.getElementById('speedMonthSelect').value, 10);
+      if (!isNaN(m)) switchMonthAndYear(m, activeYear, activeDay);
+    }
+
+    function onYearDropdownChanged() {
+      var y = parseInt(document.getElementById('speedYearSelect').value, 10);
+      if (!isNaN(y)) switchMonthAndYear(activeMonth, y, activeDay);
+    }
+
+    function onNativeDatePicked(val) {
+      if (!val) return;
+      var parts = val.split('-');
+      if (parts.length === 3) {
+        var ceYear = parseInt(parts[0], 10);
+        var m = parseInt(parts[1], 10);
+        var d = parseInt(parts[2], 10);
+        var beYear = ceYear + 543;
+        switchMonthAndYear(m, beYear, d);
+      }
+    }
+
+    // Switch Month and/or Year with automatic data reloading for historical entry
+    function switchMonthAndYear(newMonth, newYear, optDay) {
+      var monthChanged = (newMonth !== activeMonth || newYear !== activeYear);
+      activeMonth = newMonth;
+      activeYear = newYear;
+
+      var maxD = getDaysInMonth(activeYear, activeMonth);
+      if (optDay !== undefined && optDay !== null) {
+        activeDay = Math.max(1, Math.min(maxD, optDay));
+      } else if (activeDay > maxD) {
+        activeDay = maxD;
+      }
+
+      updateDayDropdownOptions();
+      syncCockpitDateDisplay();
+
+      if (monthChanged && currentItem) {
         loadMonthSheetData(currentItem.id, activeYear, activeMonth);
+      } else {
+        selectDay(activeDay);
+      }
+    }
+
+    function switchMonth(m) {
+      switchMonthAndYear(m, activeYear, activeDay);
+    }
+
+    // Smooth Stepping by Day across month/year boundaries
+    function navDay(delta) {
+      var ceYear = activeYear > 2500 ? (activeYear - 543) : activeYear;
+      var dt = new Date(ceYear, activeMonth - 1, activeDay);
+      dt.setDate(dt.getDate() + delta);
+      var newYearBE = dt.getFullYear() + 543;
+      var newMonth = dt.getMonth() + 1;
+      var newDay = dt.getDate();
+
+      if (newYearBE !== activeYear || newMonth !== activeMonth) {
+        switchMonthAndYear(newMonth, newYearBE, newDay);
+      } else {
+        selectDay(newDay);
+      }
+    }
+
+    // Jump to Today
+    function navToday() {
+      var now = new Date();
+      var todayYearBE = now.getFullYear() + 543;
+      var todayMonth = now.getMonth() + 1;
+      var todayDay = now.getDate();
+
+      if (todayYearBE !== activeYear || todayMonth !== activeMonth) {
+        switchMonthAndYear(todayMonth, todayYearBE, todayDay);
+      } else {
+        selectDay(todayDay);
       }
     }
 
