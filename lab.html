@@ -730,6 +730,63 @@
       flex-shrink: 0;
     }
 
+    /* On-Page Filter Bar & Collapsible Drawer (Matching admin.html standard) */
+    .summary-header-tools {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: auto;
+      flex-wrap: wrap;
+    }
+
+    .filter-collapsible-drawer {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      background: #f8fafc;
+      border-bottom: 1px solid transparent;
+      transition: max-height 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease, border-color 0.22s ease;
+    }
+    .filter-collapsible-drawer.open {
+      max-height: 90px;
+      opacity: 1;
+      border-bottom-color: var(--border-subtle);
+    }
+    .filter-drawer-inner {
+      padding: 9px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+    }
+    .filter-active-count-badge {
+      background: var(--royal-blue);
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 10px;
+      margin-left: 3px;
+      line-height: 1.3;
+      vertical-align: middle;
+    }
+    #btnToggleFilterDrawer.drawer-open {
+      background: var(--royal-blue);
+      border-color: var(--royal-blue);
+      color: #ffffff;
+    }
+    #btnToggleFilterDrawer.drawer-open .filter-active-count-badge {
+      background: #ffffff;
+      color: var(--royal-blue);
+    }
+    #btnToggleFilterDrawer.has-active-filter:not(.drawer-open) {
+      background: #eff6ff;
+      border-color: #93c5fd;
+      color: var(--royal-blue);
+      font-weight: 600;
+    }
+
     .btn-tool {
       display: inline-flex;
       align-items: center;
@@ -1480,7 +1537,7 @@
       }
 
       /* Hide non-report views when printing reports */
-      #view_temp, #view_maint, #view_ups, #view_qr {
+      #view_summary, #view_qr {
         display: none !important;
       }
 
@@ -1601,16 +1658,16 @@
           <div class="brand-badge-pill">LAB HUB</div>
         </a>
         <div class="topbar-breadcrumbs">
-          <span class="bread-parent">แผนกห้องปฏิบัติการ (LAB)</span>
+          <span class="bread-parent">ระบบเครื่องมือแพทย์ (LAB)</span>
           <span class="bread-sep">/</span>
-          <span class="bread-current" id="breadCurrent">อุณหภูมิ & ความชื้น (057, 060, 061, 062)</span>
+          <span class="bread-current" id="breadCurrent">สรุปรายวัน</span>
         </div>
       </div>
 
       <div class="topbar-right">
         <div class="status-realtime-badge">
           <span class="pulse-indicator-dot"></span>
-          <span id="topShiftText">เวรเช้า (08:00 - 16:00)</span>
+          <span id="topShiftText">สถานะวันนี้ · พร้อมใช้</span>
         </div>
         <div class="admin-profile-pill">
           <div class="avatar-circle">LAB</div>
@@ -1638,19 +1695,23 @@
 
         <div class="sidebar-section-title">เมนูแผนก LAB</div>
         <nav class="sidebar-nav">
-          <button onclick="switchView('temp')" id="navBtn_temp" class="nav-btn active" title="อุณหภูมิ & ความชื้น">
-            <span class="material-icons-round">thermostat</span>
-            <span>อุณหภูมิ & ความชื้น</span>
+          <button onclick="switchView('summary')" id="navBtn_summary" class="nav-btn active" title="สรุปรายวัน (ทุกเครื่องมือแพทย์ & จุดตรวจ)">
+            <span class="material-icons-round">today</span>
+            <span>สรุปรายวัน</span>
           </button>
-          <button onclick="switchView('maint')" id="navBtn_maint" class="nav-btn" title="เครื่องวิเคราะห์ & ดูแลรักษา">
+          <button onclick="filterByCategoryNav('analyzer')" id="navBtn_analyzer" class="nav-btn" title="เครื่องวิเคราะห์ & ดูแลรักษา (5 เครื่อง)">
             <span class="material-icons-round">biotech</span>
             <span>เครื่องวิเคราะห์ & ดูแลรักษา</span>
           </button>
-          <button onclick="switchView('ups')" id="navBtn_ups" class="nav-btn" title="ทดสอบสำรองไฟ UPS">
+          <button onclick="filterByCategoryNav('temp')" id="navBtn_temp" class="nav-btn" title="อุณหภูมิ & ความชื้น (12 จุด)">
+            <span class="material-icons-round">thermostat</span>
+            <span>อุณหภูมิ & ความชื้น</span>
+          </button>
+          <button onclick="filterByCategoryNav('ups')" id="navBtn_ups" class="nav-btn" title="ทดสอบสำรองไฟ UPS (6 เครื่อง)">
             <span class="material-icons-round">battery_charging_full</span>
             <span>ทดสอบสำรองไฟ UPS</span>
           </button>
-          <button onclick="switchView('reports')" id="navBtn_reports" class="nav-btn" title="รายงานทางการ (16 แท็บ)">
+          <button onclick="switchView('reports')" id="navBtn_reports" class="nav-btn" title="รายงานทางการ (16 แท็บ A4)">
             <span class="material-icons-round">print</span>
             <span>รายงานทางการ (16 แท็บ)</span>
           </button>
@@ -1697,53 +1758,53 @@
 
         <!-- Clickable KPI Strip (5 Cards) -->
         <div class="kpi-strip-5 no-print">
-          <div class="kpi-card active-kpi" id="kpiCard_all" onclick="setKpiFilter('all')">
+          <div class="kpi-card active-kpi" id="kpiCard_all" onclick="filterByKpi('all')" title="คลิกเพื่อดูทั้งหมด">
             <div class="kpi-icon-box kpi-icon-blue">
-              <span class="material-icons-round">apps</span>
+              <span class="material-icons-round">medical_services</span>
             </div>
             <div>
               <div class="kpi-val" id="kpiTotal">23</div>
-              <div class="kpi-label">จุดตรวจทั้งหมด</div>
+              <div class="kpi-label">ทั้งหมด</div>
             </div>
           </div>
 
-          <div class="kpi-card" id="kpiCard_recorded" onclick="setKpiFilter('recorded')">
+          <div class="kpi-card" id="kpiCard_checked" onclick="filterByKpi('checked')" title="คลิกเพื่อดูรายการที่ตรวจแล้ว">
             <div class="kpi-icon-box kpi-icon-teal">
-              <span class="material-icons-round">task_alt</span>
+              <span class="material-icons-round">assignment_turned_in</span>
             </div>
             <div>
-              <div class="kpi-val" id="kpiRecorded">0</div>
-              <div class="kpi-label">บันทึกแล้ว</div>
+              <div class="kpi-val" id="kpiChecked">0</div>
+              <div class="kpi-label">ตรวจแล้ว</div>
             </div>
           </div>
 
-          <div class="kpi-card" id="kpiCard_ready" onclick="setKpiFilter('ready')">
+          <div class="kpi-card" id="kpiCard_ready" onclick="filterByKpi('ready')" title="คลิกเพื่อกรองเฉพาะเครื่องพร้อมใช้">
             <div class="kpi-icon-box kpi-icon-green">
               <span class="material-icons-round">check_circle</span>
             </div>
             <div>
               <div class="kpi-val" id="kpiReady" style="color: var(--green-ready);">0</div>
-              <div class="kpi-label">ปกติ / พร้อมใช้</div>
+              <div class="kpi-label">พร้อมใช้</div>
             </div>
           </div>
 
-          <div class="kpi-card" id="kpiCard_abnormal" onclick="setKpiFilter('abnormal')">
+          <div class="kpi-card" id="kpiCard_abnormal" onclick="filterByKpi('abnormal')" title="คลิกเพื่อกรองเฉพาะเครื่องที่พบข้อบกพร่อง">
             <div class="kpi-icon-box kpi-icon-red">
               <span class="material-icons-round">error</span>
             </div>
             <div>
               <div class="kpi-val" id="kpiAbnormal" style="color: var(--red-abnormal);">0</div>
-              <div class="kpi-label">หลุดเกณฑ์ / ผิดปกติ</div>
+              <div class="kpi-label">ข้อบกพร่อง</div>
             </div>
           </div>
 
-          <div class="kpi-card" id="kpiCard_pending" onclick="setKpiFilter('pending')">
+          <div class="kpi-card" id="kpiCard_pending" onclick="filterByKpi('pending')" title="คลิกเพื่อกรองเฉพาะเครื่องที่รอตรวจ">
             <div class="kpi-icon-box kpi-icon-amber">
               <span class="material-icons-round">schedule</span>
             </div>
             <div>
               <div class="kpi-val" id="kpiPending" style="color: var(--amber-pending);">23</div>
-              <div class="kpi-label">รอตรวจเวรนี้</div>
+              <div class="kpi-label">รอตรวจ</div>
             </div>
           </div>
         </div>
@@ -1752,154 +1813,125 @@
         <div id="alertBannerStrip" class="alert-banner-strip no-print" style="display: none;">
           <div style="display: flex; align-items: center; gap: 8px;">
             <span class="material-icons-round" style="color: var(--red-abnormal); font-size: 20px;">warning</span>
-            <span><strong>แจ้งเตือน:</strong> พบจุดตรวจอุณหภูมิหลุดจากเกณฑ์มาตรฐาน กรุณาตรวจสอบระบบทำความเย็นและบันทึกการแก้ไขทันที</span>
+            <span><strong>แจ้งเตือน:</strong> พบจุดตรวจหลุดเกณฑ์มาตรฐานหรือพบข้อบกพร่อง กรุณาตรวจสอบและบันทึกการแก้ไขทันที</span>
           </div>
           <button onclick="document.getElementById('alertBannerStrip').style.display='none'" style="background: transparent; border: none; color: inherit; cursor: pointer; font-size: 16px;">✕</button>
         </div>
 
-        <!-- Single-Row Streamlined Filter Toolbar with Floating Export Speed Dial -->
-        <div class="page-filter-bar no-print">
-          <div class="filter-left-controls">
-            <div class="search-input-box">
-              <span class="material-icons-round">search</span>
-              <input type="text" id="filterSearch" placeholder="ค้นหาจุดตรวจ / เครื่องมือ / รหัสแบบฟอร์ม..." oninput="applyFilters()">
+        <!-- ==================== SUB-VIEW 1: สรุปผลรายวัน (Unified 5-Column Table Matching admin.html Standard) ==================== -->
+        <section id="view_summary" class="content-panel">
+          <div class="panel-header">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div class="panel-title" id="summaryTableTitle">สรุปผลการตรวจเช็คเครื่องมือแพทย์ประจำวัน</div>
+              <span class="panel-badge" id="summaryCountBadge">23 เครื่อง</span>
             </div>
 
-            <div class="filter-date-group">
-              <input type="date" id="filterDate" class="filter-input" onchange="applyFilters()">
-              <button type="button" onclick="setDateToday()" class="btn-pill-date active" id="btnDateToday">วันนี้</button>
-              <button type="button" onclick="setDateYesterday()" class="btn-pill-date" id="btnDateYesterday">เมื่อวาน</button>
-            </div>
-
-            <div class="filter-divider-v"></div>
-
-            <select id="filterStatus" class="filter-input" onchange="applyFilters()">
-              <option value="all">ทุกสถานะ</option>
-              <option value="ready">พร้อมใช้ (ปกติ)</option>
-              <option value="abnormal">หลุดเกณฑ์ (ผิดปกติ)</option>
-              <option value="pending">รอตรวจเวรนี้</option>
-            </select>
-
-            <button type="button" onclick="resetFilters()" class="btn-reset-ghost" title="ล้างตัวกรองทั้งหมด">
-              <span class="material-icons-round" style="font-size: 17px;">refresh</span>
-            </button>
-          </div>
-
-          <div class="filter-right-tools">
-            <!-- Consolidated Floating Export & Tools Menu (Speed Dial - 1s auto-collapse) -->
-            <div class="floating-action-wrapper" onmouseenter="handleFloatingEnter(this)" onmouseleave="handleFloatingLeave(this)">
-              <button type="button" class="btn-floating-trigger" onclick="toggleFloatingMenu(this, event)" title="เมนูส่งออก, พิมพ์ และซิงค์">
-                <span class="material-icons-round trigger-icon" style="font-size: 16px;">file_download</span>
-                <span class="floating-badge-count">4</span>
-              </button>
-              <div class="floating-action-tray">
-                <button type="button" onclick="exportExcel()" class="btn-action-icon" style="background: #ecfdf5; color: #047857; border-color: #a7f3d0;" title="ส่งออก Excel (.xls)">
-                  <span class="material-icons-round">table_view</span>
-                </button>
-                <button type="button" onclick="exportCsv()" class="btn-action-icon" style="background: #f1f5f9; color: #475569; border-color: #cbd5e1;" title="ส่งออก CSV (UTF-8 BOM)">
-                  <span class="material-icons-round">file_download</span>
-                </button>
-                <button type="button" onclick="printReportSheet()" class="btn-action-icon" style="background: #f8fafc; color: #1e293b; border-color: #cbd5e1;" title="พิมพ์รายงาน A4">
-                  <span class="material-icons-round">print</span>
-                </button>
-                <button type="button" onclick="loadOverviewData()" class="btn-action-icon" style="background: var(--royal-subtle); color: var(--royal-blue); border-color: var(--border-blue-soft);" title="ซิงค์ข้อมูลกับ Google Sheets">
-                  <span class="material-icons-round">sync</span>
-                </button>
-                <button type="button" class="btn-floating-close" onclick="closeFloatingMenu(this, event)" title="กดเพื่อเก็บเป็นปุ่มเดียว">
-                  <span class="material-icons-round">close</span>
-                </button>
+            <div class="summary-header-tools no-print">
+              <!-- Quick Search (175px identical to admin.html) -->
+              <div class="search-input-box" style="margin: 0; width: 175px;">
+                <span class="material-icons-round">search</span>
+                <input type="text" id="filterSearch" placeholder="ค้นหาเครื่อง, รหัส..." oninput="applyFilters()">
               </div>
-            </div>
-          </div>
-        </div>
 
-        <!-- ==================== SUB-VIEW 1: อุณหภูมิและความชื้น (057, 060, 061, 062) ==================== -->
-        <section id="view_temp" class="content-panel">
-          <div class="panel-header">
-            <div class="panel-title">
-              <span class="material-icons-round" style="color: var(--royal-blue); font-size: 20px;">thermostat</span>
-              <span>จุดตรวจอุณหภูมิและความชื้นประจำเวร แผนก LAB (12 จุด)</span>
+              <!-- Toggle Filter Drawer Button (Option 3 standard) -->
+              <button type="button" class="btn-tool" id="btnToggleFilterDrawer" onclick="toggleFilterDrawer()" title="เปิด/ปิดตัวกรองเพิ่มเติม (วันที่, แผนก, หมวดหมู่, สถานะ)">
+                <span class="material-icons-round" style="font-size: 16px;">tune</span>
+                <span>ตัวกรอง</span>
+                <span class="filter-active-count-badge" id="filterActiveBadge" style="display: none;">0</span>
+              </button>
+
+              <!-- Consolidated Floating Export & Tools Menu (Speed Dial) -->
+              <div class="floating-action-wrapper" onmouseenter="handleFloatingEnter(this)" onmouseleave="handleFloatingLeave(this)">
+                <button type="button" class="btn-floating-trigger" onclick="toggleFloatingMenu(this, event)" title="เมนูส่งออก & พิมพ์ (Excel, CSV, พิมพ์)">
+                  <span class="material-icons-round trigger-icon" style="font-size: 16px;">file_download</span>
+                  <span class="floating-badge-count">3</span>
+                </button>
+                <div class="floating-action-tray">
+                  <button type="button" onclick="exportExcel()" class="btn-action-icon" style="background: #ecfdf5; color: #047857; border-color: #a7f3d0;" title="ส่งออก Excel (.xls)">
+                    <span class="material-icons-round">table_view</span>
+                  </button>
+                  <button type="button" onclick="exportCsv()" class="btn-action-icon" style="background: #f1f5f9; color: #475569; border-color: #cbd5e1;" title="ส่งออก CSV (UTF-8 BOM)">
+                    <span class="material-icons-round">file_download</span>
+                  </button>
+                  <button type="button" onclick="window.print()" class="btn-action-icon" style="background: #f8fafc; color: #1e293b; border-color: #cbd5e1;" title="พิมพ์รายงาน">
+                    <span class="material-icons-round">print</span>
+                  </button>
+                  <button type="button" class="btn-floating-close" onclick="closeFloatingMenu(this, event)" title="กดเพื่อเก็บเป็นปุ่มเดียว">
+                    <span class="material-icons-round">close</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Sync Button (Primary) -->
+              <button type="button" onclick="loadOverviewData()" class="btn-tool btn-tool-primary" id="btnSync" title="ซิงค์ข้อมูล Supabase / Google Sheets">
+                <span class="material-icons-round" style="font-size: 15px;">sync</span>
+                <span>ซิงค์</span>
+              </button>
             </div>
-            <div class="panel-badge" id="lblCountTemp">แสดง 12 จุดตรวจ</div>
           </div>
+
+          <!-- Collapsible Filter Drawer (Matching admin.html) -->
+          <div id="filterCollapsibleDrawer" class="filter-collapsible-drawer no-print">
+            <div class="filter-drawer-inner">
+              <!-- Date Picker & Today Pill -->
+              <div class="filter-date-group">
+                <input type="date" id="filterDate" class="filter-input" onchange="applyFilters()">
+                <button type="button" onclick="setQuickDate('today')" id="btnDateToday" class="btn-pill-date active">วันนี้</button>
+                <button type="button" onclick="setQuickDate('yesterday')" id="btnDateYesterday" class="btn-pill-date">เมื่อวาน</button>
+              </div>
+
+              <div class="filter-divider-v"></div>
+
+              <!-- Department / Area Selector -->
+              <select id="filterDept" class="filter-input" onchange="applyFilters()">
+                <option value="all">ทุกแผนก / พื้นที่</option>
+                <option value="ห้องเคมีคลินิก">ห้องเคมีคลินิก</option>
+                <option value="ห้องธนาคารเลือด">ห้องธนาคารเลือด</option>
+                <option value="ห้องจุลชีววิทยา">ห้องจุลชีววิทยา</option>
+                <option value="ห้องภูมิคุ้มกันวิทยา">ห้องภูมิคุ้มกันวิทยา</option>
+                <option value="ห้องโลหิตวิทยา">ห้องโลหิตวิทยา</option>
+                <option value="คลังน้ำยา & เวชภัณฑ์">คลังน้ำยา & เวชภัณฑ์</option>
+                <option value="ห้องปฏิบัติการกลาง">ห้องปฏิบัติการกลาง</option>
+              </select>
+
+              <!-- Category / Type Selector -->
+              <select id="filterCategory" class="filter-input" onchange="applyFilters()">
+                <option value="all">ทุกประเภท</option>
+                <option value="analyzer">เครื่องวิเคราะห์ & ดูแลรักษา (5 เครื่อง)</option>
+                <option value="temp">อุณหภูมิ & ความชื้น (12 จุด)</option>
+                <option value="ups">ทดสอบสำรองไฟ UPS (6 เครื่อง)</option>
+              </select>
+
+              <!-- Status Selector -->
+              <select id="filterStatus" class="filter-input" onchange="applyFilters()">
+                <option value="all">ทุกสถานะ</option>
+                <option value="ready">พร้อมใช้</option>
+                <option value="abnormal">ข้อบกพร่อง</option>
+                <option value="pending">รอตรวจ</option>
+              </select>
+
+              <!-- Reset Button -->
+              <button type="button" onclick="resetFilters()" class="btn-reset-ghost" title="รีเซ็ตตัวกรอง">
+                <span class="material-icons-round" style="font-size: 15px;">refresh</span>
+                <span style="font-size: 11.5px; margin-left: 2px;">รีเซ็ต</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Strictly 5-Column Table (Matching admin.html Gold Standard) -->
           <div style="overflow-x: auto;">
             <table class="device-table">
               <thead>
                 <tr>
-                  <th style="width: 130px;">รหัสฟอร์ม</th>
-                  <th>จุดตรวจ / อุปกรณ์</th>
-                  <th>หมวดหมู่</th>
-                  <th>เกณฑ์ควบคุม</th>
-                  <th>อุณหภูมิล่าสุด</th>
-                  <th style="text-align: center; width: 90px;">สถานะ</th>
-                  <th style="width: 90px;">เวลาตรวจ</th>
-                  <th>ผู้บันทึก</th>
-                  <th class="btn-action-col no-print" style="text-align: center; width: 80px;">จัดการ</th>
+                  <th style="width: 140px;">รหัสเครื่อง</th>
+                  <th>เครื่องมือแพทย์</th>
+                  <th style="width: 180px;">แผนกรับผิดชอบ</th>
+                  <th style="width: 75px; text-align: center;">สถานะ</th>
+                  <th class="btn-action-col no-print" style="width: 80px; text-align: center;">จัดการ</th>
                 </tr>
               </thead>
-              <tbody id="tableBody_temp">
-                <!-- Rendered by JS -->
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <!-- ==================== SUB-VIEW 2: เครื่องมือวิเคราะห์ & บำรุงรักษา (049, 091, 099) ==================== -->
-        <section id="view_maint" class="content-panel" style="display: none;">
-          <div class="panel-header">
-            <div class="panel-title">
-              <span class="material-icons-round" style="color: var(--royal-blue); font-size: 20px;">biotech</span>
-              <span>เครื่องวิเคราะห์และบำรุงรักษาประจำวัน แผนก LAB (5 เครื่อง)</span>
-            </div>
-            <div class="panel-badge" id="lblCountMaint">แสดง 5 รายการ</div>
-          </div>
-          <div style="overflow-x: auto;">
-            <table class="device-table">
-              <thead>
-                <tr>
-                  <th style="width: 140px;">รหัสฟอร์ม</th>
-                  <th>เครื่องมือ / อุปกรณ์</th>
-                  <th>หัวข้อการตรวจสอบความพร้อม</th>
-                  <th>เกณฑ์มาตรฐาน</th>
-                  <th style="text-align: center; width: 90px;">สถานะ</th>
-                  <th style="width: 90px;">เวลาตรวจ</th>
-                  <th>ผู้บันทึก</th>
-                  <th class="btn-action-col no-print" style="text-align: center; width: 80px;">จัดการ</th>
-                </tr>
-              </thead>
-              <tbody id="tableBody_maint">
-                <!-- Rendered by JS -->
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <!-- ==================== SUB-VIEW 3: ทดสอบเครื่องสำรองไฟ UPS (019) ==================== -->
-        <section id="view_ups" class="content-panel" style="display: none;">
-          <div class="panel-header">
-            <div class="panel-title">
-              <span class="material-icons-round" style="color: var(--royal-blue); font-size: 20px;">battery_charging_full</span>
-              <span>FM-PPCH-LAB-019 • บันทึกการทดสอบเครื่องสำรองไฟ UPS แผนก Lab (6 เครื่อง)</span>
-            </div>
-            <div class="panel-badge" id="lblCountUps">แสดง 6 เครื่อง</div>
-          </div>
-          <div style="overflow-x: auto;">
-            <table class="device-table">
-              <thead>
-                <tr>
-                  <th style="width: 120px;">รหัส UPS</th>
-                  <th>เครื่องสำรองไฟ / จุดติดตั้ง</th>
-                  <th>เครื่องมือที่ต่อพ่วง</th>
-                  <th>เกณฑ์สำรองไฟ</th>
-                  <th>เวลาสำรองไฟจริง</th>
-                  <th style="text-align: center; width: 90px;">สถานะ</th>
-                  <th style="width: 100px;">รอบทดสอบ</th>
-                  <th>ผู้ตรวจ</th>
-                  <th class="btn-action-col no-print" style="text-align: center; width: 80px;">จัดการ</th>
-                </tr>
-              </thead>
-              <tbody id="tableBody_ups">
-                <!-- Rendered by JS -->
+              <tbody id="summaryTableBody">
+                <!-- Rendered by JavaScript -->
               </tbody>
             </table>
           </div>
@@ -2091,7 +2123,7 @@
       '019': 949886185
     };
 
-    var currentView = 'temp';
+    var currentView = 'summary';
     var activeKpiFilter = 'all';
     var labData = null;
     var activeModalItem = null;
@@ -2123,20 +2155,19 @@
 
     function initPage() {
       // 1. Set Date
-      var todayStr = new Date().toISOString().slice(0, 10);
-      document.getElementById('filterDate').value = todayStr;
+      setQuickDate('today');
 
-      // 2. Real-time shift
+      // 2. Real-time shift & status
       var hours = new Date().getHours();
       var shiftName = 'เวรเช้า (08:00 - 16:00)';
       if (hours >= 16 && hours < 24) shiftName = 'เวรบ่าย (16:00 - 24:00)';
       else if (hours < 8) shiftName = 'เวรดึก (00:00 - 08:00)';
-      document.getElementById('topShiftText').innerText = shiftName;
+      var shiftEl = document.getElementById('topShiftText');
+      if (shiftEl) shiftEl.innerText = 'สถานะวันนี้ · พร้อมใช้ (' + shiftName + ')';
 
       // 3. Instant Render (0ms delay from Built-in Catalog)
       labData = getBuiltinLabData();
-      updateDashboardKPIs(labData);
-      renderAllViews(labData);
+      applyFilters();
 
       // 4. Live Sync from Supabase PostgreSQL (sub-100ms)
       loadOverviewData();
@@ -2223,20 +2254,24 @@
       currentView = viewKey;
       var bread = document.getElementById('breadCurrent');
       var breadMap = {
-        temp: 'อุณหภูมิ & ความชื้น (057, 060, 061, 062)',
-        maint: 'เครื่องวิเคราะห์ & ดูแลรักษา (049, 091, 099)',
-        ups: 'ทดสอบสำรองไฟ UPS (019)',
+        summary: 'สรุปรายวัน',
         reports: 'กราฟอุณหภูมิ & รายงาน 16 แท็บ A4',
         qr: 'รายการจุดตรวจ & QR Code ประจำจุด (23 จุด)'
       };
-      if (bread) bread.innerText = breadMap[viewKey] || 'แดชบอร์ดแผนก LAB';
+      if (bread) bread.innerText = breadMap[viewKey] || 'สรุปรายวัน';
 
-      ['temp', 'maint', 'ups', 'reports', 'qr'].forEach(function(k) {
+      ['summary', 'analyzer', 'temp', 'ups', 'reports', 'qr'].forEach(function(k) {
         var btn = document.getElementById('navBtn_' + k);
-        var sec = document.getElementById('view_' + k);
         if (btn) btn.classList.toggle('active', k === viewKey);
-        if (sec) sec.style.display = (k === viewKey) ? 'block' : 'none';
       });
+
+      var secSummary = document.getElementById('view_summary');
+      var secReports = document.getElementById('view_reports');
+      var secQr = document.getElementById('view_qr');
+
+      if (secSummary) secSummary.style.display = (viewKey === 'summary') ? 'block' : 'none';
+      if (secReports) secReports.style.display = (viewKey === 'reports') ? 'block' : 'none';
+      if (secQr) secQr.style.display = (viewKey === 'qr') ? 'block' : 'none';
 
       closeMobileSidebar();
       if (viewKey === 'qr') {
@@ -2244,8 +2279,43 @@
       } else if (viewKey === 'reports') {
         renderSelectedReport();
       } else {
+        var catSelect = document.getElementById('filterCategory');
+        if (catSelect && catSelect.value !== 'all') {
+          catSelect.value = 'all';
+        }
         applyFilters();
       }
+    }
+
+    // Category Filter Navigation (via Left Sidebar Shortcut)
+    function filterByCategoryNav(cat) {
+      currentView = 'summary';
+      var secSummary = document.getElementById('view_summary');
+      var secReports = document.getElementById('view_reports');
+      var secQr = document.getElementById('view_qr');
+
+      if (secSummary) secSummary.style.display = 'block';
+      if (secReports) secReports.style.display = 'none';
+      if (secQr) secQr.style.display = 'none';
+
+      ['summary', 'analyzer', 'temp', 'ups', 'reports', 'qr'].forEach(function(k) {
+        var btn = document.getElementById('navBtn_' + k);
+        if (btn) btn.classList.toggle('active', k === cat);
+      });
+
+      var catSelect = document.getElementById('filterCategory');
+      if (catSelect) catSelect.value = cat;
+
+      var bread = document.getElementById('breadCurrent');
+      var catNames = {
+        analyzer: 'สรุปรายวัน (เครื่องวิเคราะห์ & ดูแลรักษา)',
+        temp: 'สรุปรายวัน (อุณหภูมิ & ความชื้น)',
+        ups: 'สรุปรายวัน (ทดสอบสำรองไฟ UPS)'
+      };
+      if (bread) bread.innerText = catNames[cat] || 'สรุปรายวัน';
+
+      closeMobileSidebar();
+      applyFilters();
     }
 
     // Load Data in Real-time from Supabase (sub-100ms) with Sheet Background Fallback
@@ -2257,8 +2327,7 @@
         window.PPCH_LAB_API.fetchLabOverview(function (res) {
           if (res && res.success && res.data) {
             labData = res.data;
-            updateDashboardKPIs(labData);
-            renderAllViews(labData);
+            applyFilters();
             if (syncText) syncText.innerText = 'ซิงค์ข้อมูล Supabase Real-time เรียบร้อย (< 100ms)';
           } else {
             console.warn('Supabase overview error, attempting GAS fallback:', res ? res.error : 'unknown');
@@ -2277,8 +2346,7 @@
         .then(function(json) {
           if (json && json.status === 'success' && json.data) {
             labData = json.data;
-            updateDashboardKPIs(labData);
-            renderAllViews(labData);
+            applyFilters();
             if (syncText) syncText.innerText = 'ข้อมูลอัปเดตจาก Google Sheet สำรอง';
           }
         })
@@ -2290,250 +2358,7 @@
 
     function useFallbackData() {
       labData = getBuiltinLabData();
-      updateDashboardKPIs(labData);
-      renderAllViews(labData);
-    }
-
-    function updateDashboardKPIs(data) {
-      var forms = data.forms || {};
-      var total = 0, ready = 0, abnormal = 0, pending = 0;
-
-      for (var fKey in forms) {
-        var items = forms[fKey].items || {};
-        for (var iKey in items) {
-          total++;
-          var st = items[iKey].status;
-          if (st === 'ready') ready++;
-          else if (st === 'abnormal') abnormal++;
-          else pending++;
-        }
-      }
-
-      document.getElementById('kpiTotal').innerText = total;
-      document.getElementById('kpiRecorded').innerText = (ready + abnormal);
-      document.getElementById('kpiReady').innerText = ready;
-      document.getElementById('kpiAbnormal').innerText = abnormal;
-      document.getElementById('kpiPending').innerText = pending;
-
-      var alertStrip = document.getElementById('alertBannerStrip');
-      if (alertStrip) alertStrip.style.display = abnormal > 0 ? 'flex' : 'none';
-    }
-
-    function renderAllViews(data) {
-      renderTempTableView(data);
-      renderMaintTableView(data);
-      renderUpsTableView(data);
-    }
-
-    // Helper: generate row floating speed dial (No modal on admin; link directly to QR Check-in)
-    function createRowFloatingActions(itemId, viewSheetGid, itemName) {
-      var actions = [];
-      if (itemId) {
-        actions.push('<a href="eval-lab.html?itemId=' + itemId + '" target="_blank" class="btn-action-icon" style="background: linear-gradient(135deg, var(--royal-blue) 0%, var(--royal-light) 100%); color: #ffffff;" title="เปิดหน้าบันทึกผลการตรวจเช็ค (Mobile & QR Check-in)"><span class="material-icons-round">edit_note</span></a>');
-        actions.push('<button type="button" onclick="openQrModal(\'' + itemId + '\')" class="btn-action-icon" style="background: #f8fafc; color: #002e6e; border-color: #cbd5e1;" title="ดู / พิมพ์ QR Code"><span class="material-icons-round">qr_code_2</span></button>');
-      }
-      if (viewSheetGid) {
-        actions.push('<a href="https://docs.google.com/spreadsheets/d/' + TEMPLATE_SHEET_ID + '/edit#gid=' + viewSheetGid + '" target="_blank" class="btn-action-icon" style="background: #ecfdf5; color: #047857; border-color: #a7f3d0;" title="เปิดดูฟอร์มใน Google Sheet"><span class="material-icons-round">description</span></a>');
-      }
-
-      return '<div class="floating-action-wrapper" onmouseenter="handleFloatingEnter(this)" onmouseleave="handleFloatingLeave(this)">' +
-        '<button type="button" class="btn-floating-trigger" onclick="toggleFloatingMenu(this, event)" title="เมนูจัดการ">' +
-          '<span class="material-icons-round trigger-icon">more_horiz</span>' +
-          '<span class="floating-badge-count">' + actions.length + '</span>' +
-        '</button>' +
-        '<div class="floating-action-tray">' +
-          actions.join('') +
-          '<button type="button" class="btn-floating-close" onclick="closeFloatingMenu(this, event)" title="ปิด"><span class="material-icons-round">close</span></button>' +
-        '</div>' +
-      '</div>';
-    }
-
-    // Render Table 1: อุณหภูมิจุดตรวจ LAB (12 จุด - ไม่เก็บความชื้น)
-    function renderTempTableView(data) {
-      var tbody = document.getElementById('tableBody_temp');
-      if (!tbody) return;
-      var forms = data.forms || {};
-      var tempKeys = ['lab_057', 'lab_060', 'lab_061', 'lab_062'];
-      var html = '';
-      var count = 0;
-
-      var query = (document.getElementById('filterSearch').value || '').trim().toLowerCase();
-      var filterStatus = document.getElementById('filterStatus').value;
-
-      tempKeys.forEach(function(fk) {
-        if (!forms[fk]) return;
-        var spec = forms[fk].spec;
-        var items = forms[fk].items || {};
-
-        for (var ik in items) {
-          var it = items[ik];
-          var st = it.status || 'pending';
-
-          // Filters
-          if (activeKpiFilter === 'ready' && st !== 'ready') continue;
-          if (activeKpiFilter === 'abnormal' && st !== 'abnormal') continue;
-          if (activeKpiFilter === 'pending' && st !== 'pending') continue;
-          if (activeKpiFilter === 'recorded' && st === 'pending') continue;
-          if (filterStatus !== 'all' && st !== filterStatus) continue;
-
-          var textMatch = (spec.code + ' ' + it.name + ' ' + (spec.cat || '')).toLowerCase();
-          if (query && textMatch.indexOf(query) === -1) continue;
-
-          count++;
-          var evalLink = 'eval-lab.html?itemId=' + encodeURIComponent(ik);
-          var statusBadge = '';
-          if (st === 'ready') {
-            statusBadge = '<a href="' + evalLink + '" target="_blank" class="status-symbol-btn symbol-ready" title="ปกติ / ผ่านเกณฑ์ (คลิกเพื่อบันทึกหรือดูประวัติ)"><span class="material-icons-round">check_circle</span></a>';
-          } else if (st === 'abnormal') {
-            statusBadge = '<a href="' + evalLink + '" target="_blank" class="status-symbol-btn symbol-abnormal" title="หลุดเกณฑ์มาตรฐาน! (คลิกเพื่อแก้ไข)"><span class="material-icons-round">cancel</span></a>';
-          } else {
-            statusBadge = '<a href="' + evalLink + '" target="_blank" class="status-symbol-btn symbol-pending" title="รอตรวจเวรนี้ (คลิกเพื่อบันทึกผล)"><span class="material-icons-round">schedule</span></a>';
-          }
-
-          var tempDisplay = (it.lastTemp !== undefined && it.lastTemp !== null) ? '<strong>' + it.lastTemp + ' °C</strong>' : '-';
-          var gid = TEMPLATE_GIDS[ik] || 0;
-          var rowActionHtml = createRowFloatingActions(ik, gid, it.name);
-
-          html += '<tr>';
-          html += '  <td data-label="รหัสฟอร์ม"><span class="asset-code-clean">' + spec.code + '</span></td>';
-          html += '  <td data-label="จุดตรวจ / อุปกรณ์"><div style="font-weight: 700; color: var(--text-main); font-size: 13.5px;">' + it.name + '</div></td>';
-          html += '  <td data-label="หมวดหมู่"><span style="color: var(--text-muted); font-size: 12px;">' + (spec.cat || '-') + '</span></td>';
-          html += '  <td data-label="เกณฑ์ควบคุม"><span style="font-size:11.5px; font-weight:600; color:var(--royal-blue);">' + (spec.targetTemp || '-') + '</span></td>';
-          html += '  <td data-label="อุณหภูมิล่าสุด">' + tempDisplay + '</td>';
-          html += '  <td data-label="สถานะ" style="text-align: center;">' + statusBadge + '</td>';
-          html += '  <td data-label="เวลาตรวจ" style="color:var(--text-muted); font-size:11.5px; font-family:var(--font-mono);">' + (it.evaluatedAt || '-') + '</td>';
-          html += '  <td data-label="ผู้บันทึก" style="color:var(--text-body); font-size:12px; font-weight:500;">' + (it.evaluatedBy || '-') + '</td>';
-          html += '  <td data-label="จัดการ" class="btn-action-col no-print" style="text-align: center; white-space: nowrap;">' + rowActionHtml + '</td>';
-          html += '</tr>';
-        }
-      });
-
-      if (!html) {
-        html = '<tr><td colspan="9" style="text-align:center; padding:30px; color:var(--text-muted);">ไม่พบจุดตรวจตามเงื่อนไขที่ค้นหา</td></tr>';
-      }
-      tbody.innerHTML = html;
-      var lbl = document.getElementById('lblCountTemp');
-      if (lbl) lbl.innerText = 'แสดง ' + count + ' จุดตรวจ';
-    }
-
-    // Render Table 2: เครื่องมือวิเคราะห์ & บำรุงรักษา
-    function renderMaintTableView(data) {
-      var tbody = document.getElementById('tableBody_maint');
-      if (!tbody) return;
-      var forms = data.forms || {};
-      var maintKeys = ['lab_049', 'lab_091', 'lab_099'];
-      var html = '';
-      var count = 0;
-
-      var query = (document.getElementById('filterSearch').value || '').trim().toLowerCase();
-      var filterStatus = document.getElementById('filterStatus').value;
-
-      maintKeys.forEach(function(fk) {
-        if (!forms[fk]) return;
-        var spec = forms[fk].spec;
-        var items = forms[fk].items || {};
-
-        for (var ik in items) {
-          var it = items[ik];
-          var st = it.status || 'pending';
-
-          if (activeKpiFilter === 'ready' && st !== 'ready') return;
-          if (activeKpiFilter === 'abnormal' && st !== 'abnormal') return;
-          if (activeKpiFilter === 'pending' && st !== 'pending') return;
-          if (activeKpiFilter === 'recorded' && st === 'pending') return;
-          if (filterStatus !== 'all' && st !== filterStatus) return;
-
-          var textMatch = (spec.code + ' ' + it.name + ' ' + (spec.cat || '')).toLowerCase();
-          if (query && textMatch.indexOf(query) === -1) return;
-
-          count++;
-          var evalLink = 'eval-lab.html?itemId=' + encodeURIComponent(ik);
-          var statusBadge = (st === 'ready') 
-            ? '<a href="' + evalLink + '" target="_blank" class="status-symbol-btn symbol-ready" title="ปกติ / พร้อมใช้งาน (คลิกเพื่อบันทึกหรือดูประวัติ)"><span class="material-icons-round">check_circle</span></a>'
-            : '<a href="' + evalLink + '" target="_blank" class="status-symbol-btn symbol-pending" title="รอตรวจเวรนี้ (คลิกเพื่อบันทึกผล)"><span class="material-icons-round">schedule</span></a>';
-
-          var gidKey = fk === 'lab_049' ? '049' : (fk === 'lab_091' ? '091' : '099');
-          var gid = TEMPLATE_GIDS[gidKey] || 0;
-          var rowActionHtml = createRowFloatingActions(ik, gid, it.name);
-
-          html += '<tr>';
-          html += '  <td data-label="รหัสฟอร์ม"><span class="asset-code-clean">' + spec.code + '</span></td>';
-          html += '  <td data-label="เครื่องมือ / อุปกรณ์"><div style="font-weight: 700; color: var(--text-main); font-size: 13.5px;">' + it.name + '</div></td>';
-          html += '  <td data-label="หัวข้อการตรวจ"><span style="color:var(--text-body); font-size:12px;">' + (spec.targetCheck || 'ตรวจเช็คตามแบบฟอร์ม') + '</span></td>';
-          html += '  <td data-label="เกณฑ์มาตรฐาน"><span style="font-size:11.5px; font-weight:600; color:var(--green-ready);">พร้อมใช้สมบูรณ์</span></td>';
-          html += '  <td data-label="สถานะ" style="text-align: center;">' + statusBadge + '</td>';
-          html += '  <td data-label="เวลาตรวจ" style="color:var(--text-muted); font-size:11.5px; font-family:var(--font-mono);">' + (it.evaluatedAt || '-') + '</td>';
-          html += '  <td data-label="ผู้บันทึก" style="color:var(--text-body); font-size:12px; font-weight:500;">' + (it.evaluatedBy || '-') + '</td>';
-          html += '  <td data-label="จัดการ" class="btn-action-col no-print" style="text-align: center; white-space: nowrap;">' + rowActionHtml + '</td>';
-          html += '</tr>';
-        }
-      });
-
-      if (!html) {
-        html = '<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);">ไม่พบรายการตามเงื่อนไขที่ค้นหา</td></tr>';
-      }
-      tbody.innerHTML = html;
-      var lbl = document.getElementById('lblCountMaint');
-      if (lbl) lbl.innerText = 'แสดง ' + count + ' รายการ';
-    }
-
-    // Render Table 3: ทดสอบเครื่องสำรองไฟ UPS (019)
-    function renderUpsTableView(data) {
-      var tbody = document.getElementById('tableBody_ups');
-      if (!tbody) return;
-      var forms = data.forms || {};
-      var upsForm = forms['lab_019'];
-      if (!upsForm) return;
-
-      var spec = upsForm.spec;
-      var items = upsForm.items || {};
-      var html = '';
-      var count = 0;
-
-      var query = (document.getElementById('filterSearch').value || '').trim().toLowerCase();
-      var filterStatus = document.getElementById('filterStatus').value;
-
-      for (var ik in items) {
-        var it = items[ik];
-        var st = it.status || 'pending';
-
-        if (activeKpiFilter === 'ready' && st !== 'ready') return;
-        if (activeKpiFilter === 'abnormal' && st !== 'abnormal') return;
-        if (activeKpiFilter === 'pending' && st !== 'pending') return;
-        if (activeKpiFilter === 'recorded' && st === 'pending') return;
-        if (filterStatus !== 'all' && st !== filterStatus) return;
-
-        var textMatch = (it.name + ' ' + (it.loadDevice || '')).toLowerCase();
-        if (query && textMatch.indexOf(query) === -1) return;
-
-        count++;
-        var evalLink = 'eval-lab.html?itemId=' + encodeURIComponent(ik);
-        var statusBadge = (st === 'ready') 
-          ? '<a href="' + evalLink + '" target="_blank" class="status-symbol-btn symbol-ready" title="สำรองไฟปกติ (คลิกเพื่อบันทึกหรือดูประวัติ)"><span class="material-icons-round">check_circle</span></a>'
-          : '<a href="' + evalLink + '" target="_blank" class="status-symbol-btn symbol-pending" title="รอตรวจรอบนี้ (คลิกเพื่อบันทึกผล)"><span class="material-icons-round">schedule</span></a>';
-
-        var gid = TEMPLATE_GIDS['019'] || 0;
-        var rowActionHtml = createRowFloatingActions(ik, gid, it.name);
-
-        html += '<tr>';
-        html += '  <td data-label="รหัส UPS"><span class="asset-code-clean">' + it.id.toUpperCase() + '</span></td>';
-        html += '  <td data-label="เครื่องสำรองไฟ"><div style="font-weight: 700; color: var(--text-main); font-size: 13.5px;">' + it.name + '</div></td>';
-        html += '  <td data-label="เครื่องมือที่ต่อพ่วง"><span style="color:var(--royal-blue); font-weight:600;">' + (it.loadDevice || '-') + '</span></td>';
-        html += '  <td data-label="เกณฑ์สำรองไฟ"><span style="color:var(--text-muted); font-size:12px;">' + (spec.targetCheck || '≥ 15 นาที') + '</span></td>';
-        html += '  <td data-label="เวลาสำรองไฟจริง"><strong>' + (it.runtimeMin ? it.runtimeMin + ' นาที' : '-') + '</strong></td>';
-        html += '  <td data-label="สถานะ" style="text-align: center;">' + statusBadge + '</td>';
-        html += '  <td data-label="รอบทดสอบ" style="color:var(--text-muted); font-size:11.5px;">' + (it.cycleDate || 'รอบ ต.ค. 69') + '</td>';
-        html += '  <td data-label="ผู้ตรวจ" style="color:var(--text-body); font-size:12px; font-weight:500;">' + (it.evaluatedBy || '-') + '</td>';
-        html += '  <td data-label="จัดการ" class="btn-action-col no-print" style="text-align: center; white-space: nowrap;">' + rowActionHtml + '</td>';
-        html += '</tr>';
-      }
-
-      if (!html) {
-        html = '<tr><td colspan="9" style="text-align:center; padding:30px; color:var(--text-muted);">ไม่พบเครื่องสำรองไฟตามเงื่อนไขที่ค้นหา</td></tr>';
-      }
-      tbody.innerHTML = html;
-      var lbl = document.getElementById('lblCountUps');
-      if (lbl) lbl.innerText = 'แสดง ' + count + ' เครื่อง';
+      applyFilters();
     }
 
     // ---------- FLOATING ACTION BUTTON HANDLERS (1s Collapse Delay) ----------
@@ -2607,126 +2432,347 @@
     });
 
     // Filter controls
-    function setKpiFilter(filterKey) {
-      activeKpiFilter = filterKey;
-      ['all', 'recorded', 'ready', 'abnormal', 'pending'].forEach(function(k) {
-        var card = document.getElementById('kpiCard_' + k);
-        if (card) card.classList.toggle('active-kpi', k === filterKey);
-      });
-      applyFilters();
-    }
-
-    function setDateToday() {
-      document.getElementById('filterDate').value = new Date().toISOString().slice(0, 10);
-      document.getElementById('btnDateToday').classList.add('active');
-      document.getElementById('btnDateYesterday').classList.remove('active');
-      applyFilters();
-    }
-
-    function setDateYesterday() {
+    function setQuickDate(type) {
       var d = new Date();
-      d.setDate(d.getDate() - 1);
-      document.getElementById('filterDate').value = d.toISOString().slice(0, 10);
-      document.getElementById('btnDateYesterday').classList.add('active');
-      document.getElementById('btnDateToday').classList.remove('active');
+      if (type === 'yesterday') {
+        d.setDate(d.getDate() - 1);
+      }
+      var str = d.toISOString().slice(0, 10);
+      var fDate = document.getElementById('filterDate');
+      if (fDate) fDate.value = str;
+
+      var btnToday = document.getElementById('btnDateToday');
+      if (btnToday) btnToday.classList.toggle('active', type === 'today');
+      var btnYesterday = document.getElementById('btnDateYesterday');
+      if (btnYesterday) btnYesterday.classList.toggle('active', type === 'yesterday');
       applyFilters();
+    }
+
+    function filterByKpi(kpiType) {
+      activeKpiFilter = kpiType;
+      document.querySelectorAll('.kpi-card').forEach(function (c) { c.classList.remove('active-kpi'); });
+      var activeCard = document.getElementById('kpiCard_' + kpiType);
+      if (activeCard) activeCard.classList.add('active-kpi');
+      applyFilters();
+    }
+
+    function toggleFilterDrawer() {
+      var drawer = document.getElementById('filterCollapsibleDrawer');
+      var btn = document.getElementById('btnToggleFilterDrawer');
+      if (!drawer) return;
+      var isOpen = drawer.classList.toggle('open');
+      if (btn) {
+        btn.classList.toggle('drawer-open', isOpen);
+      }
     }
 
     function resetFilters() {
-      document.getElementById('filterSearch').value = '';
-      document.getElementById('filterStatus').value = 'all';
-      setKpiFilter('all');
-      setDateToday();
+      var s = document.getElementById('filterSearch');
+      if (s) s.value = '';
+      setQuickDate('today');
+      var fd = document.getElementById('filterDept');
+      if (fd) fd.value = 'all';
+      var fc = document.getElementById('filterCategory');
+      if (fc) fc.value = 'all';
+      var fs = document.getElementById('filterStatus');
+      if (fs) fs.value = 'all';
+      filterByKpi('all');
     }
 
     function applyFilters() {
-      if (!labData) return;
-      if (currentView === 'temp') renderTempTableView(labData);
-      else if (currentView === 'maint') renderMaintTableView(labData);
-      else if (currentView === 'ups') renderUpsTableView(labData);
+      var search = (document.getElementById('filterSearch') ? document.getElementById('filterSearch').value : '').trim().toLowerCase();
+      var dateVal = document.getElementById('filterDate') ? document.getElementById('filterDate').value : new Date().toISOString().slice(0, 10);
+      var deptVal = document.getElementById('filterDept') ? document.getElementById('filterDept').value : 'all';
+      var catVal = document.getElementById('filterCategory') ? document.getElementById('filterCategory').value : 'all';
+      var statusVal = document.getElementById('filterStatus') ? document.getElementById('filterStatus').value : 'all';
+
+      var todayStr = new Date().toISOString().slice(0, 10);
+      var btnToday = document.getElementById('btnDateToday');
+      if (btnToday) btnToday.classList.toggle('active', dateVal === todayStr);
+
+      // Active Filter Count Badge for Collapsible Drawer (Option 3 standard)
+      var activeFilterCount = 0;
+      if (dateVal && dateVal !== todayStr) activeFilterCount++;
+      if (deptVal && deptVal !== 'all') activeFilterCount++;
+      if (catVal && catVal !== 'all') activeFilterCount++;
+      if (statusVal && statusVal !== 'all') activeFilterCount++;
+      if (activeKpiFilter && activeKpiFilter !== 'all') activeFilterCount++;
+
+      var badgeEl = document.getElementById('filterActiveBadge');
+      var toggleBtn = document.getElementById('btnToggleFilterDrawer');
+      if (badgeEl && toggleBtn) {
+        if (activeFilterCount > 0) {
+          badgeEl.innerText = activeFilterCount;
+          badgeEl.style.display = 'inline-block';
+          toggleBtn.classList.add('has-active-filter');
+        } else {
+          badgeEl.style.display = 'none';
+          toggleBtn.classList.remove('has-active-filter');
+        }
+      }
+
+      // Map live status from labData
+      var itemStatusMap = {};
+      if (labData && labData.forms) {
+        for (var fk in labData.forms) {
+          var fItems = labData.forms[fk].items || {};
+          for (var ik in fItems) {
+            itemStatusMap[ik] = fItems[ik];
+          }
+        }
+      }
+
+      var checkedCount = 0;
+      var readyCount = 0;
+      var abnormalCount = 0;
+
+      var filtered = ALL_LAB_CHECKPOINTS.filter(function (it) {
+        var live = itemStatusMap[it.id];
+        var st = (live && live.status) ? live.status : 'pending';
+
+        if (st === 'ready') {
+          checkedCount++;
+          readyCount++;
+        } else if (st === 'abnormal') {
+          checkedCount++;
+          abnormalCount++;
+        }
+
+        // Apply filters
+        if (deptVal !== 'all' && it.dept !== deptVal) return false;
+        if (catVal !== 'all' && (it.groupCat || it.cat) !== catVal) return false;
+        if (statusVal !== 'all' && st !== statusVal) return false;
+        if (activeKpiFilter === 'ready' && st !== 'ready') return false;
+        if (activeKpiFilter === 'abnormal' && st !== 'abnormal') return false;
+        if (activeKpiFilter === 'pending' && st !== 'pending') return false;
+        if (activeKpiFilter === 'checked' && st === 'pending') return false;
+
+        if (search) {
+          var mCode = (it.code || '').toLowerCase().indexOf(search) !== -1;
+          var mName = (it.name || '').toLowerCase().indexOf(search) !== -1;
+          var mDept = (it.dept || '').toLowerCase().indexOf(search) !== -1;
+          if (!mCode && !mName && !mDept) return false;
+        }
+
+        return true;
+      });
+
+      // Update KPI Strip Numbers
+      var elTotal = document.getElementById('kpiTotal');
+      var elChecked = document.getElementById('kpiChecked');
+      var elReady = document.getElementById('kpiReady');
+      var elAbnormal = document.getElementById('kpiAbnormal');
+      var elPending = document.getElementById('kpiPending');
+      var elBadge = document.getElementById('summaryCountBadge');
+
+      if (elTotal) elTotal.innerText = ALL_LAB_CHECKPOINTS.length;
+      if (elChecked) elChecked.innerText = checkedCount;
+      if (elReady) elReady.innerText = readyCount;
+      if (elAbnormal) elAbnormal.innerText = abnormalCount;
+      if (elPending) elPending.innerText = Math.max(0, ALL_LAB_CHECKPOINTS.length - checkedCount);
+      if (elBadge) elBadge.innerText = filtered.length + ' เครื่อง';
+
+      var alertStrip = document.getElementById('alertBannerStrip');
+      if (alertStrip) alertStrip.style.display = abnormalCount > 0 ? 'flex' : 'none';
+
+      renderSummaryTable(filtered, itemStatusMap);
+    }
+
+    // Render Strictly 5-Column Table Matching admin.html standard
+    function renderSummaryTable(equipmentList, itemStatusMap) {
+      var tbody = document.getElementById('summaryTableBody');
+      if (!tbody) return;
+
+      if (!equipmentList || equipmentList.length === 0) {
+        tbody.innerHTML = '<tr class="table-empty-row"><td colspan="5" style="text-align: center; padding: 36px; color: var(--text-light);">ไม่พบเครื่องมือแพทย์หรือจุดตรวจที่ตรงกับตัวกรอง</td></tr>';
+        return;
+      }
+
+      var html = '';
+      equipmentList.forEach(function (eq) {
+        var live = (itemStatusMap && itemStatusMap[eq.id]) ? itemStatusMap[eq.id] : null;
+        var st = (live && live.status) ? live.status : 'pending';
+
+        var evalUrl = 'eval-lab.html?itemId=' + encodeURIComponent(eq.id);
+        var statusBadge = '';
+        var actionBtns = [];
+
+        if (st === 'ready') {
+          statusBadge = '<div class="status-symbol-btn symbol-ready" title="พร้อมใช้งาน (ตรวจเรียบร้อยแล้ว)" onclick="openEvalForItem(\'' + eq.id + '\')"><span class="material-icons-round">check_circle</span></div>';
+          actionBtns.push('<a href="' + evalUrl + '" target="_blank" class="btn-action-icon btn-icon-re-eval" title="เปิดหน้าตรวจเช็คซ้ำ"><span class="material-icons-round">refresh</span></a>');
+        } else if (st === 'abnormal') {
+          statusBadge = '<div class="status-symbol-btn symbol-abnormal" title="พบข้อบกพร่อง / หลุดเกณฑ์มาตรฐาน" onclick="openEvalForItem(\'' + eq.id + '\')"><span class="material-icons-round">cancel</span></div>';
+          actionBtns.push('<a href="' + evalUrl + '" target="_blank" class="btn-action-icon btn-icon-repair" style="background:#fef2f2; color:#dc2626; border-color:#fecaca;" title="แก้ไขข้อบกพร่อง"><span class="material-icons-round">build</span></a>');
+        } else {
+          statusBadge = '<div class="status-symbol-btn symbol-pending" title="รอตรวจวันนี้" onclick="openEvalForItem(\'' + eq.id + '\')"><span class="material-icons-round">schedule</span></div>';
+          actionBtns.push('<a href="' + evalUrl + '" target="_blank" class="btn-action-icon btn-icon-eval" title="เปิดหน้าตรวจเช็ค"><span class="material-icons-round">assignment</span></a>');
+        }
+
+        // Action 2: View QR Code
+        actionBtns.push('<button type="button" onclick="openQrModal(\'' + eq.id + '\')" class="btn-action-icon" style="background: #f8fafc; color: #002e6e; border-color: #cbd5e1;" title="ดู / พิมพ์ QR Code"><span class="material-icons-round">qr_code_2</span></button>');
+
+        // Action 3: View official A4 Report
+        var repFormId = eq.formId || eq.id;
+        actionBtns.push('<button type="button" onclick="openOfficialReport(\'' + eq.id + '\', \'' + repFormId + '\')" class="btn-action-icon" style="background: #ecfdf5; color: #047857; border-color: #a7f3d0;" title="เปิดดูแบบฟอร์มทางการ A4"><span class="material-icons-round">description</span></button>');
+
+        // Action 4: Google Sheet GID
+        if (eq.gid) {
+          actionBtns.push('<a href="https://docs.google.com/spreadsheets/d/' + TEMPLATE_SHEET_ID + '/edit#gid=' + eq.gid + '" target="_blank" class="btn-action-icon" style="background: #f0fdf4; color: #15803d; border-color: #bbf7d0;" title="เปิดดูใน Google Sheet"><span class="material-icons-round">open_in_new</span></a>');
+        }
+
+        var actionsHtml = '';
+        if (actionBtns.length === 1) {
+          actionsHtml = '<div style="display: flex; justify-content: center; align-items: center;">' + actionBtns[0] + '</div>';
+        } else if (actionBtns.length > 1) {
+          actionsHtml = '<div class="floating-action-wrapper" onmouseenter="handleFloatingEnter(this)" onmouseleave="handleFloatingLeave(this)">' +
+            '<button type="button" class="btn-floating-trigger" onclick="toggleFloatingMenu(this, event)" title="เมนูจัดการ (คลิกหรือชี้เพื่อเปิด ' + actionBtns.length + ' รายการ)">' +
+              '<span class="material-icons-round trigger-icon">more_horiz</span>' +
+              '<span class="floating-badge-count">' + actionBtns.length + '</span>' +
+            '</button>' +
+            '<div class="floating-action-tray">' +
+              actionBtns.join('') +
+              '<button type="button" class="btn-floating-close" onclick="closeFloatingMenu(this, event)" title="กดเพื่อเก็บเป็นปุ่มเดียว">' +
+                '<span class="material-icons-round">close</span>' +
+              '</button>' +
+            '</div>' +
+          '</div>';
+        }
+
+        html += '<tr>' +
+          '<td data-label="รหัสเครื่อง"><span class="asset-code-clean">' + eq.code + '</span></td>' +
+          '<td class="summary-device-title" data-label=""><div style="font-weight: 700; color: var(--text-main); font-size: 13.5px;">' + eq.name + '</div></td>' +
+          '<td data-label="แผนกรับผิดชอบ"><span style="font-weight: 500;">' + (eq.dept || 'ห้องปฏิบัติการ') + '</span></td>' +
+          '<td data-label="สถานะวันนี้" style="text-align: center;">' + statusBadge + '</td>' +
+          '<td data-label="จัดการ" class="btn-action-col no-print" style="text-align: center; white-space: nowrap;">' + actionsHtml + '</td>' +
+        '</tr>';
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    function openOfficialReport(itemId, formId) {
+      switchView('reports');
+      var sel = document.getElementById('reportFormSelect');
+      if (sel) {
+        for (var i = 0; i < sel.options.length; i++) {
+          if (sel.options[i].value === formId || sel.options[i].value.indexOf(formId) === 0) {
+            sel.selectedIndex = i;
+            break;
+          }
+        }
+        renderSelectedReport();
+      }
+    }
+
+    function openEvalForItem(itemId) {
+      window.open('eval-lab.html?itemId=' + encodeURIComponent(itemId), '_blank');
     }
 
     // CSV Export with UTF-8 BOM (\uFEFF)
     function exportCsv() {
-      if (!labData) return;
-      var csv = '\uFEFFรหัสฟอร์ม,จุดตรวจ/เครื่องมือ,หมวดหมู่,สถานะ,อุณหภูมิวัดได้,เวลาตรวจ,ผู้ตรวจ\n';
-      var forms = labData.forms || {};
-      for (var fk in forms) {
-        var spec = forms[fk].spec;
-        var items = forms[fk].items || {};
-        for (var ik in items) {
-          var it = items[ik];
-          csv += '"' + spec.code + '","' + it.name + '","' + (spec.cat || '-') + '","' + (it.status || '-') + '","' + (it.lastTemp || '-') + '","' + (it.evaluatedAt || '-') + '","' + (it.evaluatedBy || '-') + '"\n';
+      var dateVal = document.getElementById('filterDate') ? document.getElementById('filterDate').value : new Date().toISOString().slice(0, 10);
+      var csv = '\uFEFFรหัสเครื่อง,เครื่องมือแพทย์,แผนกรับผิดชอบ,สถานะ,เกณฑ์มาตรฐาน,ผู้บันทึกล่าสุด,เวลาตรวจล่าสุด\n';
+
+      var itemStatusMap = {};
+      if (labData && labData.forms) {
+        for (var fk in labData.forms) {
+          var fItems = labData.forms[fk].items || {};
+          for (var ik in fItems) {
+            itemStatusMap[ik] = fItems[ik];
+          }
         }
       }
+
+      ALL_LAB_CHECKPOINTS.forEach(function (eq) {
+        var live = itemStatusMap[eq.id];
+        var stText = (live && live.status === 'ready') ? 'พร้อมใช้งาน' : ((live && live.status === 'abnormal') ? 'พบข้อบกพร่อง' : 'รอตรวจ');
+        var evBy = (live && live.evaluatedBy) ? live.evaluatedBy : '-';
+        var evAt = (live && live.evaluatedAt) ? live.evaluatedAt : '-';
+        csv += '"' + eq.code + '","' + eq.name + '","' + (eq.dept || '-') + '","' + stText + '","' + (eq.target || '-') + '","' + evBy + '","' + evAt + '"\n';
+      });
+
       var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       var url = URL.createObjectURL(blob);
       var link = document.createElement('a');
       link.href = url;
-      link.download = 'PPCH_LAB_TRACK_' + (document.getElementById('filterDate').value) + '.csv';
+      link.download = 'PPCH_LAB_DAILY_' + dateVal + '.csv';
       link.click();
     }
 
     // Excel Export with UTF-8 BOM (\uFEFF)
     function exportExcel() {
-      if (!labData) return;
+      var dateVal = document.getElementById('filterDate') ? document.getElementById('filterDate').value : new Date().toISOString().slice(0, 10);
       var tableHtml = '\uFEFF<html><head><meta charset="utf-8"></head><body><table border="1">';
-      tableHtml += '<tr style="background:#004b93;color:#ffffff;font-weight:bold;"><th>รหัสฟอร์ม</th><th>จุดตรวจ/เครื่องมือ</th><th>หมวดหมู่</th><th>เกณฑ์ควบคุม</th><th>ค่าล่าสุด</th><th>สถานะ</th><th>เวลาตรวจ</th><th>ผู้บันทึก</th></tr>';
-      
-      var forms = labData.forms || {};
-      for (var fk in forms) {
-        var spec = forms[fk].spec;
-        var items = forms[fk].items || {};
-        for (var ik in items) {
-          var it = items[ik];
-          var val = it.lastTemp ? (it.lastTemp + ' °C') : (it.runtimeMin ? (it.runtimeMin + ' นาที') : '-');
-          var st = it.status === 'ready' ? 'ปกติ' : (it.status === 'abnormal' ? 'หลุดเกณฑ์' : 'รอตรวจ');
-          tableHtml += '<tr><td>' + spec.code + '</td><td>' + it.name + '</td><td>' + (spec.cat || '-') + '</td><td>' + (spec.targetTemp || spec.targetCheck || '-') + '</td><td>' + val + '</td><td>' + st + '</td><td>' + (it.evaluatedAt || '-') + '</td><td>' + (it.evaluatedBy || '-') + '</td></tr>';
+      tableHtml += '<tr style="background:#004b93;color:#ffffff;font-weight:bold;"><th>รหัสเครื่อง</th><th>เครื่องมือแพทย์</th><th>แผนกรับผิดชอบ</th><th>สถานะ</th><th>เกณฑ์มาตรฐาน</th><th>ผู้บันทึกล่าสุด</th><th>เวลาตรวจล่าสุด</th></tr>';
+
+      var itemStatusMap = {};
+      if (labData && labData.forms) {
+        for (var fk in labData.forms) {
+          var fItems = labData.forms[fk].items || {};
+          for (var ik in fItems) {
+            itemStatusMap[ik] = fItems[ik];
+          }
         }
       }
+
+      ALL_LAB_CHECKPOINTS.forEach(function (eq) {
+        var live = itemStatusMap[eq.id];
+        var stText = (live && live.status === 'ready') ? 'พร้อมใช้งาน' : ((live && live.status === 'abnormal') ? 'พบข้อบกพร่อง' : 'รอตรวจ');
+        var evBy = (live && live.evaluatedBy) ? live.evaluatedBy : '-';
+        var evAt = (live && live.evaluatedAt) ? live.evaluatedAt : '-';
+        tableHtml += '<tr><td>' + eq.code + '</td><td>' + eq.name + '</td><td>' + (eq.dept || '-') + '</td><td>' + stText + '</td><td>' + (eq.target || '-') + '</td><td>' + evBy + '</td><td>' + evAt + '</td></tr>';
+      });
+
       tableHtml += '</table></body></html>';
 
       var blob = new Blob([tableHtml], { type: 'application/vnd.ms-excel;charset=utf-8;' });
       var url = URL.createObjectURL(blob);
       var link = document.createElement('a');
       link.href = url;
-      link.download = 'PPCH_LAB_EXPORT_' + (document.getElementById('filterDate').value) + '.xls';
+      link.download = 'PPCH_LAB_DAILY_' + dateVal + '.xls';
       link.click();
     }
 
     // ==================== 23 CHECKPOINTS REGISTRY & QR WORKSTATION ====================
     var ALL_LAB_CHECKPOINTS = [
-      // 057 Room Temp (5)
-      { id: '057_lab', name: 'Laboratory (ห้องปฏิบัติการกลาง)', code: 'FM-PPCH-LAB-057', cat: 'temp_room', catTitle: 'อุณหภูมิห้องแลป', target: '24.0 - 28.0 °C', tempMin: 24, tempMax: 28, hasHum: false, icon: 'thermostat', color: '#004b93' },
-      { id: '057_immu', name: 'ห้อง Immunology', code: 'FM-PPCH-LAB-057', cat: 'temp_room', catTitle: 'อุณหภูมิห้องแลป', target: '24.0 - 28.0 °C', tempMin: 24, tempMax: 28, hasHum: false, icon: 'thermostat', color: '#004b93' },
-      { id: '057_blood', name: 'Blood bank (ธนาคารเลือด)', code: 'FM-PPCH-LAB-057', cat: 'temp_room', catTitle: 'อุณหภูมิห้องแลป', target: '24.0 - 28.0 °C', tempMin: 24, tempMax: 28, hasHum: false, icon: 'thermostat', color: '#004b93' },
-      { id: '057_bac', name: 'Bacteria (จุลชีววิทยา)', code: 'FM-PPCH-LAB-057', cat: 'temp_room', catTitle: 'อุณหภูมิห้องแลป', target: '24.0 - 28.0 °C', tempMin: 24, tempMax: 28, hasHum: false, icon: 'thermostat', color: '#004b93' },
-      { id: '057_store', name: 'Storage (คลังเก็บน้ำยา/เวชภัณฑ์)', code: 'FM-PPCH-LAB-057', cat: 'temp_room', catTitle: 'อุณหภูมิห้องแลป', target: '24.0 - 28.0 °C', tempMin: 24, tempMax: 28, hasHum: false, icon: 'thermostat', color: '#004b93' },
-      // 060 Freezer (2)
-      { id: '060_ffp', name: 'ตู้แช่แข็ง FFP (ควบคุม ≤ -18 °C)', code: 'FM-PPCH-LAB-060', cat: 'temp_freezer', catTitle: 'ตู้แช่แข็ง', target: '≤ -18.0 °C', tempMin: -40, tempMax: -18, hasHum: false, icon: 'ac_unit', color: '#0284c7' },
-      { id: '060_ctrl', name: 'ตู้แช่แข็ง Control (ควบคุม ≤ -18 °C)', code: 'FM-PPCH-LAB-060', cat: 'temp_freezer', catTitle: 'ตู้แช่แข็ง', target: '≤ -18.0 °C', tempMin: -40, tempMax: -18, hasHum: false, icon: 'ac_unit', color: '#0284c7' },
-      // 061 Water bath (2)
-      { id: '061_wb1', name: 'Water bath 1 (WB-01)', code: 'FM-PPCH-LAB-061', cat: 'temp_wb', catTitle: 'Water bath', target: '37.0 ± 0.5 °C', tempMin: 36.5, tempMax: 37.5, hasHum: false, icon: 'waves', color: '#d97706' },
-      { id: '061_wb2', name: 'Water bath 2 (WB-02)', code: 'FM-PPCH-LAB-061', cat: 'temp_wb', catTitle: 'Water bath', target: '37.0 ± 0.5 °C', tempMin: 36.5, tempMax: 37.5, hasHum: false, icon: 'waves', color: '#d97706' },
-      // 062 Refrigerator (3)
-      { id: '062_r1', name: 'ตู้แช่น้ำยา 1 (Ref-01)', code: 'FM-PPCH-LAB-062', cat: 'temp_ref', catTitle: 'ตู้เย็น', target: '2.0 - 8.0 °C', tempMin: 2, tempMax: 8, hasHum: false, icon: 'kitchen', color: '#059669' },
-      { id: '062_r2', name: 'ตู้แช่น้ำยา 2 (Ref-02)', code: 'FM-PPCH-LAB-062', cat: 'temp_ref', catTitle: 'ตู้เย็น', target: '2.0 - 8.0 °C', tempMin: 2, tempMax: 8, hasHum: false, icon: 'kitchen', color: '#059669' },
-      { id: '062_rs', name: 'ตู้แช่สิ่งส่งตรวจ (Ref-Sample)', code: 'FM-PPCH-LAB-062', cat: 'temp_ref', catTitle: 'ตู้เย็น', target: '2.0 - 8.0 °C', tempMin: 2, tempMax: 8, hasHum: false, icon: 'kitchen', color: '#059669' },
-      // 049 Cobas h232 (3)
-      { id: '049_k1', name: 'Roche Cobas h232 เครื่อง 1 (KQ03008166)', code: 'FM-PPCH-LAB-049', cat: 'analyzer', catTitle: 'เครื่องตรวจวิเคราะห์', target: 'เช็คความสะอาด/แบตเตอรี่/เปิดเครื่อง', icon: 'biotech', color: '#4f46e5' },
-      { id: '049_k2', name: 'Roche Cobas h232 เครื่อง 2 (KQ0304874)', code: 'FM-PPCH-LAB-049', cat: 'analyzer', catTitle: 'เครื่องตรวจวิเคราะห์', target: 'เช็คความสะอาด/แบตเตอรี่/เปิดเครื่อง', icon: 'biotech', color: '#4f46e5' },
-      { id: '049_k3', name: 'Roche Cobas h232 เครื่อง 3 (KQ0132536)', code: 'FM-PPCH-LAB-049', cat: 'analyzer', catTitle: 'เครื่องตรวจวิเคราะห์', target: 'เช็คความสะอาด/แบตเตอรี่/เปิดเครื่อง', icon: 'biotech', color: '#4f46e5' },
-      // 091 BSC (1)
-      { id: '091_bsc', name: 'ตู้กรองชีวนิรภัย BSC Class II (MICRO TECH)', code: 'FM-PPCH-LAB-091', cat: 'analyzer', catTitle: 'เครื่องตรวจวิเคราะห์', target: 'แรงดัน 0.5-1.0 in.wg / UV / แอลกอฮอล์', icon: 'shield', color: '#7c3aed' },
-      // 099 Mindray BS600M (1)
-      { id: '099_bs600', name: 'Chemistry Mindray BS600M', code: 'FM-PPCH-LAB-099', cat: 'analyzer', catTitle: 'เครื่องตรวจวิเคราะห์', target: 'Conc Wash, Electrode, Cuvette & Special Wash', icon: 'precision_manufacturing', color: '#0891b2' },
-      // 019 UPS Battery (6)
-      { id: '019_ups1', name: 'UPS-LAB-01 (BS600M)', code: 'FM-PPCH-LAB-019', cat: 'ups', catTitle: 'สำรองไฟ UPS', target: 'สำรองไฟต่อเนื่อง ≥ 15 นาที', load: 'Mindray BS600M', icon: 'battery_charging_full', color: '#059669' },
-      { id: '019_ups2', name: 'UPS-LAB-02 (Sysmex)', code: 'FM-PPCH-LAB-019', cat: 'ups', catTitle: 'สำรองไฟ UPS', target: 'สำรองไฟต่อเนื่อง ≥ 15 นาที', load: 'Sysmex XN-L', icon: 'battery_charging_full', color: '#059669' },
-      { id: '019_ups3', name: 'UPS-LAB-03 (Cobas)', code: 'FM-PPCH-LAB-019', cat: 'ups', catTitle: 'สำรองไฟ UPS', target: 'สำรองไฟต่อเนื่อง ≥ 15 นาที', load: 'Cobas h232 ทั้งหมด', icon: 'battery_charging_full', color: '#059669' },
-      { id: '019_ups4', name: 'UPS-LAB-04 (Blood Bank)', code: 'FM-PPCH-LAB-019', cat: 'ups', catTitle: 'สำรองไฟ UPS', target: 'สำรองไฟต่อเนื่อง ≥ 15 นาที', load: 'ตู้เย็นเก็บเลือด Blood Bank', icon: 'battery_charging_full', color: '#059669' },
-      { id: '019_ups5', name: 'UPS-LAB-05 (FFP Freezer)', code: 'FM-PPCH-LAB-019', cat: 'ups', catTitle: 'สำรองไฟ UPS', target: 'สำรองไฟต่อเนื่อง ≥ 15 นาที', load: 'ตู้แช่แข็ง FFP', icon: 'battery_charging_full', color: '#059669' },
-      { id: '019_ups6', name: 'UPS-LAB-06 (Server LIS)', code: 'FM-PPCH-LAB-019', cat: 'ups', catTitle: 'สำรองไฟ UPS', target: 'สำรองไฟต่อเนื่อง ≥ 15 นาที', load: 'Server และคอมพิวเตอร์ LIS', icon: 'battery_charging_full', color: '#059669' }
+      // 1. FM-PPCH-LAB-049: Cobas h232 (3 เครื่อง)
+      { id: '049_k1', name: 'Roche Cobas h232 เครื่อง 1 (KQ03008166)', code: 'FM-PPCH-LAB-049-01', dept: 'ห้องเคมีคลินิก', cat: 'analyzer', groupCat: 'analyzer', catTitle: 'เครื่องตรวจวิเคราะห์', formId: '049', target: 'ทำความสะอาดภายนอก & ตรวจเช็คประจำวัน', gid: 245344307, icon: 'biotech', color: '#4f46e5' },
+      { id: '049_k2', name: 'Roche Cobas h232 เครื่อง 2 (KQ0304874)', code: 'FM-PPCH-LAB-049-02', dept: 'ห้องเคมีคลินิก', cat: 'analyzer', groupCat: 'analyzer', catTitle: 'เครื่องตรวจวิเคราะห์', formId: '049', target: 'ทำความสะอาดภายนอก & ตรวจเช็คประจำวัน', gid: 245344307, icon: 'biotech', color: '#4f46e5' },
+      { id: '049_k3', name: 'Roche Cobas h232 เครื่อง 3 (KQ0132536)', code: 'FM-PPCH-LAB-049-03', dept: 'ห้องเคมีคลินิก', cat: 'analyzer', groupCat: 'analyzer', catTitle: 'เครื่องตรวจวิเคราะห์', formId: '049', target: 'ทำความสะอาดภายนอก & ตรวจเช็คประจำวัน', gid: 245344307, icon: 'biotech', color: '#4f46e5' },
+
+      // 2. FM-PPCH-LAB-091: BSC Class II (1 เครื่อง)
+      { id: '091_bsc', name: 'ตู้กรองชีวนิรภัย BSC Class II (MICRO TECH)', code: 'FM-PPCH-LAB-091', dept: 'ห้องจุลชีววิทยา', cat: 'analyzer', groupCat: 'analyzer', catTitle: 'เครื่องตรวจวิเคราะห์', formId: '091', target: 'แรงดัน 0.5-1.0 in.wg / UV / แอลกอฮอล์', gid: 386859523, icon: 'shield', color: '#7c3aed' },
+
+      // 3. FM-PPCH-LAB-099: Chemistry Mindray (1 เครื่อง)
+      { id: '099_bs600', name: 'Chemistry Mindray BS600M', code: 'FM-PPCH-LAB-099', dept: 'ห้องเคมีคลินิก', cat: 'analyzer', groupCat: 'analyzer', catTitle: 'เครื่องตรวจวิเคราะห์', formId: '099', target: 'Conc Wash, Electrode, Cuvette & Special Wash', gid: 1919890556, icon: 'precision_manufacturing', color: '#0891b2' },
+
+      // 4. FM-PPCH-LAB-057: Room Temp (5 จุด)
+      { id: '057_lab', name: 'Laboratory (ห้องปฏิบัติการกลาง)', code: 'FM-PPCH-LAB-057-01', dept: 'ห้องปฏิบัติการกลาง', cat: 'temp_room', groupCat: 'temp', catTitle: 'อุณหภูมิห้องแลป', formId: '057_lab', target: '24.0 - 28.0 °C', tempMin: 24, tempMax: 28, hasHum: false, gid: 277489101, icon: 'thermostat', color: '#004b93' },
+      { id: '057_immu', name: 'ห้อง Immunology', code: 'FM-PPCH-LAB-057-02', dept: 'ห้องภูมิคุ้มกันวิทยา', cat: 'temp_room', groupCat: 'temp', catTitle: 'อุณหภูมิห้องแลป', formId: '057_immu', target: '24.0 - 28.0 °C', tempMin: 24, tempMax: 28, hasHum: false, gid: 173055131, icon: 'thermostat', color: '#004b93' },
+      { id: '057_blood', name: 'Blood bank (ธนาคารเลือด)', code: 'FM-PPCH-LAB-057-03', dept: 'ห้องธนาคารเลือด', cat: 'temp_room', groupCat: 'temp', catTitle: 'อุณหภูมิห้องแลป', formId: '057_blood', target: '24.0 - 28.0 °C', tempMin: 24, tempMax: 28, hasHum: false, gid: 1342589041, icon: 'thermostat', color: '#004b93' },
+      { id: '057_bac', name: 'Bacteria (จุลชีววิทยา)', code: 'FM-PPCH-LAB-057-04', dept: 'ห้องจุลชีววิทยา', cat: 'temp_room', groupCat: 'temp', catTitle: 'อุณหภูมิห้องแลป', formId: '057_bac', target: '24.0 - 28.0 °C', tempMin: 24, tempMax: 28, hasHum: false, gid: 1606672685, icon: 'thermostat', color: '#004b93' },
+      { id: '057_store', name: 'Storage (คลังเก็บน้ำยา/เวชภัณฑ์)', code: 'FM-PPCH-LAB-057-05', dept: 'คลังน้ำยา & เวชภัณฑ์', cat: 'temp_room', groupCat: 'temp', catTitle: 'อุณหภูมิห้องแลป', formId: '057_store', target: '24.0 - 28.0 °C', tempMin: 24, tempMax: 28, hasHum: false, gid: 258905921, icon: 'thermostat', color: '#004b93' },
+
+      // 5. FM-PPCH-LAB-060: Freezer (2 จุด)
+      { id: '060_ffp', name: 'ตู้แช่แข็ง FFP (ควบคุม ≤ -18 °C)', code: 'FM-PPCH-LAB-060-01', dept: 'ห้องธนาคารเลือด', cat: 'temp_freezer', groupCat: 'temp', catTitle: 'ตู้แช่แข็ง', formId: '060_ffp', target: '≤ -18.0 °C', tempMin: -40, tempMax: -18, hasHum: false, gid: 921338200, icon: 'ac_unit', color: '#0284c7' },
+      { id: '060_ctrl', name: 'ตู้แช่แข็ง Control (ควบคุม ≤ -18 °C)', code: 'FM-PPCH-LAB-060-02', dept: 'ห้องเคมีคลินิก', cat: 'temp_freezer', groupCat: 'temp', catTitle: 'ตู้แช่แข็ง', formId: '060_ctrl', target: '≤ -18.0 °C', tempMin: -40, tempMax: -18, hasHum: false, gid: 1497027243, icon: 'ac_unit', color: '#0284c7' },
+
+      // 6. FM-PPCH-LAB-061: Water bath (2 จุด)
+      { id: '061_wb1', name: 'Water bath 1 (WB-01)', code: 'FM-PPCH-LAB-061-01', dept: 'ห้องธนาคารเลือด', cat: 'temp_wb', groupCat: 'temp', catTitle: 'Water bath', formId: '061_wb1', target: '37.0 ± 0.5 °C', tempMin: 36.5, tempMax: 37.5, hasHum: false, gid: 1059260834, icon: 'waves', color: '#d97706' },
+      { id: '061_wb2', name: 'Water bath 2 (WB-02)', code: 'FM-PPCH-LAB-061-02', dept: 'ห้องเคมีคลินิก', cat: 'temp_wb', groupCat: 'temp', catTitle: 'Water bath', formId: '061_wb2', target: '37.0 ± 0.5 °C', tempMin: 36.5, tempMax: 37.5, hasHum: false, gid: 1907568417, icon: 'waves', color: '#d97706' },
+
+      // 7. FM-PPCH-LAB-062: Refrigerator (3 จุด)
+      { id: '062_r1', name: 'ตู้แช่น้ำยา 1 (Ref-01)', code: 'FM-PPCH-LAB-062-01', dept: 'คลังน้ำยา & เวชภัณฑ์', cat: 'temp_ref', groupCat: 'temp', catTitle: 'ตู้เย็น', formId: '062_r1', target: '2.0 - 8.0 °C', tempMin: 2, tempMax: 8, hasHum: false, gid: 912841925, icon: 'kitchen', color: '#059669' },
+      { id: '062_r2', name: 'ตู้แช่น้ำยา 2 (Ref-02)', code: 'FM-PPCH-LAB-062-02', dept: 'ห้องเคมีคลินิก', cat: 'temp_ref', groupCat: 'temp', catTitle: 'ตู้เย็น', formId: '062_r2', target: '2.0 - 8.0 °C', tempMin: 2, tempMax: 8, hasHum: false, gid: 412308516, icon: 'kitchen', color: '#059669' },
+      { id: '062_rs', name: 'ตู้แช่สิ่งส่งตรวจ (Ref-Sample)', code: 'FM-PPCH-LAB-062-03', dept: 'ห้องเคมีคลินิก', cat: 'temp_ref', groupCat: 'temp', catTitle: 'ตู้เย็น', formId: '062_rs', target: '2.0 - 8.0 °C', tempMin: 2, tempMax: 8, hasHum: false, gid: 635275572, icon: 'kitchen', color: '#059669' },
+
+      // 8. FM-PPCH-LAB-019: UPS Battery (6 เครื่อง)
+      { id: '019_ups1', name: 'UPS-LAB-01 (BS600M)', code: 'EQ-LAB-UPS-01', dept: 'ห้องเคมีคลินิก', cat: 'ups', groupCat: 'ups', catTitle: 'สำรองไฟ UPS', formId: '019', target: 'สำรองไฟต่อเนื่อง ≥ 15 นาที', load: 'Mindray BS600M', gid: 949886185, icon: 'battery_charging_full', color: '#059669' },
+      { id: '019_ups2', name: 'UPS-LAB-02 (Sysmex)', code: 'EQ-LAB-UPS-02', dept: 'ห้องโลหิตวิทยา', cat: 'ups', groupCat: 'ups', catTitle: 'สำรองไฟ UPS', formId: '019', target: 'สำรองไฟต่อเนื่อง ≥ 15 นาที', load: 'Sysmex XN-L', gid: 949886185, icon: 'battery_charging_full', color: '#059669' },
+      { id: '019_ups3', name: 'UPS-LAB-03 (Cobas)', code: 'EQ-LAB-UPS-03', dept: 'ห้องเคมีคลินิก', cat: 'ups', groupCat: 'ups', catTitle: 'สำรองไฟ UPS', formId: '019', target: 'สำรองไฟต่อเนื่อง ≥ 15 นาที', load: 'Cobas h232 ทั้งหมด', gid: 949886185, icon: 'battery_charging_full', color: '#059669' },
+      { id: '019_ups4', name: 'UPS-LAB-04 (Blood Bank)', code: 'EQ-LAB-UPS-04', dept: 'ห้องธนาคารเลือด', cat: 'ups', groupCat: 'ups', catTitle: 'สำรองไฟ UPS', formId: '019', target: 'สำรองไฟต่อเนื่อง ≥ 15 นาที', load: 'ตู้เย็นเก็บเลือด Blood Bank', gid: 949886185, icon: 'battery_charging_full', color: '#059669' },
+      { id: '019_ups5', name: 'UPS-LAB-05 (FFP Freezer)', code: 'EQ-LAB-UPS-05', dept: 'ห้องธนาคารเลือด', cat: 'ups', groupCat: 'ups', catTitle: 'สำรองไฟ UPS', formId: '019', target: 'สำรองไฟต่อเนื่อง ≥ 15 นาที', load: 'ตู้แช่แข็ง FFP', gid: 949886185, icon: 'battery_charging_full', color: '#059669' },
+      { id: '019_ups6', name: 'UPS-LAB-06 (Server LIS)', code: 'EQ-LAB-UPS-06', dept: 'ห้องปฏิบัติการกลาง', cat: 'ups', groupCat: 'ups', catTitle: 'สำรองไฟ UPS', formId: '019', target: 'สำรองไฟต่อเนื่อง ≥ 15 นาที', load: 'Server และคอมพิวเตอร์ LIS', gid: 949886185, icon: 'battery_charging_full', color: '#059669' }
     ];
 
     var activeQrCheckpoint = null;
