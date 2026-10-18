@@ -959,13 +959,13 @@
       margin-top: 1px;
     }
 
-    /* Right Column: Visual Cockpit (Chart + Matrix) */
+    /* Right Column: Visual Cockpit (3 Shift Graphs + Matrix) */
     .cockpit-chart-card {
       background: #ffffff;
       border: 1px solid var(--border-main);
       border-radius: 12px;
-      padding: 10px 14px;
-      margin-bottom: 10px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
       box-shadow: 0 2px 8px rgba(0, 46, 110, 0.04);
     }
     .cockpit-chart-hdr {
@@ -973,47 +973,100 @@
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #f1f5f9;
     }
     .cockpit-chart-title {
-      font-size: 13px;
+      font-size: 13.5px;
       font-weight: 800;
       color: var(--royal-dark);
       display: flex;
       align-items: center;
       gap: 6px;
     }
-    .cockpit-filter-pills {
-      display: inline-flex;
-      background: #f1f5f9;
-      padding: 2px;
-      border-radius: 6px;
-      gap: 2px;
+    .cockpit-graphs-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
-    .cockpit-filter-btn {
-      border: none;
-      background: transparent;
-      padding: 3px 8px;
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: 600;
-      color: #64748b;
+    .shift-graph-block {
+      background: #ffffff;
+      border: 1.5px solid var(--border-main);
+      border-radius: 10px;
+      padding: 8px 10px 4px 10px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .shift-graph-block.active-shift-block {
+      border-color: #3b82f6;
+      background: #f8fbff;
+      box-shadow: 0 3px 12px rgba(0, 75, 147, 0.08);
+    }
+    .shift-graph-subhdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+      padding-bottom: 4px;
+      border-bottom: 1px dashed #e2e8f0;
+    }
+    .shift-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 2px 9px;
+      border-radius: 5px;
       cursor: pointer;
+      user-select: none;
       transition: all 0.15s;
     }
-    .cockpit-filter-btn.active {
-      background: #ffffff;
-      color: #002e6e;
-      font-weight: 700;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    .shift-tag:hover {
+      transform: scale(1.03);
     }
-    .cockpit-svg-wrap {
+    .shift-tag-morning {
+      color: #0369a1;
+      background: #e0f2fe;
+      border: 1px solid #bae6fd;
+    }
+    .shift-tag-afternoon {
+      color: #b45309;
+      background: #fef3c7;
+      border: 1px solid #fde68a;
+    }
+    .shift-tag-evening {
+      color: #6d28d9;
+      background: #ede9fe;
+      border: 1px solid #ddd6fe;
+    }
+    .shift-avg-pill {
+      font-size: 11px;
+      font-weight: 700;
+      color: #334155;
+      font-family: var(--font-mono);
+      background: #f8fafc;
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid #cbd5e1;
+    }
+    .shift-stat-sub {
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 500;
+    }
+    .cockpit-svg-wrap-shift {
       position: relative;
       width: 100%;
-      height: 220px;
+      height: 125px;
       background: #ffffff;
       border-radius: 6px;
       overflow: hidden;
+    }
+    .cockpit-svg-wrap-shift svg {
+      width: 100%;
+      height: 100%;
+      display: block;
     }
     .cockpit-chart-legend {
       display: flex;
@@ -1021,8 +1074,8 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 8px;
-      margin-top: 6px;
-      padding-top: 6px;
+      margin-top: 8px;
+      padding-top: 8px;
       border-top: 1px solid #f1f5f9;
       font-size: 11px;
       color: #64748b;
@@ -1421,15 +1474,12 @@
                 </div>
               </div>
 
-              <!-- Row 3: Staff & Note Inputs (3 Columns Responsive) -->
-              <div style="display: grid; grid-template-columns: 180px 1.2fr 1.5fr; gap: 12px; margin-bottom: 16px;">
-                <div>
-                  <label class="cockpit-field-label">รหัสพนักงาน (6 หลัก) *</label>
-                  <input type="text" id="staffId" class="form-control-input" placeholder="000023" maxlength="6" onblur="formatStaffId(this); onLiveStaffInput();" oninput="onLiveStaffInput()" style="font-family: var(--font-mono); font-weight: 700; height: 38px;">
-                </div>
+              <!-- Row 3: Staff & Note Inputs (2 Columns - Only Name required) -->
+              <div style="display: grid; grid-template-columns: 1.2fr 1.8fr; gap: 12px; margin-bottom: 16px;">
                 <div>
                   <label class="cockpit-field-label">ชื่อ-สกุล ผู้ตรวจ *</label>
-                  <input type="text" id="staffName" class="form-control-input" placeholder="ทนพ. สมชาย" oninput="onLiveStaffInput()" style="height: 38px;">
+                  <input type="text" id="staffName" class="form-control-input" placeholder="ระบุชื่อ-สกุล ผู้ตรวจ..." oninput="onLiveStaffInput()" style="height: 38px;">
+                  <input type="hidden" id="staffId" value="">
                 </div>
                 <div>
                   <label class="cockpit-field-label" style="display: flex; justify-content: space-between;">
@@ -1480,62 +1530,94 @@
           <!-- RIGHT COLUMN: Interactive Trend Chart (Top) + 31-Day Matrix Table (Bottom) -->
           <div class="cockpit-right">
             
-            <!-- Trend Chart Card -->
+            <!-- Trend Chart Card (Separated into 3 Distinct Shift Graphs) -->
             <div class="cockpit-chart-card">
               <div class="cockpit-chart-hdr">
                 <div class="cockpit-chart-title">
                   <span class="material-icons-round" style="color: #004b93; font-size: 18px;">show_chart</span>
-                  <span>กราฟแนวโน้มอุณหภูมิประจำเดือน (Monthly Temperature Trend)</span>
+                  <span>กราฟแนวโน้มอุณหภูมิประจำเดือน (Monthly Temperature Trend) - แยก 3 เวร</span>
                 </div>
-                <!-- Shift Filter Pills -->
-                <div class="cockpit-filter-pills">
-                  <button type="button" class="cockpit-filter-btn active" id="btnChartAll" onclick="switchChartFilter('all')">
-                    <span>ทั้งหมด (3 เวร)</span>
-                  </button>
-                  <button type="button" class="cockpit-filter-btn" id="btnChartMorning" onclick="switchChartFilter('morning')">
-                    <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #0284c7; margin-right: 3px;"></span>
-                    <span>เวรเช้า</span>
-                  </button>
-                  <button type="button" class="cockpit-filter-btn" id="btnChartAfternoon" onclick="switchChartFilter('afternoon')">
-                    <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #f59e0b; margin-right: 3px;"></span>
-                    <span>เวรบ่าย</span>
-                  </button>
-                  <button type="button" class="cockpit-filter-btn" id="btnChartEvening" onclick="switchChartFilter('evening')">
-                    <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #8b5cf6; margin-right: 3px;"></span>
-                    <span>เวรดึก</span>
-                  </button>
+                <div style="font-size: 11px; color: #64748b; font-weight: 500;">
+                  คลิกที่จุดหรือเส้นบนกราฟเพื่อสลับวัน/เวร
                 </div>
               </div>
 
-              <!-- SVG Trend Canvas -->
-              <div class="cockpit-svg-wrap" id="trendChartContainer">
-                <svg id="trendSvg" viewBox="0 0 1000 200" style="width: 100%; height: 100%; display: block;" preserveAspectRatio="none">
-                  <!-- Dynamic SVG elements generated by JS -->
-                </svg>
+              <!-- 3 Shift Graphs Container -->
+              <div class="cockpit-graphs-stack">
+                <!-- 1. Morning Shift (08:00) -->
+                <div class="shift-graph-block active-shift-block" id="blockMorning">
+                  <div class="shift-graph-subhdr">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span class="shift-tag shift-tag-morning" onclick="switchActiveShift('morning')" title="คลิกเพื่อสลับมาบันทึกเวรเช้า">
+                        <span class="material-icons-round" style="font-size: 13px;">wb_sunny</span>
+                        <span>เวรเช้า (08:00 น.)</span>
+                      </span>
+                      <span class="shift-avg-pill" id="avg_morning">เฉลี่ย: --.- °C</span>
+                    </div>
+                    <span class="shift-stat-sub" id="stat_morning">ยังไม่มีบันทึก</span>
+                  </div>
+                  <div class="cockpit-svg-wrap-shift">
+                    <svg id="trendSvg_morning" viewBox="0 0 1000 125" preserveAspectRatio="none"></svg>
+                  </div>
+                </div>
+
+                <!-- 2. Afternoon Shift (16:00) -->
+                <div class="shift-graph-block" id="blockAfternoon">
+                  <div class="shift-graph-subhdr">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span class="shift-tag shift-tag-afternoon" onclick="switchActiveShift('afternoon')" title="คลิกเพื่อสลับมาบันทึกเวรบ่าย">
+                        <span class="material-icons-round" style="font-size: 13px;">wb_twilight</span>
+                        <span>เวรบ่าย (16:00 น.)</span>
+                      </span>
+                      <span class="shift-avg-pill" id="avg_afternoon">เฉลี่ย: --.- °C</span>
+                    </div>
+                    <span class="shift-stat-sub" id="stat_afternoon">ยังไม่มีบันทึก</span>
+                  </div>
+                  <div class="cockpit-svg-wrap-shift">
+                    <svg id="trendSvg_afternoon" viewBox="0 0 1000 125" preserveAspectRatio="none"></svg>
+                  </div>
+                </div>
+
+                <!-- 3. Night Shift (24:00) -->
+                <div class="shift-graph-block" id="blockEvening">
+                  <div class="shift-graph-subhdr">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span class="shift-tag shift-tag-evening" onclick="switchActiveShift('evening')" title="คลิกเพื่อสลับมาบันทึกเวรดึก">
+                        <span class="material-icons-round" style="font-size: 13px;">bedtime</span>
+                        <span>เวรดึก (24:00 น.)</span>
+                      </span>
+                      <span class="shift-avg-pill" id="avg_evening">เฉลี่ย: --.- °C</span>
+                    </div>
+                    <span class="shift-stat-sub" id="stat_evening">ยังไม่มีบันทึก</span>
+                  </div>
+                  <div class="cockpit-svg-wrap-shift">
+                    <svg id="trendSvg_evening" viewBox="0 0 1000 125" preserveAspectRatio="none"></svg>
+                  </div>
+                </div>
               </div>
 
               <!-- Chart Legend -->
               <div class="cockpit-chart-legend">
-                <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
                   <span style="display: inline-flex; align-items: center; gap: 4px;">
                     <span style="width: 10px; height: 10px; background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; border-radius: 2px;"></span>
                     <span>ช่วงเกณฑ์ปกติ</span>
                   </span>
                   <span style="display: inline-flex; align-items: center; gap: 4px;">
-                    <span style="width: 12px; height: 3px; background: #0284c7; border-radius: 2px;"></span>
+                    <span style="width: 8px; height: 8px; border-radius: 50%; background: #0284c7;"></span>
                     <span>เวรเช้า (08:00)</span>
                   </span>
                   <span style="display: inline-flex; align-items: center; gap: 4px;">
-                    <span style="width: 12px; height: 3px; background: #f59e0b; border-radius: 2px;"></span>
+                    <span style="width: 8px; height: 8px; border-radius: 50%; background: #f59e0b;"></span>
                     <span>เวรบ่าย (16:00)</span>
                   </span>
                   <span style="display: inline-flex; align-items: center; gap: 4px;">
-                    <span style="width: 12px; height: 3px; background: #8b5cf6; border-radius: 2px;"></span>
+                    <span style="width: 8px; height: 8px; border-radius: 50%; background: #8b5cf6;"></span>
                     <span>เวรดึก (24:00)</span>
                   </span>
                 </div>
                 <div style="font-size: 10.5px; color: #94a3b8;">
-                  คลิกที่จุดบนกราฟเพื่อสลับไปยังวันนั้นทันที
+                  แยกบันทึกและแสดงผล 3 เวรชัดเจน
                 </div>
               </div>
             </div>
@@ -1628,19 +1710,12 @@
 
           <!-- Staff Section for Standard Form -->
           <div style="border-top: 1px solid var(--border-subtle); padding-top: 14px; margin-top: 14px;">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
-              <div>
-                <label style="display: block; font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 3px;">
-                  รหัสพนักงานผู้ตรวจ (6 หลัก) *
-                </label>
-                <input type="text" id="stdStaffId" class="form-control-input" placeholder="เช่น 000023" maxlength="6" onblur="formatStaffId(this)" style="font-family: var(--font-mono); font-weight: 700;">
-              </div>
-              <div>
-                <label style="display: block; font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 3px;">
-                  ชื่อ-สกุล ผู้ตรวจเช็ค *
-                </label>
-                <input type="text" id="stdStaffName" class="form-control-input" placeholder="เช่น ทนพ. สมชาย ใจดี">
-              </div>
+            <div style="margin-bottom: 12px;">
+              <label style="display: block; font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 3px;">
+                ชื่อ-สกุล ผู้ตรวจเช็ค *
+              </label>
+              <input type="text" id="stdStaffName" class="form-control-input" placeholder="ระบุชื่อ-สกุล ผู้ตรวจเช็ค...">
+              <input type="hidden" id="stdStaffId" value="">
             </div>
             <div style="margin-bottom: 16px;">
               <label style="display: flex; justify-content: space-between; font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 3px;">
@@ -2163,21 +2238,19 @@
       }
     }
 
-    // Render Clinical Interactive Trend Chart (SVG)
-    function renderTrendSvg() {
-      if (!currentItem) return;
-      var config = getScaleConfig(currentItem);
-      var svg = document.getElementById('trendSvg');
+    // Render Single Shift Interactive Trend Chart (SVG)
+    function renderSingleShiftSvg(shiftKey, svgId, avgId, statId, blockId, config) {
+      var svg = document.getElementById(svgId);
       if (!svg) return;
 
       var svgW = 1000;
-      var svgH = 200;
+      var svgH = 125;
       var padL = 50;
       var padR = 25;
-      var padT = 16;
-      var padB = 26;
+      var padT = 10;
+      var padB = 22;
       var chartW = svgW - padL - padR; // 925
-      var chartH = svgH - padT - padB; // 158
+      var chartH = svgH - padT - padB; // 93
 
       function getX(d) {
         return padL + (d - 1) * (chartW / 30);
@@ -2187,8 +2260,14 @@
         if (span === 0) span = 10;
         var ratio = (config.scaleMax - t) / span;
         var y = padT + (ratio * chartH);
-        return Math.max(padT - 4, Math.min(padT + chartH + 4, y));
+        return Math.max(padT - 3, Math.min(padT + chartH + 3, y));
       }
+
+      var shiftMeta = {
+        morning: { name: 'เวรเช้า (08:00)', color: '#0284c7' },
+        afternoon: { name: 'เวรบ่าย (16:00)', color: '#f59e0b' },
+        evening: { name: 'เวรดึก (24:00)', color: '#8b5cf6' }
+      }[shiftKey] || { name: shiftKey, color: '#004b93' };
 
       var html = [];
 
@@ -2198,11 +2277,10 @@
       var safeTop = Math.min(ySafeMin, ySafeMax);
       var safeH = Math.abs(ySafeMin - ySafeMax);
       html.push('<rect x="' + padL + '" y="' + safeTop.toFixed(1) + '" width="' + chartW + '" height="' + safeH.toFixed(1) + '" fill="rgba(16, 185, 129, 0.12)" stroke="rgba(16, 185, 129, 0.45)" stroke-width="1" stroke-dasharray="4 3" />');
-      var labelY = Math.max(14, safeTop + 13);
-      html.push('<text x="' + (padL + 8) + '" y="' + labelY.toFixed(1) + '" fill="#059669" font-size="9.5" font-weight="700">เกณฑ์มาตรฐาน: ' + (currentItem.targetTemp || '') + '</text>');
+      var labelY = Math.max(12, safeTop + 10);
+      html.push('<text x="' + (padL + 6) + '" y="' + labelY.toFixed(1) + '" fill="#059669" font-size="8.5" font-weight="700">เกณฑ์: ' + (currentItem.targetTemp || '') + '</text>');
 
-      // 2. Horizontal Tick Lines & Y-axis labels
-      // Intermediate sub-ticks (3 thin gray lines per interval, e.g. 22.5, 23.0, 23.5 - no numbers)
+      // 2. Horizontal Sub-Ticks (3 thin gray lines per interval, e.g. 22.5, 23.0, 23.5)
       for (var ti = 0; ti < config.ticks.length - 1; ti++) {
         var tA = config.ticks[ti];
         var tB = config.ticks[ti + 1];
@@ -2212,84 +2290,122 @@
         for (var s = 1; s <= 3; s++) {
           var subVal = tLow + (s * tStep);
           var subY = getY(subVal);
-          html.push('<line x1="' + padL + '" y1="' + subY.toFixed(1) + '" x2="' + (padL + chartW) + '" y2="' + subY.toFixed(1) + '" stroke="#cbd5e1" stroke-width="0.6" opacity="0.6" />');
+          html.push('<line x1="' + padL + '" y1="' + subY.toFixed(1) + '" x2="' + (padL + chartW) + '" y2="' + subY.toFixed(1) + '" stroke="#cbd5e1" stroke-width="0.55" opacity="0.6" />');
         }
       }
 
       // Major Horizontal Tick Lines
       config.ticks.forEach(function(tickVal) {
         var yPos = getY(tickVal);
-        html.push('<line x1="' + padL + '" y1="' + yPos.toFixed(1) + '" x2="' + (padL + chartW) + '" y2="' + yPos.toFixed(1) + '" stroke="#94a3b8" stroke-width="0.85" opacity="0.75" />');
-        html.push('<text x="' + (padL - 8) + '" y="' + (yPos + 3.5).toFixed(1) + '" fill="#64748b" font-size="10" font-weight="600" text-anchor="end" font-family="var(--font-mono)">' + tickVal + '°</text>');
+        html.push('<line x1="' + padL + '" y1="' + yPos.toFixed(1) + '" x2="' + (padL + chartW) + '" y2="' + yPos.toFixed(1) + '" stroke="#94a3b8" stroke-width="0.8" opacity="0.75" />');
+        html.push('<text x="' + (padL - 7) + '" y="' + (yPos + 3.5).toFixed(1) + '" fill="#64748b" font-size="9" font-weight="600" text-anchor="end" font-family="var(--font-mono)">' + tickVal + '°</text>');
       });
 
-      // 3. Vertical Grid Lines & Day labels (Days 1 to 31 full, no abbreviations)
+      // 3. Days 1 to 31 full X axis
       for (var d = 1; d <= 31; d++) {
         var xPos = getX(d);
         html.push('<line x1="' + xPos.toFixed(1) + '" y1="' + padT + '" x2="' + xPos.toFixed(1) + '" y2="' + (padT + chartH) + '" stroke="#f1f5f9" stroke-width="1" />');
-        html.push('<text x="' + xPos.toFixed(1) + '" y="193" fill="#64748b" font-size="8.5" font-weight="700" text-anchor="middle" font-family="var(--font-mono)">' + d + '</text>');
+        html.push('<text x="' + xPos.toFixed(1) + '" y="122" fill="#64748b" font-size="8" font-weight="700" text-anchor="middle" font-family="var(--font-mono)">' + d + '</text>');
       }
 
-      // 4. Active Day Vertical Highlight Line
+      // 4. Active Day Vertical Line
       var xActive = getX(activeDay);
-      html.push('<line x1="' + xActive.toFixed(1) + '" y1="' + padT + '" x2="' + xActive.toFixed(1) + '" y2="' + (padT + chartH) + '" stroke="#004b93" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.6" />');
+      var isCurShift = (currentShift === shiftKey);
+      html.push('<line x1="' + xActive.toFixed(1) + '" y1="' + padT + '" x2="' + xActive.toFixed(1) + '" y2="' + (padT + chartH) + '" stroke="#004b93" stroke-width="' + (isCurShift ? '1.5' : '1') + '" stroke-dasharray="3 3" opacity="' + (isCurShift ? '0.7' : '0.3') + '" />');
 
-      // 5. Shift Curves & Dots
-      var shiftConfigs = [
-        { key: 'morning', name: 'เวรเช้า', color: '#0284c7' },
-        { key: 'afternoon', name: 'เวรบ่าย', color: '#f59e0b' },
-        { key: 'evening', name: 'เวรดึก', color: '#8b5cf6' }
-      ];
+      // 5. Shift Data Points & Stats
+      var shiftData = monthSheetData[shiftKey] || {};
+      var points = [];
+      var dotsHtml = [];
+      var totalTemp = 0;
+      var count = 0;
+      var minVal = 999;
+      var maxVal = -999;
 
-      shiftConfigs.forEach(function(sc) {
-        if (activeChartFilter !== 'all' && activeChartFilter !== sc.key) return;
+      for (var dayNum = 1; dayNum <= 31; dayNum++) {
+        var rec = shiftData[dayNum];
+        if (rec && rec.temp !== undefined && !isNaN(rec.temp)) {
+          var px = getX(dayNum);
+          var py = getY(rec.temp);
+          points.push(px.toFixed(1) + ',' + py.toFixed(1));
 
-        var shiftData = monthSheetData[sc.key] || {};
-        var points = [];
-        var dotsHtml = [];
+          totalTemp += rec.temp;
+          count++;
+          if (rec.temp < minVal) minVal = rec.temp;
+          if (rec.temp > maxVal) maxVal = rec.temp;
 
-        for (var dayNum = 1; dayNum <= 31; dayNum++) {
-          var rec = shiftData[dayNum];
-          if (rec && rec.temp !== undefined && !isNaN(rec.temp)) {
-            var px = getX(dayNum);
-            var py = getY(rec.temp);
-            points.push(px.toFixed(1) + ',' + py.toFixed(1));
+          var inSpec = (rec.temp >= config.safeMin && rec.temp <= config.safeMax);
+          var dotFill = inSpec ? shiftMeta.color : '#dc2626';
+          var isPointActive = (dayNum === activeDay && isCurShift);
+          var dotRadius = isPointActive ? 5 : 3.5;
 
-            var inSpec = (rec.temp >= config.safeMin && rec.temp <= config.safeMax);
-            var dotFill = inSpec ? sc.color : '#dc2626';
-            var dotRadius = (dayNum === activeDay && currentShift === sc.key) ? 5.5 : 3.5;
-
-            dotsHtml.push('<circle cx="' + px.toFixed(1) + '" cy="' + py.toFixed(1) + '" r="' + dotRadius + '" fill="' + dotFill + '" stroke="#ffffff" stroke-width="1.5" style="cursor: pointer;" onclick="selectShiftAndDay(\'' + sc.key + '\', ' + dayNum + ')"><title>วันที่ ' + dayNum + ' (' + sc.name + '): ' + rec.temp.toFixed(1) + ' °C</title></circle>');
-          }
+          dotsHtml.push('<circle cx="' + px.toFixed(1) + '" cy="' + py.toFixed(1) + '" r="' + dotRadius + '" fill="' + dotFill + '" stroke="#ffffff" stroke-width="1.5" style="cursor: pointer;" onclick="selectShiftAndDay(\'' + shiftKey + '\', ' + dayNum + ')"><title>วันที่ ' + dayNum + ' (' + shiftMeta.name + '): ' + rec.temp.toFixed(1) + ' °C</title></circle>');
         }
+      }
 
-        if (points.length > 0) {
-          html.push('<polyline points="' + points.join(' ') + '" fill="none" stroke="' + sc.color + '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />');
-          html.push(dotsHtml.join(''));
+      // Polyline
+      if (points.length > 0) {
+        html.push('<polyline points="' + points.join(' ') + '" fill="none" stroke="' + shiftMeta.color + '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.95" />');
+        html.push(dotsHtml.join(''));
+      }
+
+      // 6. Active Live Marker (if this shift is currentShift)
+      if (isCurShift) {
+        var currRec = (shiftData && shiftData[activeDay]) ? shiftData[activeDay] : null;
+        if (currRec && currRec.temp !== undefined && !isNaN(currRec.temp)) {
+          var ax = getX(activeDay);
+          var ay = getY(currRec.temp);
+          var inSpec = (currRec.temp >= config.safeMin && currRec.temp <= config.safeMax);
+          var pulseColor = inSpec ? '#004b93' : '#ef4444';
+
+          html.push('<circle cx="' + ax.toFixed(1) + '" cy="' + ay.toFixed(1) + '" r="9" fill="none" stroke="' + pulseColor + '" stroke-width="1.8" class="marker-pulse" />');
+          html.push('<circle cx="' + ax.toFixed(1) + '" cy="' + ay.toFixed(1) + '" r="4.5" fill="' + pulseColor + '" stroke="#ffffff" stroke-width="1.5" />');
+
+          var tooltipY = Math.max(16, ay - 10);
+          html.push('<g transform="translate(' + ax.toFixed(1) + ',' + tooltipY.toFixed(1) + ')">');
+          html.push('<rect x="-24" y="-15" width="48" height="15" rx="3.5" fill="#002e6e" />');
+          html.push('<polygon points="-3,0 3,0 0,3" fill="#002e6e" />');
+          html.push('<text x="0" y="-3.5" fill="#ffffff" font-size="8.5" font-weight="800" text-anchor="middle" font-family="var(--font-mono)">' + currRec.temp.toFixed(1) + '°C</text>');
+          html.push('</g>');
         }
-      });
-
-      // 6. Active Live Marker with Pulse Animation
-      var currRec = (monthSheetData[currentShift] && monthSheetData[currentShift][activeDay]) ? monthSheetData[currentShift][activeDay] : null;
-      if (currRec && currRec.temp !== undefined && !isNaN(currRec.temp)) {
-        var ax = getX(activeDay);
-        var ay = getY(currRec.temp);
-        var inSpec = (currRec.temp >= config.safeMin && currRec.temp <= config.safeMax);
-        var pulseColor = inSpec ? '#004b93' : '#ef4444';
-
-        html.push('<circle cx="' + ax.toFixed(1) + '" cy="' + ay.toFixed(1) + '" r="10" fill="none" stroke="' + pulseColor + '" stroke-width="1.8" class="marker-pulse" />');
-        html.push('<circle cx="' + ax.toFixed(1) + '" cy="' + ay.toFixed(1) + '" r="5" fill="' + pulseColor + '" stroke="#ffffff" stroke-width="2" />');
-        
-        // Tooltip pill above marker
-        var tooltipY = Math.max(22, ay - 12);
-        html.push('<g transform="translate(' + ax.toFixed(1) + ',' + tooltipY.toFixed(1) + ')">');
-        html.push('<rect x="-24" y="-17" width="48" height="17" rx="4" fill="#002e6e" />');
-        html.push('<polygon points="-3,0 3,0 0,3" fill="#002e6e" />');
-        html.push('<text x="0" y="-4.5" fill="#ffffff" font-size="9.5" font-weight="800" text-anchor="middle" font-family="var(--font-mono)">' + currRec.temp.toFixed(1) + '°C</text>');
-        html.push('</g>');
       }
 
       svg.innerHTML = html.join('');
+
+      // Update Shift Average & Stats Pill
+      var avgEl = document.getElementById(avgId);
+      if (avgEl) {
+        if (count > 0) {
+          avgEl.innerText = 'เฉลี่ย: ' + (totalTemp / count).toFixed(1) + ' °C (' + count + ' วัน)';
+        } else {
+          avgEl.innerText = 'เฉลี่ย: --.- °C';
+        }
+      }
+
+      var statEl = document.getElementById(statId);
+      if (statEl) {
+        if (count > 0) {
+          statEl.innerText = 'ต่ำสุด: ' + minVal.toFixed(1) + '° | สูงสุด: ' + maxVal.toFixed(1) + '°';
+        } else {
+          statEl.innerText = 'ยังไม่มีบันทึก';
+        }
+      }
+
+      // Highlight active shift block
+      var blockEl = document.getElementById(blockId);
+      if (blockEl) {
+        blockEl.classList.toggle('active-shift-block', isCurShift);
+      }
+    }
+
+    // Render All 3 Shift Trend Graphs (Separated 3 Graphs)
+    function renderTrendSvg() {
+      if (!currentItem) return;
+      var config = getScaleConfig(currentItem);
+
+      renderSingleShiftSvg('morning', 'trendSvg_morning', 'avg_morning', 'stat_morning', 'blockMorning', config);
+      renderSingleShiftSvg('afternoon', 'trendSvg_afternoon', 'avg_afternoon', 'stat_afternoon', 'blockAfternoon', config);
+      renderSingleShiftSvg('evening', 'trendSvg_evening', 'avg_evening', 'stat_evening', 'blockEvening', config);
     }
 
     // Render Modern Monthly Shift Matrix Table (3 Shifts + Row Averages)
@@ -2594,19 +2710,14 @@
         return;
       }
 
-      var staffIdInput = document.getElementById('staffId');
-      formatStaffId(staffIdInput);
-      var staffId = staffIdInput.value.trim();
-      var staffName = document.getElementById('staffName').value.trim();
+      var staffNameInput = document.getElementById('staffName');
+      var staffName = (staffNameInput ? staffNameInput.value : '').trim();
+      var staffIdEl = document.getElementById('staffId');
+      var staffId = (staffIdEl ? staffIdEl.value : '').trim();
 
-      if (!staffId) {
-        showToast('กรุณาระบุรหัสพนักงานผู้ตรวจ (เช่น 000023)');
-        staffIdInput.focus();
-        return;
-      }
       if (!staffName) {
         showToast('กรุณาระบุชื่อ-สกุล ผู้ตรวจเช็ค');
-        document.getElementById('staffName').focus();
+        if (staffNameInput) staffNameInput.focus();
         return;
       }
 
@@ -2628,7 +2739,7 @@
         hum: null,
         staffId: staffId,
         staffName: staffName,
-        staff: staffName + ' (' + staffId + ')',
+        staff: staffName + (staffId ? (' (' + staffId + ')') : ''),
         note: note,
         time: new Date().toTimeString().slice(0, 5)
       };
@@ -2679,14 +2790,11 @@
             btnSubmit.innerHTML = origBtnHtml;
           }
           if (res && res.success) {
-            showToast('✓ บันทึกผลตรวจลง Supabase เรียบร้อยแล้ว');
-            // Advance Stepper & Show confirmation slip
-            updateStepper(3);
-            showConfirmationSlip(evalData);
+            showToast('✓ บันทึกผลตรวจเช็คเรียบร้อยแล้ว');
+            updateStepper(2);
           } else {
-            showToast('คำเตือน: บันทึกข้อมูลแบบออฟไลน์');
-            updateStepper(3);
-            showConfirmationSlip(evalData);
+            showToast('✓ บันทึกผลตรวจเช็คเรียบร้อยแล้ว (ออฟไลน์)');
+            updateStepper(2);
           }
         });
       } else {
@@ -2694,8 +2802,8 @@
           btnSubmit.disabled = false;
           btnSubmit.innerHTML = origBtnHtml;
         }
-        updateStepper(3);
-        showConfirmationSlip(evalData);
+        showToast('✓ บันทึกผลตรวจเช็คเรียบร้อยแล้ว');
+        updateStepper(2);
       }
     }
 
@@ -2703,19 +2811,14 @@
     function submitStandardEvaluation() {
       if (!currentItem) return;
 
-      var staffIdInput = document.getElementById('stdStaffId');
-      formatStaffId(staffIdInput);
-      var staffId = staffIdInput.value.trim();
-      var staffName = document.getElementById('stdStaffName').value.trim();
+      var staffNameInput = document.getElementById('stdStaffName');
+      var staffName = (staffNameInput ? staffNameInput.value : '').trim();
+      var staffIdEl = document.getElementById('stdStaffId');
+      var staffId = (staffIdEl ? staffIdEl.value : '').trim();
 
-      if (!staffId) {
-        showToast('กรุณาระบุรหัสพนักงานผู้ตรวจ (เช่น 000023)');
-        staffIdInput.focus();
-        return;
-      }
       if (!staffName) {
         showToast('กรุณาระบุชื่อ-สกุล ผู้ตรวจเช็ค');
-        document.getElementById('stdStaffName').focus();
+        if (staffNameInput) staffNameInput.focus();
         return;
       }
 
@@ -2785,13 +2888,11 @@
             btnSubmit.innerHTML = origBtnHtml;
           }
           if (res && res.success) {
-            showToast('✓ บันทึกผลการตรวจเช็คลง Supabase เรียบร้อย');
-            updateStepper(3);
-            showConfirmationSlip(evalData);
+            showToast('✓ บันทึกผลการตรวจเช็คเรียบร้อยแล้ว');
+            updateStepper(2);
           } else {
-            showToast('คำเตือน: บันทึกข้อมูลแบบออฟไลน์');
-            updateStepper(3);
-            showConfirmationSlip(evalData);
+            showToast('✓ บันทึกผลการตรวจเช็คเรียบร้อยแล้ว (ออฟไลน์)');
+            updateStepper(2);
           }
         });
       } else {
@@ -2799,8 +2900,8 @@
           btnSubmit.disabled = false;
           btnSubmit.innerHTML = origBtnHtml;
         }
-        updateStepper(3);
-        showConfirmationSlip(evalData);
+        showToast('✓ บันทึกผลการตรวจเช็คเรียบร้อยแล้ว');
+        updateStepper(2);
       }
     }
 
