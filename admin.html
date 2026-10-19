@@ -3332,7 +3332,7 @@
       outline: none !important;
       border-radius: 0 !important;
       margin: 0 !important;
-      padding: 16px 20px !important;
+      padding: 8px 18px 14px 18px !important;
       width: 1080px !important;
       max-width: 1080px !important;
       min-width: 1080px !important;
@@ -9458,14 +9458,15 @@
             backgroundColor: '#ffffff',
             logging: false
           });
+          var topMargin = 6;
           var rW1 = maxW;
           var rH1 = (canvas1.height * maxW) / canvas1.width;
           if (rH1 > maxH) {
             rH1 = maxH;
             rW1 = (canvas1.width * maxH) / canvas1.height;
           }
-          var posX1 = 6 + (maxW - rW1) / 2;
-          var posY1 = 6 + (maxH - rH1) / 2;
+          var posX1 = (297 - rW1) / 2;
+          var posY1 = topMargin;
           var imgData1 = canvas1.toDataURL('image/jpeg', 0.95);
 
           // Render Page 2
@@ -9482,8 +9483,8 @@
             rH2 = maxH;
             rW2 = (canvas2.width * maxH) / canvas2.height;
           }
-          var posX2 = 6 + (maxW - rW2) / 2;
-          var posY2 = 6 + (maxH - rH2) / 2;
+          var posX2 = (297 - rW2) / 2;
+          var posY2 = topMargin;
           var imgData2 = canvas2.toDataURL('image/jpeg', 0.95);
 
           // 1. Build Individual PDF (A4 Landscape 2 pages)
@@ -9571,21 +9572,27 @@
 
       showToast('กำลังสร้างไฟล์ PDF สำหรับ ' + (eq.name || 'เครื่องนี้') + '...');
 
+      var sandbox = document.getElementById('pdfExportSandbox');
+      if (!sandbox) {
+        sandbox = document.createElement('div');
+        sandbox.id = 'pdfExportSandbox';
+        document.body.appendChild(sandbox);
+      }
+
       try {
-        var sheet1 = document.getElementById('monthlyReportSheetPage1');
-        var sheet2 = document.getElementById('monthlyReportSheetPage2');
-        if (!sheet1 || !sheet2) {
+        var data = getDeviceMonthReportData(eq, monthVal);
+        sandbox.innerHTML = buildEquipmentSheetsHtml(data);
+        await new Promise(function (resolve) { setTimeout(resolve, 60); });
+
+        var sheets = sandbox.querySelectorAll('.report-paper-sheet');
+        if (sheets.length < 2) {
           showToast('ไม่พบหน้าเอกสารรายงาน');
+          sandbox.innerHTML = '';
           return;
         }
 
-        // Ensure logo is base64
-        if (typeof PPCH_LOGO_BASE64 !== 'undefined' && PPCH_LOGO_BASE64) {
-          var l1 = document.getElementById('rptLogoImg1');
-          if (l1) l1.src = PPCH_LOGO_BASE64;
-          var l2 = document.getElementById('rptLogoImg2');
-          if (l2) l2.src = PPCH_LOGO_BASE64;
-        }
+        var sheet1 = sheets[0];
+        var sheet2 = sheets[1];
 
         var pdf = new jsPdfCls({
           orientation: 'landscape',
@@ -9596,6 +9603,7 @@
 
         var maxW = 285;
         var maxH = 198;
+        var topMargin = 6;
 
         // Render Page 1
         var canvas1 = await html2canvas(sheet1, {
@@ -9611,8 +9619,8 @@
           rH1 = maxH;
           rW1 = (canvas1.width * maxH) / canvas1.height;
         }
-        var posX1 = 6 + (maxW - rW1) / 2;
-        var posY1 = 6 + (maxH - rH1) / 2;
+        var posX1 = (297 - rW1) / 2;
+        var posY1 = topMargin;
         pdf.addImage(canvas1.toDataURL('image/jpeg', 0.95), 'JPEG', posX1, posY1, rW1, rH1, undefined, 'FAST');
 
         // Render Page 2
@@ -9630,9 +9638,11 @@
           rH2 = maxH;
           rW2 = (canvas2.width * maxH) / canvas2.height;
         }
-        var posX2 = 6 + (maxW - rW2) / 2;
-        var posY2 = 6 + (maxH - rH2) / 2;
+        var posX2 = (297 - rW2) / 2;
+        var posY2 = topMargin;
         pdf.addImage(canvas2.toDataURL('image/jpeg', 0.95), 'JPEG', posX2, posY2, rW2, rH2, undefined, 'FAST');
+
+        sandbox.innerHTML = '';
 
         var safeAsset = (eq.assetCode || 'EQ').replace(/[^a-zA-Z0-9_\-]/g, '_');
         var safeName = (eq.name || 'Device').replace(/[^a-zA-Z0-9_\-\u0E00-\u0E7F]/g, '_').slice(0, 30);
@@ -9642,6 +9652,7 @@
         showToast('ดาวน์โหลดไฟล์ PDF สำเร็จ: ' + filename);
       } catch (err) {
         console.error('Single PDF export error:', err);
+        if (sandbox) sandbox.innerHTML = '';
         showToast('เกิดข้อผิดพลาดในการสร้างไฟล์ PDF');
       }
     }
