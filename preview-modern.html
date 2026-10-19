@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PPCH MedOps Next-Gen | Modern Web Prototype</title>
+  
+  <!-- Modern Web Guidance: DNS Prefetch & Preconnect for High-Priority Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       MODERN WEB GUIDANCE: CSS Custom Properties & Semantic Design Tokens
+       ========================================================================== */
+    :root {
+      /* Color Scheme & Browser Theming */
+      color-scheme: light;
+      accent-color: #004b93;
+
+      /* Brand Palette */
+      --brand-primary: #004b93;
+      --brand-dark: #002e6e;
+      --brand-light: #0284c7;
+      --brand-subtle: #f0f7ff;
+      --brand-glow: rgba(0, 75, 147, 0.15);
+
+      /* Surface Tokens */
+      --surface-canvas: #f8fafc;
+      --surface-card: #ffffff;
+      --surface-elevated: #ffffff;
+      --border-subtle: #e2e8f0;
+      --border-strong: #cbd5e1;
+
+      /* Typography Tokens */
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-subtle: #94a3b8;
+
+      /* Clinical Status Tokens */
+      --status-ready: #059669;
+      --status-ready-bg: #ecfdf5;
+      --status-ready-border: #a7f3d0;
+
+      --status-warning: #d97706;
+      --status-warning-bg: #fffbeb;
+      --status-warning-border: #fde68a;
+
+      --status-danger: #dc2626;
+      --status-danger-bg: #fef2f2;
+      --status-danger-border: #fecaca;
+
+      --status-pending: #64748b;
+      --status-pending-bg: #f1f5f9;
+      --status-pending-border: #e2e8f0;
+
+      /* Font Families */
+      --font-body: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Plus Jakarta Sans', 'Prompt', sans-serif;
+    }
+
+    /* Modern Web Guidance: Registered Custom Properties for Smooth GPU Animations */
+    @property --value {
+      syntax: '<number>';
+      inherits: true;
+      initial-value: 0;
+    }
+
+    /* Modern Web Guidance: Universal Reset & Baseline Theming */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Modern Web Guidance: Accessible Contrast Text Selection */
+    ::selection {
+      background-color: var(--brand-primary);
+      color: #ffffff;
+    }
+
+    /* Modern Web Guidance: Custom Standardized Scrollbars */
+    html {
+      scrollbar-color: #94a3b8 #f8fafc;
+      scrollbar-width: thin;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--surface-canvas);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 13.5px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-wrap: break-word;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Modern Web Guidance: Balanced and Pretty Typography Wrapping */
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-display);
+      text-wrap: balance;
+    }
+    p, label, .description {
+      text-wrap: pretty;
+    }
+
+    /* Modern Web Guidance: Accessible Form Inputs with :user-invalid */
+    input, select, textarea, button {
+      font-family: inherit;
+      font-size: inherit;
+    }
+
+    input:user-invalid, select:user-invalid, textarea:user-invalid {
+      border-color: var(--status-danger) !important;
+      background-color: #fff8f8;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--brand-primary);
+      outline-offset: 2px;
+    }
+
+    /* ==========================================================================
+       APP SHELL: Header, Cockpit Grid & Container Queries
+       ========================================================================== */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-logo-pill {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, var(--brand-dark), var(--brand-primary));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      box-shadow: 0 4px 12px var(--brand-glow);
+    }
+    .brand-meta h1 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--brand-dark);
+      letter-spacing: -0.01em;
+    }
+    .brand-meta span {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Modern Pill Buttons */
+    .btn-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: 9999px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-primary {
+      background: var(--brand-primary);
+      color: #ffffff;
+      box-shadow: 0 2px 8px var(--brand-glow);
+    }
+    .btn-primary:hover {
+      background: var(--brand-dark);
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: var(--surface-card);
+      border-color: var(--border-subtle);
+      color: var(--text-main);
+    }
+    .btn-secondary:hover {
+      background: #f1f5f9;
+      border-color: var(--border-strong);
+    }
+
+    /* ==========================================================================
+       CONTAINER QUERY ROOT
+       ========================================================================== */
+    .cockpit-container {
+      container-type: inline-size;
+      padding: 20px 24px;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      flex: 1;
+    }
+
+    /* ==========================================================================
+       MODERN METRIC CARDS & CIRCULAR PROGRESS RINGS
+       ========================================================================== */
+    .kpi-deck {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 16px;
+    }
+
+    .kpi-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 16px rgba(0, 46, 110, 0.03);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 46, 110, 0.06);
+    }
+
+    .kpi-info h2 {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 4px;
+    }
+    .kpi-value {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text-main);
+      font-family: var(--font-display);
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .kpi-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Modern Web Guidance: Native <progress> Circular Progress Ring */
+    .progress-ring-wrapper {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 58px;
+      height: 58px;
+    }
+
+    progress.progress-ring {
+      --size: 58px;
+      --thickness: 6px;
+      --track-color: #e2e8f0;
+      --fill-color: var(--brand-primary);
+      width: var(--size);
+      height: var(--size);
+      border-radius: 50%;
+      border: var(--thickness) solid transparent;
+      background: conic-gradient(var(--fill-color) calc(var(--value) * 1%), var(--track-color) 0);
+      background-clip: padding-box, border-box;
+      background-origin: border-box;
+      mask-image: radial-gradient(transparent calc(50% - var(--thickness)), black calc(50% - var(--thickness) + 0.5px));
+      transition: --value 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    progress.progress-ring[value="100"] {
+      --fill-color: var(--status-ready);
+    }
+    /* Hide native bar parts across WebKit / Blink / Gecko */
+    progress.progress-ring::-webkit-progress-bar { display: none; }
+    progress.progress-ring::-webkit-progress-value { display: none; }
+    progress.progress-ring::-moz-progress-bar { display: none; }
+
+    .progress-ring-label {
+      position: absolute;
+      font-family: var(--font-display);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    /* ==========================================================================
+       CONTROL BAR: Search & Live Filter Strip
+       ========================================================================== */
+    .toolbar-strip {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f1f5f9;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 7px 12px;
+      min-width: 260px;
+      flex: 1;
+      max-width: 450px;
+      transition: all 0.2s;
+    }
+    .search-box:focus-within {
+      background: #ffffff;
+      border-color: var(--brand-primary);
+      box-shadow: 0 0 0 3px rgba(0, 75, 147, 0.1);
+    }
+    .search-box input {
+      border: none;
+      background: transparent;
+      outline: none;
+      width: 100%;
+      color: var(--text-main);
+    }
+
+    .filter-chips {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+    .chip {
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid var(--border-subtle);
+      background: #ffffff;
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .chip:hover {
+      background: #f8fafc;
+      color: var(--text-main);
+    }
+    .chip.active {
+      background: var(--brand-subtle);
+      border-color: var(--brand-primary);
+      color: var(--brand-primary);
+    }
+
+    /* ==========================================================================
+       MODERN DATA TABLE & CONTAINER-QUERY DRIVEN CARD TRANSFORMATION
+       ========================================================================== */
+    .table-viewport {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    }
+
+    table.modern-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    table.modern-table thead {
+      position: sticky;
+      top: 63px; /* Just below sticky header */
+      background: #f8fafc;
+      z-index: 10;
+    }
+    table.modern-table th {
+      padding: 12px 18px;
+      text-align: left;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    table.modern-table tbody tr {
+      transition: background-color 0.15s ease;
+    }
+    table.modern-table tbody tr:hover {
+      background-color: #f8fafc;
+    }
+    table.modern-table td {
+      padding: 14px 18px;
+      font-size: 13px;
+      color: var(--text-main);
+      border-bottom: 1px solid var(--border-subtle);
+      vertical-align: middle;
+    }
+
+    /* Status Badges */
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 11.5px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .badge-status.ready {
+      background: var(--status-ready-bg);
+      color: var(--status-ready);
+      border: 1px solid var(--status-ready-border);
+    }
+    .badge-status.abnormal {
+      background: var(--status-danger-bg);
+      color: var(--status-danger);
+      border: 1px solid var(--status-danger-border);
+    }
+    .badge-status.conditional {
+      background: var(--status-warning-bg);
+      color: var(--status-warning);
+      border: 1px solid var(--status-warning-border);
+    }
+    .badge-status.pending {
+      background: var(--status-pending-bg);
+      color: var(--status-pending);
+      border: 1px solid var(--status-pending-border);
+    }
+
+    /* Action Buttons in Rows */
+    .row-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+    .btn-action-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      background: #ffffff;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-action-icon:hover {
+      background: var(--brand-subtle);
+      border-color: var(--brand-primary);
+      color: var(--brand-primary);
+    }
+
+    /* ==========================================================================
+       MODERN WEB GUIDANCE: Container Query (@container width < 720px)
+       Transforms wide table into touch-friendly stacked cards seamlessly
+       ========================================================================== */
+    @container (max-width: 720px) {
+      table.modern-table, 
+      table.modern-table thead, 
+      table.modern-table tbody, 
+      table.modern-table tr, 
+      table.modern-table th, 
+      table.modern-table td {
+        display: block;
+      }
+
+      table.modern-table thead {
+        display: none; /* Hide tabular header */
+      }
+
+      table.modern-table tbody tr {
+        margin: 12px;
+        border: 1px solid var(--border-subtle);
+        border-radius: 12px;
+        background: #ffffff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        padding: 12px 14px;
+      }
+
+      table.modern-table td {
+        border-bottom: 1px dashed #f1f5f9;
+        padding: 8px 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 12.5px;
+      }
+      table.modern-table td:last-child {
+        border-bottom: none;
+        padding-top: 10px;
+      }
+
+      /* Injected Accessible Headers via Pseudo-Elements */
+      table.modern-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--text-muted);
+        font-size: 11.5px;
+      }
+      .row-actions {
+        width: 100%;
+        justify-content: stretch;
+      }
+      .row-actions .btn-pill {
+        flex: 1;
+        justify-content: center;
+      }
+    }
+
+    /* ==========================================================================
+       MODERN WEB GUIDANCE: Native <dialog> Modal with Backdrop Filter
+       ========================================================================== */
+    dialog#inspectDialog {
+      border: 1px solid var(--border-strong);
+      border-radius: 20px;
+      background: #ffffff;
+      color: var(--text-main);
+      box-shadow: 0 24px 60px rgba(0, 46, 110, 0.18);
+      max-width: 600px;
+      width: calc(100% - 32px);
+      margin: auto;
+      padding: 0;
+      outline: none;
+      overscroll-behavior: contain;
+      animation: dialogPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    dialog::backdrop {
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    @keyframes dialogPop {
+      from { opacity: 0; transform: scale(0.96) translateY(12px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .dialog-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafc;
+    }
+    .dialog-header h3 {
+      font-size: 16px;
+      color: var(--brand-dark);
+      font-weight: 700;
+    }
+    .btn-dialog-close {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+    }
+    .btn-dialog-close:hover {
+      background: #e2e8f0;
+      color: var(--text-main);
+    }
+
+    .dialog-body {
+      padding: 24px;
+      max-height: 70vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-group label {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .form-control {
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 9px 12px;
+      background: #ffffff;
+      color: var(--text-main);
+      transition: all 0.15s;
+    }
+    .form-control:focus {
+      border-color: var(--brand-primary);
+      box-shadow: 0 0 0 3px rgba(0, 75, 147, 0.12);
+      outline: none;
+    }
+
+    /* Checklist Cards inside Dialog */
+    .checklist-deck {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .checklist-row {
+      background: #f8fafc;
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .checklist-question {
+      font-size: 13px;
+      color: var(--text-main);
+      flex: 1;
+    }
+    .choice-group {
+      display: flex;
+      gap: 6px;
+    }
+    .btn-choice {
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid var(--border-subtle);
+      background: #ffffff;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-choice.pass.active {
+      background: var(--status-ready);
+      color: #ffffff;
+      border-color: var(--status-ready);
+    }
+    .btn-choice.fail.active {
+      background: var(--status-danger);
+      color: #ffffff;
+      border-color: var(--status-danger);
+    }
+
+    .dialog-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border-subtle);
+      background: #f8fafc;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* ==========================================================================
+       MODERN WEB GUIDANCE: Native Top-Layer Popover API (Toast Notification)
+       Uses popover="manual" for non-light-dismiss persistent stacking
+       ========================================================================== */
+    [popover]#appToast {
+      position: fixed;
+      inset: auto 24px 24px auto;
+      border: none;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 12px 20px;
+      border-radius: 12px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.25s, transform 0.25s, overlay 0.25s allow-discrete, display 0.25s allow-discrete;
+    }
+    [popover]#appToast:popover-open {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    @starting-style {
+      [popover]#appToast:popover-open {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+    }
+
+    /* Relocate Flyout / Drawer */
+    dialog#relocateDialog {
+      border: 1px solid var(--border-strong);
+      border-radius: 20px;
+      background: #ffffff;
+      max-width: 480px;
+      width: calc(100% - 32px);
+      margin: auto;
+      padding: 0;
+      box-shadow: 0 24px 60px rgba(0, 46, 110, 0.18);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Glassmorphism Navigation Bar -->
+  <header class="app-header">
+    <div class="brand-cluster">
+      <div class="brand-logo-pill">
+        <span class="material-icons-round" style="font-size: 22px;">medical_services</span>
+      </div>
+      <div class="brand-meta">
+        <h1>PPCH MedOps Next-Gen</h1>
+        <span>ระบบติดตามและประเมินเครื่องมือแพทย์ • รพ.พิษณุเวช พิจิตร</span>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn-pill btn-secondary" onclick="simulateLineAlert()">
+        <span class="material-icons-round" style="font-size: 16px; color: #06c755;">chat</span>
+        <span>LINE Dev Alert</span>
+      </button>
+      <button class="btn-pill btn-primary" onclick="openInspectionModal('EQ-DEFIB-01')">
+        <span class="material-icons-round" style="font-size: 16px;">qr_code_scanner</span>
+        <span>สแกนตรวจเครื่อง</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="cockpit-container">
+
+    <!-- KPI Deck with Circular Progress Rings -->
+    <section class="kpi-deck" aria-label="Clinical Metrics Overview">
+      
+      <!-- Metric 1: Readiness Rate -->
+      <article class="kpi-card">
+        <div class="kpi-info">
+          <h2>อัตราความพร้อมใช้ (Ready Rate)</h2>
+          <div class="kpi-value">
+            <span id="metricReadyRate">92.8</span><span style="font-size: 15px; color: var(--text-muted);">%</span>
+          </div>
+          <div class="kpi-sub">เป้าหมายมาตรฐาน HA ≥ 90%</div>
+        </div>
+        <div class="progress-ring-wrapper">
+          <progress id="ringReadyRate" class="progress-ring" value="93" max="100" aria-label="อัตราความพร้อมใช้งาน"></progress>
+          <span class="progress-ring-label" id="ringReadyLabel">93%</span>
+        </div>
+      </article>
+
+      <!-- Metric 2: Today Inspections -->
+      <article class="kpi-card">
+        <div class="kpi-info">
+          <h2>ตรวจเช็คประจำวันแล้ว</h2>
+          <div class="kpi-value">
+            <span id="metricInspectedCount">26</span><span style="font-size: 15px; color: var(--text-muted);">/ 28</span>
+          </div>
+          <div class="kpi-sub">คงเหลือ 2 เครื่องในรอบวัน</div>
+        </div>
+        <div class="progress-ring-wrapper">
+          <progress id="ringInspectProgress" class="progress-ring" value="92" max="100" aria-label="ความคืบหน้าการตรวจเช็ค"></progress>
+          <span class="progress-ring-label">92%</span>
+        </div>
+      </article>
+
+      <!-- Metric 3: Active Abnormalities -->
+      <article class="kpi-card">
+        <div class="kpi-info">
+          <h2>เครื่องชำรุด / อยู่ระหว่างซ่อม</h2>
+          <div class="kpi-value" style="color: var(--status-danger);">
+            <span id="metricDefectCount">2</span><span style="font-size: 14px; font-weight: 600;"> เครื่อง</span>
+          </div>
+          <div class="kpi-sub">ส่งเรื่องช่างเครื่องมือแพทย์แล้ว</div>
+        </div>
+        <div style="width: 44px; height: 44px; border-radius: 12px; background: #fee2e2; color: #dc2626; display: grid; place-items: center;">
+          <span class="material-icons-round">build</span>
+        </div>
+      </article>
+
+      <!-- Metric 4: Permanent Transfers -->
+      <article class="kpi-card">
+        <div class="kpi-info">
+          <h2>ย้ายแผนกรับผิดชอบ</h2>
+          <div class="kpi-value">
+            <span id="metricRelocateCount">5</span><span style="font-size: 14px; font-weight: 600;"> ครั้ง</span>
+          </div>
+          <div class="kpi-sub">ในรอบสัปดาห์ปัจจุบัน</div>
+        </div>
+        <div style="width: 44px; height: 44px; border-radius: 12px; background: var(--brand-subtle); color: var(--brand-primary); display: grid; place-items: center;">
+          <span class="material-icons-round">swap_horiz</span>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- Toolbar Strip (Search + Filter Pills) -->
+    <section class="toolbar-strip">
+      <div class="search-box">
+        <span class="material-icons-round" style="color: var(--text-subtle); font-size: 18px;">search</span>
+        <input type="text" id="searchInput" placeholder="ค้นหา รหัสครุภัณฑ์, ชื่อเครื่อง, หรือแผนก..." oninput="filterData()">
+      </div>
+
+      <div class="filter-chips">
+        <button class="chip active" onclick="setFilter('all', this)">ทั้งหมด (28)</button>
+        <button class="chip" onclick="setFilter('ready', this)">พร้อมใช้ (24)</button>
+        <button class="chip" onclick="setFilter('abnormal', this)">พบข้อบกพร่อง (2)</button>
+        <button class="chip" onclick="setFilter('conditional', this)">อนุญาตให้ใช้ต่อ (1)</button>
+        <button class="chip" onclick="setFilter('pending', this)">รอตรวจวันนี้ (1)</button>
+      </div>
+    </section>
+
+    <!-- Responsive Stacked Table -->
+    <section class="table-viewport">
+      <table class="modern-table">
+        <thead>
+          <tr>
+            <th>รหัสครุภัณฑ์</th>
+            <th>ชื่อเครื่องมือแพทย์</th>
+            <th>หมวดหมู่</th>
+            <th>แผนกรับผิดชอบ</th>
+            <th>ตรวจเช็คล่าสุด</th>
+            <th>สถานะความพร้อม</th>
+            <th style="text-align: right;">การจัดการ</th>
+          </tr>
+        </thead>
+        <tbody id="equipmentTableBody">
+          <!-- Populated by JavaScript -->
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <!-- ==========================================================================
+       MODERN WEB GUIDANCE: Native HTML5 <dialog> for Inspection Checklist
+       ========================================================================== -->
+  <dialog id="inspectDialog">
+    <div class="dialog-header">
+      <div>
+        <h3 id="dialogDeviceTitle">ตรวจเช็คความพร้อมใช้</h3>
+        <p style="font-size: 11.5px; color: var(--text-muted);" id="dialogDeviceMeta">รหัส: -</p>
+      </div>
+      <button class="btn-dialog-close" onclick="closeInspectDialog()">
+        <span class="material-icons-round">close</span>
+      </button>
+    </div>
+
+    <form id="inspectForm" method="dialog" onsubmit="handleInspectSubmit(event)">
+      <div class="dialog-body">
+
+        <div class="form-group">
+          <label for="inputEvaluator">ชื่อ-นามสกุล ผู้ตรวจเช็ค *</label>
+          <input type="text" id="inputEvaluator" class="form-control" placeholder="เช่น นพ.สมชาย หรือ พว.สายฝน" required>
+        </div>
+
+        <div class="form-group">
+          <label for="inputDept">แผนกผู้ถือครอง / ผู้ตรวจ *</label>
+          <select id="inputDept" class="form-control" required>
+            <option value="ER">แผนกฉุกเฉินและอุบัติเหตุ (ER)</option>
+            <option value="ICU">หอผู้ป่วยวิกฤต (ICU)</option>
+            <option value="OR">แผนกห้องผ่าตัด (OR)</option>
+            <option value="WARD23">หอผู้ป่วยใน 2-3</option>
+            <option value="WARD45">หอผู้ป่วยใน 4-5</option>
+            <option value="CENTRAL">คลังเครื่องมือแพทย์ส่วนกลาง</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>รายการตรวจเช็คความพร้อม (Checklist)</label>
+          <div class="checklist-deck" id="dialogChecklistDeck">
+            <!-- Injected by JS -->
+          </div>
+        </div>
+
+        <div class="form-group" id="groupUpsField" style="display: none;">
+          <label for="inputUpsMinutes">ระยะเวลาสำรองไฟ UPS (นาที) *</label>
+          <input type="number" id="inputUpsMinutes" class="form-control" placeholder="นาที (เกณฑ์ผ่าน ≥ 60 นาที)">
+        </div>
+
+        <div class="form-group">
+          <label for="inputAbnormalNote">ข้อเสนอแนะ / อาการผิดปกติ (ถ้ามี)</label>
+          <textarea id="inputAbnormalNote" class="form-control" rows="2" placeholder="ระบุอาการชำรุด หรือชิ้นส่วนที่ต้องเปลี่ยน..."></textarea>
+        </div>
+
+      </div>
+
+      <div class="dialog-footer">
+        <button type="button" class="btn-pill btn-secondary" onclick="closeInspectDialog()">ยกเลิก</button>
+        <button type="submit" class="btn-pill btn-primary">
+          <span class="material-icons-round" style="font-size: 16px;">save</span>
+          <span>บันทึกผลการตรวจ</span>
+        </button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ==========================================================================
+       MODERN WEB GUIDANCE: Native Relocation Dialog
+       ========================================================================== -->
+  <dialog id="relocateDialog">
+    <div class="dialog-header">
+      <div>
+        <h3>ย้ายแผนกรับผิดชอบ (Relocation)</h3>
+        <p style="font-size: 11.5px; color: var(--text-muted);" id="relocateDeviceMeta">-</p>
+      </div>
+      <button class="btn-dialog-close" onclick="closeRelocateDialog()">
+        <span class="material-icons-round">close</span>
+      </button>
+    </div>
+
+    <form method="dialog" onsubmit="handleRelocateSubmit(event)">
+      <div class="dialog-body">
+        <div class="form-group">
+          <label>ย้ายไปยังแผนกปลายทาง (New Custodian Dept) *</label>
+          <select id="selectTargetDept" class="form-control" required>
+            <option value="ER">แผนกฉุกเฉินและอุบัติเหตุ (ER)</option>
+            <option value="ICU">หอผู้ป่วยวิกฤต (ICU)</option>
+            <option value="OR">แผนกห้องผ่าตัด (OR)</option>
+            <option value="LR">แผนกห้องคลอด (LR)</option>
+            <option value="WARD23">หอผู้ป่วยใน 2-3</option>
+            <option value="WARD45">หอผู้ป่วยใน 4-5</option>
+            <option value="CENTRAL">คลังเครื่องมือแพทย์ส่วนกลาง</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>เหตุผลในการย้าย (Optional)</label>
+          <input type="text" id="relocateReason" class="form-control" placeholder="เช่น ย้ายรองรับผู้ป่วยวิกฤต">
+        </div>
+      </div>
+      <div class="dialog-footer">
+        <button type="button" class="btn-pill btn-secondary" onclick="closeRelocateDialog()">ยกเลิก</button>
+        <button type="submit" class="btn-pill btn-primary">ยืนยันการย้ายแผนก</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ==========================================================================
+       MODERN WEB GUIDANCE: Popover API Toast Notification
+       ========================================================================== -->
+  <div id="appToast" popover="manual">
+    <span class="material-icons-round" style="color: #38bdf8;">info</span>
+    <span id="appToastMsg">การแจ้งเตือน</span>
+    <button type="button" style="background: none; border: none; color: #94a3b8; cursor: pointer; margin-left: 8px;" onclick="hideAppToast()">
+      <span class="material-icons-round" style="font-size: 16px;">close</span>
+    </button>
+  </div>
+
+  <!-- Client-side Prototype Engine -->
+  <script>
+    // Master Mock Data for Prototype
+    var mockEquipment = [
+      { id: 'EQ-DEFIB-01', assetCode: 'PPCH-MD-001', name: 'Defibrillator (เครื่องกระตุกหัวใจ)', cat: 'เครื่องมือกู้ชีพวิกฤต', dept: 'ER', deptName: 'แผนกฉุกเฉินและอุบัติเหตุ', lastEval: '2026-10-16 08:30', status: 'ready', hasUps: true },
+      { id: 'EQ-VENT-01', assetCode: 'PPCH-MD-002', name: 'Ventilator (เครื่องช่วยหายใจชนิดควบคุมปริมาตร)', cat: 'เครื่องมือกู้ชีพวิกฤต', dept: 'ICU', deptName: 'หอผู้ป่วยวิกฤต', lastEval: '2026-10-16 07:45', status: 'ready', hasUps: true },
+      { id: 'EQ-HIFLOW-01', assetCode: 'PPCH-MD-003', name: 'High Flow Nasal Cannula (HHHFINC)', cat: 'ระบบทางเดินหายใจ', dept: 'WARD23', deptName: 'หอผู้ป่วยใน 2-3', lastEval: '2026-10-16 09:15', status: 'ready', hasUps: false },
+      { id: 'EQ-INFUSE-01', assetCode: 'PPCH-MD-004', name: 'Infusion Pump (เครื่องให้สารละลายทางหลอดเลือด)', cat: 'เครื่องมือให้สารน้ำ', dept: 'ICU', deptName: 'หอผู้ป่วยวิกฤต', lastEval: '2026-10-15 16:20', status: 'abnormal', abnormalReason: 'หน้าจอแจ้ง Error 04 อัตราไหลไม่ตรงเกณฑ์', hasUps: false },
+      { id: 'EQ-ANESTH-01', assetCode: 'PPCH-MD-005', name: 'เครื่องให้ยาสลบพร้อมเครื่องช่วยหายใจ', cat: 'เครื่องมือกู้ชีพวิกฤต', dept: 'OR', deptName: 'แผนกห้องผ่าตัด', lastEval: '2026-10-16 07:15', status: 'ready', hasUps: true },
+      { id: 'EQ-VITAL-01', assetCode: 'PPCH-MD-006', name: 'Vital Signs Monitor (NIBP / SpO2 / Temp)', cat: 'เครื่องมือตรวจวัดสัญญาณชีพ', dept: 'ER', deptName: 'แผนกฉุกเฉินและอุบัติเหตุ', lastEval: '2026-10-16 08:00', status: 'ready', hasUps: false },
+      { id: 'EQ-EKG-01', assetCode: 'PPCH-MD-007', name: 'EKG Monitor 12-Leads', cat: 'เครื่องมือตรวจวินิจฉัย', dept: 'ER', deptName: 'แผนกฉุกเฉินและอุบัติเหตุ', lastEval: '2026-10-15 14:10', status: 'conditional', abnormalReason: 'สาย Lead II หลวม แต่ยังใช้งาน Lead อื่นได้', hasUps: false },
+      { id: 'EQ-ULTRA-01', assetCode: 'PPCH-MD-008', name: 'Ultrasound Point-of-Care (POCUS)', cat: 'เครื่องมือตรวจวินิจฉัยภาพ', dept: 'CENTRAL', deptName: 'คลังเครื่องมือแพทย์ส่วนกลาง', lastEval: '-', status: 'pending', hasUps: false }
+    ];
+
+    var defaultChecklist = [
+      'สภาพสายไฟ ปลั๊กไฟ และสายต่อพ่วง สะอาด สมบูรณ์ ไม่ชำรุด ฉีกขาด',
+      'ระดับแบตเตอรี่สำรอง (Battery Status) เต็มพร้อมทำงานยามฉุกเฉิน',
+      'อุปกรณ์ประกอบ (Accessories / Sensors) ครบถ้วน ไม่หมดอายุ',
+      'ผลการทำ Self-Test ผ่าน 100% ไม่มีรหัสข้อผิดพลาด (No Error Code)',
+      'ระบบสัญญาณเตือนภาพและเสียง (Audio & Visual Alarm) ทำงานปกติ'
+    ];
+
+    var currentFilter = 'all';
+    var activeInspectItem = null;
+    var activeRelocateItem = null;
+    var inspectChecklistState = {};
+
+    // Initial Render
+    document.addEventListener('DOMContentLoaded', function () {
+      renderTable();
+      updateMetricRings();
+    });
+
+    function renderTable() {
+      var tbody = document.getElementById('equipmentTableBody');
+      var search = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+      
+      var filtered = mockEquipment.filter(function (item) {
+        var matchFilter = (currentFilter === 'all') || (item.status === currentFilter);
+        var matchSearch = !search || 
+          item.assetCode.toLowerCase().includes(search) || 
+          item.name.toLowerCase().includes(search) || 
+          item.deptName.toLowerCase().includes(search);
+        return matchFilter && matchSearch;
+      });
+
+      tbody.innerHTML = '';
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 30px;">ไม่พบข้อมูลเครื่องมือแพทย์ตามเงื่อนไข</td></tr>';
+        return;
+      }
+
+      filtered.forEach(function (eq) {
+        var tr = document.createElement('tr');
+
+        // Status pill configuration
+        var statusLabel = 'พร้อมใช้';
+        var statusClass = 'ready';
+        var statusIcon = 'check_circle';
+        if (eq.status === 'abnormal') {
+          statusLabel = 'พบข้อบกพร่อง';
+          statusClass = 'abnormal';
+          statusIcon = 'cancel';
+        } else if (eq.status === 'conditional') {
+          statusLabel = 'อนุญาตให้ใช้ต่อ';
+          statusClass = 'conditional';
+          statusIcon = 'help';
+        } else if (eq.status === 'pending') {
+          statusLabel = 'รอตรวจวันนี้';
+          statusClass = 'pending';
+          statusIcon = 'schedule';
+        }
+
+        tr.innerHTML = `
+          <td data-label="รหัสครุภัณฑ์">
+            <span style="font-family: var(--font-display); font-weight: 700; color: var(--brand-dark);">${eq.assetCode}</span>
+          </td>
+          <td data-label="ชื่อเครื่องมือแพทย์">
+            <div style="font-weight: 600;">${eq.name}</div>
+          </td>
+          <td data-label="หมวดหมู่">
+            <span style="color: var(--text-muted); font-size: 12px;">${eq.cat}</span>
+          </td>
+          <td data-label="แผนกรับผิดชอบ">
+            <span style="font-weight: 500;">${eq.deptName}</span>
+          </td>
+          <td data-label="ตรวจเช็คล่าสุด">
+            <span style="color: var(--text-muted); font-size: 12px;">${eq.lastEval}</span>
+          </td>
+          <td data-label="สถานะความพร้อม">
+            <span class="badge-status ${statusClass}">
+              <span class="material-icons-round" style="font-size: 14px;">${statusIcon}</span>
+              ${statusLabel}
+            </span>
+          </td>
+          <td data-label="การจัดการ" style="text-align: right;">
+            <div class="row-actions">
+              <button class="btn-action-icon" title="บันทึกผลการตรวจเช็ค" onclick="openInspectionModal('${eq.id}')">
+                <span class="material-icons-round" style="font-size: 18px;">fact_check</span>
+              </button>
+              <button class="btn-action-icon" title="ย้ายแผนกรับผิดชอบ" onclick="openRelocateModal('${eq.id}')">
+                <span class="material-icons-round" style="font-size: 18px;">swap_horiz</span>
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function setFilter(filterType, element) {
+      currentFilter = filterType;
+      document.querySelectorAll('.filter-chips .chip').forEach(function (c) { c.classList.remove('active'); });
+      if (element) element.classList.add('active');
+      renderTable();
+    }
+
+    function filterData() {
+      renderTable();
+    }
+
+    // ==========================================================================
+    // MODERN WEB GUIDANCE: Native <dialog> Inspection Controller
+    // ==========================================================================
+    function openInspectionModal(deviceId) {
+      var item = mockEquipment.find(function (x) { return x.id === deviceId; });
+      if (!item) item = mockEquipment[0];
+      activeInspectItem = item;
+
+      document.getElementById('dialogDeviceTitle').innerText = 'ตรวจเช็ค: ' + item.name;
+      document.getElementById('dialogDeviceMeta').innerText = 'รหัสครุภัณฑ์: ' + item.assetCode + ' • แผนกถือครอง: ' + item.deptName;
+      document.getElementById('inputDept').value = item.dept;
+
+      // Render Checklists
+      var deck = document.getElementById('dialogChecklistDeck');
+      deck.innerHTML = '';
+      inspectChecklistState = {};
+
+      defaultChecklist.forEach(function (question, idx) {
+        inspectChecklistState[idx] = 'pass'; // default
+        var row = document.createElement('div');
+        row.className = 'checklist-row';
+        row.innerHTML = `
+          <div class="checklist-question">${idx + 1}. ${question}</div>
+          <div class="choice-group">
+            <button type="button" class="btn-choice pass active" onclick="setChoice(${idx}, 'pass', this)">ปกติ (Pass)</button>
+            <button type="button" class="btn-choice fail" onclick="setChoice(${idx}, 'fail', this)">ผิดปกติ (Fail)</button>
+          </div>
+        `;
+        deck.appendChild(row);
+      });
+
+      // Toggle UPS Field
+      var upsGroup = document.getElementById('groupUpsField');
+      if (item.hasUps) {
+        upsGroup.style.display = 'flex';
+      } else {
+        upsGroup.style.display = 'none';
+      }
+
+      var dlg = document.getElementById('inspectDialog');
+      dlg.showModal();
+    }
+
+    function closeInspectDialog() {
+      var dlg = document.getElementById('inspectDialog');
+      dlg.close();
+    }
+
+    function setChoice(idx, value, btn) {
+      inspectChecklistState[idx] = value;
+      var group = btn.parentElement;
+      group.querySelectorAll('.btn-choice').forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+    }
+
+    function handleInspectSubmit(e) {
+      e.preventDefault();
+      if (!activeInspectItem) return;
+
+      var evaluator = document.getElementById('inputEvaluator').value.trim();
+      var hasFail = Object.values(inspectChecklistState).some(function (v) { return v === 'fail'; });
+      var note = document.getElementById('inputAbnormalNote').value.trim();
+
+      var now = new Date();
+      var dateStr = now.getFullYear() + '-' + ('0' + (now.getMonth() + 1)).slice(-2) + '-' + ('0' + now.getDate()).slice(-2) + ' ' + ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+
+      activeInspectItem.lastEval = dateStr;
+      activeInspectItem.status = hasFail ? 'abnormal' : 'ready';
+      if (hasFail && note) {
+        activeInspectItem.abnormalReason = note;
+      }
+
+      closeInspectDialog();
+      renderTable();
+      updateMetricRings();
+      showAppToast('บันทึกผลการตรวจเช็ค ' + activeInspectItem.assetCode + ' สำเร็จแล้ว! (' + (hasFail ? 'พบข้อบกพร่อง' : 'พร้อมใช้งาน') + ')');
+    }
+
+    // ==========================================================================
+    // MODERN WEB GUIDANCE: Native Relocation Dialog Controller
+    // ==========================================================================
+    function openRelocateModal(deviceId) {
+      var item = mockEquipment.find(function (x) { return x.id === deviceId; });
+      if (!item) return;
+      activeRelocateItem = item;
+
+      document.getElementById('relocateDeviceMeta').innerText = item.name + ' (' + item.assetCode + ') • แผนกปัจจุบัน: ' + item.deptName;
+      document.getElementById('selectTargetDept').value = item.dept;
+
+      var dlg = document.getElementById('relocateDialog');
+      dlg.showModal();
+    }
+
+    function closeRelocateDialog() {
+      var dlg = document.getElementById('relocateDialog');
+      dlg.close();
+    }
+
+    function handleRelocateSubmit(e) {
+      e.preventDefault();
+      if (!activeRelocateItem) return;
+
+      var sel = document.getElementById('selectTargetDept');
+      var newDept = sel.value;
+      var newDeptName = sel.options[sel.selectedIndex].text;
+
+      activeRelocateItem.dept = newDept;
+      activeRelocateItem.deptName = newDeptName;
+
+      closeRelocateDialog();
+      renderTable();
+      showAppToast('ย้ายเครื่อง ' + activeRelocateItem.assetCode + ' ไปยัง ' + newDeptName + ' สำเร็จแล้ว');
+    }
+
+    // ==========================================================================
+    // MODERN WEB GUIDANCE: Native Top-Layer Popover Toast Controller
+    // ==========================================================================
+    var toastTimeout = null;
+    function showAppToast(msg) {
+      var toast = document.getElementById('appToast');
+      var msgSpan = document.getElementById('appToastMsg');
+      if (!toast || !msgSpan) return;
+
+      msgSpan.innerText = msg;
+      if (toast.showPopover) {
+        toast.showPopover();
+      } else {
+        toast.style.display = 'flex';
+      }
+
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(function () {
+        hideAppToast();
+      }, 4000);
+    }
+
+    function hideAppToast() {
+      var toast = document.getElementById('appToast');
+      if (!toast) return;
+      if (toast.hidePopover) {
+        toast.hidePopover();
+      } else {
+        toast.style.display = 'none';
+      }
+    }
+
+    function simulateLineAlert() {
+      showAppToast('จำลองส่งข้อความ LINE Developers Messaging API: แจ้งเตือนเครื่องกู้ชีพผิดปกติเรียบร้อย');
+    }
+
+    function updateMetricRings() {
+      var total = mockEquipment.length;
+      var ready = mockEquipment.filter(function (x) { return x.status === 'ready'; }).length;
+      var rate = Math.round((ready / total) * 100);
+
+      var ring = document.getElementById('ringReadyRate');
+      var label = document.getElementById('ringReadyLabel');
+      var num = document.getElementById('metricReadyRate');
+
+      if (ring) {
+        ring.setAttribute('value', rate);
+        ring.style.setProperty('--value', rate);
+      }
+      if (label) label.innerText = rate + '%';
+      if (num) num.innerText = rate;
+    }
+  </script>
+</body>
+</html>
