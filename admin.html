@@ -1631,18 +1631,18 @@
       body { background: #ffffff !important; }
 
       /* Standard Dashboard/Report Print Mode */
-      body:not(.printing-qr-sticker) .app-topbar,
-      body:not(.printing-qr-sticker) .app-sidebar,
-      body:not(.printing-qr-sticker) .page-filter-bar,
-      body:not(.printing-qr-sticker) .kpi-strip-5,
-      body:not(.printing-qr-sticker) #pageLoader,
-      body:not(.printing-qr-sticker) .btn-action-col,
-      body:not(.printing-qr-sticker) .no-print,
-      body:not(.printing-qr-sticker) #qrStickerPrintContainer {
+      body:not(.printing-qr-sticker):not(.printing-monthly-report) .app-topbar,
+      body:not(.printing-qr-sticker):not(.printing-monthly-report) .app-sidebar,
+      body:not(.printing-qr-sticker):not(.printing-monthly-report) .page-filter-bar,
+      body:not(.printing-qr-sticker):not(.printing-monthly-report) .kpi-strip-5,
+      body:not(.printing-qr-sticker):not(.printing-monthly-report) #pageLoader,
+      body:not(.printing-qr-sticker):not(.printing-monthly-report) .btn-action-col,
+      body:not(.printing-qr-sticker):not(.printing-monthly-report) .no-print,
+      body:not(.printing-qr-sticker):not(.printing-monthly-report) #qrStickerPrintContainer {
         display: none !important;
       }
-      body:not(.printing-qr-sticker) .app-main-content { max-width: 100% !important; padding: 0 !important; }
-      body:not(.printing-qr-sticker) .content-panel { border: 1px solid #cbd5e1 !important; box-shadow: none !important; }
+      body:not(.printing-qr-sticker):not(.printing-monthly-report) .app-main-content { max-width: 100% !important; padding: 0 !important; }
+      body:not(.printing-qr-sticker):not(.printing-monthly-report) .content-panel { border: 1px solid #cbd5e1 !important; box-shadow: none !important; }
 
       /* Dedicated Equipment QR Sticker Print Mode (Clean & Isolated) */
       @page {
@@ -1701,6 +1701,69 @@
       }
       body.printing-slip .no-print-slip {
         display: none !important;
+      }
+
+      /* Dedicated Monthly Report Landscape Print Mode */
+      body.printing-monthly-report {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      body.printing-monthly-report .app-topbar,
+      body.printing-monthly-report .app-sidebar,
+      body.printing-monthly-report .page-filter-bar,
+      body.printing-monthly-report .report-toolbar-card,
+      body.printing-monthly-report .kpi-strip-5,
+      body.printing-monthly-report #pageLoader,
+      body.printing-monthly-report .btn-action-col,
+      body.printing-monthly-report .no-print,
+      body.printing-monthly-report #qrStickerPrintContainer,
+      body.printing-monthly-report .modal-overlay,
+      body.printing-monthly-report #toastNotice,
+      body.printing-monthly-report #sidebarBackdrop,
+      body.printing-monthly-report .floating-action-wrapper,
+      body.printing-monthly-report .dash-shortcuts-grid,
+      body.printing-monthly-report #viewDashboard,
+      body.printing-monthly-report #viewSummary,
+      body.printing-monthly-report #viewDeviceSummary,
+      body.printing-monthly-report #viewDefective,
+      body.printing-monthly-report #viewRelocate,
+      body.printing-monthly-report #viewDirectory,
+      body.printing-monthly-report #viewSettings {
+        display: none !important;
+      }
+      body.printing-monthly-report .app-layout-body,
+      body.printing-monthly-report .app-main-content {
+        display: block !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      body.printing-monthly-report #viewReport {
+        display: block !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      body.printing-monthly-report #monthlyReportPaperWrapper {
+        padding: 0 !important;
+        margin: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      body.printing-monthly-report #monthlyReportPaperSheet {
+        border: 1.5px solid #0f172a !important;
+        box-shadow: none !important;
+        padding: 6mm 8mm !important;
+        margin: 0 auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        background: #ffffff !important;
+        page-break-inside: avoid !important;
       }
     }
 
@@ -3139,13 +3202,225 @@
       }
     }
 
-    @media (max-width: 480px) {
-      #topStatusText {
-        display: none;
-      }
-      .dash-shortcuts-grid {
-        grid-template-columns: 1fr !important;
-      }
+    /* ==================== 11. MONTHLY A4 LANDSCAPE REPORT STYLES ==================== */
+    .report-toolbar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-main);
+      border-radius: var(--radius-lg);
+      padding: 14px 18px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .report-filter-strip {
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .report-paper-wrapper {
+      background: #f1f5f9;
+      border: 1px solid var(--border-main);
+      border-radius: var(--radius-lg);
+      padding: 24px 16px;
+      overflow-x: auto;
+      display: flex;
+      justify-content: center;
+    }
+    .report-paper-sheet {
+      background: #ffffff;
+      width: 100%;
+      max-width: 1100px;
+      min-width: 960px;
+      padding: 22px 26px;
+      border-radius: 4px;
+      box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.05);
+      box-sizing: border-box;
+      color: #0f172a;
+      font-family: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .report-header-flex {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 2px solid #002e6e;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+    }
+    .report-brand-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .report-brand-logo {
+      height: 48px;
+      width: auto;
+      object-fit: contain;
+    }
+    .report-title-h1 {
+      font-size: 15px;
+      font-weight: 800;
+      color: #002e6e;
+      line-height: 1.25;
+    }
+    .report-title-h2 {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-top: 2px;
+    }
+    .report-title-en {
+      font-size: 10px;
+      color: #64748b;
+      font-weight: 500;
+    }
+    .report-meta-box {
+      text-align: right;
+      font-size: 11px;
+      line-height: 1.5;
+      color: #334155;
+    }
+    .report-form-code {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: #002e6e;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      padding: 2px 7px;
+      border-radius: 4px;
+      margin-bottom: 4px;
+    }
+    .report-stat-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 6px 12px;
+    }
+    .report-stat-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 8px;
+      border-right: 1px solid #e2e8f0;
+    }
+    .report-stat-item:last-child {
+      border-right: none;
+    }
+    .report-stat-label {
+      font-size: 11px;
+      color: #475569;
+      font-weight: 500;
+    }
+    .report-stat-val {
+      font-size: 13px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: #0f172a;
+    }
+    .report-matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+      margin-bottom: 12px;
+    }
+    .report-matrix-table th,
+    .report-matrix-table td {
+      border: 1px solid #cbd5e1;
+      padding: 4px 2px;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .report-matrix-table th {
+      background: #002e6e;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 9.5px;
+      line-height: 1.2;
+    }
+    .report-matrix-table th.col-day {
+      width: 19px;
+      min-width: 18px;
+      padding: 3px 1px;
+      font-family: var(--font-mono);
+      font-weight: 600;
+    }
+    .report-matrix-table td.col-left {
+      text-align: left;
+      padding-left: 6px;
+    }
+    .report-matrix-table tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+    .rpt-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 15px;
+      height: 15px;
+      border-radius: 3px;
+      font-size: 9.5px;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .rpt-badge.pass {
+      color: #15803d;
+      background: #dcfce7;
+    }
+    .rpt-badge.fail {
+      color: #b91c1c;
+      background: #fee2e2;
+      font-weight: 900;
+    }
+    .rpt-badge.warn {
+      color: #b45309;
+      background: #fef3c7;
+    }
+    .rpt-badge.none {
+      color: #94a3b8;
+    }
+    .report-sign-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px dashed #cbd5e1;
+    }
+    .report-sign-box {
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 8px 10px;
+      text-align: center;
+      background: #fafafa;
+      font-size: 10px;
+      line-height: 1.5;
+      color: #334155;
+    }
+    .report-sign-role {
+      font-weight: 700;
+      color: #002e6e;
+      margin-bottom: 22px;
+    }
+    .report-sign-line {
+      border-bottom: 1px dotted #64748b;
+      margin: 4px 14px;
+      height: 1px;
+    }
+    .report-legend-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 9.5px;
+      color: #64748b;
+      padding: 6px 4px 0 4px;
+      border-top: 1px solid #e2e8f0;
+      margin-top: 8px;
     }
   </style>
 </head>
@@ -3254,6 +3529,10 @@
           <button onclick="switchView('directory')" id="navBtn_directory" class="nav-btn" title="รายการเครื่อง & QR Code">
             <span class="material-icons-round">qr_code_2</span>
             <span>รายการเครื่อง & QR Code</span>
+          </button>
+          <button onclick="switchView('report')" id="navBtn_report" class="nav-btn" title="รายงานประจำเดือน (A4 แนวนอน)">
+            <span class="material-icons-round">description</span>
+            <span>รายงานประจำเดือน</span>
           </button>
           <button onclick="switchView('settings')" id="navBtn_settings" class="nav-btn" title="ตั้งค่าระบบ">
             <span class="material-icons-round">settings</span>
@@ -3476,6 +3755,16 @@
                 <div>
                   <div style="font-weight: 700; font-size: 13px; color: #059669;">รายการเครื่อง & QR Code</div>
                   <div style="font-size: 11px; color: var(--text-muted);">ทะเบียนครุภัณฑ์และพิมพ์สติกเกอร์ QR</div>
+                </div>
+              </div>
+
+              <div class="dash-shortcut-card" onclick="switchView('report')">
+                <div class="dash-shortcut-icon" style="background: #eef2ff; color: #4338ca;">
+                  <span class="material-icons-round">description</span>
+                </div>
+                <div>
+                  <div style="font-weight: 700; font-size: 13px; color: #4338ca;">รายงานประจำเดือน (A4)</div>
+                  <div style="font-size: 11px; color: var(--text-muted);">พิมพ์หรือส่งออก A4 แนวนอน พร้อมสถิติ</div>
                 </div>
               </div>
             </div>
@@ -3928,6 +4217,149 @@
             </div>
             <div class="equip-grid-3" id="directoryGrid">
               <!-- Populated by JavaScript -->
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== SUB-VIEW 4: รายงานประจำเดือน (MONTHLY A4 REPORT) ==================== -->
+        <section id="viewReport" style="display: none;">
+          <!-- Report Filter & Toolbar Panel (No Print) -->
+          <div class="report-toolbar-card no-print">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="material-icons-round" style="color: var(--royal-blue); font-size: 22px;">description</span>
+                <span style="font-weight: 700; font-size: 15px; color: var(--text-main);">รายงานผลการตรวจสอบความพร้อมใช้เครื่องมือแพทย์ ประจำเดือน (A4 แนวนอน)</span>
+              </div>
+              <div style="font-size: 11.5px; color: var(--text-muted);">
+                รองรับการพิมพ์ / บันทึก PDF (A4 แนวนอน) และส่งออก Excel
+              </div>
+            </div>
+
+            <!-- Single-Row Streamlined Filter Toolbar -->
+            <div class="report-filter-strip">
+              <!-- 1. Month Picker -->
+              <div class="form-group" style="margin: 0; min-width: 165px;">
+                <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 2px; display: block;">ประจำเดือน</label>
+                <input type="month" id="reportMonthPicker" class="form-input" style="height: 36px; padding: 4px 10px; font-size: 13px;" onchange="renderMonthlyReportView()">
+              </div>
+
+              <!-- 2. Department Filter -->
+              <div class="form-group" style="margin: 0; min-width: 190px;">
+                <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 2px; display: block;">แผนกรับผิดชอบ</label>
+                <select id="reportDeptFilter" class="form-input" style="height: 36px; padding: 4px 10px; font-size: 13px;" onchange="handleReportDeptChange()"></select>
+              </div>
+
+              <!-- 3. Equipment Filter -->
+              <div class="form-group" style="margin: 0; min-width: 200px;">
+                <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 2px; display: block;">เครื่องมือแพทย์</label>
+                <select id="reportDeviceFilter" class="form-input" style="height: 36px; padding: 4px 10px; font-size: 13px;" onchange="renderMonthlyReportView()"></select>
+              </div>
+
+              <!-- 4. Action Buttons -->
+              <div style="display: flex; gap: 8px; margin-left: auto; align-items: center;">
+                <button type="button" onclick="exportMonthlyReportExcel()" class="btn-tool" style="background: #ecfdf5; color: #047857; border-color: #a7f3d0; height: 36px;" title="ส่งออกไฟล์ Excel (.csv พร้อม UTF-8 BOM รองรับภาษาไทย)">
+                  <span class="material-icons-round" style="font-size: 16px;">table_view</span>
+                  <span>ส่งออก Excel</span>
+                </button>
+                <button type="button" onclick="printMonthlyReport()" class="btn-tool btn-tool-primary" style="height: 36px;" title="สั่งพิมพ์เอกสาร หรือบันทึกเป็น PDF A4 แนวนอน">
+                  <span class="material-icons-round" style="font-size: 16px;">print</span>
+                  <span>พิมพ์ / PDF (A4)</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- A4 Landscape Paper Preview Container -->
+          <div class="report-paper-wrapper" id="monthlyReportPaperWrapper">
+            <div class="report-paper-sheet" id="monthlyReportPaperSheet">
+              <!-- Header with Logo at top-left -->
+              <div class="report-header-flex">
+                <div class="report-brand-box">
+                  <img src="logo.png" alt="โรงพยาบาลพิษณุเวช พิจิตร" class="report-brand-logo">
+                  <div>
+                    <div class="report-title-h1">โรงพยาบาลพิษณุเวช พิจิตร (Phitsanuvej Phichit Hospital)</div>
+                    <div class="report-title-h2">แบบบันทึกการตรวจสอบความพร้อมใช้เครื่องมือแพทย์ ประจำเดือน</div>
+                    <div class="report-title-en">Medical Equipment Daily Readiness Inspection Monthly Log</div>
+                  </div>
+                </div>
+                <div class="report-meta-box">
+                  <div class="report-form-code">FM-PPCH-MED-001 Rev.03</div>
+                  <div><strong>แผนก:</strong> <span id="rptDocDept">ทุกแผนก</span></div>
+                  <div><strong>ประจำเดือน:</strong> <span id="rptDocMonth">-</span></div>
+                  <div><strong>พิมพ์เมื่อ:</strong> <span id="rptDocPrintDate">-</span></div>
+                </div>
+              </div>
+
+              <!-- Stat Strip -->
+              <div class="report-stat-strip" id="reportStatStrip">
+                <div class="report-stat-item">
+                  <span class="report-stat-label">เครื่องมือแพทย์ในรายงาน</span>
+                  <span class="report-stat-val" id="rptStatEquipCount">0 เครื่อง</span>
+                </div>
+                <div class="report-stat-item">
+                  <span class="report-stat-label">จำนวนรอบตรวจเช็ค</span>
+                  <span class="report-stat-val" id="rptStatCheckCount">0 ครั้ง</span>
+                </div>
+                <div class="report-stat-item">
+                  <span class="report-stat-label">อัตราความพร้อมใช้งานเฉลี่ย</span>
+                  <span class="report-stat-val" id="rptStatReadyRate" style="color: #15803d;">100%</span>
+                </div>
+                <div class="report-stat-item">
+                  <span class="report-stat-label">พบข้อบกพร่อง/ส่งซ่อม</span>
+                  <span class="report-stat-val" id="rptStatDefectCount" style="color: #b91c1c;">0 รายการ</span>
+                </div>
+              </div>
+
+              <!-- Matrix Table Container -->
+              <div style="overflow-x: auto; margin-bottom: 8px;">
+                <table class="report-matrix-table" id="monthlyReportTable">
+                  <thead id="monthlyReportTableHead">
+                    <!-- Dynamic Headers for 1..31 days -->
+                  </thead>
+                  <tbody id="monthlyReportTableBody">
+                    <!-- Populated by JavaScript -->
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Hospital HA/JCI 3-Box Sign-off Section -->
+              <div class="report-sign-grid">
+                <div class="report-sign-box">
+                  <div class="report-sign-role">ผู้ตรวจเช็คความพร้อมใช้ประจำวัน</div>
+                  <div class="report-sign-line"></div>
+                  <div>(.......................................................................)</div>
+                  <div style="font-size: 9.5px; color: #64748b; margin-top: 2px;">พยาบาลประจำจุด / ผู้ดูแลเครื่องมือ</div>
+                  <div style="font-size: 9.5px; color: #64748b;">วันที่ ........ / ........ / ................</div>
+                </div>
+
+                <div class="report-sign-box">
+                  <div class="report-sign-role">หัวหน้าแผนก / พยาบาลควบคุมคุณภาพ</div>
+                  <div class="report-sign-line"></div>
+                  <div>(.......................................................................)</div>
+                  <div style="font-size: 9.5px; color: #64748b; margin-top: 2px;">หัวหน้าแผนก / พยาบาลหัวหน้าเวร</div>
+                  <div style="font-size: 9.5px; color: #64748b;">วันที่ ........ / ........ / ................</div>
+                </div>
+
+                <div class="report-sign-box">
+                  <div class="report-sign-role">เจ้าหน้าที่ศูนย์เครื่องมือแพทย์</div>
+                  <div class="report-sign-line"></div>
+                  <div>(.......................................................................)</div>
+                  <div style="font-size: 9.5px; color: #64748b; margin-top: 2px;">วิศวกรชีวการแพทย์ / งานบำรุงรักษา</div>
+                  <div style="font-size: 9.5px; color: #64748b;">วันที่ ........ / ........ / ................</div>
+                </div>
+              </div>
+
+              <!-- Legend Bar -->
+              <div class="report-legend-bar">
+                <div>
+                  <strong>สัญลักษณ์:</strong>
+                  <span style="margin-left: 6px;"><span class="rpt-badge pass" style="width: 13px; height: 13px; font-size: 8px;">✓</span> พร้อมใช้งานปกติ</span>
+                  <span style="margin-left: 10px;"><span class="rpt-badge fail" style="width: 13px; height: 13px; font-size: 8px;">✗</span> ข้อบกพร่อง/ชำรุด</span>
+                  <span style="margin-left: 10px;"><span class="rpt-badge warn" style="width: 13px; height: 13px; font-size: 8px;">△</span> อนุโลมให้ใช้งาน</span>
+                  <span style="margin-left: 10px;"><span class="rpt-badge none" style="width: 13px; height: 13px; font-size: 8px;">-</span> ไม่ได้ลงตรวจ/เวรหยุด</span>
+                </div>
+                <div>โรงพยาบาลพิษณุเวช พิจิตร ในเครือพริ้นซิเพิล เฮลท์แคร์ (PRINC)</div>
+              </div>
             </div>
           </div>
         </section>
@@ -4783,10 +5215,13 @@
       var todayStr = new Date().toISOString().slice(0, 10);
       var dateInput = document.getElementById('filterDate');
       if (dateInput) dateInput.value = todayStr;
+      var monthInput = document.getElementById('reportMonthPicker');
+      if (monthInput && !monthInput.value) monthInput.value = todayStr.slice(0, 7);
 
       // 2. Populate selects
       populateDepartmentSelects();
       populateFormSelects();
+      populateReportSelects();
 
       // 4. Fetch live data directly from Supabase Cloud (Single source of truth)
       if (window.PPCH_API && window.PPCH_API.isConfigured()) {
@@ -4831,6 +5266,7 @@
       populateDepartmentSelects();
       populateFormSelects();
       populateDeviceHistorySelect();
+      populateReportSelects();
 
       // Update defective badge in sidebar
       var defectiveList = (window.PPCH_STORE && window.PPCH_STORE.getDefectiveEquipment) ? window.PPCH_STORE.getDefectiveEquipment() : [];
@@ -4879,6 +5315,8 @@
         renderDeviceSummaryView();
       } else if (currentView === 'settings') {
         renderSettingsView();
+      } else if (currentView === 'report') {
+        renderMonthlyReportView();
       }
     }
 
@@ -4921,6 +5359,7 @@
         defective: 'เครื่องมือไม่พร้อมใช้งาน & จัดการงานซ่อม',
         relocate: 'มอบหมายแผนก',
         directory: 'รายการเครื่อง & QR Code',
+        report: 'รายงานประจำเดือน (A4 แนวนอน)',
         settings: 'ตั้งค่าระบบ'
       };
       if (bread) bread.innerText = breadMap[viewKey] || viewKey;
@@ -4932,6 +5371,7 @@
         defective: 'viewDefective',
         relocate: 'viewRelocate',
         directory: 'viewDirectory',
+        report: 'viewReport',
         settings: 'viewSettings'
       };
 
@@ -4951,6 +5391,8 @@
         renderDeviceSummaryView();
       } else if (viewKey === 'relocate') {
         populateRelocateNameSelect();
+      } else if (viewKey === 'report') {
+        renderMonthlyReportView();
       } else if (viewKey === 'settings') {
         renderSettingsView();
       }
@@ -5430,26 +5872,31 @@
       }
 
       // Render Resolved Repairs History
+      var resolvedRepairs = repairs.filter(function (r) {
+        return !!(r.resolvedAt || r.resolved_at);
+      });
+      if (kResolved) kResolved.innerText = resolvedRepairs.length;
+
       var hBody = document.getElementById('repairHistoryTableBody');
       var hBadge = document.getElementById('repairHistoryCountBadge');
-      if (hBadge) hBadge.innerText = repairs.length + ' รายการ';
+      if (hBadge) hBadge.innerText = resolvedRepairs.length + ' รายการ';
       var hBtnBadge = document.getElementById('repairHistoryBtnBadge');
-      if (hBtnBadge) hBtnBadge.innerText = repairs.length;
+      if (hBtnBadge) hBtnBadge.innerText = resolvedRepairs.length;
 
       if (hBody) {
-        if (repairs.length === 0) {
+        if (resolvedRepairs.length === 0) {
           hBody.innerHTML = '<tr class="table-empty-row"><td colspan="5" style="text-align: center; padding: 24px; color: var(--text-light);">ยังไม่มีประวัติการซ่อมบำรุงที่บันทึกเสร็จสิ้น</td></tr>';
         } else {
           var hHtml = '';
-          repairs.slice(0, 20).forEach(function (r) {
+          resolvedRepairs.slice(0, 50).forEach(function (r) {
             hHtml += '<tr>' +
-              '<td data-label="วัน-เวลาที่แก้ไขเสร็จ" style="font-size: 11.5px; color: var(--text-muted); font-family: var(--font-mono);">' + (r.resolvedAt || '-') + '</td>' +
-              '<td data-label="รหัสครุภัณฑ์"><span class="asset-code-clean">' + (r.deviceAsset || '-') + '</span></td>' +
-              '<td data-label="เครื่องมือแพทย์"><div style="font-weight: 600;">' + (r.deviceName || '-') + '</div><div style="font-size: 11px; color: var(--text-muted);">' + window.PPCH_STORE.getDepartmentName(r.department) + '</div></td>' +
-              '<td data-label="รายละเอียดการแก้ไข (สิ่งที่ดำเนินการไป)"><div style="font-size: 12px; color: var(--text-main); font-weight: 600;">' + (r.actionTaken || '-') + '</div>' +
-                (r.defectReason ? '<div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">อาการเดิม: ' + r.defectReason + '</div>' : '') +
+              '<td data-label="วัน-เวลาที่แก้ไขเสร็จ" style="font-size: 11.5px; color: var(--text-muted); font-family: var(--font-mono);">' + (r.resolvedAt || r.resolved_at || '-') + '</td>' +
+              '<td data-label="รหัสครุภัณฑ์"><span class="asset-code-clean">' + (r.deviceAsset || r.device_asset || '-') + '</span></td>' +
+              '<td data-label="เครื่องมือแพทย์"><div style="font-weight: 600;">' + (r.deviceName || r.device_name || '-') + '</div><div style="font-size: 11px; color: var(--text-muted);">' + window.PPCH_STORE.getDepartmentName(r.department) + '</div></td>' +
+              '<td data-label="รายละเอียดการแก้ไข (สิ่งที่ดำเนินการไป)"><div style="font-size: 12px; color: var(--text-main); font-weight: 600;">' + (r.actionTaken || r.action_taken || '-') + '</div>' +
+                (r.defectReason ? '<div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">อาการเดิม: ' + (r.defectReason || r.defect_reason) + '</div>' : '') +
               '</td>' +
-              '<td data-label="ผู้ดำเนินการแก้ไข"><span style="font-size: 12px; font-weight: 600; color: var(--green-ready);"><span class="material-icons-round" style="font-size: 13px; vertical-align: -2px;">person</span> ' + (r.resolvedBy || '-') + '</span></td>' +
+              '<td data-label="ผู้ดำเนินการแก้ไข"><span style="font-size: 12px; font-weight: 600; color: var(--green-ready);"><span class="material-icons-round" style="font-size: 13px; vertical-align: -2px;">person</span> ' + (r.resolvedBy || r.resolved_by || '-') + '</span></td>' +
             '</tr>';
           });
           hBody.innerHTML = hHtml;
@@ -7131,6 +7578,20 @@
         });
         if (curMVal) mDeptSel.value = curMVal;
       }
+
+      // 5. reportDeptFilter (Monthly Report View)
+      var rptDeptSel = document.getElementById('reportDeptFilter');
+      if (rptDeptSel) {
+        var curRptVal = rptDeptSel.value || '';
+        rptDeptSel.innerHTML = '<option value="">ทุกแผนก (ภาพรวมโรงพยาบาล)</option>';
+        depts.forEach(function (dp) {
+          var opt = document.createElement('option');
+          opt.value = dp.id;
+          opt.innerText = dp.name;
+          rptDeptSel.appendChild(opt);
+        });
+        rptDeptSel.value = curRptVal;
+      }
     }
 
     function populateFormSelects() {
@@ -8010,6 +8471,322 @@
       link.download = 'PPCH_Med_Daily_' + dateVal + '.csv';
       link.click();
       showToast('ส่งออกไฟล์ CSV สำเร็จ! (รองรับภาษาไทย)');
+    }
+
+    // ==================== 12. MONTHLY A4 LANDSCAPE REPORT MODULE ====================
+    function populateReportSelects() {
+      populateDepartmentSelects();
+      populateReportDeviceSelect();
+    }
+
+    function handleReportDeptChange() {
+      populateReportDeviceSelect();
+      renderMonthlyReportView();
+    }
+
+    function populateReportDeviceSelect() {
+      var devSel = document.getElementById('reportDeviceFilter');
+      if (!devSel) return;
+      var deptSel = document.getElementById('reportDeptFilter');
+      var deptVal = deptSel ? deptSel.value : '';
+
+      var equip = (window.PPCH_STORE && window.PPCH_STORE.getEquipment) ? window.PPCH_STORE.getEquipment() : (allEquipment || []);
+      if (deptVal && deptVal !== 'all') {
+        equip = equip.filter(function (e) { return e.currentDept === deptVal; });
+      }
+
+      var curVal = devSel.value || '';
+      devSel.innerHTML = '<option value="">-- เครื่องมือแพทย์ทั้งหมด (' + equip.length + ' เครื่อง) --</option>';
+      equip.forEach(function (eq) {
+        var opt = document.createElement('option');
+        opt.value = eq.id;
+        opt.innerText = eq.assetCode + ' - ' + eq.name;
+        devSel.appendChild(opt);
+      });
+      devSel.value = curVal;
+    }
+
+    function renderMonthlyReportView() {
+      var monthInput = document.getElementById('reportMonthPicker');
+      var monthVal = (monthInput && monthInput.value) ? monthInput.value : new Date().toISOString().slice(0, 7);
+      if (monthInput && !monthInput.value) monthInput.value = monthVal;
+
+      var parts = monthVal.split('-');
+      var yr = parseInt(parts[0], 10);
+      var mo = parseInt(parts[1], 10);
+      var daysInMonth = new Date(yr, mo, 0).getDate();
+
+      var thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+      var thaiMonthStr = thaiMonths[mo - 1] + ' ' + (yr + 543);
+
+      var deptVal = document.getElementById('reportDeptFilter') ? document.getElementById('reportDeptFilter').value : '';
+      var devVal = document.getElementById('reportDeviceFilter') ? document.getElementById('reportDeviceFilter').value : '';
+
+      // Update Header Text
+      var docMonthEl = document.getElementById('rptDocMonth');
+      if (docMonthEl) docMonthEl.innerText = thaiMonthStr;
+      var docDeptEl = document.getElementById('rptDocDept');
+      if (docDeptEl) {
+        docDeptEl.innerText = (deptVal && deptVal !== 'all') ? window.PPCH_STORE.getDepartmentName(deptVal) : 'ทุกแผนก (ภาพรวมโรงพยาบาล)';
+      }
+      var docDateEl = document.getElementById('rptDocPrintDate');
+      if (docDateEl) {
+        docDateEl.innerText = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) + ' น.';
+      }
+
+      // Filter Equipment
+      var allEq = (window.PPCH_STORE && window.PPCH_STORE.getEquipment) ? window.PPCH_STORE.getEquipment() : (allEquipment || []);
+      var filteredEq = allEq.slice();
+      if (deptVal && deptVal !== 'all') {
+        filteredEq = filteredEq.filter(function (e) { return e.currentDept === deptVal; });
+      }
+      if (devVal) {
+        filteredEq = filteredEq.filter(function (e) { return e.id === devVal; });
+      }
+
+      // Sort by Department, then Asset Code
+      filteredEq.sort(function (a, b) {
+        var da = window.PPCH_STORE.getDepartmentName(a.currentDept) || '';
+        var db = window.PPCH_STORE.getDepartmentName(b.currentDept) || '';
+        if (da !== db) return da.localeCompare(db, 'th');
+        return (a.assetCode || '').localeCompare(b.assetCode || '');
+      });
+
+      // Filter Evaluations for selected month
+      var allEvals = (window.PPCH_STORE && window.PPCH_STORE.getEvaluations) ? window.PPCH_STORE.getEvaluations() : (allEvaluations || []);
+      var monthEvals = allEvals.filter(function (e) {
+        return e.evaluatedAt && e.evaluatedAt.slice(0, 7) === monthVal;
+      });
+
+      // Map evaluations by deviceId and day: devDayMap[deviceId][dayNum] = ev
+      var devDayMap = {};
+      monthEvals.forEach(function (e) {
+        var dId = e.deviceId || e.device_id;
+        if (!dId) return;
+        if (!devDayMap[dId]) devDayMap[dId] = {};
+        var dayNum = parseInt(e.evaluatedAt.slice(8, 10), 10);
+        if (!devDayMap[dId][dayNum] || e.result === 'abnormal' || e.result === 'not_ready') {
+          devDayMap[dId][dayNum] = e;
+        }
+      });
+
+      // Build Table Headers
+      var theadEl = document.getElementById('monthlyReportTableHead');
+      var headHtml = '<tr>' +
+        '<th style="width: 28px;">ลำดับ</th>' +
+        '<th style="width: 75px;">รหัสครุภัณฑ์</th>' +
+        '<th style="min-width: 140px; text-align: left; padding-left: 6px;">ชื่อเครื่องมือแพทย์</th>' +
+        '<th style="width: 80px;">แผนก</th>';
+      for (var d = 1; d <= daysInMonth; d++) {
+        headHtml += '<th class="col-day">' + d + '</th>';
+      }
+      headHtml += '<th style="width: 55px;">ความพร้อม</th>' +
+        '<th style="width: 80px;">สถานะรวม</th>' +
+        '</tr>';
+      if (theadEl) theadEl.innerHTML = headHtml;
+
+      // Build Table Body & Metrics
+      var tbodyEl = document.getElementById('monthlyReportTableBody');
+      var totalInScope = filteredEq.length;
+      var totalChecks = 0;
+      var totalReadyChecks = 0;
+      var totalAbnormalChecks = 0;
+
+      if (filteredEq.length === 0) {
+        if (tbodyEl) {
+          tbodyEl.innerHTML = '<tr class="table-empty-row"><td colspan="' + (daysInMonth + 6) + '" style="text-align: center; padding: 28px; color: var(--text-muted); font-size: 12px;">ไม่พบรายการเครื่องมือแพทย์ตามเงื่อนไขที่เลือก</td></tr>';
+        }
+      } else {
+        var bodyHtml = '';
+        filteredEq.forEach(function (eq, idx) {
+          var deptName = window.PPCH_STORE.getDepartmentName(eq.currentDept) || '-';
+          var devChecks = 0;
+          var devReady = 0;
+          var devAbnormal = 0;
+
+          var daysTdHtml = '';
+          for (var d = 1; d <= daysInMonth; d++) {
+            var ev = devDayMap[eq.id] ? devDayMap[eq.id][d] : null;
+            if (ev) {
+              devChecks++;
+              totalChecks++;
+              var isNormal = (ev.result === 'normal' || ev.result === 'ready');
+              var isCond = (ev.result === 'conditional_ready' || ev.allowUse);
+              if (isNormal) {
+                devReady++;
+                totalReadyChecks++;
+                daysTdHtml += '<td><span class="rpt-badge pass" title="วันที่ ' + d + ': พร้อมใช้ปกติ (' + (ev.evaluatedBy || '-') + ')">✓</span></td>';
+              } else if (isCond) {
+                devReady++;
+                totalReadyChecks++;
+                daysTdHtml += '<td><span class="rpt-badge warn" title="วันที่ ' + d + ': อนุโลมให้ใช้ (' + (ev.evaluatedBy || '-') + ')">△</span></td>';
+              } else {
+                devAbnormal++;
+                totalAbnormalChecks++;
+                daysTdHtml += '<td><span class="rpt-badge fail" title="วันที่ ' + d + ': ข้อบกพร่อง (' + (ev.abnormalNote || 'ชำรุด') + ')">✗</span></td>';
+              }
+            } else {
+              daysTdHtml += '<td><span class="rpt-badge none">-</span></td>';
+            }
+          }
+
+          var readinessRateStr = devChecks > 0 ? (Math.round((devReady / devChecks) * 100) + '%') : '-';
+          var summaryStatusHtml = '';
+          if (devAbnormal > 0) {
+            summaryStatusHtml = '<span style="color: #b91c1c; font-weight: 700; font-size: 9.5px;">พบชำรุด ' + devAbnormal + ' ครั้ง</span>';
+          } else if (devChecks > 0) {
+            summaryStatusHtml = '<span style="color: #15803d; font-weight: 600; font-size: 9.5px;">พร้อมใช้ 100%</span>';
+          } else {
+            summaryStatusHtml = '<span style="color: #94a3b8; font-size: 9.5px;">รอการตรวจ</span>';
+          }
+
+          bodyHtml += '<tr>' +
+            '<td style="text-align: center; color: var(--text-muted); font-size: 10px;">' + (idx + 1) + '</td>' +
+            '<td style="font-family: var(--font-mono); font-weight: 700; color: #002e6e; font-size: 10.5px;">' + (eq.assetCode || '-') + '</td>' +
+            '<td class="col-left"><div style="font-weight: 600; color: #0f172a; line-height: 1.25;">' + (eq.name || '-') + '</div></td>' +
+            '<td style="font-size: 10px; color: #475569;">' + deptName + '</td>' +
+            daysTdHtml +
+            '<td style="font-family: var(--font-mono); font-weight: 700; font-size: 10.5px; color: ' + (devChecks > 0 && devReady === devChecks ? '#15803d' : '#b91c1c') + ';">' + readinessRateStr + '</td>' +
+            '<td style="text-align: center;">' + summaryStatusHtml + '</td>' +
+            '</tr>';
+        });
+        if (tbodyEl) tbodyEl.innerHTML = bodyHtml;
+      }
+
+      // Update KPI Stat Strip
+      var elEquipCount = document.getElementById('rptStatEquipCount');
+      if (elEquipCount) elEquipCount.innerText = totalInScope + ' เครื่อง';
+      var elCheckCount = document.getElementById('rptStatCheckCount');
+      if (elCheckCount) elCheckCount.innerText = totalChecks + ' ครั้ง';
+      var elReadyRate = document.getElementById('rptStatReadyRate');
+      if (elReadyRate) {
+        var avgRate = totalChecks > 0 ? Math.round((totalReadyChecks / totalChecks) * 100) : 100;
+        elReadyRate.innerText = avgRate + '%';
+        elReadyRate.style.color = avgRate >= 95 ? '#15803d' : '#b91c1c';
+      }
+      var elDefectCount = document.getElementById('rptStatDefectCount');
+      if (elDefectCount) elDefectCount.innerText = totalAbnormalChecks + ' ครั้ง';
+    }
+
+    function printMonthlyReport() {
+      var existingStyle = document.getElementById('monthlyReportPrintStyle');
+      if (existingStyle) existingStyle.remove();
+
+      var style = document.createElement('style');
+      style.id = 'monthlyReportPrintStyle';
+      style.textContent = '@media print { @page { size: A4 landscape; margin: 6mm 8mm; } }';
+      document.head.appendChild(style);
+
+      var cleanup = function () {
+        document.body.classList.remove('printing-monthly-report');
+        var st = document.getElementById('monthlyReportPrintStyle');
+        if (st) st.remove();
+        window.removeEventListener('afterprint', cleanup);
+      };
+
+      window.addEventListener('afterprint', cleanup);
+      document.body.classList.add('printing-monthly-report');
+      window.print();
+      setTimeout(cleanup, 2500);
+    }
+
+    function exportMonthlyReportExcel() {
+      var monthInput = document.getElementById('reportMonthPicker');
+      var monthVal = (monthInput && monthInput.value) ? monthInput.value : new Date().toISOString().slice(0, 7);
+
+      var parts = monthVal.split('-');
+      var yr = parseInt(parts[0], 10);
+      var mo = parseInt(parts[1], 10);
+      var daysInMonth = new Date(yr, mo, 0).getDate();
+
+      var deptVal = document.getElementById('reportDeptFilter') ? document.getElementById('reportDeptFilter').value : '';
+      var devVal = document.getElementById('reportDeviceFilter') ? document.getElementById('reportDeviceFilter').value : '';
+
+      var allEq = (window.PPCH_STORE && window.PPCH_STORE.getEquipment) ? window.PPCH_STORE.getEquipment() : (allEquipment || []);
+      var filteredEq = allEq.slice();
+      if (deptVal && deptVal !== 'all') filteredEq = filteredEq.filter(function (e) { return e.currentDept === deptVal; });
+      if (devVal) filteredEq = filteredEq.filter(function (e) { return e.id === devVal; });
+
+      var allEvals = (window.PPCH_STORE && window.PPCH_STORE.getEvaluations) ? window.PPCH_STORE.getEvaluations() : (allEvaluations || []);
+      var monthEvals = allEvals.filter(function (e) {
+        return e.evaluatedAt && e.evaluatedAt.slice(0, 7) === monthVal;
+      });
+
+      var devDayMap = {};
+      monthEvals.forEach(function (e) {
+        var dId = e.deviceId || e.device_id;
+        if (!dId) return;
+        if (!devDayMap[dId]) devDayMap[dId] = {};
+        var dayNum = parseInt(e.evaluatedAt.slice(8, 10), 10);
+        if (!devDayMap[dId][dayNum] || e.result === 'abnormal' || e.result === 'not_ready') {
+          devDayMap[dId][dayNum] = e;
+        }
+      });
+
+      var clean = function (v) {
+        if (v === null || v === undefined) return '""';
+        return '"' + String(v).replace(/"/g, '""') + '"';
+      };
+
+      // Header row with UTF-8 BOM
+      var csv = '\uFEFF';
+      var headerCols = ['ลำดับ', 'รหัสครุภัณฑ์', 'ชื่อเครื่องมือแพทย์', 'แผนกรับผิดชอบ', 'หมวดหมู่'];
+      for (var d = 1; d <= daysInMonth; d++) {
+        headerCols.push(String(d));
+      }
+      headerCols.push('อัตราความพร้อม (%)', 'จำนวนวันที่ตรวจ', 'พบข้อบกพร่อง (ครั้ง)', 'สถานะเดือนนี้');
+      csv += headerCols.map(clean).join(',') + '\r\n';
+
+      filteredEq.forEach(function (eq, idx) {
+        var deptName = window.PPCH_STORE.getDepartmentName(eq.currentDept) || '-';
+        var devChecks = 0;
+        var devReady = 0;
+        var devAbnormal = 0;
+
+        var dayCols = [];
+        for (var d = 1; d <= daysInMonth; d++) {
+          var ev = devDayMap[eq.id] ? devDayMap[eq.id][d] : null;
+          if (ev) {
+            devChecks++;
+            var isNormal = (ev.result === 'normal' || ev.result === 'ready');
+            var isCond = (ev.result === 'conditional_ready' || ev.allowUse);
+            if (isNormal) {
+              devReady++;
+              dayCols.push('✓');
+            } else if (isCond) {
+              devReady++;
+              dayCols.push('△');
+            } else {
+              devAbnormal++;
+              dayCols.push('✗');
+            }
+          } else {
+            dayCols.push('-');
+          }
+        }
+
+        var rateStr = devChecks > 0 ? (Math.round((devReady / devChecks) * 100) + '%') : '-';
+        var statusStr = devAbnormal > 0 ? ('พบชำรุด ' + devAbnormal + ' ครั้ง') : (devChecks > 0 ? 'พร้อมใช้ปกติ' : 'รอการตรวจ');
+
+        var row = [
+          idx + 1,
+          clean(eq.assetCode),
+          clean(eq.name),
+          clean(deptName),
+          clean(eq.category || 'เครื่องมือแพทย์ทั่วไป')
+        ];
+        dayCols.forEach(function (c) { row.push(clean(c)); });
+        row.push(clean(rateStr), clean(devChecks), clean(devAbnormal), clean(statusStr));
+        csv += row.join(',') + '\r\n';
+      });
+
+      var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      var link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      var deptSuffix = (deptVal && deptVal !== 'all') ? ('_' + (window.PPCH_STORE.getDepartmentName(deptVal) || deptVal)) : '';
+      link.download = 'PPCH_Medical_Equipment_Monthly_Report_' + monthVal + deptSuffix + '.csv';
+      link.click();
+      showToast('ส่งออกรายงาน Excel สำเร็จ! (UTF-8 BOM รองรับภาษาไทย 100%)');
     }
 
     function showToast(msg) {

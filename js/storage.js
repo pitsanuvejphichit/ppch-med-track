@@ -103,6 +103,11 @@
       } else {
         inMemoryData.transfers = [];
       }
+      if (Array.isArray(cloudData.repairs)) {
+        inMemoryData.repairs = cloudData.repairs;
+      } else {
+        inMemoryData.repairs = [];
+      }
       if (Array.isArray(cloudData.departments) && cloudData.departments.length > 0) {
         inMemoryData.departments = cloudData.departments;
         if (window.PPCH_CONFIG) {
