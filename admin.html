@@ -3310,6 +3310,34 @@
       color: #0f172a;
       font-family: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
     }
+    @keyframes spin-slow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    #pdfExportSandbox {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      z-index: -9999;
+      opacity: 1;
+      pointer-events: none;
+      background: #ffffff;
+      visibility: visible;
+      overflow: visible;
+    }
+    #pdfExportSandbox .report-paper-sheet {
+      border: none !important;
+      box-shadow: none !important;
+      outline: none !important;
+      border-radius: 0 !important;
+      margin: 0 !important;
+      padding: 16px 20px !important;
+      width: 1080px !important;
+      max-width: 1080px !important;
+      min-width: 1080px !important;
+      background: #ffffff !important;
+    }
     .report-header-flex {
       display: flex;
       align-items: flex-start;
@@ -4333,13 +4361,17 @@
 
               <!-- 4. Action Buttons -->
               <div style="display: flex; gap: 8px; margin-left: auto; align-items: center; flex-wrap: wrap;">
-                <button type="button" onclick="downloadAllReportsZip()" class="btn-tool" style="background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; height: 36px;" title="ดาวน์โหลดไฟล์รายงานของเครื่องมือแพทย์ทุกเครื่องในรอบเดือนนี้ (ไฟล์ ZIP)">
+                <button type="button" onclick="downloadAllReportsZip()" class="btn-tool" style="background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; height: 36px;" title="ดาวน์โหลดไฟล์ PDF ของเครื่องมือแพทย์ทุกเครื่องในรอบเดือนนี้ (บีบอัดเป็นไฟล์ ZIP)">
                   <span class="material-icons-round" style="font-size: 18px;">folder_zip</span>
-                  <span>ดาวน์โหลดทุกเครื่อง (ZIP)</span>
+                  <span>ดาวน์โหลดทุกเครื่อง (ZIP เป็น PDF)</span>
+                </button>
+                <button type="button" onclick="downloadCurrentReportPdf()" class="btn-tool" style="background: #f0fdf4; color: #15803d; border-color: #bbf7d0; height: 36px;" title="ดาวน์โหลดไฟล์ PDF ของเครื่องนี้ทันที (A4 แนวนอน 2 หน้า)">
+                  <span class="material-icons-round" style="font-size: 18px;">picture_as_pdf</span>
+                  <span>ดาวน์โหลด PDF เครื่องนี้</span>
                 </button>
                 <button type="button" onclick="printMonthlyReport()" class="btn-tool btn-tool-primary" style="height: 36px;" title="สั่งพิมพ์เอกสาร หรือบันทึกเป็น PDF A4 แนวนอน (2 หน้า)">
                   <span class="material-icons-round" style="font-size: 16px;">print</span>
-                  <span>พิมพ์ / PDF (A4)</span>
+                  <span>พิมพ์ (A4)</span>
                 </button>
               </div>
             </div>
@@ -4353,7 +4385,7 @@
               <!-- Header with Logo at top-left -->
               <div class="report-header-flex">
                 <div class="report-brand-box">
-                  <img src="logo.png" alt="โรงพยาบาลพิษณุเวช พิจิตร" class="report-brand-logo">
+                  <img src="logo.png" alt="โรงพยาบาลพิษณุเวช พิจิตร" class="report-brand-logo" id="rptLogoImg1">
                   <div>
                     <div class="report-title-h1">โรงพยาบาลพิษณุเวช พิจิตร (Phitsanuvej Phichit Hospital)</div>
                     <div class="report-title-h2">แบบบันทึกการตรวจสอบความพร้อมใช้เครื่องมือแพทย์ประจำวัน (รายเดือน)</div>
@@ -4435,7 +4467,7 @@
               <!-- Header with Logo at top-left -->
               <div class="report-header-flex">
                 <div class="report-brand-box">
-                  <img src="logo.png" alt="โรงพยาบาลพิษณุเวช พิจิตร" class="report-brand-logo">
+                  <img src="logo.png" alt="โรงพยาบาลพิษณุเวช พิจิตร" class="report-brand-logo" id="rptLogoImg2">
                   <div>
                     <div class="report-title-h1">โรงพยาบาลพิษณุเวช พิจิตร (Phitsanuvej Phichit Hospital)</div>
                     <div class="report-title-h2">บันทึกรายการข้อบกพร่อง การแก้ไข และการส่งคืนความพร้อมใช้งาน</div>
@@ -5282,6 +5314,27 @@
 
 
 
+  <!-- PDF & ZIP Export Progress Modal -->
+  <div id="pdfProgressModal" class="modal-overlay" style="display: none; z-index: 100000; align-items: center; justify-content: center; backdrop-filter: blur(4px); background: rgba(15, 23, 42, 0.65);">
+    <div style="background: #ffffff; border-radius: 16px; padding: 26px 30px; width: 420px; max-width: 92vw; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.35); border: 1px solid #e2e8f0;">
+      <div style="width: 56px; height: 56px; border-radius: 50%; background: #eff6ff; color: #1d4ed8; display: inline-flex; align-items: center; justify-content: center; margin: 0 auto 12px auto;">
+        <span class="material-icons-round" style="font-size: 32px; animation: spin-slow 2.5s linear infinite;">sync</span>
+      </div>
+      <div style="font-size: 16px; font-weight: 800; color: #002e6e; margin-bottom: 4px;">กำลังสร้างไฟล์รายงาน PDF (A4 แนวนอน)</div>
+      <div id="pdfProgressText" style="font-size: 13px; color: #475569; margin-bottom: 16px; min-height: 20px; line-height: 1.4;">เตรียมข้อมูล...</div>
+      <div style="background: #e2e8f0; border-radius: 9999px; height: 10px; overflow: hidden; width: 100%; margin-bottom: 8px;">
+        <div id="pdfProgressBar" style="background: linear-gradient(90deg, #002e6e, #2563eb); height: 100%; width: 0%; transition: width 0.15s ease;"></div>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; color: #64748b;">
+        <span>ความคืบหน้า</span>
+        <span id="pdfProgressPercent" style="font-weight: 800; color: #002e6e; font-family: monospace;">0%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden Sandbox for Multi-Page PDF Generation -->
+  <div id="pdfExportSandbox"></div>
+
   <!-- Toast Notice -->
   <div id="toastNotice">
     <span class="material-icons-round" style="color: #38bdf8; font-size: 18px;">info</span>
@@ -5295,6 +5348,9 @@
   <script src="js/api.js"></script>
   <script src="js/qrcode.min.js"></script>
   <script src="js/jszip.min.js"></script>
+  <script src="js/html2canvas.min.js"></script>
+  <script src="js/jspdf.umd.min.js"></script>
+  <script src="js/logo-base64.js"></script>
 
   <script>
     var currentView = 'summary';
@@ -8917,6 +8973,14 @@
 
       var data = getDeviceMonthReportData(eq, monthVal);
 
+      // Ensure logos use base64 data URI to avoid canvas CORS taint
+      if (typeof PPCH_LOGO_BASE64 !== 'undefined' && PPCH_LOGO_BASE64) {
+        var l1 = document.getElementById('rptLogoImg1');
+        if (l1) l1.src = PPCH_LOGO_BASE64;
+        var l2 = document.getElementById('rptLogoImg2');
+        if (l2) l2.src = PPCH_LOGO_BASE64;
+      }
+
       // Update date headers on both pages (no print date)
       var elDocMonth1 = document.getElementById('rptDocMonth');
       if (elDocMonth1) elDocMonth1.innerText = data.thaiMonthStr;
@@ -9081,6 +9145,7 @@
     // Helper: Build HTML for Page 1 & Page 2 of a single device (clean, without outer border, without signatures)
     function buildEquipmentSheetsHtml(data) {
       var eq = data.eq;
+      var logoImgSrc = (typeof PPCH_LOGO_BASE64 !== 'undefined' && PPCH_LOGO_BASE64) ? PPCH_LOGO_BASE64 : 'logo.png';
 
       // Matrix Table
       var headTh = '<tr><th style="width: 28px;">ข้อ</th><th style="min-width: 240px; text-align: left; padding-left: 8px;">เกณฑ์ / หัวข้อการตรวจสอบความพร้อมใช้ประจำวัน</th>';
@@ -9164,7 +9229,7 @@
         '<div class="report-paper-sheet">' +
           '<div class="report-header-flex">' +
             '<div class="report-brand-box">' +
-              '<img src="logo.png" alt="โรงพยาบาลพิษณุเวช พิจิตร" class="report-brand-logo">' +
+              '<img src="' + logoImgSrc + '" alt="โรงพยาบาลพิษณุเวช พิจิตร" class="report-brand-logo">' +
               '<div>' +
                 '<div class="report-title-h1">โรงพยาบาลพิษณุเวช พิจิตร (Phitsanuvej Phichit Hospital)</div>' +
                 '<div class="report-title-h2">แบบบันทึกการตรวจสอบความพร้อมใช้เครื่องมือแพทย์ประจำวัน (รายเดือน)</div>' +
@@ -9206,7 +9271,7 @@
         '<div class="report-paper-sheet report-page-break">' +
           '<div class="report-header-flex">' +
             '<div class="report-brand-box">' +
-              '<img src="logo.png" alt="โรงพยาบาลพิษณุเวช พิจิตร" class="report-brand-logo">' +
+              '<img src="' + logoImgSrc + '" alt="โรงพยาบาลพิษณุเวช พิจิตร" class="report-brand-logo">' +
               '<div>' +
                 '<div class="report-title-h1">โรงพยาบาลพิษณุเวช พิจิตร (Phitsanuvej Phichit Hospital)</div>' +
                 '<div class="report-title-h2">บันทึกรายการข้อบกพร่อง การแก้ไข และการส่งคืนความพร้อมใช้งาน</div>' +
@@ -9293,10 +9358,15 @@
         '\n</body>\n</html>';
     }
 
-    // Download ALL reports as ZIP (Requirement 7)
-    function downloadAllReportsZip() {
+    // Download ALL reports as ZIP containing genuine PDF files (Requirement 7 & PDF Fix)
+    async function downloadAllReportsZip() {
       if (typeof JSZip === 'undefined') {
         showToast('กำลังโหลดระบบบีบอัดไฟล์ กรุณารอสักครู่...');
+        return;
+      }
+      var jsPdfCls = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF : (window.jsPDF || null);
+      if (typeof html2canvas === 'undefined' || !jsPdfCls) {
+        showToast('กำลังโหลดระบบสร้างไฟล์ PDF กรุณารอสักครู่...');
         return;
       }
 
@@ -9317,47 +9387,263 @@
         return;
       }
 
-      showToast('กำลังสร้างรายงาน ZIP สำหรับ ' + list.length + ' เครื่อง...');
-
-      var zip = new JSZip();
-
       // Sort by Asset Code
       list.sort(function (a, b) {
         return (a.assetCode || '').localeCompare(b.assetCode || '');
       });
 
-      var combinedSheetsHtml = '';
+      // Progress Modal Elements
+      var progressModal = document.getElementById('pdfProgressModal');
+      var progressText = document.getElementById('pdfProgressText');
+      var progressBar = document.getElementById('pdfProgressBar');
+      var progressPercent = document.getElementById('pdfProgressPercent');
 
-      list.forEach(function (eq, idx) {
-        var data = getDeviceMonthReportData(eq, monthVal);
-        var sheetsHtml = buildEquipmentSheetsHtml(data);
-        var docTitle = 'รายงานประจำเดือน ' + (eq.assetCode || '') + ' - ' + (eq.name || '') + ' (' + monthVal + ')';
-        var singleHtml = buildStandaloneReportHtml(sheetsHtml, docTitle);
+      if (progressModal) {
+        progressModal.style.display = 'flex';
+        if (progressText) progressText.innerText = 'เตรียมข้อมูลรายงาน ' + list.length + ' เครื่อง...';
+        if (progressBar) progressBar.style.width = '0%';
+        if (progressPercent) progressPercent.innerText = '0%';
+      } else {
+        showToast('กำลังสร้างรายงาน PDF และ ZIP สำหรับ ' + list.length + ' เครื่อง...');
+      }
 
-        var safeAsset = (eq.assetCode || ('EQ' + (idx + 1))).replace(/[^a-zA-Z0-9_\-]/g, '_');
-        var safeName = (eq.name || 'Device').replace(/[^a-zA-Z0-9_\-\u0E00-\u0E7F]/g, '_').slice(0, 30);
-        var filename = safeAsset + '_' + safeName + '_' + monthVal + '.html';
-        zip.file(filename, singleHtml);
+      var sandbox = document.getElementById('pdfExportSandbox');
+      if (!sandbox) {
+        sandbox = document.createElement('div');
+        sandbox.id = 'pdfExportSandbox';
+        document.body.appendChild(sandbox);
+      }
 
-        combinedSheetsHtml += sheetsHtml + '\n<div style="page-break-before: always; break-before: page; margin-top: 24px;"></div>\n';
+      var zip = new JSZip();
+
+      // Combined Master PDF (all equipments combined)
+      var masterPdf = new jsPdfCls({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: 'a4',
+        compress: true
       });
+      var masterPageCount = 0;
 
-      // Combined All-in-One report
-      var combinedDocTitle = 'รายงานความพร้อมใช้เครื่องมือแพทย์ทุกเครื่อง ประจำเดือน ' + monthVal;
-      var allInOneHtml = buildStandaloneReportHtml(combinedSheetsHtml, combinedDocTitle);
-      zip.file('00_ALL_EQUIPMENT_REPORTS_' + monthVal + '.html', allInOneHtml);
+      var maxW = 285;
+      var maxH = 198;
 
-      zip.generateAsync({ type: 'blob' }).then(function (content) {
+      try {
+        for (var i = 0; i < list.length; i++) {
+          var eq = list[i];
+          var pct = Math.round(((i + 1) / list.length) * 90); // 0-90% for page rendering
+          if (progressText) {
+            progressText.innerText = 'เครื่องที่ ' + (i + 1) + ' / ' + list.length + ': ' + (eq.assetCode || '-') + ' (' + (eq.name || '') + ')';
+          }
+          if (progressBar) progressBar.style.width = pct + '%';
+          if (progressPercent) progressPercent.innerText = pct + '%';
+
+          var data = getDeviceMonthReportData(eq, monthVal);
+          sandbox.innerHTML = buildEquipmentSheetsHtml(data);
+
+          // Allow DOM to layout
+          await new Promise(function (resolve) { setTimeout(resolve, 60); });
+
+          var sheets = sandbox.querySelectorAll('.report-paper-sheet');
+          if (sheets.length < 2) continue;
+
+          var sheet1 = sheets[0];
+          var sheet2 = sheets[1];
+
+          // Render Page 1
+          var canvas1 = await html2canvas(sheet1, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff',
+            logging: false
+          });
+          var rW1 = maxW;
+          var rH1 = (canvas1.height * maxW) / canvas1.width;
+          if (rH1 > maxH) {
+            rH1 = maxH;
+            rW1 = (canvas1.width * maxH) / canvas1.height;
+          }
+          var posX1 = 6 + (maxW - rW1) / 2;
+          var posY1 = 6 + (maxH - rH1) / 2;
+          var imgData1 = canvas1.toDataURL('image/jpeg', 0.95);
+
+          // Render Page 2
+          var canvas2 = await html2canvas(sheet2, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff',
+            logging: false
+          });
+          var rW2 = maxW;
+          var rH2 = (canvas2.height * maxW) / canvas2.width;
+          if (rH2 > maxH) {
+            rH2 = maxH;
+            rW2 = (canvas2.width * maxH) / canvas2.height;
+          }
+          var posX2 = 6 + (maxW - rW2) / 2;
+          var posY2 = 6 + (maxH - rH2) / 2;
+          var imgData2 = canvas2.toDataURL('image/jpeg', 0.95);
+
+          // 1. Build Individual PDF (A4 Landscape 2 pages)
+          var singlePdf = new jsPdfCls({
+            orientation: 'landscape',
+            unit: 'mm',
+            format: 'a4',
+            compress: true
+          });
+          singlePdf.addImage(imgData1, 'JPEG', posX1, posY1, rW1, rH1, undefined, 'FAST');
+          singlePdf.addPage('a4', 'landscape');
+          singlePdf.addImage(imgData2, 'JPEG', posX2, posY2, rW2, rH2, undefined, 'FAST');
+
+          var singlePdfBlob = singlePdf.output('blob');
+          var safeAsset = (eq.assetCode || ('EQ' + (i + 1))).replace(/[^a-zA-Z0-9_\-]/g, '_');
+          var safeName = (eq.name || 'Device').replace(/[^a-zA-Z0-9_\-\u0E00-\u0E7F]/g, '_').slice(0, 30);
+          var filename = safeAsset + '_' + safeName + '_' + monthVal + '.pdf';
+          zip.file(filename, singlePdfBlob);
+
+          // 2. Append to Master Combined PDF
+          if (masterPageCount === 0) {
+            masterPdf.addImage(imgData1, 'JPEG', posX1, posY1, rW1, rH1, undefined, 'FAST');
+          } else {
+            masterPdf.addPage('a4', 'landscape');
+            masterPdf.addImage(imgData1, 'JPEG', posX1, posY1, rW1, rH1, undefined, 'FAST');
+          }
+          masterPdf.addPage('a4', 'landscape');
+          masterPdf.addImage(imgData2, 'JPEG', posX2, posY2, rW2, rH2, undefined, 'FAST');
+          masterPageCount += 2;
+        }
+
+        // Clean staging area
+        sandbox.innerHTML = '';
+
+        // Master PDF into ZIP
+        if (masterPageCount > 0) {
+          if (progressText) progressText.innerText = 'กำลังบันทึกไฟล์ PDF รวมทุกเครื่อง (Master PDF)...';
+          var masterPdfBlob = masterPdf.output('blob');
+          zip.file('00_ALL_EQUIPMENT_REPORTS_' + monthVal + '.pdf', masterPdfBlob);
+        }
+
+        if (progressText) progressText.innerText = 'กำลังบีบอัดเป็นไฟล์ ZIP...';
+        if (progressBar) progressBar.style.width = '95%';
+        if (progressPercent) progressPercent.innerText = '95%';
+
+        var content = await zip.generateAsync({ type: 'blob' });
         var link = document.createElement('a');
         link.href = URL.createObjectURL(content);
         var deptSuffix = (deptVal && deptVal !== 'all') ? ('_' + deptVal) : '';
         link.download = 'PPCH_Med_Reports_' + monthVal + deptSuffix + '.zip';
         link.click();
-        showToast('ดาวน์โหลดไฟล์ ZIP สำเร็จ (' + list.length + ' เครื่อง + ไฟล์รวม)');
-      }).catch(function (err) {
-        console.error('ZIP generation error:', err);
-        showToast('เกิดข้อผิดพลาดในการสร้างไฟล์ ZIP');
-      });
+
+        if (progressBar) progressBar.style.width = '100%';
+        if (progressPercent) progressPercent.innerText = '100%';
+        if (progressModal) progressModal.style.display = 'none';
+        showToast('ดาวน์โหลดไฟล์ ZIP สำเร็จ (' + list.length + ' ไฟล์ PDF + 1 ไฟล์รวม)');
+      } catch (err) {
+        console.error('ZIP PDF export error:', err);
+        if (sandbox) sandbox.innerHTML = '';
+        if (progressModal) progressModal.style.display = 'none';
+        showToast('เกิดข้อผิดพลาดในการสร้างไฟล์ PDF: ' + (err.message || ''));
+      }
+    }
+
+    // Download Single Device PDF directly (A4 Landscape 2 pages)
+    async function downloadCurrentReportPdf() {
+      var devSel = document.getElementById('reportDeviceFilter');
+      var devId = devSel ? devSel.value : '';
+      var monthInput = document.getElementById('reportMonthPicker');
+      var monthVal = (monthInput && monthInput.value) ? monthInput.value : new Date().toISOString().slice(0, 7);
+
+      var allEq = (window.PPCH_STORE && window.PPCH_STORE.getEquipment) ? window.PPCH_STORE.getEquipment() : (allEquipment || []);
+      var eq = devId ? (window.PPCH_STORE && window.PPCH_STORE.getEquipmentById ? window.PPCH_STORE.getEquipmentById(devId) : null) : null;
+      if (!eq && allEq.length > 0) eq = allEq[0];
+      if (!eq) {
+        showToast('ไม่พบข้อมูลเครื่องมือแพทย์');
+        return;
+      }
+
+      var jsPdfCls = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF : (window.jsPDF || null);
+      if (typeof html2canvas === 'undefined' || !jsPdfCls) {
+        showToast('กำลังโหลดระบบสร้างไฟล์ PDF กรุณารอสักครู่...');
+        return;
+      }
+
+      showToast('กำลังสร้างไฟล์ PDF สำหรับ ' + (eq.name || 'เครื่องนี้') + '...');
+
+      try {
+        var sheet1 = document.getElementById('monthlyReportSheetPage1');
+        var sheet2 = document.getElementById('monthlyReportSheetPage2');
+        if (!sheet1 || !sheet2) {
+          showToast('ไม่พบหน้าเอกสารรายงาน');
+          return;
+        }
+
+        // Ensure logo is base64
+        if (typeof PPCH_LOGO_BASE64 !== 'undefined' && PPCH_LOGO_BASE64) {
+          var l1 = document.getElementById('rptLogoImg1');
+          if (l1) l1.src = PPCH_LOGO_BASE64;
+          var l2 = document.getElementById('rptLogoImg2');
+          if (l2) l2.src = PPCH_LOGO_BASE64;
+        }
+
+        var pdf = new jsPdfCls({
+          orientation: 'landscape',
+          unit: 'mm',
+          format: 'a4',
+          compress: true
+        });
+
+        var maxW = 285;
+        var maxH = 198;
+
+        // Render Page 1
+        var canvas1 = await html2canvas(sheet1, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: '#ffffff',
+          logging: false
+        });
+        var rW1 = maxW;
+        var rH1 = (canvas1.height * maxW) / canvas1.width;
+        if (rH1 > maxH) {
+          rH1 = maxH;
+          rW1 = (canvas1.width * maxH) / canvas1.height;
+        }
+        var posX1 = 6 + (maxW - rW1) / 2;
+        var posY1 = 6 + (maxH - rH1) / 2;
+        pdf.addImage(canvas1.toDataURL('image/jpeg', 0.95), 'JPEG', posX1, posY1, rW1, rH1, undefined, 'FAST');
+
+        // Render Page 2
+        var canvas2 = await html2canvas(sheet2, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: '#ffffff',
+          logging: false
+        });
+        pdf.addPage('a4', 'landscape');
+        var rW2 = maxW;
+        var rH2 = (canvas2.height * maxW) / canvas2.width;
+        if (rH2 > maxH) {
+          rH2 = maxH;
+          rW2 = (canvas2.width * maxH) / canvas2.height;
+        }
+        var posX2 = 6 + (maxW - rW2) / 2;
+        var posY2 = 6 + (maxH - rH2) / 2;
+        pdf.addImage(canvas2.toDataURL('image/jpeg', 0.95), 'JPEG', posX2, posY2, rW2, rH2, undefined, 'FAST');
+
+        var safeAsset = (eq.assetCode || 'EQ').replace(/[^a-zA-Z0-9_\-]/g, '_');
+        var safeName = (eq.name || 'Device').replace(/[^a-zA-Z0-9_\-\u0E00-\u0E7F]/g, '_').slice(0, 30);
+        var filename = safeAsset + '_' + safeName + '_' + monthVal + '.pdf';
+
+        pdf.save(filename);
+        showToast('ดาวน์โหลดไฟล์ PDF สำเร็จ: ' + filename);
+      } catch (err) {
+        console.error('Single PDF export error:', err);
+        showToast('เกิดข้อผิดพลาดในการสร้างไฟล์ PDF');
+      }
     }
 
     function showToast(msg) {
