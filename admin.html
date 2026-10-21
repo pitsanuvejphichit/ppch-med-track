@@ -4061,12 +4061,6 @@
                   </div>
                 </div>
 
-                <!-- LINE Daily Summary Button (แบบในรูป Flex Card) -->
-                <button type="button" onclick="sendSummaryChartFromAdmin()" id="btnSendDailySummaryLine" class="btn-tool" style="border-color: #06c755; color: #05963f; background: #f0fdf4; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px;" title="ส่งสรุปสถานะการประเมินประจำวันของทุกเครื่องเข้า LINE (แบบในรูป Flex Card)">
-                  <span class="material-icons-round" style="color: #06c755; font-size: 17px;">chat</span>
-                  <span>ส่งสรุปสถานะเข้า LINE</span>
-                </button>
-
                 <!-- Sync Button (Primary) -->
                 <button type="button" onclick="syncWithGas()" class="btn-tool btn-tool-primary" id="btnSync" title="ซิงค์ข้อมูล Google Apps Script">
                   <span class="material-icons-round" style="font-size: 15px;">sync</span>
@@ -4980,7 +4974,7 @@
 
           </div>
 
-          <!-- TAB 3: การตั้งค่า LINE Developers (Messaging API) -->
+                    <!-- TAB 3: การตั้งค่า LINE Developers (Messaging API) -->
           <div id="settingsPanelLine" style="display: none;">
             <div class="content-panel" style="margin-bottom: 16px;">
               <div class="panel-header" style="flex-wrap: wrap; gap: 10px;">
@@ -4991,22 +4985,21 @@
                     <span class="badge" style="background: #e8f8ee; color: #06c755; border: 1px solid #a3e9be; font-size: 11px; padding: 2px 8px; border-radius: 999px;">Flex Message v2</span>
                   </div>
                   <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
-                    ระบบส่งข้อความแจ้งเตือนความผิดปกติ การย้ายแผนก และการซ่อมบำรุง ผ่าน LINE Official Account / Bot (ทดแทน LINE Notify)
+                    ระบบส่งข้อความแจ้งเตือนเข้าแชทส่วนตัว (ตรวจพบเครื่องชำรุดทันที และแจ้งเตือนสรุปสถานะการประเมินประจำวัน)
                   </div>
                 </div>
                 <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-                  <button type="button" onclick="testLineDevFromAdmin()" id="btnTestLineDev" class="btn-tool" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-color: #06c755; color: #05963f;">
-                    <span class="material-icons-round" style="font-size: 18px; color: #06c755;">send</span>
-                    <span>ทดสอบส่งกลุ่มช่าง (Biomed)</span>
+                  <!-- ปุ่มทดสอบ 1: ตรวจพบเครื่องชำรุด / ไม่พร้อมใช้ -->
+                  <button type="button" onclick="testLineAbnormalFromAdmin()" id="btnTestLineAbnormal" class="btn-tool" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-color: #ef4444; color: #dc2626; background: #fef2f2; font-weight: 700;" title="ทดสอบส่งข้อความแจ้งเตือนเมื่อตรวจพบเครื่องชำรุด/ไม่พร้อมใช้ (Flex Card สีแดง)">
+                    <span class="material-icons-round" style="font-size: 18px; color: #ef4444;">warning</span>
+                    <span>ทดสอบ: แจ้งเตือนเครื่องชำรุด</span>
                   </button>
-                  <button type="button" onclick="testLineLabFromAdmin()" id="btnTestLineLab" class="btn-tool" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-color: #0e7490; color: #0e7490;">
-                    <span class="material-icons-round" style="font-size: 18px; color: #0e7490;">biotech</span>
-                    <span>ทดสอบส่งกลุ่ม LAB</span>
+                  <!-- ปุ่มทดสอบ 2: แจ้งเตือนสรุปประจำวัน (แบบในภาพ) -->
+                  <button type="button" onclick="sendSummaryChartFromAdmin()" id="btnSendSummaryChart" class="btn-tool" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-color: #002e6e; color: #002e6e; background: #eff6ff; font-weight: 700;" title="ทดสอบส่งสรุปสถานะการประเมินของทุกเครื่องในวันนั้นๆ เข้า LINE (แบบในภาพ Flex Card)">
+                    <span class="material-icons-round" style="font-size: 18px; color: #002e6e;">checklist</span>
+                    <span>ทดสอบ: แจ้งเตือนสรุปประจำวัน</span>
                   </button>
-                  <button type="button" onclick="sendSummaryChartFromAdmin()" id="btnSendSummaryChart" class="btn-tool" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-color: #06c755; color: #05963f; background: #f0fdf4; font-weight: 700;" title="ทดสอบส่งสรุปสถานะการประเมินของทุกเครื่องในวันนั้นๆ เข้า LINE (แบบในรูป Flex Card)">
-                    <span class="material-icons-round" style="font-size: 18px; color: #06c755;">chat</span>
-                    <span>ทดสอบส่งสรุปสถานะรายเครื่อง (Flex Card)</span>
-                  </button>
+                  <!-- บันทึกการตั้งค่า -->
                   <button type="button" onclick="saveLineSettingsFromAdmin()" id="btnSaveLineSettings" class="btn-tool btn-tool-primary" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px;">
                     <span class="material-icons-round" style="font-size: 18px;">save</span>
                     <span>บันทึกการตั้งค่า LINE</span>
@@ -5016,14 +5009,14 @@
 
               <!-- Form Body -->
               <div style="padding: 16px; display: grid; grid-template-columns: 1fr; gap: 16px;">
-                <!-- Card 1: API Credentials -->
+                <!-- Card 1: ข้อมูลการเชื่อมต่อ LINE Messaging API -->
                 <div style="background: var(--bg-surface, #ffffff); border: 1px solid var(--border-subtle, #e2e8f0); border-radius: 12px; padding: 16px;">
                   <div style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
                     <span class="material-icons-round" style="color: var(--royal-blue); font-size: 18px;">vpn_key</span>
-                    <span>LINE Channel Access Token &amp; กลุ่มผู้รับการแจ้งเตือน (แยกกลุ่มตามภารกิจ)</span>
+                    <span>LINE Channel Access Token &amp; Target ID (แชทส่วนตัว)</span>
                   </div>
 
-                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
+                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
                     <!-- Channel Access Token -->
                     <div style="display: flex; flex-direction: column; gap: 6px;">
                       <label style="font-size: 12px; font-weight: 600; color: var(--text-secondary);">
@@ -5040,31 +5033,17 @@
                       </div>
                     </div>
 
-                    <!-- Target ID Group 1: Biomed -->
+                    <!-- Target ID (Private Chat / User ID) -->
                     <div style="display: flex; flex-direction: column; gap: 6px;">
                       <label style="font-size: 12px; font-weight: 600; color: var(--text-secondary); display: flex; align-items: center; gap: 4px;">
-                        <span class="material-icons-round" style="font-size: 16px; color: #0284c7;">build</span>
-                        <span>กลุ่ม 1: เครื่องมือแพทย์/ช่าง (Biomed Group ID)</span>
+                        <span class="material-icons-round" style="font-size: 16px; color: #0284c7;">person</span>
+                        <span>Target ID (Private Chat / แชทส่วนตัว หรือ Group ID) <span style="color: #ef4444;">*</span></span>
                       </label>
                       <div style="position: relative; display: flex; align-items: center;">
-                        <input type="text" id="lineDevTargetId" placeholder="เช่น Cxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" style="width: 100%; padding: 9px 12px; border: 1px solid var(--border-main); border-radius: 8px; font-family: monospace; font-size: 12px;">
+                        <input type="text" id="lineDevTargetId" placeholder="เช่น Uxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx หรือ Group ID" style="width: 100%; padding: 9px 12px; border: 1px solid var(--border-main); border-radius: 8px; font-family: monospace; font-size: 12px;">
                       </div>
                       <div style="font-size: 11px; color: var(--text-muted);">
-                        รับแจ้งเตือน: เครื่องมือแพทย์ชำรุดทุกแผนก + สรุปภาพรวมประจำวัน
-                      </div>
-                    </div>
-
-                    <!-- Target ID Group 2: LAB -->
-                    <div style="display: flex; flex-direction: column; gap: 6px;">
-                      <label style="font-size: 12px; font-weight: 600; color: var(--text-secondary); display: flex; align-items: center; gap: 4px;">
-                        <span class="material-icons-round" style="font-size: 16px; color: #0e7490;">science</span>
-                        <span>กลุ่ม 2: แผนก LAB (Lab Group ID)</span>
-                      </label>
-                      <div style="position: relative; display: flex; align-items: center;">
-                        <input type="text" id="lineLabTargetId" placeholder="เช่น Cxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" style="width: 100%; padding: 9px 12px; border: 1px solid var(--border-main); border-radius: 8px; font-family: monospace; font-size: 12px;">
-                      </div>
-                      <div style="font-size: 11px; color: var(--text-muted);">
-                        รับแจ้งเตือน: เครื่องมือแลปชำรุด + อุณหภูมิห้อง/ตู้แช่หลุดเกณฑ์ (พิมพ์ <code>แลป</code> ในกลุ่มเพื่อผูกอัตโนมัติ)
+                        ระบบส่งข้อความแจ้งเตือนตรงไปยังแชทส่วนตัวของคุณ
                       </div>
                     </div>
                   </div>
@@ -5087,125 +5066,50 @@
                   </div>
                 </div>
 
-                <!-- Card 1.5: ทดสอบส่งสถานะรายเครื่องเข้า LINE -->
-                <div style="background: var(--bg-surface, #ffffff); border: 1px solid var(--border-subtle, #e2e8f0); border-radius: 12px; padding: 16px;">
-                  <div style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                      <span class="material-icons-round" style="color: #06c755; font-size: 20px;">chat</span>
-                      <span>ทดสอบส่งสถานะการประเมินรายเครื่องเข้า LINE (Individual Equipment Status Alert)</span>
-                    </div>
-                    <span class="badge" style="background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; font-size: 11px; padding: 2px 8px; border-radius: 999px;">ตรวจสอบรายวัน &amp; แจ้งเตือน</span>
-                  </div>
-                  <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
-                    เลือกเครื่องมือแพทย์และวันที่ เพื่อทดสอบส่ง Flex Message แสดงผลว่าเครื่องดังกล่าว <strong>ได้รับการประเมินแล้วหรือยัง</strong>, ผลการตรวจ (พร้อมใช้/พบข้อบกพร่อง), เวลาที่ตรวจ และผู้ตรวจเช็ค
-                  </div>
-                  <div style="display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap;">
-                    <div style="flex: 2; min-width: 240px;">
-                      <label style="font-size: 11px; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 4px;">เลือกเครื่องมือแพทย์:</label>
-                      <select id="selectTestDeviceStatus" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-main); border-radius: 8px; font-size: 12px; font-weight: 600; color: #002e6e; background: #f8fafc;">
-                        <option value="">-- กำลังโหลดรายการเครื่องมือแพทย์ --</option>
-                      </select>
-                    </div>
-                    <div style="flex: 1; min-width: 150px;">
-                      <label style="font-size: 11px; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 4px;">ประจำวันที่:</label>
-                      <input type="date" id="inputTestDeviceDate" style="width: 100%; padding: 7px 10px; border: 1px solid var(--border-main); border-radius: 8px; font-size: 12px; font-weight: 600; color: #002e6e; background: #ffffff;">
-                    </div>
-                    <div>
-                      <button type="button" id="btnTestSingleDeviceStatus" onclick="testSendDeviceStatusFromSettings()" class="btn-tool" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-color: #06c755; color: #05963f; background: #f0fdf4; font-weight: 700; height: 35px;">
-                        <span class="material-icons-round" style="font-size: 18px; color: #06c755;">send</span>
-                        <span>ทดสอบส่งสถานะเครื่องนี้เข้า LINE</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Card 2: Notification Event Rules -->
+                <!-- Card 2: เงื่อนไขการส่งแจ้งเตือนอัตโนมัติ (Notification Triggers) -->
                 <div style="background: var(--bg-surface, #ffffff); border: 1px solid var(--border-subtle, #e2e8f0); border-radius: 12px; padding: 16px;">
                   <div style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
                     <span class="material-icons-round" style="color: var(--royal-blue); font-size: 18px;">notifications_active</span>
                     <span>เงื่อนไขการส่งแจ้งเตือนอัตโนมัติ (Notification Triggers)</span>
                   </div>
 
-                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px;">
-                    <!-- Event 1: Abnormal/Defect -->
-                    <label style="display: flex; align-items: flex-start; gap: 10px; padding: 12px; border: 1px solid var(--border-main); border-radius: 10px; cursor: pointer; background: #fff;">
-                      <input type="checkbox" id="lineAlertAbnormal" checked style="margin-top: 2px; width: 16px; height: 16px; accent-color: #ef4444;">
+                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px;">
+                    <!-- Event 1: ตรวจพบเครื่องชำรุด / ไม่พร้อมใช้ -->
+                    <label style="display: flex; align-items: flex-start; gap: 12px; padding: 14px; border: 1px solid #fecaca; background: #fffdfd; border-radius: 10px; cursor: pointer;">
+                      <input type="checkbox" id="lineAlertAbnormal" checked style="margin-top: 3px; width: 18px; height: 18px; accent-color: #ef4444;">
                       <div>
-                        <div style="font-weight: 700; font-size: 13px; color: #b91c1c; display: flex; align-items: center; gap: 4px;">
-                          <span class="material-icons-round" style="font-size: 16px;">warning</span>
+                        <div style="font-weight: 700; font-size: 13px; color: #b91c1c; display: flex; align-items: center; gap: 5px;">
+                          <span class="material-icons-round" style="font-size: 17px;">warning</span>
                           <span>ตรวจพบเครื่องชำรุด / ไม่พร้อมใช้</span>
                         </div>
-                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
-                          ส่ง Flex Message สีแดงทันทีเมื่อผู้ตรวจเช็คส่งผลว่า "ไม่พร้อมใช้" พร้อมรายละเอียดปัญหา
+                        <div style="font-size: 11.5px; color: #475569; margin-top: 5px; line-height: 1.5;">
+                          ส่ง Flex Message สีแดงทันทีเมื่อผู้ตรวจเช็คประเมินผลว่า <strong>"ไม่พร้อมใช้"</strong> พร้อมรายละเอียดอาการเสีย เพื่อประสานงานซ่อมบำรุงทันที
                         </div>
                       </div>
                     </label>
 
-                    <!-- Event 2: Relocate / Custody Transfer -->
-                    <label style="display: flex; align-items: flex-start; gap: 10px; padding: 12px; border: 1px solid var(--border-main); border-radius: 10px; cursor: pointer; background: #fff;">
-                      <input type="checkbox" id="lineAlertTransfer" checked style="margin-top: 2px; width: 16px; height: 16px; accent-color: #f59e0b;">
+                    <!-- Event 2: แจ้งเตือนสรุปประจำวัน (Daily Summary Checklist) -->
+                    <div style="padding: 14px; border: 1px solid #bfdbfe; background: #f0f7ff; border-radius: 10px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px;">
                       <div>
-                        <div style="font-weight: 700; font-size: 13px; color: #b45309; display: flex; align-items: center; gap: 4px;">
-                          <span class="material-icons-round" style="font-size: 16px;">move_up</span>
-                          <span>ย้ายแผนกรับผิดชอบเครื่อง</span>
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; font-size: 13px; color: #002e6e;">
+                            <input type="checkbox" id="lineDailyAlertEnabled" checked style="width: 18px; height: 18px; accent-color: #002e6e;">
+                            <span class="material-icons-round" style="font-size: 17px; color: #002e6e;">checklist</span>
+                            <span>แจ้งเตือนสรุปประจำวัน (Daily Summary Checklist)</span>
+                          </label>
                         </div>
-                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
-                          ส่ง Flex Message สีส้มแจ้งเตือนต้นทางและปลายทางเมื่อมีการย้ายแผนกถาวร
+                        <div style="font-size: 11.5px; color: #334155; margin-top: 5px; line-height: 1.5;">
+                          ส่งสถานะการประเมินประจำวันของทุกเครื่อง <strong>เอาไว้ติดตามการประเมินกับแผนกที่ยังไม่ได้ประเมิน</strong> (แบบในภาพ แสดงความคืบหน้า % และรายชื่อเครื่องทั้งหมด)
                         </div>
                       </div>
-                    </label>
 
-                    <!-- Event 3: Maintenance Resolved -->
-                    <label style="display: flex; align-items: flex-start; gap: 10px; padding: 12px; border: 1px solid var(--border-main); border-radius: 10px; cursor: pointer; background: #fff;">
-                      <input type="checkbox" id="lineAlertResolve" checked style="margin-top: 2px; width: 16px; height: 16px; accent-color: #10b981;">
-                      <div>
-                        <div style="font-weight: 700; font-size: 13px; color: #047857; display: flex; align-items: center; gap: 4px;">
-                          <span class="material-icons-round" style="font-size: 16px;">check_circle</span>
-                          <span>ช่างซ่อมเสร็จ &amp; ปลดล็อกพร้อมใช้</span>
-                        </div>
-                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
-                          ส่ง Flex Message สีเขียวแจ้งเตือนแผนกเจ้าของเครื่องว่าเครื่องได้รับการซ่อมแซมพร้อมใช้งานแล้ว
-                        </div>
-                      </div>
-                    </label>
-
-                    <!-- Event 4: Daily Evaluation Summary -->
-                    <div style="padding: 12px; border: 1px solid var(--border-main); border-radius: 10px; background: #fff; display: flex; flex-direction: column; justify-content: space-between; gap: 8px;">
-                      <div>
-                        <div style="font-weight: 700; font-size: 13px; color: #002e6e; display: flex; align-items: center; gap: 4px;">
-                          <span class="material-icons-round" style="font-size: 16px; color: #0284c7;">schedule</span>
-                          <span>เวลาแจ้งเตือนสรุปประจำวัน (Daily Summary Schedule)</span>
-                        </div>
-                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
-                          ระบบจะส่งรายงานกราฟความคืบหน้าการประเมิน 100% พร้อมรายชื่อเครื่องและสถานะ (ประเมินแล้ว/ยังไม่ประเมิน) เข้า LINE ทุกวัน
-                        </div>
-                      </div>
-                      <div style="display: flex; align-items: center; gap: 8px;">
-                        <select id="lineDailyAlertHour" style="padding: 7px 10px; font-size: 12px; border-radius: 8px; border: 1px solid var(--border-main); font-weight: 700; color: #002e6e; background: #f8fafc;">
-                          <option value="0" selected>00:00 น. (เที่ยงคืน - ค่าเริ่มต้น)</option>
-                          <option value="1">01:00 น.</option>
-                          <option value="2">02:00 น.</option>
-                          <option value="3">03:00 น.</option>
-                          <option value="4">04:00 น.</option>
-                          <option value="5">05:00 น.</option>
-                          <option value="6">06:00 น. (ช่วงเช้าตรู่)</option>
-                          <option value="7">07:00 น. (ช่วงเช้า)</option>
-                          <option value="8">08:00 น. (เริ่มงานเช้า)</option>
-                          <option value="9">09:00 น.</option>
-                          <option value="10">10:00 น.</option>
-                          <option value="11">11:00 น.</option>
-                          <option value="12">12:00 น. (เที่ยงวัน)</option>
-                          <option value="13">13:00 น.</option>
-                          <option value="14">14:00 น.</option>
-                          <option value="15">15:00 น.</option>
-                          <option value="16">16:00 น. (ช่วงบ่าย)</option>
-                          <option value="17">17:00 น.</option>
-                          <option value="18">18:00 น.</option>
-                          <option value="19">19:00 น.</option>
-                          <option value="20">20:00 น. (ช่วงค่ำ)</option>
-                          <option value="21">21:00 น.</option>
-                          <option value="22">22:00 น.</option>
-                          <option value="23">23:00 น.</option>
+                      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; background: #ffffff; padding: 8px 12px; border-radius: 8px; border: 1px solid #cbd5e1;">
+                        <span class="material-icons-round" style="font-size: 16px; color: #0284c7;">schedule</span>
+                        <label style="font-size: 11.5px; font-weight: 600; color: #1e293b;">เวลาส่งแจ้งเตือน:</label>
+                        <select id="lineDailyAlertHour" style="padding: 5px 8px; font-size: 12px; border-radius: 6px; border: 1px solid var(--border-main); font-weight: 700; color: #002e6e; background: #f8fafc;">
+                          <option value="10,0" selected>10.00 และ 00.00 น. (รอบเช้าติดตาม + เที่ยงคืนสรุป)</option>
+                          <option value="10">10.00 น. (รอบเช้า ติดตามแผนกที่ยังไม่ตรวจ)</option>
+                          <option value="0">00.00 น. (รอบเที่ยงคืน สรุปประจำวัน)</option>
                         </select>
                         <span style="font-size: 11px; color: #059669; font-weight: 600;">✓ ติดตั้งระบบ Trigger อัตโนมัติ</span>
                       </div>
@@ -5213,21 +5117,25 @@
                   </div>
                 </div>
 
-                <!-- Card 3: Preview of Rich Flex Cards -->
-                <div style="background: #f8fafc; border: 1px solid var(--border-subtle, #e2e8f0); border-radius: 12px; padding: 14px;">
-                  <div style="font-size: 12px; font-weight: 700; color: var(--text-secondary); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                    <span class="material-icons-round" style="font-size: 16px; color: #06c755;">style</span>
-                    <span>ตัวอย่างรูปแบบข้อความ LINE Flex Message (ออกแบบตามมาตรฐานอัตลักษณ์โรงพยาบาลพิษณุเวช)</span>
+                <!-- Card 3: ทดสอบส่งสรุปประจำวัน (แบบในภาพ) ตามวันที่ต้องการ -->
+                <div style="background: var(--bg-surface, #ffffff); border: 1px solid var(--border-subtle, #e2e8f0); border-radius: 12px; padding: 16px;">
+                  <div style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                    <span class="material-icons-round" style="color: #002e6e; font-size: 20px;">preview</span>
+                    <span>ทดสอบส่งแจ้งเตือนสรุปประจำวัน (แบบในภาพ Flex Card)</span>
                   </div>
-                  <div style="display: flex; gap: 10px; flex-wrap: wrap; font-size: 11px; color: var(--text-muted);">
-                    <div style="background: #fff; padding: 8px 12px; border-radius: 8px; border-left: 4px solid #ef4444; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                      🚨 <strong>บัตรสีแดง</strong>: แจ้งเตือนเครื่องมือแพทย์ชำรุด ระบุชื่อเครื่อง, แผนก, อาการเสีย, ผู้รายงาน
+                  <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+                    เลือกวันที่ที่ต้องการทดสอบ ระบบจะคำนวณสถิติจริงจากฐานข้อมูล Supabase และสร้าง Flex Message สรุปการประเมินประจำวัน พร้อมรายชื่อเครื่องและสถานะ (🟢 พร้อมใช้งาน / 🔴 พบข้อบกพร่อง / ⚪ ยังไม่ประเมิน) ส่งตรงเข้า LINE ทันที
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <div style="min-width: 170px;">
+                      <label style="font-size: 11px; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 4px;">เลือกวันที่ต้องการทดสอบส่ง:</label>
+                      <input type="date" id="inputSummaryTestDate" style="width: 100%; padding: 7px 10px; border: 1px solid var(--border-main); border-radius: 8px; font-size: 12px; font-weight: 600; color: #002e6e; background: #ffffff;">
                     </div>
-                    <div style="background: #fff; padding: 8px 12px; border-radius: 8px; border-left: 4px solid #f59e0b; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                      🚚 <strong>บัตรสีส้ม</strong>: แจ้งเตือนย้ายแผนกรับผิดชอบ ระบุแผนกต้นทาง, ปลายทาง, ผู้ดำเนินการ
-                    </div>
-                    <div style="background: #fff; padding: 8px 12px; border-radius: 8px; border-left: 4px solid #10b981; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                      ✅ <strong>บัตรสีเขียว</strong>: แจ้งเตือนซ่อมเสร็จ &amp; คืนสภาพพร้อมใช้ ระบุช่างซ่อม, รายละเอียดการแก้ไข
+                    <div style="margin-top: 18px;">
+                      <button type="button" id="btnTestSummaryDate" onclick="sendSummaryChartFromAdmin()" class="btn-tool" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-color: #002e6e; color: #002e6e; background: #eff6ff; font-weight: 700; height: 35px;">
+                        <span class="material-icons-round" style="font-size: 18px; color: #002e6e;">send</span>
+                        <span>กดทดสอบส่งสรุปประจำวัน (แบบในภาพ) เข้า LINE</span>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -5337,10 +5245,6 @@
           <span>สลิปผลการตรวจเช็ค</span>
         </div>
         <div style="display: flex; align-items: center; gap: 6px;">
-          <button type="button" id="btnSendSlipLine" onclick="sendDeviceStatusFromSlip()" class="btn-tool no-print-slip" style="padding: 3px 9px; font-size: 11px; height: 26px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; border-color: #06c755; color: #05963f;" title="ส่งสถานะ/สลิปเข้า LINE">
-            <span class="material-icons-round" style="font-size: 13px; color: #06c755;">chat</span>
-            <span>ส่งเข้า LINE</span>
-          </button>
           <button type="button" onclick="printSlipDirect()" class="btn-tool no-print-slip" style="padding: 3px 9px; font-size: 11px; height: 26px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px;" title="พิมพ์สลิป">
             <span class="material-icons-round" style="font-size: 13px; color: var(--royal-blue);">print</span>
             <span>พิมพ์</span>
@@ -7130,9 +7034,6 @@
           }
         }
 
-        // ปุ่มทดสอบส่งสถานะการประเมินเครื่องนี้เข้า LINE (ประเมินแล้วหรือยัง)
-        actionBtns.push('<button type="button" onclick="sendDeviceLineStatus(\'' + escapeHtml(eq.id) + '\')" class="btn-action-icon btn-icon-line" title="ทดสอบส่งสถานะเครื่องนี้เข้า LINE"><span class="material-icons-round" style="color: #06c755;">chat</span></button>');
-
         var actionsHtml = '';
         if (actionBtns.length === 1) {
           actionsHtml = '<div style="display: flex; justify-content: center; align-items: center;">' + actionBtns[0] + '</div>';
@@ -8093,7 +7994,7 @@
         renderEmployeesSettingsTable();
       } else if (tabKey === 'line') {
         loadLineSettingsIntoAdmin();
-        if (typeof populateTestDeviceSelect === 'function') populateTestDeviceSelect();
+        
       }
     }
 
@@ -8131,28 +8032,31 @@
       var webhookEl = document.getElementById('lineWebhookDisplay');
       if (webhookEl && gasUrl) webhookEl.innerText = gasUrl;
 
+      var dateEl = document.getElementById('inputSummaryTestDate');
+      if (dateEl && !dateEl.value) {
+        var filterDateEl = document.getElementById('filterDate');
+        dateEl.value = (filterDateEl && filterDateEl.value) ? filterDateEl.value : new Date().toISOString().slice(0, 10);
+      }
+
       if (window.PPCH_API && window.PPCH_API.fetchLineSettings) {
         window.PPCH_API.fetchLineSettings(function (res) {
           if (res && res.success && res.data) {
             lineSettingsCache = res.data;
             var tInput = document.getElementById('lineDevToken');
             var idInput = document.getElementById('lineDevTargetId');
-            var labInput = document.getElementById('lineLabTargetId');
             var chkAbn = document.getElementById('lineAlertAbnormal');
-            var chkTrf = document.getElementById('lineAlertTransfer');
-            var chkRes = document.getElementById('lineAlertResolve');
+            var chkDaily = document.getElementById('lineDailyAlertEnabled');
             var bStatus = document.getElementById('badgeSettingsLineStatus');
 
             if (tInput) tInput.value = res.data.channelAccessToken || '';
             if (idInput) idInput.value = res.data.targetId || '';
-            if (labInput) labInput.value = res.data.labTargetId || '';
             if (chkAbn) chkAbn.checked = res.data.alertAbnormal !== false;
-            if (chkTrf) chkTrf.checked = res.data.alertTransfer !== false;
-            if (chkRes) chkRes.checked = res.data.alertResolve !== false;
+            if (chkDaily) chkDaily.checked = res.data.dailyAlertEnabled !== false;
 
             var selHour = document.getElementById('lineDailyAlertHour');
-            if (selHour && res.data.dailyAlertHour !== undefined) {
-              selHour.value = String(res.data.dailyAlertHour);
+            if (selHour && (res.data.dailyAlertHours || res.data.dailyAlertHour !== undefined)) {
+              var val = String(res.data.dailyAlertHours || res.data.dailyAlertHour);
+              selHour.value = (val === '0' || val === '10' || val === '10,0') ? val : '10,0';
             }
 
             if (bStatus) {
@@ -8174,20 +8078,16 @@
     function saveLineSettingsFromAdmin() {
       var tInput = document.getElementById('lineDevToken');
       var idInput = document.getElementById('lineDevTargetId');
-      var labInput = document.getElementById('lineLabTargetId');
       var chkAbn = document.getElementById('lineAlertAbnormal');
-      var chkTrf = document.getElementById('lineAlertTransfer');
-      var chkRes = document.getElementById('lineAlertResolve');
+      var chkDaily = document.getElementById('lineDailyAlertEnabled');
       var selHour = document.getElementById('lineDailyAlertHour');
       var btn = document.getElementById('btnSaveLineSettings');
 
       var token = tInput ? tInput.value.trim() : '';
       var targetId = idInput ? idInput.value.trim() : '';
-      var labTargetId = labInput ? labInput.value.trim() : '';
       var alertAbn = chkAbn ? chkAbn.checked : true;
-      var alertTrf = chkTrf ? chkTrf.checked : true;
-      var alertRes = chkRes ? chkRes.checked : true;
-      var dailyHour = selHour ? parseInt(selHour.value, 10) : 0;
+      var dailyEnabled = chkDaily ? chkDaily.checked : true;
+      var dailyHour = selHour ? selHour.value : '10,0';
 
       if (btn) {
         btn.disabled = true;
@@ -8198,11 +8098,10 @@
         window.PPCH_API.saveLineSettings({
           channelAccessToken: token,
           targetId: targetId,
-          labTargetId: labTargetId,
           alertAbnormal: alertAbn,
-          alertTransfer: alertTrf,
-          alertResolve: alertRes,
-          dailyAlertHour: dailyHour
+          dailyAlertEnabled: dailyEnabled,
+          dailyAlertHour: dailyHour,
+          dailyAlertHours: dailyHour
         }, function (res) {
           if (btn) {
             btn.disabled = false;
@@ -8220,157 +8119,40 @@
               bStatus.style.color = '#b45309';
             }
           }
-          showToast('บันทึกการตั้งค่า LINE สำเร็จและบันทึกลง Google Sheets เรียบร้อย');
+          showToast('บันทึกการตั้งค่า LINE สำเร็จ (ตั้งเวลาแจ้งเตือน 10:00 น. และ 00:00 น. เรียบร้อย)');
         });
       }
     }
 
-    function testLineDevFromAdmin() {
-      var btn = document.getElementById('btnTestLineDev');
+    function testLineAbnormalFromAdmin() {
+      var btn = document.getElementById('btnTestLineAbnormal');
       if (btn) {
         btn.disabled = true;
+        btn._origHtml = btn.innerHTML;
         btn.innerHTML = '<span class="material-icons-round" style="font-size: 18px; animation: spin 1s infinite linear;">refresh</span> กำลังส่งทดสอบ...';
       }
 
       var operator = (window.currentUser && window.currentUser.name) ? window.currentUser.name : 'ผู้ดูแลระบบ (Admin)';
-      if (window.PPCH_API && window.PPCH_API.testLineDevAlert) {
-        window.PPCH_API.testLineDevAlert(operator, function (res) {
+      if (window.PPCH_API && window.PPCH_API.testLineAbnormalAlert) {
+        window.PPCH_API.testLineAbnormalAlert(operator, function (res) {
           if (btn) {
             btn.disabled = false;
-            btn.innerHTML = '<span class="material-icons-round" style="font-size: 18px; color: #06c755;">send</span> <span>ทดสอบส่งกลุ่มช่าง (Biomed)</span>';
+            btn.innerHTML = btn._origHtml || '<span class="material-icons-round" style="font-size: 18px; color: #ef4444;">warning</span> <span>ทดสอบ: แจ้งเตือนเครื่องชำรุด</span>';
           }
-          showToast('ส่งข้อความทดสอบไปยังกลุ่มเครื่องมือแพทย์/ช่าง เรียบร้อยแล้วค่ะ');
-        });
-      }
-    }
-
-    function testLineLabFromAdmin() {
-      var btn = document.getElementById('btnTestLineLab');
-      if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = '<span class="material-icons-round" style="font-size: 18px; animation: spin 1s infinite linear;">refresh</span> กำลังส่งทดสอบ...';
-      }
-
-      var operator = (window.currentUser && window.currentUser.name) ? window.currentUser.name : 'ผู้ดูแลระบบ (Admin)';
-      if (window.PPCH_API && window.PPCH_API.testLineLabAlert) {
-        window.PPCH_API.testLineLabAlert(operator, function (res) {
-          if (btn) {
-            btn.disabled = false;
-            btn.innerHTML = '<span class="material-icons-round" style="font-size: 18px; color: #0e7490;">biotech</span> <span>ทดสอบส่งกลุ่ม LAB</span>';
-          }
-          showToast('ส่งข้อความทดสอบไปยังกลุ่มแผนก LAB เรียบร้อยแล้วค่ะ');
-        });
-      }
-    }
-
-    // ==================== LINE INDIVIDUAL DEVICE STATUS ALERT ====================
-    function sendDeviceLineStatus(deviceId, targetDate, triggerBtn) {
-      if (!deviceId) return;
-      var eq = window.PPCH_STORE ? window.PPCH_STORE.getEquipmentById(deviceId) : null;
-      var devName = eq ? (eq.name || eq.assetCode) : deviceId;
-
-      var filterDateEl = document.getElementById('filterDate');
-      if (!targetDate) {
-        targetDate = (filterDateEl && filterDateEl.value) ? filterDateEl.value : new Date().toISOString().slice(0, 10);
-      }
-
-      var operator = (window.currentUser && window.currentUser.name) ? window.currentUser.name : 'ผู้ดูแลระบบ (Admin)';
-
-      // Feedback on trigger button if provided
-      var origContent = '';
-      if (triggerBtn) {
-        triggerBtn.disabled = true;
-        origContent = triggerBtn.innerHTML;
-        triggerBtn.innerHTML = '<span class="material-icons-round" style="font-size: 16px; animation: spin 1s infinite linear;">refresh</span>';
-      }
-
-      showToast('กำลังส่งสถานะเครื่อง ' + devName + ' เข้า LINE...');
-
-      if (window.PPCH_API && window.PPCH_API.sendDeviceStatusAlert) {
-        window.PPCH_API.sendDeviceStatusAlert(deviceId, targetDate, operator, function (res) {
-          if (triggerBtn) {
-            triggerBtn.disabled = false;
-            triggerBtn.innerHTML = origContent;
-          }
-
-          if (res && res.data && res.data.success) {
-            var d = res.data;
-            var statusLabel = d.isEvaluated ? (d.evalResult === 'abnormal' ? 'พบข้อบกพร่อง' : 'พร้อมใช้งาน 100%') : 'ยังไม่ได้รับการประเมิน';
-            showToast('✅ ส่งสถานะเครื่อง ' + (d.deviceName || devName) + ' เข้า LINE สำเร็จ (' + statusLabel + ')');
-          } else if (res && res.success) {
-            showToast('✅ ส่งสถานะเครื่อง ' + devName + ' เข้า LINE เรียบร้อยแล้ว');
-          } else {
-            showToast('ส่งแจ้งเตือนเข้า LINE สำเร็จ (ข้อความถูกส่งไปยังกลุ่มแล้ว)');
-          }
+          showToast('ส่งแจ้งเตือนเครื่องชำรุด (Flex Message สีแดง) เข้า LINE เรียบร้อยแล้วค่ะ');
         });
       } else {
-        if (triggerBtn) {
-          triggerBtn.disabled = false;
-          triggerBtn.innerHTML = origContent;
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = btn._origHtml;
         }
         showToast('ไม่สามารถเชื่อมต่อระบบ API ได้');
       }
     }
 
-    function testSendDeviceStatusFromSettings() {
-      var selectEl = document.getElementById('selectTestDeviceStatus');
-      var dateEl = document.getElementById('inputTestDeviceDate');
-      var btn = document.getElementById('btnTestSingleDeviceStatus');
-
-      var deviceId = selectEl ? selectEl.value : '';
-      if (!deviceId) {
-        showToast('กรุณาเลือกเครื่องมือแพทย์ที่ต้องการทดสอบ');
-        return;
-      }
-
-      var targetDate = (dateEl && dateEl.value) ? dateEl.value : (document.getElementById('filterDate') ? document.getElementById('filterDate').value : '');
-      sendDeviceLineStatus(deviceId, targetDate, btn);
-    }
-
-    function sendDeviceStatusFromSlip() {
-      var ev = window.currentSlipEval;
-      var eq = window.currentSlipEquipment;
-      var devId = (ev && ev.deviceId) ? ev.deviceId : (eq ? eq.id : '');
-      if (!devId) {
-        showToast('ไม่พบข้อมูลเครื่องมือแพทย์ของสลิปนี้');
-        return;
-      }
-      var targetDate = (ev && ev.evaluatedAt) ? ev.evaluatedAt.slice(0, 10) : '';
-      var btn = document.getElementById('btnSendSlipLine');
-      sendDeviceLineStatus(devId, targetDate, btn);
-    }
-
-    function populateTestDeviceSelect() {
-      var selectEl = document.getElementById('selectTestDeviceStatus');
-      if (!selectEl) return;
-
-      var allEq = window.PPCH_STORE ? window.PPCH_STORE.getAllEquipment() : [];
-      if (!allEq || allEq.length === 0) return;
-
-      var curVal = selectEl.value;
-      var html = '<option value="">-- กรุณาเลือกเครื่องมือแพทย์ (' + allEq.length + ' เครื่อง) --</option>';
-
-      allEq.forEach(function (eq) {
-        var deptName = window.PPCH_STORE ? window.PPCH_STORE.getDepartmentName(eq.currentDept) : (eq.currentDept || '');
-        var riskTxt = (String(eq.riskLevel || '').toLowerCase() === 'low') ? 'เสี่ยงต่ำ' : 'เสี่ยงสูง';
-        html += '<option value="' + escapeHtml(eq.id) + '">' +
-          '[' + escapeHtml(eq.assetCode || eq.id) + '] ' + escapeHtml(eq.name) + ' (' + deptName + ' • ' + riskTxt + ')' +
-          '</option>';
-      });
-
-      selectEl.innerHTML = html;
-      if (curVal) selectEl.value = curVal;
-
-      var dateEl = document.getElementById('inputTestDeviceDate');
-      if (dateEl && !dateEl.value) {
-        var filterDateEl = document.getElementById('filterDate');
-        dateEl.value = (filterDateEl && filterDateEl.value) ? filterDateEl.value : new Date().toISOString().slice(0, 10);
-      }
-    }
-
-    function sendSummaryChartFromAdmin() {
+    function sendSummaryChartFromAdmin(customDate) {
       var btn1 = document.getElementById('btnSendSummaryChart');
-      var btn2 = document.getElementById('btnSendDailySummaryLine');
+      var btn2 = document.getElementById('btnTestSummaryDate');
       var btns = [btn1, btn2].filter(Boolean);
       btns.forEach(function(b) {
         b.disabled = true;
@@ -8379,8 +8161,9 @@
       });
 
       var operator = (window.currentUser && window.currentUser.name) ? window.currentUser.name : 'ผู้ดูแลระบบ (Admin)';
+      var dateEl = document.getElementById('inputSummaryTestDate');
       var filterDateEl = document.getElementById('filterDate');
-      var targetDate = (filterDateEl && filterDateEl.value) ? filterDateEl.value : new Date().toISOString().slice(0, 10);
+      var targetDate = customDate || (dateEl && dateEl.value) || (filterDateEl && filterDateEl.value) || new Date().toISOString().slice(0, 10);
 
       showToast('กำลังส่งสรุปสถานะการประเมินประจำวันเข้า LINE...');
 

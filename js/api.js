@@ -890,7 +890,18 @@
 
     // 8. Test LINE Alert via GAS (Messaging API & Notify)
     testLineAlert: function (callback) {
-      this.testLineDevAlert('Admin', callback);
+      this.testLineAbnormalAlert('Admin', callback);
+    },
+
+    testLineAbnormalAlert: function (operator, callback) {
+      var gasUrl = this.getGasEndpoint();
+      if (!gasUrl) {
+        if (callback) callback({ success: false, message: 'ยังไม่ได้ระบุ Web App URL ของ Google Apps Script' });
+        return;
+      }
+      this.postToGas({ action: 'testLineAbnormal', operator: operator || 'Admin' }, function (res) {
+        if (callback) callback(res);
+      });
     },
 
     testLineDevAlert: function (operator, callback) {
