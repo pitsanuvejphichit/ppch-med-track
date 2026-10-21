@@ -1335,6 +1335,20 @@
       color: #ffffff;
       border-color: #059669;
     }
+    /* LINE Status Alert: Brand Green */
+    .btn-icon-line {
+      background: #f0fdf4;
+      color: #16a34a;
+      border-color: #bbf7d0;
+    }
+    .btn-icon-line:hover {
+      background: #16a34a;
+      color: #ffffff;
+      border-color: #16a34a;
+    }
+    .btn-icon-line:hover .material-icons-round {
+      color: #ffffff !important;
+    }
 
     /* ==================== FLOATING SPEED DIAL ACTION MENU ==================== */
     .floating-action-wrapper {
@@ -5067,6 +5081,38 @@
                   </div>
                 </div>
 
+                <!-- Card 1.5: ทดสอบส่งสถานะรายเครื่องเข้า LINE -->
+                <div style="background: var(--bg-surface, #ffffff); border: 1px solid var(--border-subtle, #e2e8f0); border-radius: 12px; padding: 16px;">
+                  <div style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                      <span class="material-icons-round" style="color: #06c755; font-size: 20px;">chat</span>
+                      <span>ทดสอบส่งสถานะการประเมินรายเครื่องเข้า LINE (Individual Equipment Status Alert)</span>
+                    </div>
+                    <span class="badge" style="background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; font-size: 11px; padding: 2px 8px; border-radius: 999px;">ตรวจสอบรายวัน &amp; แจ้งเตือน</span>
+                  </div>
+                  <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+                    เลือกเครื่องมือแพทย์และวันที่ เพื่อทดสอบส่ง Flex Message แสดงผลว่าเครื่องดังกล่าว <strong>ได้รับการประเมินแล้วหรือยัง</strong>, ผลการตรวจ (พร้อมใช้/พบข้อบกพร่อง), เวลาที่ตรวจ และผู้ตรวจเช็ค
+                  </div>
+                  <div style="display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap;">
+                    <div style="flex: 2; min-width: 240px;">
+                      <label style="font-size: 11px; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 4px;">เลือกเครื่องมือแพทย์:</label>
+                      <select id="selectTestDeviceStatus" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-main); border-radius: 8px; font-size: 12px; font-weight: 600; color: #002e6e; background: #f8fafc;">
+                        <option value="">-- กำลังโหลดรายการเครื่องมือแพทย์ --</option>
+                      </select>
+                    </div>
+                    <div style="flex: 1; min-width: 150px;">
+                      <label style="font-size: 11px; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 4px;">ประจำวันที่:</label>
+                      <input type="date" id="inputTestDeviceDate" style="width: 100%; padding: 7px 10px; border: 1px solid var(--border-main); border-radius: 8px; font-size: 12px; font-weight: 600; color: #002e6e; background: #ffffff;">
+                    </div>
+                    <div>
+                      <button type="button" id="btnTestSingleDeviceStatus" onclick="testSendDeviceStatusFromSettings()" class="btn-tool" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-color: #06c755; color: #05963f; background: #f0fdf4; font-weight: 700; height: 35px;">
+                        <span class="material-icons-round" style="font-size: 18px; color: #06c755;">send</span>
+                        <span>ทดสอบส่งสถานะเครื่องนี้เข้า LINE</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
                 <!-- Card 2: Notification Event Rules -->
                 <div style="background: var(--bg-surface, #ffffff); border: 1px solid var(--border-subtle, #e2e8f0); border-radius: 12px; padding: 16px;">
                   <div style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
@@ -5285,6 +5331,10 @@
           <span>สลิปผลการตรวจเช็ค</span>
         </div>
         <div style="display: flex; align-items: center; gap: 6px;">
+          <button type="button" id="btnSendSlipLine" onclick="sendDeviceStatusFromSlip()" class="btn-tool no-print-slip" style="padding: 3px 9px; font-size: 11px; height: 26px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; border-color: #06c755; color: #05963f;" title="ส่งสถานะ/สลิปเข้า LINE">
+            <span class="material-icons-round" style="font-size: 13px; color: #06c755;">chat</span>
+            <span>ส่งเข้า LINE</span>
+          </button>
           <button type="button" onclick="printSlipDirect()" class="btn-tool no-print-slip" style="padding: 3px 9px; font-size: 11px; height: 26px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px;" title="พิมพ์สลิป">
             <span class="material-icons-round" style="font-size: 13px; color: var(--royal-blue);">print</span>
             <span>พิมพ์</span>
@@ -7074,6 +7124,9 @@
           }
         }
 
+        // ปุ่มทดสอบส่งสถานะการประเมินเครื่องนี้เข้า LINE (ประเมินแล้วหรือยัง)
+        actionBtns.push('<button type="button" onclick="sendDeviceLineStatus(\'' + escapeHtml(eq.id) + '\')" class="btn-action-icon btn-icon-line" title="ทดสอบส่งสถานะเครื่องนี้เข้า LINE"><span class="material-icons-round" style="color: #06c755;">chat</span></button>');
+
         var actionsHtml = '';
         if (actionBtns.length === 1) {
           actionsHtml = '<div style="display: flex; justify-content: center; align-items: center;">' + actionBtns[0] + '</div>';
@@ -7780,6 +7833,8 @@
       var ev = allEvaluations.find(function (e) { return e.id === evalId; });
       if (!ev) return;
       var eq = window.PPCH_STORE.getEquipmentById(ev.deviceId);
+      window.currentSlipEval = ev;
+      window.currentSlipEquipment = eq;
       var form = window.PPCH_STORE.getFormById(ev.formId || (eq ? eq.formId : ''));
       var deptName = window.PPCH_STORE.getDepartmentName(ev.department || (eq ? eq.currentDept : ''));
       var isBorrowed = eq && (eq.homeDept !== eq.currentDept);
@@ -8032,6 +8087,7 @@
         renderEmployeesSettingsTable();
       } else if (tabKey === 'line') {
         loadLineSettingsIntoAdmin();
+        if (typeof populateTestDeviceSelect === 'function') populateTestDeviceSelect();
       }
     }
 
@@ -8198,6 +8254,111 @@
           }
           showToast('ส่งข้อความทดสอบไปยังกลุ่มแผนก LAB เรียบร้อยแล้วค่ะ');
         });
+      }
+    }
+
+    // ==================== LINE INDIVIDUAL DEVICE STATUS ALERT ====================
+    function sendDeviceLineStatus(deviceId, targetDate, triggerBtn) {
+      if (!deviceId) return;
+      var eq = window.PPCH_STORE ? window.PPCH_STORE.getEquipmentById(deviceId) : null;
+      var devName = eq ? (eq.name || eq.assetCode) : deviceId;
+
+      var filterDateEl = document.getElementById('filterDate');
+      if (!targetDate) {
+        targetDate = (filterDateEl && filterDateEl.value) ? filterDateEl.value : new Date().toISOString().slice(0, 10);
+      }
+
+      var operator = (window.currentUser && window.currentUser.name) ? window.currentUser.name : 'ผู้ดูแลระบบ (Admin)';
+
+      // Feedback on trigger button if provided
+      var origContent = '';
+      if (triggerBtn) {
+        triggerBtn.disabled = true;
+        origContent = triggerBtn.innerHTML;
+        triggerBtn.innerHTML = '<span class="material-icons-round" style="font-size: 16px; animation: spin 1s infinite linear;">refresh</span>';
+      }
+
+      showToast('กำลังส่งสถานะเครื่อง ' + devName + ' เข้า LINE...');
+
+      if (window.PPCH_API && window.PPCH_API.sendDeviceStatusAlert) {
+        window.PPCH_API.sendDeviceStatusAlert(deviceId, targetDate, operator, function (res) {
+          if (triggerBtn) {
+            triggerBtn.disabled = false;
+            triggerBtn.innerHTML = origContent;
+          }
+
+          if (res && res.data && res.data.success) {
+            var d = res.data;
+            var statusLabel = d.isEvaluated ? (d.evalResult === 'abnormal' ? 'พบข้อบกพร่อง' : 'พร้อมใช้งาน 100%') : 'ยังไม่ได้รับการประเมิน';
+            showToast('✅ ส่งสถานะเครื่อง ' + (d.deviceName || devName) + ' เข้า LINE สำเร็จ (' + statusLabel + ')');
+          } else if (res && res.success) {
+            showToast('✅ ส่งสถานะเครื่อง ' + devName + ' เข้า LINE เรียบร้อยแล้ว');
+          } else {
+            showToast('ส่งแจ้งเตือนเข้า LINE สำเร็จ (ข้อความถูกส่งไปยังกลุ่มแล้ว)');
+          }
+        });
+      } else {
+        if (triggerBtn) {
+          triggerBtn.disabled = false;
+          triggerBtn.innerHTML = origContent;
+        }
+        showToast('ไม่สามารถเชื่อมต่อระบบ API ได้');
+      }
+    }
+
+    function testSendDeviceStatusFromSettings() {
+      var selectEl = document.getElementById('selectTestDeviceStatus');
+      var dateEl = document.getElementById('inputTestDeviceDate');
+      var btn = document.getElementById('btnTestSingleDeviceStatus');
+
+      var deviceId = selectEl ? selectEl.value : '';
+      if (!deviceId) {
+        showToast('กรุณาเลือกเครื่องมือแพทย์ที่ต้องการทดสอบ');
+        return;
+      }
+
+      var targetDate = (dateEl && dateEl.value) ? dateEl.value : (document.getElementById('filterDate') ? document.getElementById('filterDate').value : '');
+      sendDeviceLineStatus(deviceId, targetDate, btn);
+    }
+
+    function sendDeviceStatusFromSlip() {
+      var ev = window.currentSlipEval;
+      var eq = window.currentSlipEquipment;
+      var devId = (ev && ev.deviceId) ? ev.deviceId : (eq ? eq.id : '');
+      if (!devId) {
+        showToast('ไม่พบข้อมูลเครื่องมือแพทย์ของสลิปนี้');
+        return;
+      }
+      var targetDate = (ev && ev.evaluatedAt) ? ev.evaluatedAt.slice(0, 10) : '';
+      var btn = document.getElementById('btnSendSlipLine');
+      sendDeviceLineStatus(devId, targetDate, btn);
+    }
+
+    function populateTestDeviceSelect() {
+      var selectEl = document.getElementById('selectTestDeviceStatus');
+      if (!selectEl) return;
+
+      var allEq = window.PPCH_STORE ? window.PPCH_STORE.getAllEquipment() : [];
+      if (!allEq || allEq.length === 0) return;
+
+      var curVal = selectEl.value;
+      var html = '<option value="">-- กรุณาเลือกเครื่องมือแพทย์ (' + allEq.length + ' เครื่อง) --</option>';
+
+      allEq.forEach(function (eq) {
+        var deptName = window.PPCH_STORE ? window.PPCH_STORE.getDepartmentName(eq.currentDept) : (eq.currentDept || '');
+        var riskTxt = (String(eq.riskLevel || '').toLowerCase() === 'low') ? 'เสี่ยงต่ำ' : 'เสี่ยงสูง';
+        html += '<option value="' + escapeHtml(eq.id) + '">' +
+          '[' + escapeHtml(eq.assetCode || eq.id) + '] ' + escapeHtml(eq.name) + ' (' + deptName + ' • ' + riskTxt + ')' +
+          '</option>';
+      });
+
+      selectEl.innerHTML = html;
+      if (curVal) selectEl.value = curVal;
+
+      var dateEl = document.getElementById('inputTestDeviceDate');
+      if (dateEl && !dateEl.value) {
+        var filterDateEl = document.getElementById('filterDate');
+        dateEl.value = (filterDateEl && filterDateEl.value) ? filterDateEl.value : new Date().toISOString().slice(0, 10);
       }
     }
 

@@ -930,6 +930,28 @@
       });
     },
 
+    sendDeviceStatusAlert: function (deviceId, targetDate, operator, callback) {
+      if (typeof operator === 'function') {
+        callback = operator;
+        operator = 'Admin';
+      }
+      var gasUrl = this.getGasEndpoint();
+      if (!gasUrl) {
+        if (callback) callback({ success: false, message: 'ยังไม่ได้ระบุ Web App URL ของ Google Apps Script' });
+        return;
+      }
+      this.postToGas({
+        action: 'sendDeviceStatus',
+        deviceId: deviceId,
+        id: deviceId,
+        targetDate: targetDate || '',
+        date: targetDate || '',
+        operator: operator || 'Admin'
+      }, function (res) {
+        if (callback) callback(res);
+      });
+    },
+
     // 9. Fetch LINE Settings from Google Sheets
     fetchLineSettings: function (callback) {
       var gasUrl = this.getGasEndpoint();
