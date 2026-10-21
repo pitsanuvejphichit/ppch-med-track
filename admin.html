@@ -4061,6 +4061,12 @@
                   </div>
                 </div>
 
+                <!-- LINE Daily Summary Button (แบบในรูป Flex Card) -->
+                <button type="button" onclick="sendSummaryChartFromAdmin()" id="btnSendDailySummaryLine" class="btn-tool" style="border-color: #06c755; color: #05963f; background: #f0fdf4; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px;" title="ส่งสรุปสถานะการประเมินประจำวันของทุกเครื่องเข้า LINE (แบบในรูป Flex Card)">
+                  <span class="material-icons-round" style="color: #06c755; font-size: 17px;">chat</span>
+                  <span>ส่งสรุปสถานะเข้า LINE</span>
+                </button>
+
                 <!-- Sync Button (Primary) -->
                 <button type="button" onclick="syncWithGas()" class="btn-tool btn-tool-primary" id="btnSync" title="ซิงค์ข้อมูล Google Apps Script">
                   <span class="material-icons-round" style="font-size: 15px;">sync</span>
@@ -4997,9 +5003,9 @@
                     <span class="material-icons-round" style="font-size: 18px; color: #0e7490;">biotech</span>
                     <span>ทดสอบส่งกลุ่ม LAB</span>
                   </button>
-                  <button type="button" onclick="sendSummaryChartFromAdmin()" id="btnSendSummaryChart" class="btn-tool" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-color: #0284c7; color: #0284c7;">
-                    <span class="material-icons-round" style="font-size: 18px; color: #0284c7;">bar_chart</span>
-                    <span>ส่งกราฟสรุปความพร้อม (Flex Chart)</span>
+                  <button type="button" onclick="sendSummaryChartFromAdmin()" id="btnSendSummaryChart" class="btn-tool" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-color: #06c755; color: #05963f; background: #f0fdf4; font-weight: 700;" title="ทดสอบส่งสรุปสถานะการประเมินของทุกเครื่องในวันนั้นๆ เข้า LINE (แบบในรูป Flex Card)">
+                    <span class="material-icons-round" style="font-size: 18px; color: #06c755;">chat</span>
+                    <span>ทดสอบส่งสรุปสถานะรายเครื่อง (Flex Card)</span>
                   </button>
                   <button type="button" onclick="saveLineSettingsFromAdmin()" id="btnSaveLineSettings" class="btn-tool btn-tool-primary" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px;">
                     <span class="material-icons-round" style="font-size: 18px;">save</span>
@@ -8363,25 +8369,41 @@
     }
 
     function sendSummaryChartFromAdmin() {
-      var btn = document.getElementById('btnSendSummaryChart');
-      if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = '<span class="material-icons-round" style="font-size: 18px; animation: spin 1s infinite linear;">refresh</span> กำลังส่งกราฟสรุป...';
-      }
+      var btn1 = document.getElementById('btnSendSummaryChart');
+      var btn2 = document.getElementById('btnSendDailySummaryLine');
+      var btns = [btn1, btn2].filter(Boolean);
+      btns.forEach(function(b) {
+        b.disabled = true;
+        b._origHtml = b.innerHTML;
+        b.innerHTML = '<span class="material-icons-round" style="font-size: 16px; animation: spin 1s infinite linear;">refresh</span> กำลังส่งสรุป...';
+      });
 
       var operator = (window.currentUser && window.currentUser.name) ? window.currentUser.name : 'ผู้ดูแลระบบ (Admin)';
       var filterDateEl = document.getElementById('filterDate');
-      var targetDate = (filterDateEl && filterDateEl.value) ? filterDateEl.value : '';
+      var targetDate = (filterDateEl && filterDateEl.value) ? filterDateEl.value : new Date().toISOString().slice(0, 10);
+
+      showToast('กำลังส่งสรุปสถานะการประเมินประจำวันเข้า LINE...');
 
       if (window.PPCH_API && window.PPCH_API.sendSummaryChartAlert) {
         window.PPCH_API.sendSummaryChartAlert(operator, targetDate, function (res) {
-          if (btn) {
-            btn.disabled = false;
-            btn.innerHTML = '<span class="material-icons-round" style="font-size: 18px; color: #0284c7;">bar_chart</span> <span>ส่งกราฟสรุปความพร้อม (Flex Chart)</span>';
+          btns.forEach(function(b) {
+            b.disabled = false;
+            if (b._origHtml) b.innerHTML = b._origHtml;
+          });
+
+          var d = (res && res.data) ? res.data : null;
+          if (d && d.total !== undefined) {
+            showToast('✅ ส่งสรุปเข้า LINE เรียบร้อย! ประเมินแล้ว ' + d.evaluatedCount + '/' + d.total + ' เครื่อง (' + d.overallPct + '%)');
+          } else {
+            showToast('✅ ส่งสรุปสถานะการประเมินประจำวันเข้า LINE เรียบร้อยแล้ว (ประจำวันที่ ' + targetDate + ')');
           }
-          var dateNotice = targetDate ? (' (ประจำวันที่ ' + targetDate + ')') : '';
-          showToast('ส่งรายงานกราฟสรุปความพร้อมใช้งานไปยัง LINE เรียบร้อยแล้ว' + dateNotice);
         });
+      } else {
+        btns.forEach(function(b) {
+          b.disabled = false;
+          if (b._origHtml) b.innerHTML = b._origHtml;
+        });
+        showToast('ไม่สามารถเชื่อมต่อระบบ API ได้');
       }
     }
 
