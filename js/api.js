@@ -488,13 +488,31 @@
         updated_at: new Date().toISOString()
       };
 
+      var resEvalRow = {
+        id: 'EV-' + Date.now(),
+        device_id: deviceId,
+        device_asset: deviceAsset,
+        device_name: deviceName,
+        department: dept,
+        form_id: eq ? (eq.formId || '') : '',
+        evaluated_at: nowStr,
+        evaluated_by: (techName || 'อาภากร บุญเกตกูล') + ' (ซ่อมเสร็จ: ' + (actionTaken || 'แก้ไขเรียบร้อย') + ')',
+        result: 'normal',
+        abnormal_note: 'แก้ไขเรียบร้อย: ' + (actionTaken || '') + (testNote ? ' | ' + testNote : ''),
+        answers: {},
+        ups_tested: false,
+        ups_duration: '',
+        sheet_synced: false
+      };
+
       var pInsertRepair = supabaseFetch('repairs', { method: 'POST', body: repairRow });
       var pUpdateEq = supabaseFetch('equipment?id=eq.' + encodeURIComponent(deviceId), {
         method: 'PATCH',
         body: eqUpdate
       });
+      var pInsertEval = supabaseFetch('evaluations', { method: 'POST', body: resEvalRow }).catch(function () { return null; });
 
-      Promise.all([pInsertRepair, pUpdateEq])
+      Promise.all([pInsertRepair, pUpdateEq, pInsertEval])
         .then(function () {
           if (callback) callback({ success: true, message: 'บันทึกการแก้ไขใน Supabase สำเร็จ ปลดล็อกเครื่องพร้อมใช้งาน' });
 

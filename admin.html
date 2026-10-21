@@ -6554,13 +6554,18 @@
       document.getElementById('resolveTestNote').value = '';
       document.getElementById('resolveTechnician').value = eq.repairAcknowledgedBy || 'อาภากร บุญเกตกูล';
 
-      // Set datetime-local default to current Bangkok time
+      // Set datetime-local default to current Bangkok time or at least matching/after reported date
       var now = new Date();
-      var year = now.getFullYear();
-      var month = ('0' + (now.getMonth() + 1)).slice(-2);
-      var day = ('0' + now.getDate()).slice(-2);
-      var hours = ('0' + now.getHours()).slice(-2);
-      var minutes = ('0' + now.getMinutes()).slice(-2);
+      var repDate = null;
+      if (eq.repairReportedAt) {
+        repDate = new Date(eq.repairReportedAt.replace(' ', 'T'));
+      }
+      var targetDate = (repDate && !isNaN(repDate.getTime()) && repDate > now) ? repDate : now;
+      var year = targetDate.getFullYear();
+      var month = ('0' + (targetDate.getMonth() + 1)).slice(-2);
+      var day = ('0' + targetDate.getDate()).slice(-2);
+      var hours = ('0' + targetDate.getHours()).slice(-2);
+      var minutes = ('0' + targetDate.getMinutes()).slice(-2);
       document.getElementById('resolveDateTime').value = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
 
       document.getElementById('modalResolveDefect').classList.remove('hidden');
