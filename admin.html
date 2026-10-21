@@ -3988,10 +3988,10 @@
                 <!-- Status Selector -->
                 <select id="filterStatus" class="filter-input" onchange="applyFilters()">
                   <option value="all">ทุกสถานะ</option>
-                  <option value="ready">พร้อมใช้งาน (รวมอนุญาตใช้)</option>
-                  <option value="conditional_ready">อนุญาตให้ใช้งานต่อ</option>
+                  <option value="ready">พร้อมใช้งาน (ปกติ)</option>
+                  <option value="conditional_ready">อนุญาตให้ใช้งานต่อ (ผ่อนผัน)</option>
                   <option value="pending">รอตรวจ</option>
-                  <option value="abnormal">พบข้อบกพร่อง</option>
+                  <option value="abnormal">พบข้อบกพร่อง (ชำรุด/ซ่อม/ผ่อนผัน)</option>
                 </select>
 
                 <!-- Reset Button -->
@@ -5941,7 +5941,7 @@
       if (textCompEl) textCompEl.innerText = 'ตรวจครบ ' + totalDone + ' จาก ' + totalReq + ' เครื่อง (เสี่ยงสูงตรวจวันนี้ ' + highRiskCheckedToday + '/' + highRiskTotal + ')';
 
       // 3. Defective & In-Repair KPI
-      var totalDefect = abnormalCount + inProgressCount;
+      var totalDefect = abnormalCount + inProgressCount + condCount;
       var valDefectEl = document.getElementById('dashValDefective');
       var barDefectEl = document.getElementById('dashBarDefective');
       var textDefectEl = document.getElementById('dashDefectiveText');
@@ -6714,7 +6714,7 @@
             checkedCount++;
             if (isConditionalReady) {
               status = 'conditional_ready';
-              readyCount++;
+              abnormalCount++;
             } else if (isUnderFix) {
               status = 'in_progress';
               abnormalCount++;
@@ -6729,7 +6729,7 @@
             checkedCount++;
             if (isConditionalReady) {
               status = 'conditional_ready';
-              readyCount++;
+              abnormalCount++;
             } else if (isUnderFix) {
               status = 'in_progress';
               abnormalCount++;
@@ -6746,13 +6746,13 @@
         if (deptVal !== 'all' && eq.currentDept !== deptVal) return false;
         if (catVal !== 'all' && eq.formId !== catVal) return false;
         if (statusVal !== 'all') {
-          if (statusVal === 'ready' && (status !== 'ready' && status !== 'conditional_ready')) return false;
+          if (statusVal === 'ready' && status !== 'ready') return false;
           if (statusVal === 'conditional_ready' && status !== 'conditional_ready') return false;
           if (statusVal === 'pending' && status !== 'pending') return false;
-          if (statusVal === 'abnormal' && (status !== 'abnormal' && status !== 'in_progress')) return false;
+          if (statusVal === 'abnormal' && (status !== 'abnormal' && status !== 'in_progress' && status !== 'conditional_ready')) return false;
         }
-        if (activeKpiFilter === 'ready' && (status !== 'ready' && status !== 'conditional_ready')) return false;
-        if (activeKpiFilter === 'abnormal' && (status !== 'abnormal' && status !== 'in_progress')) return false;
+        if (activeKpiFilter === 'ready' && status !== 'ready') return false;
+        if (activeKpiFilter === 'abnormal' && (status !== 'abnormal' && status !== 'in_progress' && status !== 'conditional_ready')) return false;
         if (activeKpiFilter === 'pending' && status !== 'pending') return false;
         if (activeKpiFilter === 'checked' && status === 'pending') return false;
 
