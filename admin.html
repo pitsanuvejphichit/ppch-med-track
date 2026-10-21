@@ -573,6 +573,69 @@
       transition: padding 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
+    /* Risk Level Segmented Switcher (High Risk Daily vs Low Risk Monthly) */
+    .summary-risk-switcher {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #e2e8f0;
+      padding: 4px;
+      border-radius: 14px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border-main);
+    }
+    .risk-switch-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 10px;
+      border: none;
+      background: transparent;
+      color: #475569;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
+    }
+    .risk-switch-tab:hover {
+      color: #0f172a;
+      background: rgba(255, 255, 255, 0.6);
+    }
+    .risk-switch-tab.active {
+      background: #ffffff;
+      color: var(--royal-blue);
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(0, 46, 110, 0.12);
+    }
+    .risk-tab-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+    .risk-tab-badge.badge-high {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+    .risk-tab-badge.badge-low {
+      background: #e0f2fe;
+      color: #0284c7;
+    }
+    .low-risk-period-banner {
+      margin-bottom: 14px;
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 12px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
     /* Clickable KPI Strip 5 */
     .kpi-strip-5 {
       display: grid;
@@ -3613,9 +3676,9 @@
             <span class="material-icons-round">dashboard</span>
             <span>แดชบอร์ดภาพรวม</span>
           </button>
-          <button onclick="switchView('summary')" id="navBtn_summary" class="nav-btn active" title="สรุปรายวัน">
-            <span class="material-icons-round">today</span>
-            <span>สรุปรายวัน</span>
+          <button onclick="switchView('summary')" id="navBtn_summary" class="nav-btn active" title="สรุปข้อมูล">
+            <span class="material-icons-round">analytics</span>
+            <span>สรุปข้อมูล</span>
           </button>
           <button onclick="switchView('device_summary')" id="navBtn_device_summary" class="nav-btn" title="สรุปรายเครื่อง">
             <span class="material-icons-round">medical_information</span>
@@ -3859,6 +3922,34 @@
 
         <!-- ==================== SUB-VIEW 1: สรุปผลรายเครื่อง ==================== -->
         <section id="viewSummary">
+          <!-- Risk Level Segmented Switcher (เสี่ยงสูงรายวัน vs เสี่ยงต่ำรายเดือน) -->
+          <div class="summary-risk-switcher no-print">
+            <button type="button" class="risk-switch-tab active" id="tabRiskHigh" onclick="switchSummaryRiskTab('high')">
+              <span class="material-icons-round" style="font-size: 17px; color: #dc2626;">warning</span>
+              <span>สรุปผลการตรวจเช็คเครื่องมือแพทย์ประจำวัน (เสี่ยงสูง)</span>
+              <span class="risk-tab-badge badge-high" id="badgeHighRiskCount">23 เครื่อง</span>
+            </button>
+            <button type="button" class="risk-switch-tab" id="tabRiskLow" onclick="switchSummaryRiskTab('low')">
+              <span class="material-icons-round" style="font-size: 17px; color: #0284c7;">verified_user</span>
+              <span>สรุปผลการตรวจเช็คเครื่องมือแพทย์ประจำเดือน (เสี่ยงต่ำ)</span>
+              <span class="risk-tab-badge badge-low" id="badgeLowRiskCount">2 เครื่อง</span>
+            </button>
+          </div>
+
+          <!-- Low-Risk Monthly Policy Banner (แสดงเฉพาะแท็บเสี่ยงต่ำ) -->
+          <div id="lowRiskPeriodBanner" class="low-risk-period-banner no-print" style="display: none;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span class="material-icons-round" style="color: #0284c7; font-size: 22px;">event_repeat</span>
+              <div>
+                <div style="font-weight: 700; font-size: 13px; color: #0369a1;">แนวทางตรวจเช็คเครื่องมือแพทย์ความเสี่ยงต่ำ (รอบประจำเดือน)</div>
+                <div style="font-size: 12px; color: #0284c7; margin-top: 1px;">กำหนดรอบการประเมิน <strong>เดือนละ 1 ครั้ง เฉพาะวันที่ 1 - 5 ของทุกเดือน</strong> (แจ้งเตือนเฉพาะวันที่ 1 - 5 พร้อมกัน)</div>
+              </div>
+            </div>
+            <div id="lowRiskPeriodStatusPill" style="padding: 4px 12px; border-radius: 20px; font-size: 11.5px; font-weight: 700; background: #e0f2fe; color: #0284c7; border: 1px solid #7dd3fc; white-space: nowrap;">
+              รอบถัดไป: 1 - 5 พ.ย. 2569
+            </div>
+          </div>
+
           <!-- 5-Column Clickable KPI Strip -->
           <div class="kpi-strip-5 no-print">
             <div class="kpi-card" id="kpiCard_all" onclick="filterByKpi('all')" title="คลิกเพื่อดูทั้งหมด">
@@ -3967,10 +4058,27 @@
             <!-- Collapsible Filter Drawer (Option 3) -->
             <div id="filterCollapsibleDrawer" class="filter-collapsible-drawer no-print">
               <div class="filter-drawer-inner">
-                <!-- Date Picker & Today Pill -->
-                <div class="filter-date-group">
+                <!-- Date Picker & Today Pill (High Risk Daily) -->
+                <div class="filter-date-group" id="filterDateGroupDaily">
                   <input type="date" id="filterDate" class="filter-input" onchange="applyFilters()">
                   <button type="button" onclick="setQuickDate('today')" id="btnDateToday" class="btn-pill-date active">วันนี้</button>
+                </div>
+
+                <!-- Month Picker (Low Risk Monthly) -->
+                <div class="filter-date-group" id="filterDateGroupMonthly" style="display: none;">
+                  <span class="material-icons-round" style="font-size: 16px; color: #0284c7; margin-right: 4px;">calendar_month</span>
+                  <select id="filterMonthLow" class="filter-input" style="font-weight: 700; color: #002e6e;" onchange="applyFilters()">
+                    <option value="2026-10" selected>ตุลาคม 2569 (เดือนปัจจุบัน)</option>
+                    <option value="2026-09">กันยายน 2569</option>
+                    <option value="2026-08">สิงหาคม 2569</option>
+                    <option value="2026-07">กรกฎาคม 2569</option>
+                    <option value="2026-06">มิถุนายน 2569</option>
+                    <option value="2026-05">พฤษภาคม 2569</option>
+                    <option value="2026-04">เมษายน 2569</option>
+                    <option value="2026-03">มีนาคม 2569</option>
+                    <option value="2026-02">กุมภาพันธ์ 2569</option>
+                    <option value="2026-01">มกราคม 2569</option>
+                  </select>
                 </div>
 
                 <div class="filter-divider-v"></div>
@@ -5691,7 +5799,7 @@
       var bread = document.getElementById('breadCurrent');
       var breadMap = {
         dashboard: 'แดชบอร์ดภาพรวม',
-        summary: 'สรุปรายวัน',
+        summary: 'สรุปข้อมูล',
         device_summary: 'สรุปรายเครื่อง',
         defective: 'เครื่องมือไม่พร้อมใช้งาน & จัดการงานซ่อม',
         relocate: 'มอบหมายแผนก',
@@ -6618,6 +6726,33 @@
       applyFilters();
     }
 
+    window.currentSummaryRisk = 'high';
+
+    function switchSummaryRiskTab(risk) {
+      window.currentSummaryRisk = risk;
+      var tabHigh = document.getElementById('tabRiskHigh');
+      var tabLow = document.getElementById('tabRiskLow');
+      if (tabHigh) tabHigh.classList.toggle('active', risk === 'high');
+      if (tabLow) tabLow.classList.toggle('active', risk === 'low');
+
+      var banner = document.getElementById('lowRiskPeriodBanner');
+      if (banner) banner.style.display = (risk === 'low') ? 'flex' : 'none';
+
+      var dateGroupDaily = document.getElementById('filterDateGroupDaily');
+      var dateGroupMonthly = document.getElementById('filterDateGroupMonthly');
+      if (dateGroupDaily) dateGroupDaily.style.display = (risk === 'high') ? 'flex' : 'none';
+      if (dateGroupMonthly) dateGroupMonthly.style.display = (risk === 'low') ? 'flex' : 'none';
+
+      var titleEl = document.getElementById('summaryTableTitle');
+      if (titleEl) {
+        titleEl.innerText = (risk === 'high')
+          ? 'สรุปผลการตรวจเช็คเครื่องมือแพทย์ประจำวัน (เสี่ยงสูง)'
+          : 'สรุปผลการตรวจเช็คเครื่องมือแพทย์ประจำเดือน (เสี่ยงต่ำ)';
+      }
+
+      applyFilters();
+    }
+
     function filterByKpi(kpiType) {
       activeKpiFilter = kpiType;
       document.querySelectorAll('.kpi-card').forEach(function (c) { c.classList.remove('active-kpi'); });
@@ -6648,17 +6783,28 @@
     function applyFilters() {
       var search = (document.getElementById('filterSearch').value || '').trim().toLowerCase();
       var dateVal = document.getElementById('filterDate').value;
+      var monthVal = (document.getElementById('filterMonthLow') ? document.getElementById('filterMonthLow').value : '') || (dateVal ? dateVal.slice(0, 7) : '2026-10');
       var deptVal = document.getElementById('filterDept').value;
       var catVal = document.getElementById('filterCategory').value;
       var statusVal = document.getElementById('filterStatus').value;
+      var currentRisk = window.currentSummaryRisk || 'high';
 
       var todayStr = new Date().toISOString().slice(0, 10);
       var btnToday = document.getElementById('btnDateToday');
       if (btnToday) btnToday.classList.toggle('active', dateVal === todayStr);
 
+      // Update Switcher Badges
+      var highEquipAll = allEquipment.filter(function (e) { return (e.riskLevel || 'high') !== 'low'; });
+      var lowEquipAll = allEquipment.filter(function (e) { return (e.riskLevel || 'high') === 'low'; });
+      var bHigh = document.getElementById('badgeHighRiskCount');
+      var bLow = document.getElementById('badgeLowRiskCount');
+      if (bHigh) bHigh.innerText = highEquipAll.length + ' เครื่อง';
+      if (bLow) bLow.innerText = lowEquipAll.length + ' เครื่อง';
+
       // Update Active Filter Badge for Collapsible Drawer (Option 3)
       var activeFilterCount = 0;
-      if (dateVal && dateVal !== todayStr) activeFilterCount++;
+      if (currentRisk === 'high' && dateVal && dateVal !== todayStr) activeFilterCount++;
+      if (currentRisk === 'low' && monthVal && monthVal !== '2026-10') activeFilterCount++;
       if (deptVal && deptVal !== 'all') activeFilterCount++;
       if (catVal && catVal !== 'all') activeFilterCount++;
       if (statusVal && statusVal !== 'all') activeFilterCount++;
@@ -6677,12 +6823,22 @@
         }
       }
 
-      // Map today's latest evaluation per device on selected date
-      var evalsOnDate = allEvaluations.filter(function (ev) {
-        return ev.evaluatedAt && ev.evaluatedAt.indexOf(dateVal) === 0;
-      });
+      // Map evaluations according to currentRisk:
+      // High-risk: by dateVal (e.g. 2026-10-21)
+      // Low-risk: by monthVal (e.g. 2026-10) evaluated in the 1-5 window
+      var evalsForView = [];
+      if (currentRisk === 'low') {
+        evalsForView = allEvaluations.filter(function (ev) {
+          return ev.evaluatedAt && ev.evaluatedAt.indexOf(monthVal) === 0;
+        });
+      } else {
+        evalsForView = allEvaluations.filter(function (ev) {
+          return ev.evaluatedAt && ev.evaluatedAt.indexOf(dateVal) === 0;
+        });
+      }
+
       var evalMapByDevice = {};
-      evalsOnDate.forEach(function (ev) {
+      evalsForView.forEach(function (ev) {
         var k1 = ev.deviceId;
         var k2 = ev.deviceAsset;
         if (k1 && (!evalMapByDevice[k1] || ev.evaluatedAt > evalMapByDevice[k1].evaluatedAt)) {
@@ -6693,12 +6849,13 @@
         }
       });
 
+      var targetPool = (currentRisk === 'low') ? lowEquipAll : highEquipAll;
       var readyCount = 0;
       var abnormalCount = 0;
       var checkedCount = 0;
 
       // Filter machines
-      var filtered = allEquipment.filter(function (eq) {
+      var filtered = targetPool.filter(function (eq) {
         var ev = evalMapByDevice[eq.id] || evalMapByDevice[eq.assetCode];
         var isConditionalReady = (eq.status === 'conditional_ready' || eq.allowUse);
         var isUnderFix = (eq.status === 'in_progress' || eq.repairStatus === 'in_progress');
@@ -6766,11 +6923,11 @@
       });
 
       // Update KPI Numbers
-      document.getElementById('kpiTotal').innerText = allEquipment.length;
+      document.getElementById('kpiTotal').innerText = targetPool.length;
       document.getElementById('kpiChecked').innerText = checkedCount;
       document.getElementById('kpiReady').innerText = readyCount;
       document.getElementById('kpiAbnormal').innerText = abnormalCount;
-      document.getElementById('kpiPending').innerText = Math.max(0, allEquipment.length - checkedCount);
+      document.getElementById('kpiPending').innerText = Math.max(0, targetPool.length - checkedCount);
 
       document.getElementById('summaryCountBadge').innerText = filtered.length + ' เครื่อง';
 

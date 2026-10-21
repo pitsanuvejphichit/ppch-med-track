@@ -1033,6 +1033,17 @@
         </div>
       </div>
 
+      <!-- Lock Overlay for Low-Risk Devices Outside Period (Days 6-31) -->
+      <div class="checklist-lock-overlay" id="devicePeriodLockOverlay" style="display: none; background: rgba(240, 249, 255, 0.96); z-index: 25;">
+        <span class="material-icons-round" style="font-size: 44px; color: #0284c7; margin-bottom: 8px;">event_busy</span>
+        <div style="font-size: 15px; font-weight: 700; color: #0369a1; margin-bottom: 4px;">
+          อยู่นอกรอบการประเมินประจำเดือน
+        </div>
+        <div style="font-size: 12.5px; color: #0369a1; max-width: 380px; line-height: 1.5;" id="devicePeriodLockMsg">
+          เครื่องมือแพทย์ความเสี่ยงต่ำ กำหนดรอบการประเมินเฉพาะวันที่ 1 - 5 ของทุกเดือนเท่านั้น (ขณะนี้นอกรอบการประเมิน)
+        </div>
+      </div>
+
       <!-- Lock Overlay (Displayed if UPS not filled on mandatory dates) -->
       <div class="checklist-lock-overlay" id="checklistLockOverlay" style="display: none;">
         <span class="material-icons-round" style="font-size: 36px; color: #d97706; margin-bottom: 8px;">lock</span>
@@ -1605,6 +1616,9 @@
       }
       applyRepairLock(underRepair);
 
+      // Check low-risk period lock: Low-risk devices strictly evaluated between Day 1-5 of month
+      checkLowRiskPeriodLock();
+
       // Handle conditional use banner
       var condBanner = document.getElementById('conditionalUseBanner');
       if (condBanner) {
@@ -1633,6 +1647,85 @@
       checkExistingEvaluationOnDate();
 
       renderChecklist(currentForm.items || []);
+    }
+
+    function checkLowRiskPeriodLock() {
+      if (!currentDevice) return;
+      var eqRisk = currentDevice.riskLevel || (currentDevice.frequency === 'monthly' ? 'low' : 'high');
+      var banner = document.getElementById('lowRiskPeriodLockBanner');
+      var periodOverlay = document.getElementById('devicePeriodLockOverlay');
+      if (eqRisk !== 'low') {
+        if (banner) banner.style.display = 'none';
+        if (periodOverlay) periodOverlay.style.display = 'none';
+        return;
+      }
+
+      var now = new Date();
+      var day = now.getDate();
+      var isPeriodOpen = (day >= 1 && day <= 5);
+      var btnSubmit = document.getElementById('btnSubmitEval');
+
+      // Check if already evaluated in this month
+      var currentMonthStr = now.toISOString().slice(0, 7);
+      var devEvals = (window.PPCH_STORE && window.PPCH_STORE.getEvaluations) ? window.PPCH_STORE.getEvaluations() : [];
+      var monthlyEval = devEvals.find(function(e) {
+        var matchDev = (e.deviceId === currentDevice.id || e.deviceAsset === currentDevice.assetCode);
+        return matchDev && e.evaluatedAt && e.evaluatedAt.indexOf(currentMonthStr) === 0;
+      });
+
+      if (!banner) {
+        banner = document.createElement('div');
+        banner.id = 'lowRiskPeriodLockBanner';
+        banner.className = 'repair-lock-banner';
+        var mainCard = document.querySelector('.eval-card');
+        if (mainCard && mainCard.parentNode) {
+          mainCard.parentNode.insertBefore(banner, mainCard);
+        }
+      }
+
+      if (!isPeriodOpen) {
+        // Outside period (days 6-31)
+        isDeviceLockedForRepair = true;
+        banner.style.display = 'flex';
+        banner.style.background = '#eff6ff';
+        banner.style.borderColor = '#93c5fd';
+        banner.style.color = '#1e3a8a';
+
+        var nextMonthDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+        var nextMonthThai = nextMonthDate.toLocaleDateString('th-TH', { month: 'long', year: 'numeric' });
+
+        var extraInfo = '';
+        if (monthlyEval) {
+          extraInfo = '<div style="margin-top: 6px; font-size: 12px; color: #059669; font-weight: 600;">✓ เครื่องนี้ได้รับการประเมินประจำเดือนนี้แล้ว เมื่อ ' + (monthlyEval.evaluatedAt || '') + ' โดย ' + (monthlyEval.evaluatedBy || '-') + '</div>';
+        }
+
+        banner.innerHTML = '<span class="material-icons-round" style="font-size: 28px; color: #2563eb; flex-shrink: 0;">lock_clock</span>' +
+          '<div style="flex: 1;">' +
+            '<div style="font-weight: 700; font-size: 13.5px; color: #1e40af;">ปิดรับการประเมินตามนโยบาย: เครื่องมือแพทย์ความเสี่ยงต่ำ</div>' +
+            '<div style="font-size: 12px; margin-top: 2px; color: #3b82f6;">กำหนดรอบการประเมินเฉพาะวันที่ 1 - 5 ของทุกเดือนเท่านั้น (ขณะนี้นอกรอบการประเมิน)</div>' +
+            '<div style="font-size: 11.5px; margin-top: 4px; color: #64748b;">รอบการประเมินถัดไป: <strong>1 - 5 ' + nextMonthThai + '</strong></div>' +
+            extraInfo +
+          '</div>';
+
+        if (periodOverlay) periodOverlay.style.display = 'flex';
+        if (btnSubmit) {
+          btnSubmit.disabled = true;
+          btnSubmit.style.opacity = '0.5';
+          btnSubmit.innerText = 'ปิดรับการประเมิน (เปิดรอบวันที่ 1-5)';
+        }
+      } else {
+        // Within period (days 1-5)
+        if (periodOverlay) periodOverlay.style.display = 'none';
+        banner.style.display = 'flex';
+        banner.style.background = '#ecfdf5';
+        banner.style.borderColor = '#a7f3d0';
+        banner.style.color = '#065f46';
+        banner.innerHTML = '<span class="material-icons-round" style="font-size: 24px; color: #059669; flex-shrink: 0;">event_available</span>' +
+          '<div style="flex: 1;">' +
+            '<div style="font-weight: 700; font-size: 13px; color: #065f46;">อยู่ในรอบการประเมินประจำเดือน (วันที่ 1 - 5)</div>' +
+            '<div style="font-size: 11.5px; color: #047857;">เปิดรับผลการตรวจเช็คเครื่องมือแพทย์ความเสี่ยงต่ำประจำเดือนนี้</div>' +
+          '</div>';
+      }
     }
 
     function applyRepairLock(locked) {
