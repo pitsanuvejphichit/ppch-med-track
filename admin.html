@@ -6112,7 +6112,6 @@
               var ackByText = eq.repairAcknowledgedBy ? ('โดย ' + eq.repairAcknowledgedBy) : ('โดย ' + (eq.allowUseBy || 'เจ้าหน้าที่'));
               statusBadge = '<div><span class="badge-status" style="color: #b45309; background: #fffbeb; border: 1px solid #fde68a; font-weight: 700;"><span class="material-icons-round" style="font-size: 14px;">published_with_changes</span> อนุญาตให้ใช้งานต่อ (รอซ่อม)</span><div style="font-size: 10.5px; color: #b45309; margin-top: 2px;">' + ackByText + '</div></div>';
               actionBtn = '<div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">' +
-                '<button onclick="openAllowUseModal(\'' + eq.id + '\')" class="btn-tool" style="background: #fffbeb; color: #b45309; border-color: #fde68a;" title="แก้ไขการอนุญาตให้ใช้งานต่อ"><span class="material-icons-round" style="font-size: 13px;">published_with_changes</span><span>อนุญาตใช้ต่อ</span></button>' +
                 '<button onclick="openResolveModal(\'' + eq.id + '\')" class="btn-tool" style="background: var(--green-ready); color: #ffffff; border-color: var(--green-ready); font-weight: 600;" title="บันทึกรายละเอียดการซ่อมเสร็จสิ้น"><span class="material-icons-round" style="font-size: 14px;">task_alt</span><span>บันทึกการแก้ไข</span></button>' +
               '</div>';
             } else {
