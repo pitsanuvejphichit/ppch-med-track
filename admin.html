@@ -5630,6 +5630,7 @@
     var currentView = 'summary';
     var allEquipment = [];
     var allEvaluations = [];
+    var allRepairs = [];
     var activeKpiFilter = 'all';
     var selectedQrUrl = '';
 
@@ -5699,9 +5700,11 @@
       if (window.PPCH_STORE) {
         allEquipment = (window.PPCH_STORE.getEquipment ? window.PPCH_STORE.getEquipment() : []) || [];
         allEvaluations = (window.PPCH_STORE.getEvaluations ? window.PPCH_STORE.getEvaluations() : []) || [];
+        allRepairs = (window.PPCH_STORE.getRepairs ? window.PPCH_STORE.getRepairs() : []) || [];
       } else {
         allEquipment = [];
         allEvaluations = [];
+        allRepairs = [];
       }
 
       // Populate relocation cascade dropdowns
@@ -6785,6 +6788,28 @@
       filterByKpi('all');
     }
 
+    function isNewerEvaluation(newEv, oldEv) {
+      if (!oldEv) return true;
+      if (!newEv) return false;
+      var atNew = String(newEv.evaluatedAt || '');
+      var atOld = String(oldEv.evaluatedAt || '');
+      if (atNew > atOld) return true;
+      if (atNew < atOld) return false;
+
+      var isResNew = !!(newEv.isRepairResolution || (newEv.evaluatedBy && newEv.evaluatedBy.indexOf('ซ่อมเสร็จ') !== -1) || (newEv.abnormalNote && newEv.abnormalNote.indexOf('แก้ไขเรียบร้อย') !== -1));
+      var isResOld = !!(oldEv.isRepairResolution || (oldEv.evaluatedBy && oldEv.evaluatedBy.indexOf('ซ่อมเสร็จ') !== -1) || (oldEv.abnormalNote && oldEv.abnormalNote.indexOf('แก้ไขเรียบร้อย') !== -1));
+      if (isResNew && !isResOld) return true;
+      if (!isResNew && isResOld) return false;
+
+      var idNew = String(newEv.id || '');
+      var idOld = String(oldEv.id || '');
+      if (idNew > idOld) return true;
+      if (idNew < idOld) return false;
+
+      if (newEv.result === 'normal' && oldEv.result === 'abnormal') return true;
+      return false;
+    }
+
     function applyFilters() {
       var search = (document.getElementById('filterSearch').value || '').trim().toLowerCase();
       var dateVal = document.getElementById('filterDate').value;
@@ -6846,10 +6871,10 @@
       evalsForView.forEach(function (ev) {
         var k1 = ev.deviceId;
         var k2 = ev.deviceAsset;
-        if (k1 && (!evalMapByDevice[k1] || ev.evaluatedAt > evalMapByDevice[k1].evaluatedAt)) {
+        if (k1 && isNewerEvaluation(ev, evalMapByDevice[k1])) {
           evalMapByDevice[k1] = ev;
         }
-        if (k2 && (!evalMapByDevice[k2] || ev.evaluatedAt > evalMapByDevice[k2].evaluatedAt)) {
+        if (k2 && isNewerEvaluation(ev, evalMapByDevice[k2])) {
           evalMapByDevice[k2] = ev;
         }
       });
@@ -6867,8 +6892,17 @@
         var isCurrentlyDefective = (eq.status === 'abnormal' || eq.repairStatus === 'reported');
         var status = 'pending';
 
+        // Check if defect on or before this date was resolved by repair
+        var isResolvedRepair = (eq.status === 'ready' && eq.repairStatus !== 'reported' && eq.repairStatus !== 'in_progress') || ((typeof allRepairs !== 'undefined' && Array.isArray(allRepairs)) ? allRepairs : ((window.PPCH_STORE && window.PPCH_STORE.getRepairs) ? window.PPCH_STORE.getRepairs() : [])).some(function (rep) {
+          var matchDev = (rep.deviceId === eq.id || rep.deviceAsset === eq.assetCode || rep.device_id === eq.id || rep.device_asset === eq.assetCode);
+          var matchReport = ev && (rep.reportedAt === ev.evaluatedAt || rep.reported_at === ev.evaluatedAt);
+          var repResolvedDate = (rep.resolvedAt || rep.resolved_at || '').slice(0, 10);
+          var isResolvedByThisDate = repResolvedDate && (repResolvedDate <= dateVal);
+          return matchDev && (matchReport || isResolvedByThisDate);
+        });
+
         if (ev) {
-          if (ev.result === 'normal') {
+          if (ev.result === 'normal' || isResolvedRepair) {
             status = 'ready';
             checkedCount++;
             readyCount++;
@@ -6887,7 +6921,7 @@
           }
         } else {
           var isReportedBeforeOrOnDate = eq.repairReportedAt && (eq.repairReportedAt.slice(0, 10) <= dateVal);
-          if (isReportedBeforeOrOnDate && (isConditionalReady || isUnderFix || isCurrentlyDefective)) {
+          if (isReportedBeforeOrOnDate && !isResolvedRepair && (isConditionalReady || isUnderFix || isCurrentlyDefective)) {
             checkedCount++;
             if (isConditionalReady) {
               status = 'conditional_ready';
@@ -6903,8 +6937,6 @@
             status = 'pending';
           }
         }
-
-        // Apply filters
         if (deptVal !== 'all' && eq.currentDept !== deptVal) return false;
         if (catVal !== 'all' && eq.formId !== catVal) return false;
         if (statusVal !== 'all') {
@@ -6961,10 +6993,27 @@
         var statusBadge = '';
         var actionBtns = [];
 
-        if (ev && ev.result === 'normal') {
-          statusBadge = '<div class="status-symbol-btn symbol-ready" title="พร้อมใช้งาน (ตรวจเรียบร้อยแล้ว)" onclick="openSlipModal(\'' + ev.id + '\')"><span class="material-icons-round">check_circle</span></div>';
+        // Check if defect on or before this date was resolved by repair
+        var isResolvedRepair = (eq.status === 'ready' && eq.repairStatus !== 'reported' && eq.repairStatus !== 'in_progress') || ((typeof allRepairs !== 'undefined' && Array.isArray(allRepairs)) ? allRepairs : ((window.PPCH_STORE && window.PPCH_STORE.getRepairs) ? window.PPCH_STORE.getRepairs() : [])).some(function (rep) {
+          var matchDev = (rep.deviceId === eq.id || rep.deviceAsset === eq.assetCode || rep.device_id === eq.id || rep.device_asset === eq.assetCode);
+          var matchReport = ev && (rep.reportedAt === ev.evaluatedAt || rep.reported_at === ev.evaluatedAt);
+          var repResolvedDate = (rep.resolvedAt || rep.resolved_at || '').slice(0, 10);
+          var isResolvedByThisDate = repResolvedDate && (repResolvedDate <= filterDateVal);
+          return matchDev && (matchReport || isResolvedByThisDate);
+        });
+
+        if (ev && (ev.result === 'normal' || isResolvedRepair)) {
+          var isRepaired = isResolvedRepair || ev.isRepairResolution || (ev.evaluatedBy && ev.evaluatedBy.indexOf('ซ่อมเสร็จ') !== -1) || (ev.abnormalNote && ev.abnormalNote.indexOf('แก้ไขเรียบร้อย') !== -1);
+          if (isRepaired) {
+            statusBadge = '<div class="status-symbol-btn symbol-ready-repaired" title="พร้อมใช้งาน (แก้ไข/ซ่อมแซมเสร็จสิ้นแล้ว)" onclick="openSlipModal(\'' + ev.id + '\')"><span class="material-icons-round">task_alt</span></div>';
+          } else {
+            statusBadge = '<div class="status-symbol-btn symbol-ready" title="พร้อมใช้งาน (ตรวจเรียบร้อยแล้ว)" onclick="openSlipModal(\'' + ev.id + '\')"><span class="material-icons-round">check_circle</span></div>';
+          }
           actionBtns.push('<button type="button" onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-icon btn-icon-slip" title="ดูสลิปผลการตรวจ"><span class="material-icons-round">receipt_long</span></button>');
           actionBtns.push('<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-re-eval" title="เปิดหน้าตรวจเช็คซ้ำ"><span class="material-icons-round">refresh</span></a>');
+          if (isRepaired) {
+            actionBtns.push('<button type="button" onclick="switchView(\'history\')" class="btn-action-icon btn-icon-repair" title="ดูประวัติการซ่อมบำรุง"><span class="material-icons-round">history</span></button>');
+          }
         } else if (ev && ev.result === 'abnormal') {
           if (isConditional) {
             var allowReasonTxt = eq.allowUseReason ? (' (' + eq.allowUseReason + ')') : '';
@@ -6988,16 +7037,16 @@
           }
         } else {
           var isReportedBeforeOrOnDate = eq.repairReportedAt && (eq.repairReportedAt.slice(0, 10) <= filterDateVal);
-          if (isReportedBeforeOrOnDate && isConditional) {
+          if (isReportedBeforeOrOnDate && !isResolvedRepair && isConditional) {
             statusBadge = '<div class="status-symbol-btn symbol-conditional" title="อนุญาตให้ใช้งานต่อ" onclick="openResolveModal(\'' + eq.id + '\')"><span class="material-icons-round">build_circle</span></div>';
             actionBtns.push('<button type="button" onclick="openResolveModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-resolve" title="บันทึกการแก้ไข"><span class="material-icons-round">task_alt</span></button>');
             actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="ดูรายการแจ้งซ่อม"><span class="material-icons-round">build</span></button>');
-          } else if (isReportedBeforeOrOnDate && isUnderFix) {
+          } else if (isReportedBeforeOrOnDate && !isResolvedRepair && isUnderFix) {
             statusBadge = '<div class="status-symbol-btn symbol-in-progress" title="กำลังดำเนินการแก้ไข" onclick="switchView(\'defective\')"><span class="material-icons-round">build</span></div>';
             actionBtns.push('<button type="button" onclick="openResolveModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-resolve" title="บันทึกการแก้ไข"><span class="material-icons-round">task_alt</span></button>');
             actionBtns.push('<button type="button" onclick="openAllowUseModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-allow" title="อนุญาตให้ใช้งานต่อ"><span class="material-icons-round">published_with_changes</span></button>');
             actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="ดูงานซ่อมบำรุง"><span class="material-icons-round">build</span></button>');
-          } else if (isReportedBeforeOrOnDate && isDefective) {
+          } else if (isReportedBeforeOrOnDate && !isResolvedRepair && isDefective) {
             statusBadge = '<div class="status-symbol-btn symbol-abnormal" title="พบข้อบกพร่อง (รอรับทราบ)" onclick="openAcknowledgeModal(\'' + eq.id + '\')"><span class="material-icons-round">cancel</span></div>';
             actionBtns.push('<button type="button" onclick="openAcknowledgeModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-repair" title="รับทราบข้อบกพร่อง"><span class="material-icons-round">thumb_up</span></button>');
             actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="จัดการงานซ่อมบำรุง"><span class="material-icons-round">build</span></button>');
@@ -8982,10 +9031,10 @@
       evalsOnDate.forEach(function (ev) {
         var k1 = ev.deviceId;
         var k2 = ev.deviceAsset;
-        if (k1 && (!evalMapByDevice[k1] || ev.evaluatedAt > evalMapByDevice[k1].evaluatedAt)) {
+        if (k1 && isNewerEvaluation(ev, evalMapByDevice[k1])) {
           evalMapByDevice[k1] = ev;
         }
-        if (k2 && (!evalMapByDevice[k2] || ev.evaluatedAt > evalMapByDevice[k2].evaluatedAt)) {
+        if (k2 && isNewerEvaluation(ev, evalMapByDevice[k2])) {
           evalMapByDevice[k2] = ev;
         }
       });
@@ -9093,10 +9142,10 @@
       evalsOnDate.forEach(function (ev) {
         var k1 = ev.deviceId;
         var k2 = ev.deviceAsset;
-        if (k1 && (!evalMapByDevice[k1] || ev.evaluatedAt > evalMapByDevice[k1].evaluatedAt)) {
+        if (k1 && isNewerEvaluation(ev, evalMapByDevice[k1])) {
           evalMapByDevice[k1] = ev;
         }
-        if (k2 && (!evalMapByDevice[k2] || ev.evaluatedAt > evalMapByDevice[k2].evaluatedAt)) {
+        if (k2 && isNewerEvaluation(ev, evalMapByDevice[k2])) {
           evalMapByDevice[k2] = ev;
         }
       });

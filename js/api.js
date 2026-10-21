@@ -133,6 +133,10 @@
     if (typeof answersObj === 'string') {
       try { answersObj = JSON.parse(answersObj); } catch (e) { answersObj = {}; }
     }
+    var isRes = !!r.is_repair_resolution ||
+      (r.evaluated_by && r.evaluated_by.indexOf('ซ่อมเสร็จ') !== -1) ||
+      (r.abnormal_note && r.abnormal_note.indexOf('แก้ไขเรียบร้อย') !== -1) ||
+      (r.id && r.id.indexOf('-RES') !== -1);
     return {
       id: r.id,
       deviceId: r.device_id,
@@ -145,6 +149,7 @@
       result: r.result,
       abnormalNote: r.abnormal_note || '',
       checklist: answersObj,
+      isRepairResolution: isRes,
       upsBattery: {
         tested: !!r.ups_tested,
         runtimeFormatted: r.ups_duration || ''
@@ -223,7 +228,7 @@
       }
 
       var pEquipment = supabaseFetch('equipment?select=*&order=asset_code.asc');
-      var pEvaluations = supabaseFetchAll('evaluations?select=*&order=evaluated_at.desc');
+      var pEvaluations = supabaseFetchAll('evaluations?select=*&order=evaluated_at.desc,id.desc');
       var pRepairs = supabaseFetch('repairs?select=*&order=created_at.desc&limit=1000');
       var pTransfers = supabaseFetch('transfers?select=*&order=created_at.desc&limit=1000');
       var pDepartments = supabaseFetch('departments?select=*&order=name.asc').catch(function () { return []; });

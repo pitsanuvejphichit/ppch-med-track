@@ -44,6 +44,28 @@
     window.dispatchEvent(new CustomEvent('ppch:data-updated', { detail: inMemoryData }));
   }
 
+  function isNewerEvaluation(newEv, oldEv) {
+    if (!oldEv) return true;
+    if (!newEv) return false;
+    var atNew = String(newEv.evaluatedAt || '');
+    var atOld = String(oldEv.evaluatedAt || '');
+    if (atNew > atOld) return true;
+    if (atNew < atOld) return false;
+
+    var isResNew = !!(newEv.isRepairResolution || (newEv.evaluatedBy && newEv.evaluatedBy.indexOf('ซ่อมเสร็จ') !== -1) || (newEv.abnormalNote && newEv.abnormalNote.indexOf('แก้ไขเรียบร้อย') !== -1));
+    var isResOld = !!(oldEv.isRepairResolution || (oldEv.evaluatedBy && oldEv.evaluatedBy.indexOf('ซ่อมเสร็จ') !== -1) || (oldEv.abnormalNote && oldEv.abnormalNote.indexOf('แก้ไขเรียบร้อย') !== -1));
+    if (isResNew && !isResOld) return true;
+    if (!isResNew && isResOld) return false;
+
+    var idNew = String(newEv.id || '');
+    var idOld = String(oldEv.id || '');
+    if (idNew > idOld) return true;
+    if (idNew < idOld) return false;
+
+    if (newEv.result === 'normal' && oldEv.result === 'abnormal') return true;
+    return false;
+  }
+
   window.PPCH_STORE = {
     // Initialize or refresh live data directly from Google Apps Script / Google Sheets
     initFromCloud: function (cloudData) {
@@ -81,10 +103,10 @@
           if (!ev || !ev.evaluatedAt) return;
           var k1 = ev.deviceId;
           var k2 = ev.deviceAsset;
-          if (k1 && (!latestEvalMap[k1] || ev.evaluatedAt > latestEvalMap[k1].evaluatedAt)) {
+          if (k1 && isNewerEvaluation(ev, latestEvalMap[k1])) {
             latestEvalMap[k1] = ev;
           }
-          if (k2 && (!latestEvalMap[k2] || ev.evaluatedAt > latestEvalMap[k2].evaluatedAt)) {
+          if (k2 && isNewerEvaluation(ev, latestEvalMap[k2])) {
             latestEvalMap[k2] = ev;
           }
         });
@@ -181,10 +203,10 @@
         if (!ev || !ev.evaluatedAt) return;
         var k1 = ev.deviceId;
         var k2 = ev.deviceAsset;
-        if (k1 && (!latestEvalMap[k1] || ev.evaluatedAt > latestEvalMap[k1].evaluatedAt)) {
+        if (k1 && isNewerEvaluation(ev, latestEvalMap[k1])) {
           latestEvalMap[k1] = ev;
         }
-        if (k2 && (!latestEvalMap[k2] || ev.evaluatedAt > latestEvalMap[k2].evaluatedAt)) {
+        if (k2 && isNewerEvaluation(ev, latestEvalMap[k2])) {
           latestEvalMap[k2] = ev;
         }
       });
