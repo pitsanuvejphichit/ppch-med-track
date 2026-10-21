@@ -6108,14 +6108,17 @@
                 allowBtnUnderFix +
                 '<button onclick="openResolveModal(\'' + eq.id + '\')" class="btn-tool" style="background: var(--green-ready); color: #ffffff; border-color: var(--green-ready); font-weight: 600;" title="บันทึกรายละเอียดการซ่อมเสร็จสิ้น"><span class="material-icons-round" style="font-size: 14px;">task_alt</span><span>บันทึกการแก้ไข</span></button>' +
               '</div>';
-            } else {
-              var condBadge = isConditional
-                ? '<div><span class="badge-status" style="color: #b45309; background: #fffbeb; border: 1px solid #fde68a; font-weight: 700;"><span class="material-icons-round" style="font-size: 14px;">published_with_changes</span> อนุญาตให้ใช้งานต่อ (รอซ่อม)</span><div style="font-size: 10.5px; color: #b45309; margin-top: 2px;">โดย ' + (eq.allowUseBy || 'เจ้าหน้าที่') + '</div></div>'
-                : '<span class="badge-status badge-status-abnormal" style="font-weight: 700;"><span class="material-icons-round" style="font-size: 14px;">error</span> พบข้อบกพร่อง (รอรับทราบ)</span>';
-              statusBadge = condBadge;
-              var allowBtnReported = !isConditional ? '<button onclick="openAllowUseModal(\'' + eq.id + '\')" class="btn-tool" style="background: #fffbeb; color: #b45309; border-color: #fde68a;" title="อนุญาตให้ใช้งานต่อได้แม้มีข้อบกพร่อง"><span class="material-icons-round" style="font-size: 13px;">published_with_changes</span><span>อนุญาตใช้ต่อ</span></button>' : '';
+            } else if (isConditional) {
+              var ackByText = eq.repairAcknowledgedBy ? ('โดย ' + eq.repairAcknowledgedBy) : ('โดย ' + (eq.allowUseBy || 'เจ้าหน้าที่'));
+              statusBadge = '<div><span class="badge-status" style="color: #b45309; background: #fffbeb; border: 1px solid #fde68a; font-weight: 700;"><span class="material-icons-round" style="font-size: 14px;">published_with_changes</span> อนุญาตให้ใช้งานต่อ (รอซ่อม)</span><div style="font-size: 10.5px; color: #b45309; margin-top: 2px;">' + ackByText + '</div></div>';
               actionBtn = '<div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">' +
-                allowBtnReported +
+                '<button onclick="openAllowUseModal(\'' + eq.id + '\')" class="btn-tool" style="background: #fffbeb; color: #b45309; border-color: #fde68a;" title="แก้ไขการอนุญาตให้ใช้งานต่อ"><span class="material-icons-round" style="font-size: 13px;">published_with_changes</span><span>อนุญาตใช้ต่อ</span></button>' +
+                '<button onclick="openResolveModal(\'' + eq.id + '\')" class="btn-tool" style="background: var(--green-ready); color: #ffffff; border-color: var(--green-ready); font-weight: 600;" title="บันทึกรายละเอียดการซ่อมเสร็จสิ้น"><span class="material-icons-round" style="font-size: 14px;">task_alt</span><span>บันทึกการแก้ไข</span></button>' +
+              '</div>';
+            } else {
+              statusBadge = '<span class="badge-status badge-status-abnormal" style="font-weight: 700;"><span class="material-icons-round" style="font-size: 14px;">error</span> พบข้อบกพร่อง (รอรับทราบ)</span>';
+              actionBtn = '<div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">' +
+                '<button onclick="openAllowUseModal(\'' + eq.id + '\')" class="btn-tool" style="background: #fffbeb; color: #b45309; border-color: #fde68a;" title="อนุญาตให้ใช้งานต่อได้แม้มีข้อบกพร่อง"><span class="material-icons-round" style="font-size: 13px;">published_with_changes</span><span>อนุญาตใช้ต่อ</span></button>' +
                 '<button onclick="openAcknowledgeModal(\'' + eq.id + '\')" class="btn-tool btn-tool-primary" title="เจ้าหน้าที่เครื่องมือแพทย์กดรับทราบเพื่อเริ่มแก้ไข"><span class="material-icons-round" style="font-size: 14px;">thumb_up</span><span>รับทราบ</span></button>' +
               '</div>';
             }
@@ -8970,7 +8973,31 @@
       });
 
       var defectIncidents = [];
+      var handledRepairIds = {};
+
       abnormalEvals.forEach(function (ev) {
+        var evDate = ev.evaluatedAt ? ev.evaluatedAt.slice(0, 10) : '';
+
+        // Check if this eval falls inside an existing repair period (reportedAt ... resolvedAt)
+        var rep = null;
+        for (var r = 0; r < deviceMonthRepairs.length; r++) {
+          var repCandidate = deviceMonthRepairs[r];
+          var repStart = repCandidate.reportedAt ? repCandidate.reportedAt.slice(0, 10) : '';
+          var repEnd = repCandidate.resolvedAt ? repCandidate.resolvedAt.slice(0, 10) : '9999-99-99';
+          if (evDate >= repStart && evDate <= repEnd) {
+            rep = repCandidate;
+            break;
+          }
+        }
+
+        // If part of an already added repair episode, do not create duplicate incident row
+        if (rep && rep.id && handledRepairIds[rep.id]) {
+          return;
+        }
+        if (rep && rep.id) {
+          handledRepairIds[rep.id] = true;
+        }
+
         var failedList = [];
         if (Array.isArray(ev.checklistDetails)) {
           ev.checklistDetails.forEach(function (d) {
@@ -8988,34 +9015,28 @@
           });
         }
 
-        var symptomDesc = failedList.length > 0 ? (failedList.join('<br>') + (ev.abnormalNote ? '<br><span style="color: #64748b;">(หมายเหตุ: ' + ev.abnormalNote + ')</span>' : '')) : (ev.abnormalNote || 'ตรวจพบข้อบกพร่องจากการประเมินประจำวัน');
-
-        var rep = null;
-        for (var r = 0; r < deviceMonthRepairs.length; r++) {
-          var repCandidate = deviceMonthRepairs[r];
-          if (repCandidate.reportedAt && repCandidate.reportedAt.slice(0, 10) === ev.evaluatedAt.slice(0, 10)) {
-            rep = repCandidate;
-            break;
-          }
-        }
+        var symptomDesc = (rep && rep.defectReason) ? rep.defectReason :
+          (failedList.length > 0 ? (failedList.join('<br>') + (ev.abnormalNote ? '<br><span style="color: #64748b;">(หมายเหตุ: ' + ev.abnormalNote + ')</span>' : '')) : (ev.abnormalNote || 'ตรวจพบข้อบกพร่องจากการประเมินประจำวัน'));
 
         defectIncidents.push({
-          detectedAt: ev.evaluatedAt || '-',
+          detectedAt: (rep && rep.reportedAt) ? rep.reportedAt : (ev.evaluatedAt || '-'),
           symptom: symptomDesc,
-          reportedBy: ev.evaluatedBy || '-',
+          reportedBy: (rep && rep.reportedBy) ? rep.reportedBy : (ev.evaluatedBy || '-'),
           actionTaken: rep ? rep.actionTaken : (eq.allowUse ? 'อนุโลมให้ใช้งานต่อ (' + (eq.allowUseReason || '-') + ')' : 'ส่งศูนย์เครื่องมือแพทย์ / รอดำเนินการแก้ไข'),
           resolvedAt: rep ? (rep.resolvedAt || '-') : (eq.status === 'ready' ? (eq.lastEvaluatedAt || '-') : '-'),
           resolvedBy: rep ? (rep.resolvedBy || '-') : (eq.allowUse ? (eq.allowUseBy || '-') : '-'),
-          testResult: rep ? (rep.testResultNote || 'ผ่านเกณฑ์ทดสอบความพร้อมใช้ 100%') : (eq.status === 'ready' ? 'พร้อมใช้งานปกติ' : 'รอดำเนินการ'),
-          isResolved: (rep && rep.resolvedAt) || eq.status === 'ready'
+          testResult: rep ? (rep.testResultNote || 'ผ่านเกณฑ์ทดสอบความพร้อมใช้ 100% ส่งมอบคืนแผนก') : (eq.status === 'ready' ? 'พร้อมใช้งานปกติ' : 'รอดำเนินการ'),
+          isResolved: (rep && !!rep.resolvedAt) || eq.status === 'ready'
         });
       });
 
       deviceMonthRepairs.forEach(function (rep) {
+        if (rep.id && handledRepairIds[rep.id]) return;
         var alreadyIn = defectIncidents.some(function (d) {
           return d.detectedAt && rep.reportedAt && d.detectedAt.slice(0, 10) === rep.reportedAt.slice(0, 10);
         });
         if (!alreadyIn) {
+          if (rep.id) handledRepairIds[rep.id] = true;
           defectIncidents.push({
             detectedAt: rep.reportedAt || '-',
             symptom: rep.defectReason || 'ตรวจพบข้อบกพร่อง/แจ้งซ่อม',
@@ -9023,7 +9044,7 @@
             actionTaken: rep.actionTaken || 'ดำเนินการแก้ไขและทดสอบระบบเรียบร้อย',
             resolvedAt: rep.resolvedAt || '-',
             resolvedBy: rep.resolvedBy || '-',
-            testResult: rep.testResultNote || 'ผ่านเกณฑ์ทดสอบความพร้อมใช้ 100%',
+            testResult: rep.testResultNote || 'ผ่านเกณฑ์ทดสอบความพร้อมใช้ 100% ส่งมอบคืนแผนก',
             isResolved: !!rep.resolvedAt
           });
         }
