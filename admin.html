@@ -4525,6 +4525,11 @@
               <span>การจัดการเครื่องมือแพทย์</span>
               <span id="badgeSettingsEquipCount" class="nav-count-badge" style="background: var(--royal-subtle); color: var(--royal-blue); margin-left: 4px;">0</span>
             </button>
+            <button type="button" id="tabBtn_settings_emp" onclick="switchSettingsTab('employees')" class="btn-tool" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 14px; font-weight: 600; flex: 1; min-width: 140px;">
+              <span class="material-icons-round" style="font-size: 18px;">badge</span>
+              <span>การจัดการรายชื่อพนักงาน</span>
+              <span id="badgeSettingsEmpCount" class="nav-count-badge" style="background: var(--royal-subtle); color: var(--royal-blue); margin-left: 4px;">0</span>
+            </button>
             <button type="button" id="tabBtn_settings_line" onclick="switchSettingsTab('line')" class="btn-tool" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 14px; font-weight: 600; flex: 1; min-width: 140px;">
               <span class="material-icons-round" style="font-size: 18px; color: #06c755;">chat</span>
               <span>ตั้งค่า LINE Developers</span>
@@ -5070,6 +5075,74 @@
               </div>
             </div>
           </div>
+
+          <!-- TAB 4: การจัดการรายชื่อพนักงาน -->
+          <div id="settingsPanelEmployees" style="display: none;">
+            <div class="content-panel" style="margin-bottom: 16px;">
+              <div class="panel-header" style="flex-wrap: wrap; gap: 10px;">
+                <div>
+                  <div class="panel-title" style="display: flex; align-items: center; gap: 8px;">
+                    <span class="material-icons-round" style="color: var(--royal-blue);">badge</span>
+                    <span>จัดการรายชื่อพนักงานโรงพยาบาลพิษณุเวช</span>
+                  </div>
+                  <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                    จัดการฐานข้อมูลรายชื่อและรหัสพนักงาน 6 หลัก สำหรับระบบเลือกชื่อผู้ตรวจเช็คความพร้อมใช้เครื่องมือแพทย์
+                  </div>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <button type="button" onclick="openAddEmployeeModal()" class="btn-tool btn-tool-primary" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px;">
+                    <span class="material-icons-round" style="font-size: 18px;">person_add</span>
+                    <span>เพิ่มพนักงานใหม่</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Filter / Search bar for employees (Single-Row Streamlined Filter Toolbar) -->
+              <div class="settings-filter-bar" style="padding: 10px 16px; background: #f8fafc; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: nowrap; overflow-x: auto;">
+                <div style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0;">
+                  <div class="search-input-box" style="flex: 1; min-width: 180px; max-width: 320px;">
+                    <span class="material-icons-round">search</span>
+                    <input type="text" id="empSearchInput" placeholder="ค้นหารหัส, ชื่อ-สกุล, ตำแหน่ง..." oninput="renderEmployeesSettingsTable()">
+                  </div>
+                  <div style="min-width: 160px; max-width: 220px;">
+                    <select id="empFilterDept" class="filter-input" style="width: 100%; height: 36px;" onchange="renderEmployeesSettingsTable()">
+                      <option value="">ทุกแผนก/สังกัด</option>
+                    </select>
+                  </div>
+                  <div style="min-width: 140px; max-width: 170px;">
+                    <select id="empFilterStatus" class="filter-input" style="width: 100%; height: 36px;" onchange="renderEmployeesSettingsTable()">
+                      <option value="all">สถานะทั้งหมด</option>
+                      <option value="active" selected>กำลังปฏิบัติงาน</option>
+                      <option value="inactive">ปิดการใช้งาน</option>
+                    </select>
+                  </div>
+                </div>
+                <div style="font-size: 12px; color: var(--text-muted); white-space: nowrap; flex-shrink: 0;" id="empSummaryCountText">
+                  แสดง 0 คน
+                </div>
+              </div>
+
+              <!-- Employees Table -->
+              <div class="table-responsive" style="overflow-x: auto;">
+                <table class="data-table-modern">
+                  <thead>
+                    <tr>
+                      <th style="width: 50px; text-align: center;">ลำดับ</th>
+                      <th style="width: 110px;">รหัสพนักงาน</th>
+                      <th>ชื่อ - นามสกุล</th>
+                      <th style="width: 180px;">แผนก / สังกัด</th>
+                      <th style="width: 180px;">ตำแหน่ง</th>
+                      <th style="width: 120px; text-align: center;">สถานะ</th>
+                      <th style="width: 110px; text-align: center;">จัดการ</th>
+                    </tr>
+                  </thead>
+                  <tbody id="employeesTableBody">
+                    <!-- Injected via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </section>
 
       </main>
@@ -5330,6 +5403,105 @@
     </div>
   </div>
 
+
+
+  <!-- Modal: เพิ่ม / แก้ไขพนักงาน -->
+  <div id="modalAddEditEmployee" class="modal-overlay hidden no-print" onclick="if(event.target === this) closeEmployeeModal()">
+    <div class="modal-box" style="max-width: 520px; text-align: left;">
+      <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 10px; margin-bottom: 14px;">
+        <div style="font-size: 15px; font-weight: 700; color: var(--royal-blue); display: flex; align-items: center; gap: 8px;">
+          <span class="material-icons-round" style="color: var(--royal-blue);">badge</span>
+          <span id="modalEmpTitle">เพิ่มพนักงานใหม่</span>
+        </div>
+        <button type="button" onclick="closeEmployeeModal()" style="border: none; background: transparent; cursor: pointer; color: var(--text-muted);"><span class="material-icons-round">close</span></button>
+      </div>
+
+      <form id="formAddEditEmployee" onsubmit="saveEmployeeSubmit(event)">
+        <input type="hidden" id="modalEmpMode" value="add">
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">
+              รหัสพนักงาน (6 หลัก) <span style="color: var(--red-abnormal);">*</span>
+            </label>
+            <input type="text" id="modalEmpId" class="filter-input" style="width: 100%; font-family: var(--font-mono); font-weight: 700; letter-spacing: 0.5px;" placeholder="เช่น 014125" maxlength="6" pattern="[0-9]{1,6}" required>
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;" id="modalEmpIdHint">
+              ระบบเติมเลข 0 ด้านหน้าครบ 6 หลักอัตโนมัติ
+            </div>
+          </div>
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">
+              คำนำหน้าชื่อ
+            </label>
+            <input type="text" id="modalEmpPrefix" class="filter-input" style="width: 100%;" placeholder="เช่น นาย, นาง, พว., นวก." list="prefixSuggestions">
+            <datalist id="prefixSuggestions">
+              <option value="นาย">
+              <option value="นาง">
+              <option value="นางสาว">
+              <option value="พว.">
+              <option value="นพ.">
+              <option value="พญ.">
+              <option value="ทพ.">
+              <option value="ภก.">
+              <option value="ภญ.">
+              <option value="นวก.">
+            </datalist>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">
+              ชื่อจริง <span style="color: var(--red-abnormal);">*</span>
+            </label>
+            <input type="text" id="modalEmpFirstName" class="filter-input" style="width: 100%; font-weight: 600;" placeholder="เช่น ศรายุทธ" required>
+          </div>
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">
+              นามสกุล
+            </label>
+            <input type="text" id="modalEmpLastName" class="filter-input" style="width: 100%;" placeholder="เช่น ดวงเจริญ">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">
+              แผนก / สังกัด
+            </label>
+            <select id="modalEmpDept" class="filter-input" style="width: 100%;">
+              <option value="">-- เลือกแผนก --</option>
+            </select>
+          </div>
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">
+              ตำแหน่ง
+            </label>
+            <input type="text" id="modalEmpPosition" class="filter-input" style="width: 100%;" placeholder="เช่น พยาบาลวิชาชีพ">
+          </div>
+        </div>
+
+        <div style="margin-bottom: 16px; padding: 10px 12px; background: #f8fafc; border-radius: 8px; border: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between;">
+          <div>
+            <div style="font-size: 13px; font-weight: 600; color: var(--text-main);">สถานะการปฏิบัติงาน</div>
+            <div style="font-size: 11px; color: var(--text-muted);">เปิดใช้งานเพื่อให้พนักงานสามารถถูกค้นหาและเลือกในแบบประเมินได้</div>
+          </div>
+          <label style="display: inline-flex; align-items: center; cursor: pointer; gap: 6px;">
+            <input type="checkbox" id="modalEmpIsActive" checked style="width: 18px; height: 18px; cursor: pointer;">
+            <span style="font-size: 13px; font-weight: 600; color: #15803d;">เปิดใช้งาน</span>
+          </label>
+        </div>
+
+        <div style="display: flex; gap: 8px; justify-content: flex-end; padding-top: 10px; border-top: 1px solid var(--border-subtle);">
+          <button type="button" onclick="closeEmployeeModal()" class="btn-tool">ยกเลิก</button>
+          <button type="submit" id="btnSaveEmployee" class="btn-tool btn-tool-primary" style="display: inline-flex; align-items: center; gap: 6px;">
+            <span class="material-icons-round" style="font-size: 16px;">save</span>
+            <span>บันทึกข้อมูลพนักงาน</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 
 
   <!-- PDF & ZIP Export Progress Modal -->
@@ -7589,13 +7761,16 @@
       var btnDept = document.getElementById('tabBtn_settings_dept');
       var btnEquip = document.getElementById('tabBtn_settings_equip');
       var btnLine = document.getElementById('tabBtn_settings_line');
+      var btnEmp = document.getElementById('tabBtn_settings_emp');
       var pnlDept = document.getElementById('settingsPanelDepartments');
       var pnlEquip = document.getElementById('settingsPanelEquipment');
       var pnlLine = document.getElementById('settingsPanelLine');
+      var pnlEmp = document.getElementById('settingsPanelEmployees');
 
       [
         { btn: btnDept, pnl: pnlDept, key: 'departments' },
         { btn: btnEquip, pnl: pnlEquip, key: 'equipment' },
+        { btn: btnEmp, pnl: pnlEmp, key: 'employees' },
         { btn: btnLine, pnl: pnlLine, key: 'line' }
       ].forEach(function (item) {
         if (!item.btn) return;
@@ -7618,6 +7793,9 @@
           listEl.style.display = 'block';
         }
         renderEquipmentSettingsTable();
+      } else if (tabKey === 'employees') {
+        populateEmployeeDeptFilter();
+        renderEmployeesSettingsTable();
       } else if (tabKey === 'line') {
         loadLineSettingsIntoAdmin();
       }
@@ -7626,6 +7804,7 @@
     function renderSettingsView() {
       var depts = (window.PPCH_STORE && window.PPCH_STORE.getDepartments) ? window.PPCH_STORE.getDepartments() : ((window.PPCH_CONFIG && window.PPCH_CONFIG.departments) || []);
       var equip = (window.PPCH_STORE && window.PPCH_STORE.getEquipment) ? window.PPCH_STORE.getEquipment() : [];
+      var employees = (window.PPCH_STORE && window.PPCH_STORE.getEmployees) ? window.PPCH_STORE.getEmployees() : [];
 
       var bDept = document.getElementById('badgeSettingsDeptCount');
       if (bDept) bDept.innerText = depts.length;
@@ -7633,10 +7812,17 @@
       var bEquip = document.getElementById('badgeSettingsEquipCount');
       if (bEquip) bEquip.innerText = equip.length;
 
+      var bEmp = document.getElementById('badgeSettingsEmpCount');
+      if (bEmp) bEmp.innerText = employees.length;
+
+      populateEmployeeDeptFilter();
+
       if (currentSettingsTab === 'departments') {
         renderDepartmentsTable();
       } else if (currentSettingsTab === 'equipment') {
         renderEquipmentSettingsTable();
+      } else if (currentSettingsTab === 'employees') {
+        renderEmployeesSettingsTable();
       } else if (currentSettingsTab === 'line') {
         loadLineSettingsIntoAdmin();
       }
@@ -9844,6 +10030,248 @@
       t.classList.add('show');
       setTimeout(function () { t.classList.remove('show'); }, 3000);
     }
-  </script>
+  
+    // ==================== EMPLOYEE MANAGEMENT (การจัดการรายชื่อพนักงาน) ====================
+    function populateEmployeeDeptFilter() {
+      var depts = (window.PPCH_STORE && window.PPCH_STORE.getDepartments) ? window.PPCH_STORE.getDepartments() : ((window.PPCH_CONFIG && window.PPCH_CONFIG.departments) || []);
+      
+      var filterSel = document.getElementById('empFilterDept');
+      if (filterSel) {
+        var currentVal = filterSel.value;
+        filterSel.innerHTML = '<option value="">ทุกแผนก/สังกัด</option>';
+        depts.forEach(function (d) {
+          var opt = document.createElement('option');
+          opt.value = d.name;
+          opt.textContent = d.name;
+          filterSel.appendChild(opt);
+        });
+        filterSel.value = currentVal;
+      }
+
+      var modalSel = document.getElementById('modalEmpDept');
+      if (modalSel) {
+        var currentModalVal = modalSel.value;
+        modalSel.innerHTML = '<option value="">-- เลือกแผนก --</option>';
+        depts.forEach(function (d) {
+          var opt = document.createElement('option');
+          opt.value = d.name;
+          opt.textContent = d.name;
+          modalSel.appendChild(opt);
+        });
+        modalSel.value = currentModalVal;
+      }
+    }
+
+    function renderEmployeesSettingsTable() {
+      var tbody = document.getElementById('employeesTableBody');
+      if (!tbody) return;
+
+      var employees = (window.PPCH_STORE && window.PPCH_STORE.getEmployees) ? window.PPCH_STORE.getEmployees() : [];
+      var search = (document.getElementById('empSearchInput') ? document.getElementById('empSearchInput').value : '').trim().toLowerCase();
+      var deptFilter = (document.getElementById('empFilterDept') ? document.getElementById('empFilterDept').value : '').trim();
+      var statusFilter = (document.getElementById('empFilterStatus') ? document.getElementById('empFilterStatus').value : 'active');
+
+      var filtered = employees.filter(function (emp) {
+        if (deptFilter && emp.department !== deptFilter) return false;
+        if (statusFilter === 'active' && emp.isActive === false) return false;
+        if (statusFilter === 'inactive' && emp.isActive !== false) return false;
+        if (!search) return true;
+
+        var fullStr = (emp.empId + ' ' + (emp.prefix || '') + ' ' + (emp.firstName || '') + ' ' + (emp.lastName || '') + ' ' + (emp.department || '') + ' ' + (emp.position || '')).toLowerCase();
+        return fullStr.indexOf(search) !== -1;
+      });
+
+      var countEl = document.getElementById('empSummaryCountText');
+      if (countEl) countEl.innerText = 'แสดง ' + filtered.length + ' จากทั้งหมด ' + employees.length + ' คน';
+
+      var bEmp = document.getElementById('badgeSettingsEmpCount');
+      if (bEmp) bEmp.innerText = employees.length;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr class="table-empty-row"><td colspan="7" style="text-align: center; padding: 30px; color: var(--text-muted); font-size: 13px;">ไม่พบข้อมูลพนักงานตามเงื่อนไขที่ค้นหา</td></tr>';
+        return;
+      }
+
+      var html = '';
+      filtered.forEach(function (emp, idx) {
+        var isActive = emp.isActive !== false;
+        
+        var statusBadge = isActive
+          ? '<span style="display: inline-flex; align-items: center; gap: 4px; background: #dcfce7; color: #15803d; padding: 2px 8px; border-radius: 999px; font-weight: 700; font-size: 11px;"><span class="material-icons-round" style="font-size: 13px;">check_circle</span> กำลังปฏิบัติงาน</span>'
+          : '<span style="display: inline-flex; align-items: center; gap: 4px; background: #fee2e2; color: #b91c1c; padding: 2px 8px; border-radius: 999px; font-weight: 700; font-size: 11px;"><span class="material-icons-round" style="font-size: 13px;">cancel</span> ปิดการใช้งาน</span>';
+
+        var empActionsHtml = '<div class="floating-action-wrapper" onmouseenter="handleFloatingEnter(this)" onmouseleave="handleFloatingLeave(this)">' +
+          '<button type="button" class="btn-floating-trigger" onclick="toggleFloatingMenu(this, event)" title="เมนูจัดการ">' +
+            '<span class="material-icons-round trigger-icon">more_horiz</span>' +
+            '<span class="floating-badge-count">3</span>' +
+          '</button>' +
+          '<div class="floating-action-tray">' +
+            '<button type="button" onclick="openEditEmployeeModal(\'' + escapeHtml(emp.empId) + '\')" class="btn-action-icon" style="background: #eff6ff; color: var(--royal-blue); border-color: #bfdbfe;" title="แก้ไขข้อมูลพนักงาน">' +
+              '<span class="material-icons-round">edit</span>' +
+            '</button>' +
+            '<button type="button" onclick="toggleEmployeeStatus(\'' + escapeHtml(emp.empId) + '\')" class="btn-action-icon" style="background: ' + (isActive ? '#fef3c7' : '#dcfce7') + '; color: ' + (isActive ? '#b45309' : '#15803d') + '; border-color: ' + (isActive ? '#fde68a' : '#bbf7d0') + ';" title="' + (isActive ? 'ปิดการใช้งาน' : 'เปิดการใช้งาน') + '">' +
+              '<span class="material-icons-round">' + (isActive ? 'toggle_off' : 'toggle_on') + '</span>' +
+            '</button>' +
+            '<button type="button" onclick="deleteEmployeeConfirm(\'' + escapeHtml(emp.empId) + '\')" class="btn-action-icon" style="background: #fef2f2; color: var(--red-abnormal); border-color: #fecaca;" title="ลบข้อมูลพนักงาน">' +
+              '<span class="material-icons-round">delete</span>' +
+            '</button>' +
+            '<button type="button" class="btn-floating-close" onclick="closeFloatingMenu(this, event)" title="หุบเก็บ">' +
+              '<span class="material-icons-round">close</span>' +
+            '</button>' +
+          '</div>' +
+        '</div>';
+
+        html += '<tr>' +
+          '<td data-label="ลำดับ" style="text-align: center; color: var(--text-muted); font-size: 12px;">' + (idx + 1) + '</td>' +
+          '<td data-label="รหัสพนักงาน"><span style="font-family: var(--font-mono); font-weight: 700; font-size: 12px; background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 4px;">' + escapeHtml(emp.empId) + '</span></td>' +
+          '<td data-label="ชื่อ - นามสกุล" style="font-weight: 600; color: var(--text-main); font-size: 13.5px;">' + escapeHtml(emp.fullName || ((emp.prefix || '') + (emp.firstName || '') + ' ' + (emp.lastName || '')).trim()) + '</td>' +
+          '<td data-label="แผนก / สังกัด" style="color: var(--text-body); font-size: 12.5px;">' + (escapeHtml(emp.department) || '<span style="color: var(--text-muted);">-</span>') + '</td>' +
+          '<td data-label="ตำแหน่ง" style="color: var(--text-body); font-size: 12.5px;">' + (escapeHtml(emp.position) || '<span style="color: var(--text-muted);">-</span>') + '</td>' +
+          '<td data-label="สถานะ" style="text-align: center;">' + statusBadge + '</td>' +
+          '<td data-label="จัดการ" style="text-align: center;">' + empActionsHtml + '</td>' +
+        '</tr>';
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    function openAddEmployeeModal() {
+      populateEmployeeDeptFilter();
+      document.getElementById('modalEmpMode').value = 'add';
+      document.getElementById('modalEmpTitle').innerText = 'เพิ่มพนักงานใหม่';
+      var idInput = document.getElementById('modalEmpId');
+      idInput.value = '';
+      idInput.disabled = false;
+      document.getElementById('modalEmpPrefix').value = '';
+      document.getElementById('modalEmpFirstName').value = '';
+      document.getElementById('modalEmpLastName').value = '';
+      document.getElementById('modalEmpDept').value = '';
+      document.getElementById('modalEmpPosition').value = '';
+      document.getElementById('modalEmpIsActive').checked = true;
+      document.getElementById('modalEmpIdHint').style.display = 'block';
+
+      document.getElementById('modalAddEditEmployee').classList.remove('hidden');
+      setTimeout(function () { idInput.focus(); }, 100);
+    }
+
+    function openEditEmployeeModal(empId) {
+      populateEmployeeDeptFilter();
+      var cleanId = String(empId).trim().padStart(6, '0');
+      var emp = (window.PPCH_STORE && window.PPCH_STORE.getEmployeeById) ? window.PPCH_STORE.getEmployeeById(cleanId) : null;
+      if (!emp) {
+        showToast('ไม่พบข้อมูลพนักงานรหัส ' + cleanId);
+        return;
+      }
+
+      document.getElementById('modalEmpMode').value = 'edit';
+      document.getElementById('modalEmpTitle').innerText = 'แก้ไขข้อมูลพนักงาน (' + cleanId + ')';
+      var idInput = document.getElementById('modalEmpId');
+      idInput.value = emp.empId;
+      idInput.disabled = true;
+      document.getElementById('modalEmpPrefix').value = emp.prefix || '';
+      document.getElementById('modalEmpFirstName').value = emp.firstName || '';
+      document.getElementById('modalEmpLastName').value = emp.lastName || '';
+      document.getElementById('modalEmpDept').value = emp.department || '';
+      document.getElementById('modalEmpPosition').value = emp.position || '';
+      document.getElementById('modalEmpIsActive').checked = emp.isActive !== false;
+      document.getElementById('modalEmpIdHint').style.display = 'none';
+
+      document.getElementById('modalAddEditEmployee').classList.remove('hidden');
+      setTimeout(function () { document.getElementById('modalEmpFirstName').focus(); }, 100);
+    }
+
+    function closeEmployeeModal() {
+      var m = document.getElementById('modalAddEditEmployee');
+      if (m) m.classList.add('hidden');
+    }
+
+    function saveEmployeeSubmit(event) {
+      if (event) event.preventDefault();
+      var mode = document.getElementById('modalEmpMode').value;
+      var rawId = document.getElementById('modalEmpId').value.trim();
+      var prefix = document.getElementById('modalEmpPrefix').value.trim();
+      var firstName = document.getElementById('modalEmpFirstName').value.trim();
+      var lastName = document.getElementById('modalEmpLastName').value.trim();
+      var dept = document.getElementById('modalEmpDept').value.trim();
+      var position = document.getElementById('modalEmpPosition').value.trim();
+      var isActive = document.getElementById('modalEmpIsActive').checked;
+
+      if (!rawId) {
+        showToast('กรุณาระบุรหัสพนักงาน');
+        document.getElementById('modalEmpId').focus();
+        return;
+      }
+      if (!firstName) {
+        showToast('กรุณาระบุชื่อจริง');
+        document.getElementById('modalEmpFirstName').focus();
+        return;
+      }
+
+      var cleanEmpId = rawId.padStart(6, '0');
+      var fullName = (prefix + firstName + (lastName ? ' ' + lastName : '')).trim();
+
+      var empData = {
+        empId: cleanEmpId,
+        prefix: prefix,
+        firstName: firstName,
+        lastName: lastName,
+        fullName: fullName,
+        department: dept,
+        position: position,
+        isActive: isActive
+      };
+
+      var btn = document.getElementById('btnSaveEmployee');
+      if (btn) btn.disabled = true;
+
+      window.PPCH_API.saveEmployee(empData, function (res) {
+        if (btn) btn.disabled = false;
+        if (res && res.success) {
+          closeEmployeeModal();
+          showToast('บันทึกข้อมูลพนักงาน "' + fullName + '" เรียบร้อย');
+          renderEmployeesSettingsTable();
+        } else {
+          showToast('เกิดข้อผิดพลาด: ' + (res ? res.message : 'ไม่สามารถบันทึกได้'));
+        }
+      });
+    }
+
+    function toggleEmployeeStatus(empId) {
+      var cleanId = String(empId).trim().padStart(6, '0');
+      var emp = (window.PPCH_STORE && window.PPCH_STORE.getEmployeeById) ? window.PPCH_STORE.getEmployeeById(cleanId) : null;
+      if (!emp) return;
+
+      var newStatus = !(emp.isActive !== false);
+      var empData = Object.assign({}, emp, { isActive: newStatus });
+
+      window.PPCH_API.saveEmployee(empData, function (res) {
+        if (res && res.success) {
+          showToast((newStatus ? 'เปิดการใช้งาน' : 'ปิดการใช้งาน') + ' พนักงาน "' + emp.fullName + '" แล้ว');
+          renderEmployeesSettingsTable();
+        } else {
+          showToast('เกิดข้อผิดพลาดในการปรับสถานะ: ' + (res ? res.message : ''));
+        }
+      });
+    }
+
+    function deleteEmployeeConfirm(empId) {
+      var cleanId = String(empId).trim().padStart(6, '0');
+      var emp = (window.PPCH_STORE && window.PPCH_STORE.getEmployeeById) ? window.PPCH_STORE.getEmployeeById(cleanId) : null;
+      var name = emp ? (emp.fullName || cleanId) : cleanId;
+
+      var promptMsg = 'ยืนยันการลบข้อมูลพนักงาน "' + name + '" (รหัส ' + cleanId + ') ออกจากระบบอย่างถาวรหรือไม่?';
+      if (!confirm(promptMsg)) return;
+
+      window.PPCH_API.deleteEmployee(cleanId, function (res) {
+        if (res && res.success) {
+          showToast('ลบข้อมูลพนักงาน "' + name + '" เรียบร้อย');
+          renderEmployeesSettingsTable();
+        } else {
+          showToast('เกิดข้อผิดพลาดในการลบ: ' + (res ? res.message : ''));
+        }
+      });
+    }
+
+</script>
 </body>
 </html>

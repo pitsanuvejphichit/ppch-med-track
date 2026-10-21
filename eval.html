@@ -652,6 +652,58 @@
       opacity: 1;
       pointer-events: auto;
     }
+    /* Evaluator Searchable Dropdown */
+    .evaluator-dropdown-tray {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      z-index: 1050;
+      background: #ffffff;
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+      max-height: 250px;
+      overflow-y: auto;
+      margin-top: 4px;
+    }
+    .eval-emp-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-bottom: 1px solid #f1f5f9;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .eval-emp-option:hover,
+    .eval-emp-option.active-item {
+      background: #f0f7ff;
+    }
+    .eval-emp-option:last-child {
+      border-bottom: none;
+    }
+    .eval-emp-id-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-right: 8px;
+      display: inline-block;
+    }
+    .eval-emp-name {
+      font-weight: 600;
+      color: var(--text-main);
+      font-size: 13.5px;
+    }
+    .eval-emp-dept {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
   </style>
 </head>
 <body>
@@ -935,9 +987,38 @@
             <textarea id="evalAbnormalNote" class="form-control-input" style="height: 60px; resize: vertical;" placeholder="ระบุรายละเอียดอาการผิดปกติ หรือข้อเสนอแนะ..."></textarea>
           </div>
 
-          <div style="margin-bottom: 16px;">
-            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">ชื่อ-นามสกุล ผู้ตรวจเช็คความพร้อมใช้ *</label>
-            <input type="text" id="evaluatorName" class="form-control-input" placeholder="เช่น พว.กมลทิพย์ ก้องเสียง" required>
+          <div style="margin-bottom: 16px; position: relative;" id="evaluatorFieldContainer">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <label for="evaluatorSearchInput" style="font-size: 12px; font-weight: 600; color: var(--text-body);">ผู้ตรวจเช็คความพร้อมใช้ (ค้นหาด้วยรหัส/ชื่อ) *</label>
+              <span id="evaluatorVerifiedBadge" style="display: none; font-size: 11px; color: #15803d; font-weight: 700; align-items: center; gap: 3px;">
+                <span class="material-icons-round" style="font-size: 14px;">verified</span> ยืนยันข้อมูลในระบบ
+              </span>
+            </div>
+
+            <!-- Autocomplete Combobox Wrapper -->
+            <div style="position: relative;">
+              <span class="material-icons-round" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 18px; color: var(--text-muted); pointer-events: none;">badge</span>
+              <input type="text" id="evaluatorSearchInput" class="form-control-input" 
+                     style="padding-left: 36px; padding-right: 36px; cursor: pointer;"
+                     placeholder="พิมพ์รหัสพนักงาน (เช่น 014125) หรือชื่อ-นามสกุล..." 
+                     autocomplete="off" 
+                     oninput="handleEvaluatorSearch(this.value)"
+                     onfocus="handleEvaluatorFocus()"
+                     onkeydown="handleEvaluatorKeyDown(event)" required>
+              
+              <button type="button" id="btnClearEvaluator" onclick="clearEvaluatorSelection()" 
+                      style="display: none; position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px;" 
+                      title="ล้างเพื่อค้นหาใหม่">
+                <span class="material-icons-round" style="font-size: 16px;">close</span>
+              </button>
+            </div>
+
+            <!-- Hidden values to preserve form integration -->
+            <input type="hidden" id="evaluatorName" value="">
+            <input type="hidden" id="evaluatorEmpId" value="">
+
+            <!-- Floating Suggestions Dropdown Tray -->
+            <div id="evaluatorDropdownTray" class="evaluator-dropdown-tray" style="display: none;"></div>
           </div>
 
           <button type="button" onclick="submitEvaluation()" id="btnSubmitEval" class="btn-submit-main">
@@ -995,6 +1076,165 @@
     var isUpsEnforced = false;
     var isUpsRuntimeValid = false;
     var isDeviceLockedForRepair = false;
+
+    // ==================== EVALUATOR AUTOCOMPLETE / SEARCHABLE DROPDOWN ====================
+    var activeEvaluatorIndex = -1;
+    var currentEvaluatorList = [];
+
+    function handleEvaluatorFocus() {
+      var input = document.getElementById('evaluatorSearchInput');
+      var val = input ? input.value.trim() : '';
+      handleEvaluatorSearch(val);
+    }
+
+    function handleEvaluatorSearch(query) {
+      var tray = document.getElementById('evaluatorDropdownTray');
+      var clearBtn = document.getElementById('btnClearEvaluator');
+      if (!tray) return;
+
+      var q = (query || '').toLowerCase().trim();
+      if (clearBtn) clearBtn.style.display = q ? 'block' : 'none';
+
+      var allEmps = (window.PPCH_STORE && window.PPCH_STORE.getActiveEmployees) ? window.PPCH_STORE.getActiveEmployees() : [];
+      if (allEmps.length === 0) {
+        allEmps = (window.PPCH_STORE && window.PPCH_STORE.getEmployees) ? window.PPCH_STORE.getEmployees() : [];
+      }
+
+      var filtered = [];
+      if (!q) {
+        filtered = allEmps.slice(0, 25);
+      } else {
+        filtered = allEmps.filter(function (emp) {
+          var idMatch = emp.empId && emp.empId.toLowerCase().indexOf(q) !== -1;
+          var nameMatch = emp.fullName && emp.fullName.toLowerCase().indexOf(q) !== -1;
+          var firstMatch = emp.firstName && emp.firstName.toLowerCase().indexOf(q) !== -1;
+          var lastMatch = emp.lastName && emp.lastName.toLowerCase().indexOf(q) !== -1;
+          var deptMatch = emp.department && emp.department.toLowerCase().indexOf(q) !== -1;
+          var posMatch = emp.position && emp.position.toLowerCase().indexOf(q) !== -1;
+          return idMatch || nameMatch || firstMatch || lastMatch || deptMatch || posMatch;
+        }).slice(0, 30);
+      }
+
+      currentEvaluatorList = filtered;
+      activeEvaluatorIndex = -1;
+
+      if (filtered.length === 0) {
+        tray.innerHTML = '<div style="padding: 14px; text-align: center; color: var(--text-muted); font-size: 13px;">' +
+          '<span class="material-icons-round" style="vertical-align: middle; margin-right: 4px; font-size: 18px;">search_off</span>' +
+          'ไม่พบรายชื่อพนักงานที่ตรงกับที่ค้นหา' +
+        '</div>';
+      } else {
+        var html = '';
+        filtered.forEach(function (emp, idx) {
+          var deptText = emp.department ? (emp.department + (emp.position ? ' • ' + emp.position : '')) : (emp.position || '');
+          html += '<div class="eval-emp-option" data-index="' + idx + '" onclick="selectEvaluator(\'' + emp.empId + '\')">' +
+            '<div style="flex: 1; min-width: 0;">' +
+              '<div><span class="eval-emp-id-badge">' + emp.empId + '</span><span class="eval-emp-name">' + emp.fullName + '</span></div>' +
+              (deptText ? '<div class="eval-emp-dept" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">' + deptText + '</div>' : '') +
+            '</div>' +
+            '<span class="material-icons-round" style="font-size: 16px; color: var(--text-light); margin-left: 8px;">arrow_forward_ios</span>' +
+          '</div>';
+        });
+        tray.innerHTML = html;
+      }
+      tray.style.display = 'block';
+    }
+
+    function selectEvaluator(empId) {
+      var emp = window.PPCH_STORE ? window.PPCH_STORE.getEmployeeById(empId) : null;
+      if (!emp && currentEvaluatorList) {
+        emp = currentEvaluatorList.find(function (e) { return e.empId === empId; });
+      }
+      if (!emp) return;
+
+      var sInput = document.getElementById('evaluatorSearchInput');
+      var hName = document.getElementById('evaluatorName');
+      var hId = document.getElementById('evaluatorEmpId');
+      var vBadge = document.getElementById('evaluatorVerifiedBadge');
+      var clearBtn = document.getElementById('btnClearEvaluator');
+      var tray = document.getElementById('evaluatorDropdownTray');
+
+      if (sInput) sInput.value = emp.fullName;
+      if (hName) hName.value = emp.fullName;
+      if (hId) hId.value = emp.empId;
+      if (vBadge) vBadge.style.display = 'inline-flex';
+      if (clearBtn) clearBtn.style.display = 'block';
+      if (tray) tray.style.display = 'none';
+    }
+
+    function clearEvaluatorSelection() {
+      var sInput = document.getElementById('evaluatorSearchInput');
+      var hName = document.getElementById('evaluatorName');
+      var hId = document.getElementById('evaluatorEmpId');
+      var vBadge = document.getElementById('evaluatorVerifiedBadge');
+      var clearBtn = document.getElementById('btnClearEvaluator');
+
+      if (sInput) {
+        sInput.value = '';
+        sInput.focus();
+      }
+      if (hName) hName.value = '';
+      if (hId) hId.value = '';
+      if (vBadge) vBadge.style.display = 'none';
+      if (clearBtn) clearBtn.style.display = 'none';
+
+      handleEvaluatorSearch('');
+    }
+
+    function handleEvaluatorKeyDown(e) {
+      var tray = document.getElementById('evaluatorDropdownTray');
+      if (!tray || tray.style.display === 'none') {
+        if (e.key === 'ArrowDown') {
+          handleEvaluatorFocus();
+          e.preventDefault();
+        }
+        return;
+      }
+
+      var items = tray.querySelectorAll('.eval-emp-option');
+      if (!items || items.length === 0) return;
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        activeEvaluatorIndex++;
+        if (activeEvaluatorIndex >= items.length) activeEvaluatorIndex = 0;
+        updateActiveEvaluatorItem(items);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        activeEvaluatorIndex--;
+        if (activeEvaluatorIndex < 0) activeEvaluatorIndex = items.length - 1;
+        updateActiveEvaluatorItem(items);
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (activeEvaluatorIndex >= 0 && activeEvaluatorIndex < currentEvaluatorList.length) {
+          selectEvaluator(currentEvaluatorList[activeEvaluatorIndex].empId);
+        } else if (currentEvaluatorList.length > 0) {
+          selectEvaluator(currentEvaluatorList[0].empId);
+        }
+      } else if (e.key === 'Escape') {
+        tray.style.display = 'none';
+      }
+    }
+
+    function updateActiveEvaluatorItem(items) {
+      items.forEach(function (el, idx) {
+        if (idx === activeEvaluatorIndex) {
+          el.classList.add('active-item');
+          el.scrollIntoView({ block: 'nearest' });
+        } else {
+          el.classList.remove('active-item');
+        }
+      });
+    }
+
+    // Dismiss tray when clicking outside
+    document.addEventListener('click', function (e) {
+      var container = document.getElementById('evaluatorFieldContainer');
+      var tray = document.getElementById('evaluatorDropdownTray');
+      if (container && tray && !container.contains(e.target)) {
+        tray.style.display = 'none';
+      }
+    });
 
     document.addEventListener('DOMContentLoaded', function () {
       try {
@@ -1596,10 +1836,20 @@
         return;
       }
 
-      var evaluator = document.getElementById('evaluatorName').value.trim();
+      var evaluator = (document.getElementById('evaluatorName') ? document.getElementById('evaluatorName').value : '').trim();
+      var evaluatorEmpId = (document.getElementById('evaluatorEmpId') ? document.getElementById('evaluatorEmpId').value : '').trim();
       if (!evaluator) {
-        showToast('กรุณาระบุชื่อ-นามสกุล ผู้ตรวจเช็คความพร้อมใช้');
-        document.getElementById('evaluatorName').focus();
+        var sInput = document.getElementById('evaluatorSearchInput');
+        if (sInput && sInput.value.trim()) {
+          evaluator = sInput.value.trim();
+        }
+      }
+      if (!evaluator) {
+        showToast('กรุณาเลือกรหัสหรือชื่อผู้ตรวจเช็คจากรายการ');
+        if (document.getElementById('evaluatorSearchInput')) {
+          document.getElementById('evaluatorSearchInput').focus();
+          handleEvaluatorFocus();
+        }
         return;
       }
 
@@ -1662,6 +1912,7 @@
         formId: currentDevice.formId,
         department: chosenDept,
         evaluatedBy: evaluator,
+        evaluatorEmpId: evaluatorEmpId,
         evaluatedAt: evalTimeStr,
         result: hasFail ? 'abnormal' : 'normal',
         abnormalNote: note,

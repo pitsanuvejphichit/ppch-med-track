@@ -36,7 +36,8 @@
     customForms: loadLocalCustomForms(),
     evaluations: [],
     transfers: [],
-    repairs: []
+    repairs: [],
+    employees: []
   };
 
   function notifyUpdated() {
@@ -112,6 +113,9 @@
         inMemoryData.repairs = cloudData.repairs;
       } else {
         inMemoryData.repairs = [];
+      }
+      if (Array.isArray(cloudData.employees)) {
+        inMemoryData.employees = cloudData.employees;
       }
       if (Array.isArray(cloudData.departments) && cloudData.departments.length > 0) {
         inMemoryData.departments = cloudData.departments;
@@ -595,6 +599,54 @@
         });
       }
       return list;
+    },
+
+    getEmployees: function () {
+      return inMemoryData.employees || [];
+    },
+
+    getActiveEmployees: function () {
+      return (inMemoryData.employees || []).filter(function (e) {
+        return e.isActive !== false;
+      });
+    },
+
+    getEmployeeById: function (empId) {
+      if (!empId) return null;
+      var cleanId = String(empId).trim().padStart(6, '0');
+      var list = inMemoryData.employees || [];
+      for (var i = 0; i < list.length; i++) {
+        if (list[i].empId === cleanId) return list[i];
+      }
+      return null;
+    },
+
+    saveEmployeeInMemory: function (emp) {
+      if (!emp || !emp.empId) return;
+      var cleanId = String(emp.empId).trim().padStart(6, '0');
+      emp.empId = cleanId;
+      var list = inMemoryData.employees || [];
+      var found = false;
+      for (var i = 0; i < list.length; i++) {
+        if (list[i].empId === cleanId) {
+          Object.assign(list[i], emp);
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        list.push(emp);
+      }
+      notifyUpdated();
+      return emp;
+    },
+
+    deleteEmployeeInMemory: function (empId) {
+      var cleanId = String(empId).trim().padStart(6, '0');
+      inMemoryData.employees = (inMemoryData.employees || []).filter(function (e) {
+        return e.empId !== cleanId;
+      });
+      notifyUpdated();
     }
   };
 })(window);

@@ -188,6 +188,22 @@
     };
   }
 
+  function mapEmployeeFromDb(r) {
+    if (!r) return null;
+    return {
+      empId: (r.emp_id || '').toString().padStart(6, '0'),
+      prefix: r.prefix || '',
+      firstName: r.first_name || '',
+      lastName: r.last_name || '',
+      fullName: r.full_name || ((r.prefix || '') + (r.first_name || '') + ' ' + (r.last_name || '')).trim(),
+      department: r.department || '',
+      position: r.position || '',
+      isActive: r.is_active !== false,
+      createdAt: r.created_at,
+      updatedAt: r.updated_at
+    };
+  }
+
   var PPCH_API = {
     isConfigured: function () {
       var conf = getSupabaseConfig();
@@ -212,8 +228,9 @@
       var pTransfers = supabaseFetch('transfers?select=*&order=created_at.desc&limit=1000');
       var pDepartments = supabaseFetch('departments?select=*&order=name.asc').catch(function () { return []; });
       var pCustomForms = supabaseFetch('custom_forms?select=*&order=created_at.asc').catch(function () { return []; });
+      var pEmployees = supabaseFetch('employees?select=*&order=emp_id.asc').catch(function () { return []; });
 
-      Promise.all([pEquipment, pEvaluations, pRepairs, pTransfers, pDepartments, pCustomForms])
+      Promise.all([pEquipment, pEvaluations, pRepairs, pTransfers, pDepartments, pCustomForms, pEmployees])
         .then(function (results) {
           var eqList = (results[0] || []).map(mapEquipmentFromDb);
           var evList = (results[1] || []).map(mapEvaluationFromDb);
@@ -221,6 +238,7 @@
           var trfList = (results[3] || []).map(mapTransferFromDb);
           var deptList = results[4] || [];
           var cfList = results[5] || [];
+          var empList = (results[6] || []).map(mapEmployeeFromDb);
 
           var responseData = {
             equipment: eqList,
@@ -228,7 +246,8 @@
             repairs: repList,
             transfers: trfList,
             departments: deptList,
-            customForms: cfList
+            customForms: cfList,
+            employees: empList
           };
 
           if (callback) {
@@ -911,6 +930,91 @@
     saveLineSettings: function (settings, callback) {
       var payload = Object.assign({ action: 'saveLineSettings' }, settings);
       this.postToGas(payload, callback);
+    },
+
+    // 11. Save Employee (Insert/Update in Supabase + Mirror to Memory & GAS)
+    saveEmployee: function (empData, callback) {
+      if (!empData || !empData.empId) {
+        if (callback) callback({ success: false, message: 'รหัสพนักงานไม่ถูกต้อง' });
+        return;
+      }
+      var cleanEmpId = String(empData.empId).trim().padStart(6, '0');
+      var prefix = (empData.prefix || '').trim();
+      var firstName = (empData.firstName || '').trim();
+      var lastName = (empData.lastName || '').trim();
+      var fullName = empData.fullName ? empData.fullName.trim() : (prefix + firstName + (lastName ? ' ' + lastName : '')).trim();
+      var dept = (empData.department || '').trim();
+      var pos = (empData.position || '').trim();
+      var isActive = empData.isActive !== false;
+
+      var dbRow = {
+        emp_id: cleanEmpId,
+        prefix: prefix,
+        first_name: firstName,
+        last_name: lastName,
+        full_name: fullName,
+        department: dept,
+        position: pos,
+        is_active: isActive,
+        updated_at: new Date().toISOString()
+      };
+
+      // Check if employee already exists in Supabase
+      supabaseFetch('employees?emp_id=eq.' + encodeURIComponent(cleanEmpId), { method: 'GET' })
+        .then(function (res) {
+          var exists = Array.isArray(res) && res.length > 0;
+          var fetchUrl = exists ? ('employees?emp_id=eq.' + encodeURIComponent(cleanEmpId)) : 'employees';
+          var method = exists ? 'PATCH' : 'POST';
+
+          return supabaseFetch(fetchUrl, {
+            method: method,
+            body: dbRow
+          });
+        })
+        .then(function () {
+          var mapped = mapEmployeeFromDb(dbRow);
+          if (window.PPCH_STORE && window.PPCH_STORE.saveEmployeeInMemory) {
+            window.PPCH_STORE.saveEmployeeInMemory(mapped);
+          }
+          if (callback) callback({ success: true, message: 'บันทึกข้อมูลพนักงานเรียบร้อย', employee: mapped });
+
+          // Background Google Sheets sync if configured
+          PPCH_API.postToGas({
+            action: 'saveEmployee',
+            employee: mapped
+          });
+        })
+        .catch(function (err) {
+          console.error('Supabase saveEmployee error:', err);
+          if (callback) callback({ success: false, message: 'บันทึกข้อมูลพนักงานไม่สำเร็จ: ' + err.message });
+        });
+    },
+
+    // 12. Delete Employee (Permanently from Supabase & Memory)
+    deleteEmployee: function (empId, callback) {
+      if (!empId) {
+        if (callback) callback({ success: false, message: 'รหัสพนักงานไม่ถูกต้อง' });
+        return;
+      }
+      var cleanEmpId = String(empId).trim().padStart(6, '0');
+      supabaseFetch('employees?emp_id=eq.' + encodeURIComponent(cleanEmpId), {
+        method: 'DELETE'
+      })
+      .then(function () {
+        if (window.PPCH_STORE && window.PPCH_STORE.deleteEmployeeInMemory) {
+          window.PPCH_STORE.deleteEmployeeInMemory(cleanEmpId);
+        }
+        if (callback) callback({ success: true, message: 'ลบข้อมูลพนักงานเรียบร้อย' });
+
+        PPCH_API.postToGas({
+          action: 'deleteEmployee',
+          empId: cleanEmpId
+        });
+      })
+      .catch(function (err) {
+        console.error('Supabase deleteEmployee error:', err);
+        if (callback) callback({ success: false, message: 'ลบข้อมูลพนักงานไม่สำเร็จ: ' + err.message });
+      });
     }
   };
 
