@@ -76,19 +76,24 @@
               item.lastEvaluatedAt = latestEv.evaluatedAt;
               item.lastEvaluatedBy = latestEv.evaluatedBy;
             }
-            if (item.status === 'ready' || latestEv.result === 'normal') {
-              item.status = 'ready';
-              item.repairStatus = 'ready';
-              item.abnormalReason = '';
-              item.allowUse = false;
+            if (latestEv.result === 'normal') {
+              if (item.status !== 'in_progress' && item.status !== 'conditional_ready' && item.status !== 'abnormal') {
+                item.status = 'ready';
+                item.repairStatus = 'ready';
+                item.abnormalReason = '';
+                item.allowUse = false;
+              }
             } else if (latestEv.result === 'abnormal') {
               if (item.allowUse || item.status === 'conditional_ready') {
                 item.status = 'conditional_ready';
                 item.allowUse = true;
+              } else if (item.status === 'in_progress' || item.repairStatus === 'in_progress') {
+                item.status = 'in_progress';
+                item.repairStatus = 'in_progress';
               } else {
                 item.status = 'abnormal';
+                item.repairStatus = 'reported';
               }
-              item.repairStatus = item.repairStatus || 'reported';
               item.abnormalReason = latestEv.abnormalNote || item.abnormalReason || 'พบข้อบกพร่องจากการตรวจเช็ค';
               item.repairReportedAt = item.repairReportedAt || latestEv.evaluatedAt;
               item.repairReportedBy = item.repairReportedBy || latestEv.evaluatedBy;

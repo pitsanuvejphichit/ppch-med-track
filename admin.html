@@ -5656,21 +5656,49 @@
 
       var condCount = 0;
       targetEquip.forEach(function (eq) {
+        var todayEv = todayEvalMap[eq.id] || todayEvalMap[eq.assetCode];
         var isConditional = (eq.status === 'conditional_ready' || eq.allowUse);
-        var isReady = (eq.status === 'ready' || isConditional || !eq.status);
-        if (isConditional) {
-          condCount++;
-          readyCount++;
-        } else if (eq.status === 'abnormal') {
-          abnormalCount++;
-        } else if (eq.status === 'in_progress') {
-          inProgressCount++;
+        var isUnderFix = (eq.status === 'in_progress' || eq.repairStatus === 'in_progress');
+        var isDefective = (eq.status === 'abnormal' || eq.repairStatus === 'reported');
+        var isReady = true;
+
+        if (todayEv) {
+          if (todayEv.result === 'normal') {
+            isReady = true;
+            readyCount++;
+          } else {
+            if (isConditional) {
+              isReady = true;
+              condCount++;
+              readyCount++;
+            } else if (isUnderFix) {
+              isReady = false;
+              inProgressCount++;
+            } else {
+              isReady = false;
+              abnormalCount++;
+            }
+          }
         } else {
-          readyCount++;
+          var isReportedBeforeOrToday = eq.repairReportedAt && (eq.repairReportedAt.slice(0, 10) <= todayStr);
+          if (isReportedBeforeOrToday && isConditional) {
+            isReady = true;
+            condCount++;
+            readyCount++;
+          } else if (isReportedBeforeOrToday && isUnderFix) {
+            isReady = false;
+            inProgressCount++;
+          } else if (isReportedBeforeOrToday && isDefective) {
+            isReady = false;
+            abnormalCount++;
+          } else {
+            isReady = true;
+            readyCount++;
+          }
         }
 
         var isHighRisk = (eq.riskLevel !== 'low');
-        var checkedToday = !!(todayEvalMap[eq.id] || todayEvalMap[eq.assetCode]);
+        var checkedToday = !!todayEv;
         var checkedMonth = !!(monthEvalMap[eq.id] || monthEvalMap[eq.assetCode]);
 
         if (isHighRisk) {
@@ -5694,8 +5722,27 @@
       });
 
       allEquipment.forEach(function (eq) {
+        var todayEv = todayEvalMap[eq.id] || todayEvalMap[eq.assetCode];
         var isConditional = (eq.status === 'conditional_ready' || eq.allowUse);
-        var isReady = (eq.status === 'ready' || isConditional || !eq.status);
+        var isUnderFix = (eq.status === 'in_progress' || eq.repairStatus === 'in_progress');
+        var isDefective = (eq.status === 'abnormal' || eq.repairStatus === 'reported');
+        var isReady = true;
+
+        if (todayEv) {
+          if (todayEv.result === 'normal') {
+            isReady = true;
+          } else {
+            isReady = isConditional;
+          }
+        } else {
+          var isReportedBeforeOrToday = eq.repairReportedAt && (eq.repairReportedAt.slice(0, 10) <= todayStr);
+          if (isReportedBeforeOrToday && (isUnderFix || isDefective)) {
+            isReady = false;
+          } else {
+            isReady = true;
+          }
+        }
+
         var deptId = eq.currentDept || 'er';
         if (!deptStats[deptId]) {
           deptStats[deptId] = {
@@ -5710,7 +5757,7 @@
         deptStats[deptId].total++;
         if (isReady) deptStats[deptId].ready++;
         else deptStats[deptId].defective++;
-        var checkedToday = !!(todayEvalMap[eq.id] || todayEvalMap[eq.assetCode]);
+        var checkedToday = !!todayEv;
         if (checkedToday) deptStats[deptId].checkedToday++;
       });
 
@@ -6510,41 +6557,54 @@
         var isCurrentlyDefective = (eq.status === 'abnormal' || eq.repairStatus === 'reported');
         var status = 'pending';
 
-        if (isConditionalReady) {
-          status = 'conditional_ready';
-          checkedCount++;
-          readyCount++;
-        } else if (isUnderFix) {
-          status = 'abnormal';
-          checkedCount++;
-          abnormalCount++;
-        } else if (isCurrentlyDefective) {
-          status = 'abnormal';
-          checkedCount++;
-          abnormalCount++;
-        } else if (eq.status === 'ready' && (ev || (eq.lastEvaluatedAt && eq.lastEvaluatedAt.indexOf(dateVal) === 0))) {
-          // Device has been tested or repaired ready today
-          status = 'ready';
-          checkedCount++;
-          readyCount++;
-        } else if (ev) {
-          status = (ev.result === 'normal') ? 'ready' : 'abnormal';
-          checkedCount++;
-          if (status === 'ready') readyCount++;
-          if (status === 'abnormal') abnormalCount++;
-        } else if (eq.lastEvaluatedAt && eq.lastEvaluatedAt.indexOf(dateVal) === 0) {
-          status = (eq.status === 'abnormal' || eq.lastEvaluatedStatus === 'abnormal') ? 'abnormal' : 'ready';
-          checkedCount++;
-          if (status === 'ready') readyCount++;
-          if (status === 'abnormal') abnormalCount++;
+        if (ev) {
+          if (ev.result === 'normal') {
+            status = 'ready';
+            checkedCount++;
+            readyCount++;
+          } else {
+            checkedCount++;
+            if (isConditionalReady) {
+              status = 'conditional_ready';
+              readyCount++;
+            } else if (isUnderFix) {
+              status = 'in_progress';
+              abnormalCount++;
+            } else {
+              status = 'abnormal';
+              abnormalCount++;
+            }
+          }
+        } else {
+          var isReportedBeforeOrOnDate = eq.repairReportedAt && (eq.repairReportedAt.slice(0, 10) <= dateVal);
+          if (isReportedBeforeOrOnDate && (isConditionalReady || isUnderFix || isCurrentlyDefective)) {
+            checkedCount++;
+            if (isConditionalReady) {
+              status = 'conditional_ready';
+              readyCount++;
+            } else if (isUnderFix) {
+              status = 'in_progress';
+              abnormalCount++;
+            } else {
+              status = 'abnormal';
+              abnormalCount++;
+            }
+          } else {
+            status = 'pending';
+          }
         }
 
         // Apply filters
         if (deptVal !== 'all' && eq.currentDept !== deptVal) return false;
         if (catVal !== 'all' && eq.formId !== catVal) return false;
-        if (statusVal !== 'all' && status !== statusVal) return false;
+        if (statusVal !== 'all') {
+          if (statusVal === 'ready' && (status !== 'ready' && status !== 'conditional_ready')) return false;
+          if (statusVal === 'conditional_ready' && status !== 'conditional_ready') return false;
+          if (statusVal === 'pending' && status !== 'pending') return false;
+          if (statusVal === 'abnormal' && (status !== 'abnormal' && status !== 'in_progress')) return false;
+        }
         if (activeKpiFilter === 'ready' && (status !== 'ready' && status !== 'conditional_ready')) return false;
-        if (activeKpiFilter === 'abnormal' && status !== 'abnormal') return false;
+        if (activeKpiFilter === 'abnormal' && (status !== 'abnormal' && status !== 'in_progress')) return false;
         if (activeKpiFilter === 'pending' && status !== 'pending') return false;
         if (activeKpiFilter === 'checked' && status === 'pending') return false;
 
@@ -6579,6 +6639,7 @@
       }
 
       var html = '';
+      var filterDateVal = document.getElementById('filterDate').value;
       equipmentList.forEach(function (eq) {
         var ev = evalMap[eq.id] || evalMap[eq.assetCode];
         var deptName = window.PPCH_STORE.getDepartmentName(eq.currentDept);
@@ -6587,63 +6648,53 @@
         var isUnderFix = (eq.status === 'in_progress' || eq.repairStatus === 'in_progress');
         var isDefective = (eq.status === 'abnormal' || eq.repairStatus === 'reported');
 
-        var filterDateVal = document.getElementById('filterDate').value;
-        var evaluatedToday = (ev && ev.evaluatedAt) || (eq.lastEvaluatedAt && eq.lastEvaluatedAt.indexOf(filterDateVal) === 0);
-
         var statusBadge = '';
         var actionBtns = [];
 
-        if (isConditional) {
-          var allowReasonTxt = eq.allowUseReason ? (' (' + eq.allowUseReason + ')') : '';
-          statusBadge = '<div class="status-symbol-btn symbol-conditional" title="อนุญาตให้ใช้งานต่อ' + allowReasonTxt + ' (โดย ' + (eq.allowUseBy || '-') + ')" onclick="openResolveModal(\'' + eq.id + '\')"><span class="material-icons-round">build_circle</span></div>';
-          actionBtns.push('<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-eval" title="เปิดหน้าตรวจเช็ค"><span class="material-icons-round">assignment</span></a>');
-          actionBtns.push('<button type="button" onclick="openResolveModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-resolve" title="บันทึกการแก้ไขเครื่องมือแพทย์เสร็จสิ้น (คืนสถานะพร้อมใช้)"><span class="material-icons-round">task_alt</span></button>');
-          actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="ดูรายการแจ้งซ่อม"><span class="material-icons-round">build</span></button>');
-          if (ev) {
-            actionBtns.push('<button type="button" onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-icon btn-icon-slip" title="ดูสลิปผลการตรวจ"><span class="material-icons-round">receipt_long</span></button>');
-          }
-        } else if (isUnderFix) {
-          statusBadge = '<div class="status-symbol-btn symbol-in-progress" title="กำลังซ่อมบำรุง / อยู่ระหว่างการแก้ไข" onclick="switchView(\'defective\')"><span class="material-icons-round">build</span></div>';
-          actionBtns.push('<button type="button" onclick="openResolveModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-resolve" title="บันทึกการแก้ไขเครื่องมือแพทย์เสร็จสิ้น (คืนสถานะพร้อมใช้)"><span class="material-icons-round">task_alt</span></button>');
-          if (!isConditional) {
-            actionBtns.push('<button type="button" onclick="openAllowUseModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-allow" title="อนุญาตให้ใช้งานต่อชั่วคราว แม้ไม่พร้อมใช้งาน"><span class="material-icons-round">published_with_changes</span></button>');
-          }
-          actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="ดูงานซ่อมบำรุง"><span class="material-icons-round">build</span></button>');
-        } else if (isDefective) {
-          var defectTxt = (eq.abnormalReason || (ev && ev.abnormalNote)) ? (' (' + (eq.abnormalReason || ev.abnormalNote) + ')') : '';
-          statusBadge = '<div class="status-symbol-btn symbol-abnormal" title="พบข้อบกพร่อง / ไม่พร้อมใช้งาน' + defectTxt + '" onclick="switchView(\'defective\')"><span class="material-icons-round">cancel</span></div>';
-          actionBtns.push('<button type="button" onclick="openAcknowledgeModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-repair" title="รับทราบข้อบกพร่องเพื่อเริ่มแก้ไข"><span class="material-icons-round">thumb_up</span></button>');
-          actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="จัดการงานซ่อมบำรุง"><span class="material-icons-round">build</span></button>');
-          if (ev) {
-            actionBtns.push('<button type="button" onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-icon btn-icon-slip" title="ดูสลิปผลการตรวจ"><span class="material-icons-round">receipt_long</span></button>');
-          }
-        } else if (eq.status === 'ready' && evaluatedToday) {
-          var wasRepaired = (ev && ev.result === 'abnormal') || (ev && ev.isRepairResolution) || (eq.repairReportedAt && eq.repairReportedAt.indexOf(filterDateVal) === 0);
-          if (wasRepaired) {
-            statusBadge = '<div class="status-symbol-btn symbol-ready-repaired" title="พร้อมใช้งาน (ซ่อมเสร็จแล้ว)"' + (ev ? (' onclick="openSlipModal(\'' + ev.id + '\')"') : '') + '><span class="material-icons-round">task_alt</span></div>';
-          } else {
-            statusBadge = '<div class="status-symbol-btn symbol-ready" title="พร้อมใช้งาน (ตรวจเรียบร้อยแล้ว)"' + (ev ? (' onclick="openSlipModal(\'' + ev.id + '\')"') : '') + '><span class="material-icons-round">check_circle</span></div>';
-          }
-          if (ev) {
-            actionBtns.push('<button type="button" onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-icon btn-icon-slip" title="ดูสลิปผลการตรวจ"><span class="material-icons-round">receipt_long</span></button>');
-          }
+        if (ev && ev.result === 'normal') {
+          statusBadge = '<div class="status-symbol-btn symbol-ready" title="พร้อมใช้งาน (ตรวจเรียบร้อยแล้ว)" onclick="openSlipModal(\'' + ev.id + '\')"><span class="material-icons-round">check_circle</span></div>';
+          actionBtns.push('<button type="button" onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-icon btn-icon-slip" title="ดูสลิปผลการตรวจ"><span class="material-icons-round">receipt_long</span></button>');
           actionBtns.push('<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-re-eval" title="เปิดหน้าตรวจเช็คซ้ำ"><span class="material-icons-round">refresh</span></a>');
-        } else if (ev) {
-          if (ev.result === 'normal') {
-            statusBadge = '<div class="status-symbol-btn symbol-ready" title="พร้อมใช้งาน (ตรวจเรียบร้อยแล้ว)" onclick="openSlipModal(\'' + ev.id + '\')"><span class="material-icons-round">check_circle</span></div>';
+        } else if (ev && ev.result === 'abnormal') {
+          if (isConditional) {
+            var allowReasonTxt = eq.allowUseReason ? (' (' + eq.allowUseReason + ')') : '';
+            statusBadge = '<div class="status-symbol-btn symbol-conditional" title="อนุญาตให้ใช้งานต่อ' + allowReasonTxt + ' (โดย ' + (eq.allowUseBy || '-') + ')" onclick="openResolveModal(\'' + eq.id + '\')"><span class="material-icons-round">build_circle</span></div>';
+            actionBtns.push('<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-eval" title="เปิดหน้าตรวจเช็ค"><span class="material-icons-round">assignment</span></a>');
+            actionBtns.push('<button type="button" onclick="openResolveModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-resolve" title="บันทึกการแก้ไขเครื่องมือแพทย์เสร็จสิ้น (คืนสถานะพร้อมใช้)"><span class="material-icons-round">task_alt</span></button>');
+            actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="ดูรายการแจ้งซ่อม"><span class="material-icons-round">build</span></button>');
             actionBtns.push('<button type="button" onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-icon btn-icon-slip" title="ดูสลิปผลการตรวจ"><span class="material-icons-round">receipt_long</span></button>');
-            actionBtns.push('<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-re-eval" title="เปิดหน้าตรวจเช็คซ้ำ"><span class="material-icons-round">refresh</span></a>');
+          } else if (isUnderFix) {
+            statusBadge = '<div class="status-symbol-btn symbol-in-progress" title="กำลังดำเนินการแก้ไข / ซ่อมบำรุง" onclick="switchView(\'defective\')"><span class="material-icons-round">build</span></div>';
+            actionBtns.push('<button type="button" onclick="openResolveModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-resolve" title="บันทึกการแก้ไขเครื่องมือแพทย์เสร็จสิ้น (คืนสถานะพร้อมใช้)"><span class="material-icons-round">task_alt</span></button>');
+            actionBtns.push('<button type="button" onclick="openAllowUseModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-allow" title="อนุญาตให้ใช้งานต่อชั่วคราว แม้ไม่พร้อมใช้งาน"><span class="material-icons-round">published_with_changes</span></button>');
+            actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="ดูงานซ่อมบำรุง"><span class="material-icons-round">build</span></button>');
+            actionBtns.push('<button type="button" onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-icon btn-icon-slip" title="ดูสลิปผลการตรวจ"><span class="material-icons-round">receipt_long</span></button>');
           } else {
-            statusBadge = '<div class="status-symbol-btn symbol-abnormal" title="พบข้อบกพร่อง: ' + (ev.abnormalNote || '') + '" onclick="switchView(\'defective\')"><span class="material-icons-round">cancel</span></div>';
+            var defectTxt = (eq.abnormalReason || ev.abnormalNote) ? (' (' + (eq.abnormalReason || ev.abnormalNote) + ')') : '';
+            statusBadge = '<div class="status-symbol-btn symbol-abnormal" title="พบข้อบกพร่อง (รอรับทราบ)' + defectTxt + '" onclick="openAcknowledgeModal(\'' + eq.id + '\')"><span class="material-icons-round">cancel</span></div>';
+            actionBtns.push('<button type="button" onclick="openAcknowledgeModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-repair" title="รับทราบข้อบกพร่องเพื่อเริ่มแก้ไข"><span class="material-icons-round">thumb_up</span></button>');
             actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="จัดการงานซ่อมบำรุง"><span class="material-icons-round">build</span></button>');
             actionBtns.push('<button type="button" onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-icon btn-icon-slip" title="ดูสลิปผลการตรวจ"><span class="material-icons-round">receipt_long</span></button>');
           }
-        } else if (evaluatedToday) {
-          statusBadge = '<div class="status-symbol-btn symbol-ready" title="พร้อมใช้งาน"><span class="material-icons-round">check_circle</span></div>';
-          actionBtns.push('<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-re-eval" title="เปิดหน้าตรวจเช็คซ้ำ"><span class="material-icons-round">refresh</span></a>');
         } else {
-          statusBadge = '<div class="status-symbol-btn symbol-pending" title="รอตรวจวันนี้" onclick="location.href=\'eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '\'"><span class="material-icons-round">schedule</span></div>';
-          actionBtns.push('<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-eval" title="เปิดหน้าตรวจเช็ค"><span class="material-icons-round">assignment</span></a>');
+          var isReportedBeforeOrOnDate = eq.repairReportedAt && (eq.repairReportedAt.slice(0, 10) <= filterDateVal);
+          if (isReportedBeforeOrOnDate && isConditional) {
+            statusBadge = '<div class="status-symbol-btn symbol-conditional" title="อนุญาตให้ใช้งานต่อ" onclick="openResolveModal(\'' + eq.id + '\')"><span class="material-icons-round">build_circle</span></div>';
+            actionBtns.push('<button type="button" onclick="openResolveModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-resolve" title="บันทึกการแก้ไข"><span class="material-icons-round">task_alt</span></button>');
+            actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="ดูรายการแจ้งซ่อม"><span class="material-icons-round">build</span></button>');
+          } else if (isReportedBeforeOrOnDate && isUnderFix) {
+            statusBadge = '<div class="status-symbol-btn symbol-in-progress" title="กำลังดำเนินการแก้ไข" onclick="switchView(\'defective\')"><span class="material-icons-round">build</span></div>';
+            actionBtns.push('<button type="button" onclick="openResolveModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-resolve" title="บันทึกการแก้ไข"><span class="material-icons-round">task_alt</span></button>');
+            actionBtns.push('<button type="button" onclick="openAllowUseModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-allow" title="อนุญาตให้ใช้งานต่อ"><span class="material-icons-round">published_with_changes</span></button>');
+            actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="ดูงานซ่อมบำรุง"><span class="material-icons-round">build</span></button>');
+          } else if (isReportedBeforeOrOnDate && isDefective) {
+            statusBadge = '<div class="status-symbol-btn symbol-abnormal" title="พบข้อบกพร่อง (รอรับทราบ)" onclick="openAcknowledgeModal(\'' + eq.id + '\')"><span class="material-icons-round">cancel</span></div>';
+            actionBtns.push('<button type="button" onclick="openAcknowledgeModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-repair" title="รับทราบข้อบกพร่อง"><span class="material-icons-round">thumb_up</span></button>');
+            actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="จัดการงานซ่อมบำรุง"><span class="material-icons-round">build</span></button>');
+          } else {
+            statusBadge = '<div class="status-symbol-btn symbol-pending" title="ยังไม่ได้เช็ค / รอตรวจ" onclick="location.href=\'eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '\'"><span class="material-icons-round">schedule</span></div>';
+            actionBtns.push('<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-eval" title="เปิดหน้าตรวจเช็ค"><span class="material-icons-round">assignment</span></a>');
+          }
         }
 
         var actionsHtml = '';
