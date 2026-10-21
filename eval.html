@@ -865,11 +865,20 @@
         </div>
       </div>
       <div class="eval-card-body">
-        <div style="margin-bottom: 12px;">
-          <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">เลือกเครื่องมือแพทย์ที่ต้องการตรวจเช็ค *</label>
-          <select id="evalDeviceSelect" class="form-control-select" onchange="onDeviceSelected()">
-            <option value="">-- กรุณาเลือกเครื่องมือแพทย์ --</option>
-          </select>
+        <!-- 2-Step Cascade Equipment Selection -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; margin-bottom: 12px;">
+          <div>
+            <label for="evalDeviceTypeSelect" style="display: block; font-size: 12px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">1. เลือกชื่อเครื่องมือแพทย์ *</label>
+            <select id="evalDeviceTypeSelect" class="form-control-select" onchange="onDeviceTypeChanged()">
+              <option value="">-- กรุณาเลือกชื่อเครื่องมือแพทย์ --</option>
+            </select>
+          </div>
+          <div>
+            <label for="evalDeviceSelect" style="display: block; font-size: 12px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">2. เลือกรหัสเครื่อง / ครุภัณฑ์ *</label>
+            <select id="evalDeviceSelect" class="form-control-select" onchange="onDeviceSelected()">
+              <option value="">-- เลือกรหัสเครื่อง / ครุภัณฑ์ --</option>
+            </select>
+          </div>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px;">
@@ -1406,6 +1415,7 @@
       }
 
       function setupDropdownAndDevice() {
+        var typeSelect = document.getElementById('evalDeviceTypeSelect');
         var select = document.getElementById('evalDeviceSelect');
         var deptSelect = document.getElementById('evalDeptSelect');
         var allEq = (window.PPCH_STORE && window.PPCH_STORE.getEquipment ? window.PPCH_STORE.getEquipment() : []) || [];
@@ -1420,29 +1430,50 @@
           });
         }
 
-        if (select) {
-          select.innerHTML = '<option value="">-- กรุณาเลือกเครื่องมือแพทย์ --</option>';
-          allEq.forEach(function (eq) {
-            var deptName = window.PPCH_STORE ? window.PPCH_STORE.getDepartmentName(eq.currentDept) : eq.currentDept;
+        // 1. Group distinct equipment types / names
+        var distinctNames = [];
+        var nameMap = {};
+        allEq.forEach(function (eq) {
+          if (eq.name && !nameMap[eq.name]) {
+            nameMap[eq.name] = true;
+            distinctNames.push(eq.name);
+          }
+        });
+        distinctNames.sort(function (a, b) {
+          return a.localeCompare(b, 'th');
+        });
+
+        if (typeSelect) {
+          typeSelect.innerHTML = '<option value="">-- กรุณาเลือกชื่อเครื่องมือแพทย์ --</option>';
+          distinctNames.forEach(function (name) {
             var opt = document.createElement('option');
-            opt.value = eq.id;
-            var statusTag = '';
-            if (eq.status === 'abnormal' || eq.status === 'in_progress') {
-              statusTag = eq.status === 'in_progress' ? ' [🔧 กำลังซ่อม]' : ' [⛔ มีข้อบกพร่อง]';
-            }
-            opt.innerText = eq.assetCode + ' - ' + eq.name + ' [' + deptName + ']' + statusTag;
-            if (preselectedDeviceId && (eq.id === preselectedDeviceId || eq.assetCode === preselectedDeviceId)) {
-              opt.selected = true;
-            }
-            select.appendChild(opt);
+            opt.value = name;
+            opt.innerText = name;
+            typeSelect.appendChild(opt);
           });
         }
 
-        if (select && select.value) {
-          onDeviceSelected();
-        } else if (select && allEq.length > 0) {
-          select.value = allEq[0].id;
-          onDeviceSelected();
+        // 2. Select initial device (from query param or default to first device)
+        var targetEq = null;
+        if (preselectedDeviceId) {
+          targetEq = allEq.find(function (eq) {
+            return eq.id === preselectedDeviceId || eq.assetCode === preselectedDeviceId;
+          });
+        } else if (preselectedFormId) {
+          targetEq = allEq.find(function (eq) {
+            return eq.formId === preselectedFormId;
+          });
+        }
+
+        if (!targetEq && allEq.length > 0) {
+          targetEq = allEq[0];
+        }
+
+        if (targetEq && typeSelect) {
+          typeSelect.value = targetEq.name;
+          onDeviceTypeChanged(targetEq.id);
+        } else {
+          onDeviceTypeChanged();
         }
 
         updateUpsMode();
@@ -1551,6 +1582,45 @@
       }
     }
 
+    function onDeviceTypeChanged(preferredDeviceId) {
+      var typeSelect = document.getElementById('evalDeviceTypeSelect');
+      var select = document.getElementById('evalDeviceSelect');
+      if (!select) return;
+
+      var selectedName = typeSelect ? typeSelect.value : '';
+      var allEq = (window.PPCH_STORE && window.PPCH_STORE.getEquipment ? window.PPCH_STORE.getEquipment() : []) || [];
+      var filteredEq = selectedName ? allEq.filter(function (eq) { return eq.name === selectedName; }) : [];
+
+      select.innerHTML = '';
+      if (filteredEq.length === 0) {
+        select.innerHTML = '<option value="">-- กรุณาเลือกชื่อเครื่องมือก่อน --</option>';
+        onDeviceSelected();
+        return;
+      }
+
+      select.innerHTML = '<option value="">-- กรุณาเลือกรหัสเครื่อง / ครุภัณฑ์ --</option>';
+      filteredEq.forEach(function (eq) {
+        var deptName = window.PPCH_STORE ? window.PPCH_STORE.getDepartmentName(eq.currentDept) : eq.currentDept;
+        var opt = document.createElement('option');
+        opt.value = eq.id;
+        var statusTag = '';
+        if (eq.status === 'abnormal' || eq.status === 'in_progress') {
+          statusTag = eq.status === 'in_progress' ? ' [🔧 กำลังซ่อม]' : ' [⛔ มีข้อบกพร่อง]';
+        }
+        opt.innerText = eq.assetCode + ' [' + deptName + ']' + statusTag;
+        if (preferredDeviceId && (eq.id === preferredDeviceId || eq.assetCode === preferredDeviceId)) {
+          opt.selected = true;
+        }
+        select.appendChild(opt);
+      });
+
+      if (!select.value && filteredEq.length > 0) {
+        select.value = filteredEq[0].id;
+      }
+
+      onDeviceSelected();
+    }
+
     function onDeviceSelected() {
       var devId = document.getElementById('evalDeviceSelect').value;
       var riskPill = document.getElementById('badgeRiskPill');
@@ -1564,6 +1634,12 @@
 
       currentDevice = window.PPCH_STORE.getEquipmentById(devId);
       if (!currentDevice) return;
+
+      // Sync type select if needed
+      var typeSel = document.getElementById('evalDeviceTypeSelect');
+      if (typeSel && currentDevice.name && typeSel.value !== currentDevice.name) {
+        typeSel.value = currentDevice.name;
+      }
 
       currentForm = window.PPCH_STORE.getFormById(currentDevice.formId);
       if (!currentForm) currentForm = (window.PPCH_CONFIG.forms || [])[0];

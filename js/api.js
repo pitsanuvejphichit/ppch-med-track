@@ -713,9 +713,8 @@
       }).then(function (res) {
         if (callback) callback({ success: true, data: formObj });
       }).catch(function (err) {
-        console.warn('Supabase createCustomForm error:', err);
-        // Fallback to local success so UI still continues seamlessly
-        if (callback) callback({ success: true, data: formObj, warning: err.message });
+        console.error('Supabase createCustomForm error:', err);
+        if (callback) callback({ success: false, error: err, message: 'บันทึกแบบฟอร์มลงฐานข้อมูล Supabase ไม่สำเร็จ: ' + (err.message || err) });
       });
     },
 

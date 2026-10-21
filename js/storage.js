@@ -9,24 +9,19 @@
     if (window.PPCH_CONFIG && window.PPCH_CONFIG.storageKey) {
       localStorage.removeItem(window.PPCH_CONFIG.storageKey);
     }
+    localStorage.removeItem('ppch_custom_forms_v1');
     localStorage.removeItem('ppch_medical_equipment_data_v2');
     localStorage.removeItem('ppch_med_track_v1');
     localStorage.removeItem('ppch_med_gas_url');
   } catch (e) {}
 
+  // Pure In-Memory Custom Forms (Strict Rule 4: ZERO localStorage for system business data)
   function loadLocalCustomForms() {
-    try {
-      var raw = localStorage.getItem('ppch_custom_forms_v1');
-      return raw ? JSON.parse(raw) : [];
-    } catch (e) {
-      return [];
-    }
+    return [];
   }
 
   function saveLocalCustomForms(forms) {
-    try {
-      localStorage.setItem('ppch_custom_forms_v1', JSON.stringify(forms));
-    } catch (e) {}
+    // Pure In-Memory: Persistent storage is handled directly via Supabase PostgreSQL & Google Sheets
   }
 
   // Pure in-memory state for current browser session (Populated directly from Google Sheets / Supabase)
