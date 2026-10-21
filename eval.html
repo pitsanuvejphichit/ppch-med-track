@@ -675,6 +675,7 @@
       border-bottom: 1px solid #f1f5f9;
       cursor: pointer;
       transition: background 0.15s ease;
+      gap: 12px;
     }
     .eval-emp-option:hover,
     .eval-emp-option.active-item {
@@ -683,26 +684,32 @@
     .eval-emp-option:last-child {
       border-bottom: none;
     }
+    .eval-emp-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 0;
+    }
     .eval-emp-id-badge {
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 700;
       background: #e0f2fe;
       color: #0369a1;
-      padding: 2px 6px;
-      border-radius: 4px;
-      margin-right: 8px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+      flex-shrink: 0;
       display: inline-block;
     }
     .eval-emp-name {
       font-weight: 600;
       color: var(--text-main);
       font-size: 13.5px;
-    }
-    .eval-emp-dept {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   </style>
 </head>
@@ -1077,6 +1084,16 @@
     var isUpsRuntimeValid = false;
     var isDeviceLockedForRepair = false;
 
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
     // ==================== EVALUATOR AUTOCOMPLETE / SEARCHABLE DROPDOWN ====================
     var activeEvaluatorIndex = -1;
     var currentEvaluatorList = [];
@@ -1084,7 +1101,9 @@
     function handleEvaluatorFocus() {
       var input = document.getElementById('evaluatorSearchInput');
       var val = input ? input.value.trim() : '';
-      handleEvaluatorSearch(val);
+      if (val.length > 0) {
+        handleEvaluatorSearch(val);
+      }
     }
 
     function handleEvaluatorSearch(query) {
@@ -1095,25 +1114,27 @@
       var q = (query || '').toLowerCase().trim();
       if (clearBtn) clearBtn.style.display = q ? 'block' : 'none';
 
+      // DO NOT show dropdown if empty query! User must type at least 1 character.
+      if (!q) {
+        tray.style.display = 'none';
+        tray.innerHTML = '';
+        currentEvaluatorList = [];
+        activeEvaluatorIndex = -1;
+        return;
+      }
+
       var allEmps = (window.PPCH_STORE && window.PPCH_STORE.getActiveEmployees) ? window.PPCH_STORE.getActiveEmployees() : [];
       if (allEmps.length === 0) {
         allEmps = (window.PPCH_STORE && window.PPCH_STORE.getEmployees) ? window.PPCH_STORE.getEmployees() : [];
       }
 
-      var filtered = [];
-      if (!q) {
-        filtered = allEmps.slice(0, 25);
-      } else {
-        filtered = allEmps.filter(function (emp) {
-          var idMatch = emp.empId && emp.empId.toLowerCase().indexOf(q) !== -1;
-          var nameMatch = emp.fullName && emp.fullName.toLowerCase().indexOf(q) !== -1;
-          var firstMatch = emp.firstName && emp.firstName.toLowerCase().indexOf(q) !== -1;
-          var lastMatch = emp.lastName && emp.lastName.toLowerCase().indexOf(q) !== -1;
-          var deptMatch = emp.department && emp.department.toLowerCase().indexOf(q) !== -1;
-          var posMatch = emp.position && emp.position.toLowerCase().indexOf(q) !== -1;
-          return idMatch || nameMatch || firstMatch || lastMatch || deptMatch || posMatch;
-        }).slice(0, 30);
-      }
+      var filtered = allEmps.filter(function (emp) {
+        var idMatch = emp.empId && emp.empId.toLowerCase().indexOf(q) !== -1;
+        var nameMatch = emp.fullName && emp.fullName.toLowerCase().indexOf(q) !== -1;
+        var firstMatch = emp.firstName && emp.firstName.toLowerCase().indexOf(q) !== -1;
+        var lastMatch = emp.lastName && emp.lastName.toLowerCase().indexOf(q) !== -1;
+        return idMatch || nameMatch || firstMatch || lastMatch;
+      }).slice(0, 30);
 
       currentEvaluatorList = filtered;
       activeEvaluatorIndex = -1;
@@ -1121,18 +1142,17 @@
       if (filtered.length === 0) {
         tray.innerHTML = '<div style="padding: 14px; text-align: center; color: var(--text-muted); font-size: 13px;">' +
           '<span class="material-icons-round" style="vertical-align: middle; margin-right: 4px; font-size: 18px;">search_off</span>' +
-          'ไม่พบรายชื่อพนักงานที่ตรงกับที่ค้นหา' +
+          'ไม่พบรายชื่อพนักงานที่ตรงกับ "' + escapeHtml(query) + '"' +
         '</div>';
       } else {
         var html = '';
         filtered.forEach(function (emp, idx) {
-          var deptText = emp.department ? (emp.department + (emp.position ? ' • ' + emp.position : '')) : (emp.position || '');
           html += '<div class="eval-emp-option" data-index="' + idx + '" onclick="selectEvaluator(\'' + emp.empId + '\')">' +
-            '<div style="flex: 1; min-width: 0;">' +
-              '<div><span class="eval-emp-id-badge">' + emp.empId + '</span><span class="eval-emp-name">' + emp.fullName + '</span></div>' +
-              (deptText ? '<div class="eval-emp-dept" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">' + deptText + '</div>' : '') +
+            '<div class="eval-emp-info">' +
+              '<span class="eval-emp-id-badge">' + escapeHtml(emp.empId) + '</span>' +
+              '<span class="eval-emp-name">' + escapeHtml(emp.fullName) + '</span>' +
             '</div>' +
-            '<span class="material-icons-round" style="font-size: 16px; color: var(--text-light); margin-left: 8px;">arrow_forward_ios</span>' +
+            '<span class="material-icons-round" style="font-size: 18px; color: #0284c7; flex-shrink: 0;">touch_app</span>' +
           '</div>';
         });
         tray.innerHTML = html;
@@ -1168,6 +1188,7 @@
       var hId = document.getElementById('evaluatorEmpId');
       var vBadge = document.getElementById('evaluatorVerifiedBadge');
       var clearBtn = document.getElementById('btnClearEvaluator');
+      var tray = document.getElementById('evaluatorDropdownTray');
 
       if (sInput) {
         sInput.value = '';
@@ -1177,15 +1198,20 @@
       if (hId) hId.value = '';
       if (vBadge) vBadge.style.display = 'none';
       if (clearBtn) clearBtn.style.display = 'none';
-
-      handleEvaluatorSearch('');
+      if (tray) {
+        tray.style.display = 'none';
+        tray.innerHTML = '';
+      }
+      currentEvaluatorList = [];
+      activeEvaluatorIndex = -1;
     }
 
     function handleEvaluatorKeyDown(e) {
       var tray = document.getElementById('evaluatorDropdownTray');
+      var input = document.getElementById('evaluatorSearchInput');
       if (!tray || tray.style.display === 'none') {
-        if (e.key === 'ArrowDown') {
-          handleEvaluatorFocus();
+        if (e.key === 'ArrowDown' && input && input.value.trim().length > 0) {
+          handleEvaluatorSearch(input.value.trim());
           e.preventDefault();
         }
         return;
