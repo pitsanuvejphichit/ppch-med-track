@@ -7742,8 +7742,38 @@
         '</div>';
       } else if (formItems.length > 0) {
         var rowsHtml = '';
-        formItems.forEach(function (qText, idx) {
-          var val = checklist[idx] !== undefined ? checklist[idx] : (checklist[String(idx)] !== undefined ? checklist[String(idx)] : checklist[qText]);
+        formItems.forEach(function (qItem, idx) {
+          var qText = (typeof qItem === 'string') ? qItem : (qItem.text || qItem.title || qItem.label || ('ข้อที่ ' + (idx + 1)));
+
+          // Check value with all index styles: 0-indexed, 1-indexed, string, 'q1' style, and full text
+          var val = undefined;
+          if (checklist[idx] !== undefined) val = checklist[idx];
+          else if (checklist[String(idx)] !== undefined) val = checklist[String(idx)];
+          else if (checklist[idx + 1] !== undefined) val = checklist[idx + 1];
+          else if (checklist[String(idx + 1)] !== undefined) val = checklist[String(idx + 1)];
+          else if (checklist['q' + (idx + 1)] !== undefined) val = checklist['q' + (idx + 1)];
+          else if (checklist['q' + idx] !== undefined) val = checklist['q' + idx];
+          else if (checklist[qText] !== undefined) val = checklist[qText];
+
+          // If evaluation result is normal/ready, all items passed
+          if (val === undefined && (ev.result === 'normal' || ev.result === 'ready')) {
+            val = 'pass';
+          } else if (val === undefined && ev.result === 'abnormal') {
+            // Check if any other item already failed
+            var hasExplicitFail = Object.values(checklist).some(function (v) { return v === 'fail' || v === 'abnormal' || v === false; });
+            if (hasExplicitFail) {
+              val = 'pass';
+            } else {
+              var noteLower = (ev.abnormalNote || '').toLowerCase();
+              var qLower = qText.toLowerCase();
+              if (noteLower && (qLower.indexOf(noteLower) >= 0 || noteLower.indexOf(qLower.slice(0, 10)) >= 0) || idx === 0) {
+                val = 'fail';
+              } else {
+                val = 'pass';
+              }
+            }
+          }
+
           var isPass = (val === 'pass' || val === 'normal' || val === true || val === 1 || val === 'ผ่าน');
           var isFail = (val === 'fail' || val === 'abnormal' || val === false || val === 0 || val === 'ไม่ผ่าน');
 
