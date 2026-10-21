@@ -915,13 +915,17 @@
       });
     },
 
-    sendSummaryChartAlert: function (operator, callback) {
+    sendSummaryChartAlert: function (operator, targetDate, callback) {
+      if (typeof targetDate === 'function') {
+        callback = targetDate;
+        targetDate = '';
+      }
       var gasUrl = this.getGasEndpoint();
       if (!gasUrl) {
         if (callback) callback({ success: false, message: 'ยังไม่ได้ระบุ Web App URL ของ Google Apps Script' });
         return;
       }
-      this.postToGas({ action: 'sendSummaryChart', operator: operator || 'Admin' }, function (res) {
+      this.postToGas({ action: 'sendSummaryChart', operator: operator || 'Admin', targetDate: targetDate || '', date: targetDate || '' }, function (res) {
         if (callback) callback(res);
       });
     },

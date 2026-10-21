@@ -8209,13 +8209,17 @@
       }
 
       var operator = (window.currentUser && window.currentUser.name) ? window.currentUser.name : 'ผู้ดูแลระบบ (Admin)';
+      var filterDateEl = document.getElementById('filterDate');
+      var targetDate = (filterDateEl && filterDateEl.value) ? filterDateEl.value : '';
+
       if (window.PPCH_API && window.PPCH_API.sendSummaryChartAlert) {
-        window.PPCH_API.sendSummaryChartAlert(operator, function (res) {
+        window.PPCH_API.sendSummaryChartAlert(operator, targetDate, function (res) {
           if (btn) {
             btn.disabled = false;
             btn.innerHTML = '<span class="material-icons-round" style="font-size: 18px; color: #0284c7;">bar_chart</span> <span>ส่งกราฟสรุปความพร้อม (Flex Chart)</span>';
           }
-          showToast('ส่งรายงานกราฟสรุปความพร้อมใช้งานไปยัง LINE เรียบร้อยแล้ว');
+          var dateNotice = targetDate ? (' (ประจำวันที่ ' + targetDate + ')') : '';
+          showToast('ส่งรายงานกราฟสรุปความพร้อมใช้งานไปยัง LINE เรียบร้อยแล้ว' + dateNotice);
         });
       }
     }
