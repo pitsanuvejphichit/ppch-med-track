@@ -6117,7 +6117,6 @@
             } else {
               statusBadge = '<span class="badge-status badge-status-abnormal" style="font-weight: 700;"><span class="material-icons-round" style="font-size: 14px;">error</span> พบข้อบกพร่อง (รอรับทราบ)</span>';
               actionBtn = '<div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">' +
-                '<button onclick="openAllowUseModal(\'' + eq.id + '\')" class="btn-tool" style="background: #fffbeb; color: #b45309; border-color: #fde68a;" title="อนุญาตให้ใช้งานต่อได้แม้มีข้อบกพร่อง"><span class="material-icons-round" style="font-size: 13px;">published_with_changes</span><span>อนุญาตใช้ต่อ</span></button>' +
                 '<button onclick="openAcknowledgeModal(\'' + eq.id + '\')" class="btn-tool btn-tool-primary" title="เจ้าหน้าที่เครื่องมือแพทย์กดรับทราบเพื่อเริ่มแก้ไข"><span class="material-icons-round" style="font-size: 14px;">thumb_up</span><span>รับทราบ</span></button>' +
               '</div>';
             }
@@ -6606,13 +6605,15 @@
         } else if (isUnderFix) {
           statusBadge = '<div class="status-symbol-btn symbol-in-progress" title="กำลังซ่อมบำรุง / อยู่ระหว่างการแก้ไข" onclick="switchView(\'defective\')"><span class="material-icons-round">build</span></div>';
           actionBtns.push('<button type="button" onclick="openResolveModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-resolve" title="บันทึกการแก้ไขเครื่องมือแพทย์เสร็จสิ้น (คืนสถานะพร้อมใช้)"><span class="material-icons-round">task_alt</span></button>');
+          if (!isConditional) {
+            actionBtns.push('<button type="button" onclick="openAllowUseModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-allow" title="อนุญาตให้ใช้งานต่อชั่วคราว แม้ไม่พร้อมใช้งาน"><span class="material-icons-round">published_with_changes</span></button>');
+          }
           actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="ดูงานซ่อมบำรุง"><span class="material-icons-round">build</span></button>');
         } else if (isDefective) {
           var defectTxt = (eq.abnormalReason || (ev && ev.abnormalNote)) ? (' (' + (eq.abnormalReason || ev.abnormalNote) + ')') : '';
           statusBadge = '<div class="status-symbol-btn symbol-abnormal" title="พบข้อบกพร่อง / ไม่พร้อมใช้งาน' + defectTxt + '" onclick="switchView(\'defective\')"><span class="material-icons-round">cancel</span></div>';
+          actionBtns.push('<button type="button" onclick="openAcknowledgeModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-repair" title="รับทราบข้อบกพร่องเพื่อเริ่มแก้ไข"><span class="material-icons-round">thumb_up</span></button>');
           actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="จัดการงานซ่อมบำรุง"><span class="material-icons-round">build</span></button>');
-          actionBtns.push('<button type="button" onclick="openAllowUseModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-allow" title="อนุญาตให้ใช้งานต่อชั่วคราว แม้ไม่พร้อมใช้งาน"><span class="material-icons-round">published_with_changes</span></button>');
-          actionBtns.push('<button type="button" onclick="openResolveModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-resolve" title="บันทึกการแก้ไขเครื่องมือแพทย์เสร็จสิ้น (คืนสถานะพร้อมใช้)"><span class="material-icons-round">task_alt</span></button>');
           if (ev) {
             actionBtns.push('<button type="button" onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-icon btn-icon-slip" title="ดูสลิปผลการตรวจ"><span class="material-icons-round">receipt_long</span></button>');
           }
