@@ -6893,13 +6893,22 @@
         var status = 'pending';
 
         // Check if defect on or before this date was resolved by repair
-        var isResolvedRepair = (eq.status === 'ready' && eq.repairStatus !== 'reported' && eq.repairStatus !== 'in_progress') || ((typeof allRepairs !== 'undefined' && Array.isArray(allRepairs)) ? allRepairs : ((window.PPCH_STORE && window.PPCH_STORE.getRepairs) ? window.PPCH_STORE.getRepairs() : [])).some(function (rep) {
-          var matchDev = (rep.deviceId === eq.id || rep.deviceAsset === eq.assetCode || rep.device_id === eq.id || rep.device_asset === eq.assetCode);
-          var matchReport = ev && (rep.reportedAt === ev.evaluatedAt || rep.reported_at === ev.evaluatedAt);
-          var repResolvedDate = (rep.resolvedAt || rep.resolved_at || '').slice(0, 10);
-          var isResolvedByThisDate = repResolvedDate && (repResolvedDate <= dateVal);
-          return matchDev && (matchReport || isResolvedByThisDate);
-        });
+        var isCurrentlyBroken = (isCurrentlyDefective || isUnderFix || isConditionalReady);
+        var repairList = ((typeof allRepairs !== 'undefined' && Array.isArray(allRepairs)) ? allRepairs : ((window.PPCH_STORE && window.PPCH_STORE.getRepairs) ? window.PPCH_STORE.getRepairs() : []));
+        var isResolvedRepair = false;
+        if (!isCurrentlyBroken) {
+          if (eq.status === 'ready' && (eq.repairStatus === 'ready' || !eq.repairStatus)) {
+            isResolvedRepair = true;
+          } else if (ev) {
+            isResolvedRepair = repairList.some(function (rep) {
+              var matchDev = (rep.deviceId === eq.id || rep.deviceAsset === eq.assetCode || rep.device_id === eq.id || rep.device_asset === eq.assetCode);
+              var matchReport = (rep.reportedAt === ev.evaluatedAt || rep.reported_at === ev.evaluatedAt);
+              var isResolvedAfterReport = (rep.resolvedAt && rep.resolvedAt >= ev.evaluatedAt) || (rep.resolved_at && rep.resolved_at >= ev.evaluatedAt);
+              var repResolvedDate = (rep.resolvedAt || rep.resolved_at || '').slice(0, 10);
+              return matchDev && (matchReport || isResolvedAfterReport) && repResolvedDate && (repResolvedDate <= dateVal);
+            });
+          }
+        }
 
         if (ev) {
           if (ev.result === 'normal' || isResolvedRepair) {
@@ -6994,13 +7003,22 @@
         var actionBtns = [];
 
         // Check if defect on or before this date was resolved by repair
-        var isResolvedRepair = (eq.status === 'ready' && eq.repairStatus !== 'reported' && eq.repairStatus !== 'in_progress') || ((typeof allRepairs !== 'undefined' && Array.isArray(allRepairs)) ? allRepairs : ((window.PPCH_STORE && window.PPCH_STORE.getRepairs) ? window.PPCH_STORE.getRepairs() : [])).some(function (rep) {
-          var matchDev = (rep.deviceId === eq.id || rep.deviceAsset === eq.assetCode || rep.device_id === eq.id || rep.device_asset === eq.assetCode);
-          var matchReport = ev && (rep.reportedAt === ev.evaluatedAt || rep.reported_at === ev.evaluatedAt);
-          var repResolvedDate = (rep.resolvedAt || rep.resolved_at || '').slice(0, 10);
-          var isResolvedByThisDate = repResolvedDate && (repResolvedDate <= filterDateVal);
-          return matchDev && (matchReport || isResolvedByThisDate);
-        });
+        var isCurrentlyBroken = (isDefective || isUnderFix || isConditional);
+        var repairList = ((typeof allRepairs !== 'undefined' && Array.isArray(allRepairs)) ? allRepairs : ((window.PPCH_STORE && window.PPCH_STORE.getRepairs) ? window.PPCH_STORE.getRepairs() : []));
+        var isResolvedRepair = false;
+        if (!isCurrentlyBroken) {
+          if (eq.status === 'ready' && (eq.repairStatus === 'ready' || !eq.repairStatus)) {
+            isResolvedRepair = true;
+          } else if (ev) {
+            isResolvedRepair = repairList.some(function (rep) {
+              var matchDev = (rep.deviceId === eq.id || rep.deviceAsset === eq.assetCode || rep.device_id === eq.id || rep.device_asset === eq.assetCode);
+              var matchReport = (rep.reportedAt === ev.evaluatedAt || rep.reported_at === ev.evaluatedAt);
+              var isResolvedAfterReport = (rep.resolvedAt && rep.resolvedAt >= ev.evaluatedAt) || (rep.resolved_at && rep.resolved_at >= ev.evaluatedAt);
+              var repResolvedDate = (rep.resolvedAt || rep.resolved_at || '').slice(0, 10);
+              return matchDev && (matchReport || isResolvedAfterReport) && repResolvedDate && (repResolvedDate <= filterDateVal);
+            });
+          }
+        }
 
         if (ev && (ev.result === 'normal' || isResolvedRepair)) {
           var isRepaired = isResolvedRepair || ev.isRepairResolution || (ev.evaluatedBy && ev.evaluatedBy.indexOf('ซ่อมเสร็จ') !== -1) || (ev.abnormalNote && ev.abnormalNote.indexOf('แก้ไขเรียบร้อย') !== -1);
