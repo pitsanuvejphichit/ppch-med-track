@@ -65,6 +65,46 @@
     });
   }
 
+  // Paginated/Parallel fetcher to bypass Supabase PostgREST 1,000-row server cap
+  function supabaseFetchAll(basePath, options) {
+    var pageSize = 1000;
+    var offsets = [0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000];
+    var cleanPath = basePath.replace(/[?&]limit=\d+/g, '').replace(/[?&]offset=\d+/g, '');
+    var sep = cleanPath.indexOf('?') === -1 ? '?' : '&';
+    var promises = offsets.map(function (off) {
+      return supabaseFetch(cleanPath + sep + 'limit=' + pageSize + '&offset=' + off, options).catch(function () { return []; });
+    });
+    return Promise.all(promises).then(function (results) {
+      var combined = [];
+      results.forEach(function (chunk) {
+        if (Array.isArray(chunk) && chunk.length > 0) {
+          combined = combined.concat(chunk);
+        }
+      });
+      // If the 10th chunk was full, continue fetching sequentially until done
+      var lastChunk = results[results.length - 1];
+      if (Array.isArray(lastChunk) && lastChunk.length === pageSize) {
+        var nextOffset = 10000;
+        function fetchRemaining() {
+          return supabaseFetch(cleanPath + sep + 'limit=' + pageSize + '&offset=' + nextOffset, options)
+            .then(function (moreRows) {
+              if (Array.isArray(moreRows) && moreRows.length > 0) {
+                combined = combined.concat(moreRows);
+                if (moreRows.length === pageSize) {
+                  nextOffset += pageSize;
+                  return fetchRemaining();
+                }
+              }
+              return combined;
+            })
+            .catch(function () { return combined; });
+        }
+        return fetchRemaining();
+      }
+      return combined;
+    });
+  }
+
   // Row mappings (Postgres snake_case <-> App camelCase)
   function mapEquipmentFromDb(r) {
     return {
@@ -167,9 +207,9 @@
       }
 
       var pEquipment = supabaseFetch('equipment?select=*&order=asset_code.asc');
-      var pEvaluations = supabaseFetch('evaluations?select=*&order=evaluated_at.desc&limit=500');
-      var pRepairs = supabaseFetch('repairs?select=*&order=created_at.desc&limit=200');
-      var pTransfers = supabaseFetch('transfers?select=*&order=created_at.desc&limit=200');
+      var pEvaluations = supabaseFetchAll('evaluations?select=*&order=evaluated_at.desc');
+      var pRepairs = supabaseFetch('repairs?select=*&order=created_at.desc&limit=1000');
+      var pTransfers = supabaseFetch('transfers?select=*&order=created_at.desc&limit=1000');
       var pDepartments = supabaseFetch('departments?select=*&order=name.asc').catch(function () { return []; });
       var pCustomForms = supabaseFetch('custom_forms?select=*&order=created_at.asc').catch(function () { return []; });
 
