@@ -348,12 +348,12 @@
       align-items: flex-start;
     }
 
-    /* ==================== LEAN LEFT SIDEBAR (COLLAPSIBLE MINI / EXPAND ON HOVER) ==================== */
+    /* ==================== LEAN LEFT SIDEBAR (STICKY EXPANDED BY DEFAULT / COLLAPSIBLE) ==================== */
     .app-sidebar {
       width: 68px;
-      background: linear-gradient(180deg, #001f44 0%, #001733 100%);
-      border-right: 1px solid rgba(0, 50, 110, 0.4);
-      padding: 14px 8px;
+      background: linear-gradient(180deg, #001f44 0%, #00142e 100%);
+      border-right: 1px solid rgba(0, 50, 110, 0.45);
+      padding: 14px 10px;
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
@@ -370,9 +370,51 @@
     @media (min-width: 993px) {
       .app-sidebar:hover,
       .app-sidebar.is-expanded {
-        width: 240px;
-        box-shadow: 4px 0 20px rgba(0, 15, 45, 0.2);
+        width: 244px;
+        box-shadow: 4px 0 24px rgba(0, 15, 45, 0.16);
       }
+    }
+    .sidebar-brand-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px 12px 10px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .sidebar-brand-logo-wrap {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+    .sidebar-brand-logo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .sidebar-brand-text {
+      opacity: 0;
+      max-width: 0;
+      overflow: hidden;
+      transition: opacity 0.16s ease, max-width 0.22s ease;
+    }
+    .app-sidebar:hover .sidebar-brand-text,
+    .app-sidebar.is-expanded .sidebar-brand-text,
+    .app-sidebar.mobile-open .sidebar-brand-text {
+      opacity: 1;
+      max-width: 175px;
+    }
+    .kpi-val, .dash-kpi-val, .asset-code-clean, .floating-badge-count {
+      font-variant-numeric: tabular-nums;
     }
     .app-sidebar::-webkit-scrollbar {
       width: 4px;
@@ -3678,7 +3720,7 @@
       <div id="sidebarBackdrop" class="sidebar-backdrop hidden" onclick="closeMobileSidebar()"></div>
 
       <!-- Left Sidebar -->
-      <aside class="app-sidebar no-print">
+      <aside class="app-sidebar is-expanded no-print">
         <div class="sidebar-mobile-header">
           <div style="display: flex; align-items: center;">
             <img src="logo.png" style="height: 38px; width: auto; object-fit: contain;" alt="โรงพยาบาลพิษณุเวช">
@@ -3686,6 +3728,16 @@
           <button type="button" onclick="closeMobileSidebar()" class="btn-sidebar-close" aria-label="ปิดเมนู">
             <span class="material-icons-round">close</span>
           </button>
+        </div>
+
+        <div class="sidebar-brand-box">
+          <div class="sidebar-brand-logo-wrap">
+            <img src="logo.png" alt="โรงพยาบาลพิษณุเวช พิจิตร">
+          </div>
+          <div class="sidebar-brand-text">
+            <div style="font-size: 12px; font-weight: 700; color: #ffffff; line-height: 1.2;">รพ.พิษณุเวช พิจิตร</div>
+            <div style="font-size: 10px; color: #93c5fd; font-weight: 500;">Medical Equipment</div>
+          </div>
         </div>
 
         <div class="sidebar-section-title">เมนูหลัก</div>
@@ -3954,16 +4006,14 @@
             </button>
           </div>
 
-          <!-- Low-Risk Monthly Policy Banner (แสดงเฉพาะแท็บเสี่ยงต่ำ) -->
-          <div id="lowRiskPeriodBanner" class="low-risk-period-banner no-print" style="display: none;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <span class="material-icons-round" style="color: #0284c7; font-size: 22px;">event_repeat</span>
-              <div>
-                <div style="font-weight: 700; font-size: 13px; color: #0369a1;">แนวทางตรวจเช็คเครื่องมือแพทย์ความเสี่ยงต่ำ (รอบประจำเดือน)</div>
-                <div style="font-size: 12px; color: #0284c7; margin-top: 1px;">กำหนดรอบการประเมิน <strong>เดือนละ 1 ครั้ง เฉพาะวันที่ 1 - 5 ของทุกเดือน</strong> (แจ้งเตือนเฉพาะวันที่ 1 - 5 พร้อมกัน)</div>
-              </div>
+          <!-- Low-Risk Monthly Policy Banner (แสดงเฉพาะแท็บเสี่ยงต่ำ - Compact Single-Row) -->
+          <div id="lowRiskPeriodBanner" class="low-risk-period-banner no-print" style="display: none; padding: 8px 14px; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span class="material-icons-round" style="color: #0284c7; font-size: 19px;">event_repeat</span>
+              <span style="font-weight: 700; font-size: 12.5px; color: #0369a1;">รอบตรวจเช็คเครื่องมือแพทย์ความเสี่ยงต่ำ:</span>
+              <span style="font-size: 12px; color: #0284c7;">ประเมินเดือนละ 1 ครั้ง (วันที่ 1 - 5 ของทุกเดือน)</span>
             </div>
-            <div id="lowRiskPeriodStatusPill" style="padding: 4px 12px; border-radius: 20px; font-size: 11.5px; font-weight: 700; background: #e0f2fe; color: #0284c7; border: 1px solid #7dd3fc; white-space: nowrap;">
+            <div id="lowRiskPeriodStatusPill" style="padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: #e0f2fe; color: #0284c7; border: 1px solid #7dd3fc; white-space: nowrap;">
               รอบถัดไป: 1 - 5 พ.ย. 2569
             </div>
           </div>
@@ -4149,8 +4199,8 @@
         <!-- ==================== SUB-VIEW 2: สรุปรายเครื่อง ==================== -->
         <section id="viewDeviceSummary" style="display: none;">
           <!-- Filter & Device Selector Bar -->
-          <div class="page-filter-bar no-print" style="flex-wrap: wrap; gap: 10px;">
-            <div class="filter-left-controls" style="flex-wrap: wrap; gap: 10px; width: 100%;">
+          <div class="page-filter-bar no-print" style="flex-wrap: nowrap; overflow-x: auto; gap: 10px;">
+            <div class="filter-left-controls" style="flex-wrap: nowrap; gap: 10px; width: 100%; min-width: max-content;">
               <!-- 1. Equipment Name Dropdown Selector -->
               <div class="device-summary-filter-item" style="display: flex; align-items: center; gap: 6px; flex: 1; min-width: 220px;">
                 <label for="historyDeviceNameSelect" style="font-size: 12px; font-weight: 700; color: var(--royal-blue); white-space: nowrap; display: inline-flex; align-items: center; gap: 4px;">
@@ -4740,8 +4790,8 @@
                 </div>
 
                 <!-- Filter / Search bar for equipment -->
-                <div class="settings-filter-bar" style="padding: 10px 16px; background: #f8fafc; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-                  <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; flex: 1; width: 100%;">
+                <div class="settings-filter-bar" style="padding: 10px 16px; background: #f8fafc; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; flex-wrap: nowrap; overflow-x: auto; gap: 10px;">
+                  <div style="display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; flex: 1; min-width: max-content;">
                     <div class="search-input-box" style="flex: 1; min-width: 200px;">
                       <span class="material-icons-round">search</span>
                       <input type="text" id="equipSearchInput" placeholder="ค้นหารหัสเครื่อง หรือ ชื่อเครื่อง..." oninput="renderEquipmentSettingsTable()">
@@ -6370,24 +6420,47 @@
             var actionBtn = '';
 
             if (isUnderFix) {
-              var ackInfo = eq.repairAcknowledgedBy ? '<div style="font-size: 10.5px; color: #b45309; margin-top: 2px;">โดย ' + eq.repairAcknowledgedBy + '</div>' : '';
-              var condInfo = isConditional ? '<div style="margin-top: 3px;"><span class="badge-status" style="font-size: 10px; color: #b45309; background: #fffbeb; border: 1px solid #fde68a;"><span class="material-icons-round" style="font-size: 12px;">published_with_changes</span> อนุญาตให้ใช้งานต่อ</span></div>' : '';
-              statusBadge = '<div><span class="badge-status" style="color: var(--amber-pending); font-weight: 700;"><span class="material-icons-round" style="font-size: 14px;">build</span> กำลังดำเนินการแก้ไข</span>' + ackInfo + condInfo + '</div>';
-              var allowBtnUnderFix = !isConditional ? '<button onclick="openAllowUseModal(\'' + eq.id + '\')" class="btn-tool" style="background: #fffbeb; color: #b45309; border-color: #fde68a;" title="อนุญาตให้ใช้งานต่อได้แม้มีข้อบกพร่อง"><span class="material-icons-round" style="font-size: 13px;">published_with_changes</span><span>อนุญาตใช้</span></button>' : '';
-              actionBtn = '<div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">' +
-                allowBtnUnderFix +
-                '<button onclick="openResolveModal(\'' + eq.id + '\')" class="btn-tool" style="background: var(--green-ready); color: #ffffff; border-color: var(--green-ready); font-weight: 600;" title="บันทึกรายละเอียดการซ่อมเสร็จสิ้น"><span class="material-icons-round" style="font-size: 14px;">task_alt</span><span>บันทึกการแก้ไข</span></button>' +
+              var ackInfo = eq.repairAcknowledgedBy ? (' (รับทราบโดย ' + eq.repairAcknowledgedBy + ')') : '';
+              statusBadge = '<div style="display: flex; align-items: center; justify-content: center; gap: 6px;">' +
+                '<div class="status-symbol-btn symbol-in-progress" title="กำลังดำเนินการแก้ไข / ซ่อมบำรุง' + ackInfo + '" onclick="openResolveModal(\'' + eq.id + '\')"><span class="material-icons-round">build</span></div>' +
               '</div>';
+              if (!isConditional) {
+                actionBtn = '<div class="floating-action-wrapper" onmouseenter="handleFloatingEnter(this)" onmouseleave="handleFloatingLeave(this)">' +
+                  '<button type="button" class="btn-floating-trigger" onclick="toggleFloatingMenu(this, event)" title="เมนูจัดการงานซ่อม (2 รายการ)">' +
+                    '<span class="material-icons-round trigger-icon">more_horiz</span>' +
+                    '<span class="floating-badge-count">2</span>' +
+                  '</button>' +
+                  '<div class="floating-action-tray">' +
+                    '<button type="button" onclick="openAllowUseModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-allow" title="อนุญาตให้ใช้งานต่อชั่วคราว แม้มีข้อบกพร่อง">' +
+                      '<span class="material-icons-round">published_with_changes</span>' +
+                    '</button>' +
+                    '<button type="button" onclick="openResolveModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-resolve" title="บันทึกรายละเอียดการซ่อมเสร็จสิ้น (คืนสถานะพร้อมใช้)">' +
+                      '<span class="material-icons-round">task_alt</span>' +
+                    '</button>' +
+                    '<button type="button" class="btn-floating-close" onclick="closeFloatingMenu(this, event)" title="หุบเก็บ">' +
+                      '<span class="material-icons-round">close</span>' +
+                    '</button>' +
+                  '</div>' +
+                '</div>';
+              } else {
+                actionBtn = '<div style="display: flex; gap: 6px; justify-content: center;">' +
+                  '<button onclick="openResolveModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-resolve" title="บันทึกรายละเอียดการซ่อมเสร็จสิ้น"><span class="material-icons-round">task_alt</span></button>' +
+                '</div>';
+              }
             } else if (isConditional) {
               var ackByText = eq.repairAcknowledgedBy ? ('โดย ' + eq.repairAcknowledgedBy) : ('โดย ' + (eq.allowUseBy || 'เจ้าหน้าที่'));
-              statusBadge = '<div><span class="badge-status" style="color: #b45309; background: #fffbeb; border: 1px solid #fde68a; font-weight: 700;"><span class="material-icons-round" style="font-size: 14px;">published_with_changes</span> อนุญาตให้ใช้งานต่อ (รอซ่อม)</span><div style="font-size: 10.5px; color: #b45309; margin-top: 2px;">' + ackByText + '</div></div>';
-              actionBtn = '<div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">' +
-                '<button onclick="openResolveModal(\'' + eq.id + '\')" class="btn-tool" style="background: var(--green-ready); color: #ffffff; border-color: var(--green-ready); font-weight: 600;" title="บันทึกรายละเอียดการซ่อมเสร็จสิ้น"><span class="material-icons-round" style="font-size: 14px;">task_alt</span><span>บันทึกการแก้ไข</span></button>' +
+              statusBadge = '<div style="display: flex; align-items: center; justify-content: center; gap: 6px;">' +
+                '<div class="status-symbol-btn symbol-conditional" title="อนุญาตให้ใช้งานต่อ (รอซ่อม) • ' + ackByText + '" onclick="openResolveModal(\'' + eq.id + '\')"><span class="material-icons-round">build_circle</span></div>' +
+              '</div>';
+              actionBtn = '<div style="display: flex; gap: 6px; justify-content: center;">' +
+                '<button onclick="openResolveModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-resolve" title="บันทึกรายละเอียดการซ่อมเสร็จสิ้น"><span class="material-icons-round">task_alt</span></button>' +
               '</div>';
             } else {
-              statusBadge = '<span class="badge-status badge-status-abnormal" style="font-weight: 700;"><span class="material-icons-round" style="font-size: 14px;">error</span> พบข้อบกพร่อง (รอรับทราบ)</span>';
-              actionBtn = '<div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">' +
-                '<button onclick="openAcknowledgeModal(\'' + eq.id + '\')" class="btn-tool btn-tool-primary" title="เจ้าหน้าที่เครื่องมือแพทย์กดรับทราบเพื่อเริ่มแก้ไข"><span class="material-icons-round" style="font-size: 14px;">thumb_up</span><span>รับทราบ</span></button>' +
+              statusBadge = '<div style="display: flex; align-items: center; justify-content: center; gap: 6px;">' +
+                '<div class="status-symbol-btn symbol-abnormal" title="พบข้อบกพร่อง (รอรับทราบ)" onclick="openAcknowledgeModal(\'' + eq.id + '\')"><span class="material-icons-round">cancel</span></div>' +
+              '</div>';
+              actionBtn = '<div style="display: flex; gap: 6px; justify-content: center;">' +
+                '<button onclick="openAcknowledgeModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-repair" title="เจ้าหน้าที่เครื่องมือแพทย์กดรับทราบเพื่อเริ่มแก้ไข"><span class="material-icons-round">thumb_up</span></button>' +
               '</div>';
             }
 
@@ -7354,13 +7427,22 @@
                 'แผนกรับผิดชอบ: <strong style="color: var(--royal-blue);">' + currentDeptName + '</strong>' +
               '</div>' +
             '</div>' +
-            '<div style="display: flex; gap: 8px;">' +
-              '<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-tool btn-tool-primary" style="text-decoration: none;">' +
-                '<span class="material-icons-round" style="font-size: 15px;">assignment</span><span>เปิดแบบตรวจ</span>' +
-              '</a>' +
-              '<button type="button" onclick="openQrModal(\'' + eq.id + '\')" class="btn-tool" title="QR Code">' +
-                '<span class="material-icons-round" style="font-size: 15px; color: var(--royal-blue);">qr_code_2</span>' +
+            '<div class="floating-action-wrapper" onmouseenter="handleFloatingEnter(this)" onmouseleave="handleFloatingLeave(this)">' +
+              '<button type="button" class="btn-floating-trigger" onclick="toggleFloatingMenu(this, event)" title="เมนูจัดการเครื่องมือแพทย์ (2 รายการ)">' +
+                '<span class="material-icons-round trigger-icon">more_horiz</span>' +
+                '<span class="floating-badge-count">2</span>' +
               '</button>' +
+              '<div class="floating-action-tray">' +
+                '<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-eval" title="เปิดแบบตรวจเช็ค">' +
+                  '<span class="material-icons-round">assignment</span>' +
+                '</a>' +
+                '<button type="button" onclick="openQrModal(\'' + eq.id + '\')" class="btn-action-icon" style="background: #eff6ff; color: var(--royal-blue); border-color: #bfdbfe;" title="ดู / พิมพ์ QR Code">' +
+                  '<span class="material-icons-round">qr_code_2</span>' +
+                '</button>' +
+                '<button type="button" class="btn-floating-close" onclick="closeFloatingMenu(this, event)" title="หุบเก็บ">' +
+                  '<span class="material-icons-round">close</span>' +
+                '</button>' +
+              '</div>' +
             '</div>' +
           '</div>' +
           '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">' +
@@ -7614,12 +7696,23 @@
             '</div>' +
           '</div>' +
           '<div class="equip-card-actions">' +
-            '<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-tool btn-tool-primary" style="text-decoration: none; padding: 7px 14px; font-weight: 600;">' +
-              '<span class="material-icons-round" style="font-size: 15px;">assignment</span><span>เปิดแบบตรวจ</span>' +
-            '</a>' +
-            '<button type="button" onclick="openQrModal(\'' + eq.id + '\')" class="btn-tool" style="padding: 7px 12px; font-weight: 600;" title="ดู / พิมพ์ QR Code ประจำเครื่อง">' +
-              '<span class="material-icons-round" style="font-size: 16px; color: var(--royal-blue);">qr_code_2</span><span>QR Code</span>' +
-            '</button>' +
+            '<div class="floating-action-wrapper" onmouseenter="handleFloatingEnter(this)" onmouseleave="handleFloatingLeave(this)">' +
+              '<button type="button" class="btn-floating-trigger" onclick="toggleFloatingMenu(this, event)" title="เมนูจัดการ (เปิดแบบตรวจ / QR Code)">' +
+                '<span class="material-icons-round trigger-icon">more_horiz</span>' +
+                '<span class="floating-badge-count">2</span>' +
+              '</button>' +
+              '<div class="floating-action-tray">' +
+                '<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-eval" title="เปิดแบบตรวจเช็ค">' +
+                  '<span class="material-icons-round">assignment</span>' +
+                '</a>' +
+                '<button type="button" onclick="openQrModal(\'' + eq.id + '\')" class="btn-action-icon" style="background: #eff6ff; color: var(--royal-blue); border-color: #bfdbfe;" title="ดู / พิมพ์ QR Code ประจำเครื่อง">' +
+                  '<span class="material-icons-round">qr_code_2</span>' +
+                '</button>' +
+                '<button type="button" class="btn-floating-close" onclick="closeFloatingMenu(this, event)" title="หุบเก็บ">' +
+                  '<span class="material-icons-round">close</span>' +
+                '</button>' +
+              '</div>' +
+            '</div>' +
           '</div>' +
         '</div>';
       });
@@ -10272,8 +10365,8 @@
         var isActive = emp.isActive !== false;
         
         var statusBadge = isActive
-          ? '<span style="display: inline-flex; align-items: center; gap: 4px; background: #dcfce7; color: #15803d; padding: 2px 8px; border-radius: 999px; font-weight: 700; font-size: 11px;"><span class="material-icons-round" style="font-size: 13px;">check_circle</span> กำลังปฏิบัติงาน</span>'
-          : '<span style="display: inline-flex; align-items: center; gap: 4px; background: #fee2e2; color: #b91c1c; padding: 2px 8px; border-radius: 999px; font-weight: 700; font-size: 11px;"><span class="material-icons-round" style="font-size: 13px;">cancel</span> ปิดการใช้งาน</span>';
+          ? '<div class="status-symbol-btn symbol-ready" title="กำลังปฏิบัติงาน (คลิกเพื่อสลับสถานะ)" onclick="toggleEmployeeStatus(\'' + escapeHtml(emp.empId) + '\')"><span class="material-icons-round">check_circle</span></div>'
+          : '<div class="status-symbol-btn symbol-abnormal" title="ปิดการใช้งาน (คลิกเพื่อสลับสถานะ)" onclick="toggleEmployeeStatus(\'' + escapeHtml(emp.empId) + '\')"><span class="material-icons-round">cancel</span></div>';
 
         var empActionsHtml = '<div class="floating-action-wrapper" onmouseenter="handleFloatingEnter(this)" onmouseleave="handleFloatingLeave(this)">' +
           '<button type="button" class="btn-floating-trigger" onclick="toggleFloatingMenu(this, event)" title="เมนูจัดการ">' +

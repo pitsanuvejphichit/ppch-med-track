@@ -180,8 +180,10 @@
 
     /* Top Header */
     .app-topbar {
-      height: 56px;
-      background: #ffffff;
+      height: 58px;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border-bottom: 2px solid var(--royal-blue);
       display: flex;
       align-items: center;
@@ -190,7 +192,7 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 2px 10px rgba(0, 46, 110, 0.05);
+      box-shadow: 0 4px 16px -2px rgba(0, 46, 110, 0.06);
     }
 
     .topbar-brand {
@@ -207,15 +209,36 @@
       color: var(--royal-blue);
       background: var(--royal-subtle);
       border: 1px solid var(--border-blue-soft);
-      padding: 3px 8px;
-      border-radius: 4px;
+      padding: 3px 9px;
+      border-radius: 6px;
+      letter-spacing: 0.2px;
+    }
+
+    .btn-topbar-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--royal-blue);
+      background: var(--royal-subtle);
+      border: 1px solid var(--border-blue-soft);
+      text-decoration: none;
+      transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-topbar-nav:hover {
+      background: #e0f2fe;
+      border-color: #7dd3fc;
+      transform: translateY(-1px);
     }
 
     .btn-dev-sim {
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      padding: 5px 12px;
+      padding: 6px 12px;
       border-radius: 9999px;
       font-size: 11.5px;
       font-weight: 600;
@@ -239,27 +262,28 @@
 
     /* Main Container */
     .eval-container {
-      max-width: 760px;
+      max-width: 780px;
       width: 100%;
-      margin: 20px auto 40px auto;
+      margin: 18px auto 44px auto;
       padding: 0 16px;
       flex: 1;
     }
 
     .eval-card {
       background: #ffffff;
-      border: 1px solid var(--border-main);
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 46, 110, 0.04);
+      border: 1px solid rgba(226, 232, 240, 0.95);
+      border-radius: 14px;
+      box-shadow: 0 4px 16px -2px rgba(0, 46, 110, 0.05), 0 1px 3px rgba(15, 23, 42, 0.03);
       margin-bottom: 16px;
       overflow: visible;
       position: relative;
     }
 
     .eval-card-header {
-      padding: 12px 18px;
-      background: #f8fafc;
+      padding: 13px 18px;
+      background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
       border-bottom: 1px solid var(--border-main);
+      border-radius: 14px 14px 0 0;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -267,7 +291,7 @@
     .eval-card-title {
       font-size: 14px;
       font-weight: 700;
-      color: var(--text-main);
+      color: var(--royal-dark);
       display: flex;
       align-items: center;
       gap: 8px;
@@ -388,25 +412,56 @@
 
     /* Checklist Items */
     .checklist-item {
-      padding: 12px 14px;
+      padding: 13px 16px;
       border-bottom: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      transition: background 0.1s;
+      transition: all 0.14s ease;
     }
     .checklist-item:hover {
       background: #f8fafc;
     }
+    .checklist-item.row-pass {
+      background: rgba(236, 253, 245, 0.45);
+    }
+    .checklist-item.row-fail {
+      background: rgba(254, 242, 242, 0.65);
+    }
     .checklist-item:last-child {
       border-bottom: none;
     }
+    .item-num-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 24px;
+      height: 24px;
+      padding: 0 6px;
+      border-radius: 6px;
+      background: #f1f5f9;
+      color: var(--royal-blue);
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 800;
+      margin-right: 8px;
+      font-variant-numeric: tabular-nums;
+    }
+    .checklist-item.row-pass .item-num-badge {
+      background: #d1fae5;
+      color: #047857;
+    }
+    .checklist-item.row-fail .item-num-badge {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
     .item-text {
-      font-size: 13px;
-      color: var(--text-body);
+      font-size: 13.5px;
+      color: var(--text-main);
+      font-weight: 500;
       flex: 1;
-      line-height: 1.4;
+      line-height: 1.45;
     }
 
     .item-btn-group {
@@ -415,25 +470,36 @@
       flex-shrink: 0;
     }
     .btn-check-choice {
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 12.5px;
       font-weight: 600;
       cursor: pointer;
       border: 1px solid var(--border-main);
       background: #ffffff;
       color: var(--text-muted);
-      transition: all 0.15s;
+      transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    }
+    .btn-check-choice:hover:not(:disabled) {
+      border-color: #cbd5e1;
+      color: var(--text-main);
+      transform: translateY(-1px);
     }
     .btn-check-choice.active-pass {
       background: var(--green-ready);
       border-color: var(--green-ready);
       color: #ffffff;
+      box-shadow: 0 3px 10px rgba(5, 150, 105, 0.25);
     }
     .btn-check-choice.active-fail {
       background: var(--red-abnormal);
       border-color: var(--red-abnormal);
       color: #ffffff;
+      box-shadow: 0 3px 10px rgba(220, 38, 38, 0.25);
     }
 
     .btn-quick-pass {
@@ -820,14 +886,18 @@
         <div class="brand-divider"></div>
         <div class="brand-badge-pill">Med Track</div>
       </div>
-      <span class="topbar-subtitle" style="font-size: 12.5px; color: var(--text-muted); margin-left: 6px;">ระบบเครื่องมือแพทย์ / กรอกแบบตรวจเช็ค</span>
+      <span class="topbar-subtitle" style="font-size: 12.5px; color: var(--text-muted); margin-left: 4px; font-weight: 500;">จุดตรวจเช็คความพร้อมใช้เครื่องมือแพทย์</span>
     </div>
 
-    <div>
+    <div style="display: flex; align-items: center; gap: 8px;">
       <button type="button" id="btnDevSimUps" onclick="toggleSimulateUpsCycle()" class="btn-dev-sim" title="เปิด/ปิด การจำลองรอบบังคับตรวจ UPS วันที่ 1 & 16 สำหรับทดสอบ">
         <span class="material-icons-round" style="font-size: 15px;">bolt</span>
         <span id="btnDevSimUpsText">จำลองรอบ UPS (Dev)</span>
       </button>
+      <a href="admin.html" class="btn-topbar-nav" title="เปิดแดชบอร์ดและระบบบริหารจัดการ">
+        <span class="material-icons-round" style="font-size: 15px;">dashboard</span>
+        <span>แดชบอร์ด</span>
+      </a>
     </div>
   </header>
 
@@ -866,7 +936,7 @@
       </div>
       <div class="eval-card-body">
         <!-- 2-Step Cascade Equipment Selection -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; margin-bottom: 12px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-bottom: 12px;">
           <div>
             <label for="evalDeviceTypeSelect" style="display: block; font-size: 12px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">1. เลือกชื่อเครื่องมือแพทย์ *</label>
             <select id="evalDeviceTypeSelect" class="form-control-select" onchange="onDeviceTypeChanged()">
@@ -881,45 +951,42 @@
           </div>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px;">
-          <div style="background: #f8fafc; border: 1px solid var(--border-main); padding: 8px 12px; border-radius: 8px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
+          <div style="background: #f8fafc; border: 1px solid var(--border-main); padding: 8px 12px; border-radius: 10px;">
             <label for="evalDeptSelect" style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--text-muted); cursor: pointer; margin-bottom: 3px;">
               <span>แผนกที่ตรวจเช็ค *</span>
-              <span style="font-size: 10px; color: var(--royal-blue); font-weight: 600;">(เปลี่ยนแผนกได้หากย้ายเครื่อง)</span>
+              <span style="font-size: 10px; color: var(--royal-blue); font-weight: 600;">(เปลี่ยนได้หากย้ายเครื่อง)</span>
             </label>
             <select id="evalDeptSelect" class="form-control-select" style="padding: 6px 8px; font-size: 13px; font-weight: 700; color: var(--royal-blue); background: #ffffff; cursor: pointer; width: 100%;">
               <option value="">-- กำลังโหลดแผนก --</option>
             </select>
           </div>
-          <div style="background: #f8fafc; border: 1px solid var(--border-main); padding: 8px 12px; border-radius: 8px;">
+          <div style="background: #f8fafc; border: 1px solid var(--border-main); padding: 8px 12px; border-radius: 10px;">
             <label for="evalDateTimeInput" style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--text-muted); cursor: pointer; margin-bottom: 2px;">
               <span>วัน-เวลาประเมิน</span>
-              <span style="font-size: 10px; color: var(--royal-blue); font-weight: 600;">(คลิกเลือกเปลี่ยนวันได้)</span>
+              <span style="font-size: 10px; color: var(--royal-blue); font-weight: 600;">(คลิกเปลี่ยนวัน-เวลาได้)</span>
             </label>
             <input type="datetime-local" id="evalDateTimeInput" class="form-control-input" style="padding: 6px 8px; font-size: 13px; font-weight: 700; color: var(--royal-blue); background: #ffffff; cursor: pointer; font-family: var(--font-mono); width: 100%;" onchange="onDateTimeChanged()">
           </div>
         </div>
 
-        <!-- Re-evaluation / Intra-day failure reporting banner -->
-        <div id="reCheckNoticeBanner" style="display: none; background: #eff6ff; border: 1.5px solid #93c5fd; border-radius: 8px; padding: 10px 14px; margin-top: 10px; animation: loaderPop 0.25s ease;">
-          <div style="display: flex; align-items: flex-start; gap: 8px;">
-            <span class="material-icons-round" style="color: var(--royal-blue); font-size: 20px; flex-shrink: 0; margin-top: 1px;">history</span>
-            <div style="flex: 1;">
-              <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px;">
-                <div style="font-size: 12.5px; font-weight: 700; color: var(--royal-dark);" id="reCheckTitle">
+        <!-- Re-evaluation / Intra-day failure reporting banner (Compact & Zero Clutter) -->
+        <div id="reCheckNoticeBanner" style="display: none; background: #eff6ff; border: 1.5px solid #93c5fd; border-radius: 10px; padding: 9px 14px; margin-top: 12px; animation: loaderPop 0.25s ease;">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0;">
+              <span class="material-icons-round" style="color: var(--royal-blue); font-size: 19px; flex-shrink: 0;">history</span>
+              <div style="min-width: 0;">
+                <span style="font-size: 12.5px; font-weight: 700; color: var(--royal-dark);" id="reCheckTitle">
                   มีบันทึกตรวจเช็คเครื่องนี้ในวันที่เลือกแล้ว
-                </div>
-                <span id="reCheckPrevStatusBadge" style="font-size: 10.5px; font-weight: 700; padding: 2px 7px; border-radius: 4px; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;">
-                  พร้อมใช้งาน
+                </span>
+                <span style="font-size: 11.5px; color: var(--text-body); margin-left: 6px;" id="reCheckDesc">
+                  ตรวจล่าสุดเมื่อเวลา 08:00 น.
                 </span>
               </div>
-              <div style="font-size: 11.5px; color: var(--text-body); margin-top: 3px;" id="reCheckDesc">
-                ตรวจล่าสุดเมื่อเวลา 08:00 น.
-              </div>
-              <div style="font-size: 11.5px; color: #0369a1; margin-top: 4px; line-height: 1.4;">
-                💡 <strong>ตรวจซ้ำระหว่างวัน:</strong> หากเครื่องพบปัญหาระหว่างวัน สามารถเลือกข้อที่ไม่ผ่านและกดบันทึกใหม่ได้ทันที ข้อมูลจะถูกบันทึกเป็นรอบใหม่ตามเวลาที่ระบุด้านบน
-              </div>
             </div>
+            <span id="reCheckPrevStatusBadge" style="font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 9999px; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;">
+              พร้อมใช้งาน
+            </span>
           </div>
         </div>
       </div>
@@ -1071,6 +1138,10 @@
             <span>รายการตรวจเช็คความพร้อมใช้งาน</span>
           </div>
           <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <button type="button" class="btn-quick-pass" onclick="setAllChoices('pass')" title="เลือกผ่านทุกข้อในคลิกเดียว">
+              <span class="material-icons-round" style="font-size: 14px;">done_all</span>
+              <span>ผ่านทั้งหมด</span>
+            </button>
             <div id="checklistProgressBadge" style="font-size: 11.5px; font-weight: 600; color: var(--text-muted); background: #f1f5f9; border: 1px solid var(--border-main); padding: 3px 10px; border-radius: 9999px;">
               ประเมินแล้ว 0/0 ข้อ
             </div>
@@ -1958,13 +2029,13 @@
         var div = document.createElement('div');
         div.className = 'checklist-item';
         div.id = 'checkItemRow_' + idx;
-        div.innerHTML = '<div class="item-text"><strong>' + (idx + 1) + '.</strong> ' + text + '</div>' +
+        div.innerHTML = '<div class="item-text"><span class="item-num-badge">' + (idx + 1) + '</span>' + text + '</div>' +
           '<div class="item-btn-group">' +
             '<button type="button" class="btn-check-choice" id="btnPass_' + idx + '" onclick="setChoice(' + idx + ', \'pass\')" ' + (isDeviceLockedForRepair ? 'disabled' : '') + '>' +
-              '<span class="material-icons-round" style="font-size: 13px; vertical-align: -2px;">check</span> ผ่าน' +
+              '<span class="material-icons-round" style="font-size: 14px;">check</span> ผ่าน' +
             '</button>' +
             '<button type="button" class="btn-check-choice" id="btnFail_' + idx + '" onclick="setChoice(' + idx + ', \'fail\')" ' + (isDeviceLockedForRepair ? 'disabled' : '') + '>' +
-              '<span class="material-icons-round" style="font-size: 13px; vertical-align: -2px;">close</span> ไม่ผ่าน' +
+              '<span class="material-icons-round" style="font-size: 14px;">close</span> ไม่ผ่าน' +
             '</button>' +
           '</div>';
         container.appendChild(div);
@@ -1978,7 +2049,10 @@
       checklistState[idx] = choice;
 
       var row = document.getElementById('checkItemRow_' + idx);
-      if (row) row.classList.remove('item-unanswered-highlight');
+      if (row) {
+        row.classList.remove('item-unanswered-highlight', 'row-pass', 'row-fail');
+        row.classList.add(choice === 'pass' ? 'row-pass' : 'row-fail');
+      }
 
       var btnPass = document.getElementById('btnPass_' + idx);
       var btnFail = document.getElementById('btnFail_' + idx);
@@ -2000,7 +2074,10 @@
       for (var i = 0; i < total; i++) {
         checklistState[i] = choice;
         var row = document.getElementById('checkItemRow_' + i);
-        if (row) row.classList.remove('item-unanswered-highlight');
+        if (row) {
+          row.classList.remove('item-unanswered-highlight', 'row-pass', 'row-fail');
+          row.classList.add(choice === 'pass' ? 'row-pass' : 'row-fail');
+        }
 
         var btnPass = document.getElementById('btnPass_' + i);
         var btnFail = document.getElementById('btnFail_' + i);
