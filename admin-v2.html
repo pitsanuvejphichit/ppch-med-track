@@ -12,43 +12,43 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   <style>
-    /* ==================== PPCH DEEP ROYAL BLUE & CRISP WHITE THEME ==================== */
+    /* ==================== PPCH V2: NORDIC JADE & WARM ALABASTER STUDIO THEME ==================== */
     :root {
-      --royal-dark: #002e6e;
-      --royal-blue: #004b93;
-      --royal-hover: #003a73;
-      --royal-light: #0284c7;
-      --royal-subtle: #f0f7ff;
-      --royal-glow: rgba(0, 75, 147, 0.16);
+      --royal-dark: #0c261f;
+      --royal-blue: #0f3d32;
+      --royal-hover: #091e18;
+      --royal-light: #0d9488;
+      --royal-subtle: #ecfdf5;
+      --royal-glow: rgba(13, 148, 136, 0.16);
 
-      --canvas-bg: #f4f7fb;
+      --canvas-bg: #f4f3ef;
       --surface-white: #ffffff;
-      --border-main: #e2e8f0;
-      --border-subtle: #edf2f7;
-      --border-focus: #004b93;
-      --border-blue-soft: #bfdbfe;
+      --border-main: #e4e4e7;
+      --border-subtle: #f4f4f5;
+      --border-focus: #0d9488;
+      --border-blue-soft: #a7f3d0;
 
-      --text-main: #0f172a;
-      --text-body: #334155;
-      --text-muted: #64748b;
-      --text-light: #94a3b8;
+      --text-main: #18181b;
+      --text-body: #3f3f46;
+      --text-muted: #71717a;
+      --text-light: #a1a1aa;
 
       --green-ready: #059669;
       --green-bg: #ecfdf5;
-      --green-border: #a7f3d0;
+      --green-border: #6ee7b7;
 
       --amber-pending: #d97706;
       --amber-bg: #fffbeb;
-      --amber-border: #fde68a;
+      --amber-border: #fcd34d;
 
-      --red-abnormal: #dc2626;
-      --red-bg: #fef2f2;
-      --red-border: #fecaca;
+      --red-abnormal: #e11d48;
+      --red-bg: #fff1f2;
+      --red-border: #fda4af;
 
       --font-sans: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-mono: 'Inter', monospace;
+      --font-mono: 'JetBrains Mono', monospace;
       color-scheme: light;
-      accent-color: #004b93;
+      accent-color: #0d9488;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -3651,7 +3651,8 @@
     }
 
     /* ============================================================================
-       PPCH MEDTRACK V2 — MINIMALIST LUXURY GLASS & SYMBOL-DRIVEN COMMAND CENTER
+       PPCH MEDTRACK V2 — NORDIC JADE & WARM ALABASTER FLOATING STUDIO ARCHITECTURE
+       (Completely distinct from V1's Royal Blue corporate layout)
        ============================================================================ */
     :root {
       --font-mono: 'JetBrains Mono', monospace;
@@ -3660,177 +3661,314 @@
 
     body {
       background:
-        radial-gradient(circle at 12% 0%, rgba(186, 230, 253, 0.42) 0%, transparent 42%),
-        radial-gradient(circle at 88% 8%, rgba(224, 242, 254, 0.5) 0%, transparent 46%),
-        linear-gradient(180deg, #f6f9fe 0%, #eef4fb 100%) !important;
+        radial-gradient(circle at 8% 4%, rgba(16, 185, 129, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 92% 10%, rgba(217, 119, 6, 0.06) 0%, transparent 42%),
+        #f4f3ef !important;
       background-attachment: fixed !important;
+      color: #18181b !important;
     }
 
-    /* 1. Floating Glass Topbar */
+    /* 1. Floating Obsidian Jade Pill Command Bar (Replaces full-width white topbar) */
     .app-topbar {
-      background: rgba(255, 255, 255, 0.84) !important;
-      backdrop-filter: blur(22px) saturate(190%) !important;
-      -webkit-backdrop-filter: blur(22px) saturate(190%) !important;
-      border-bottom: 1px solid rgba(226, 232, 240, 0.85) !important;
-      box-shadow: 0 4px 24px -6px rgba(0, 46, 110, 0.06) !important;
+      background: #0c261f !important;
+      color: #ffffff !important;
+      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+      border-radius: 999px !important;
+      margin: 12px 20px 0 20px !important;
+      height: 56px !important;
+      padding: 0 18px !important;
+      box-shadow: 0 18px 38px -10px rgba(12, 38, 31, 0.28) !important;
+    }
+    .brand-logo-img {
+      background: #ffffff !important;
+      border-radius: 50% !important;
+      padding: 3px !important;
+      height: 34px !important;
+      width: 34px !important;
+    }
+    .brand-divider {
+      background: rgba(255, 255, 255, 0.16) !important;
     }
     .brand-badge-pill {
-      background: linear-gradient(135deg, #002e6e 0%, #0284c7 100%) !important;
-      color: #ffffff !important;
-      border: none !important;
+      background: rgba(16, 185, 129, 0.2) !important;
+      color: #6ee7b7 !important;
+      border: 1px solid rgba(52, 211, 153, 0.35) !important;
       padding: 3px 10px !important;
       border-radius: 999px !important;
-      font-family: var(--font-display) !important;
-      font-weight: 800 !important;
-      letter-spacing: 0.4px !important;
-      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.28) !important;
+      font-family: var(--font-mono) !important;
+      font-size: 10.5px !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.5px !important;
+    }
+    .bread-parent {
+      color: rgba(255, 255, 255, 0.55) !important;
+    }
+    .bread-sep {
+      color: rgba(255, 255, 255, 0.3) !important;
+    }
+    .bread-current {
+      color: #ffffff !important;
+      font-weight: 700 !important;
     }
     .status-realtime-badge {
-      background: rgba(236, 253, 245, 0.9) !important;
-      border: 1px solid #a7f3d0 !important;
+      background: rgba(16, 185, 129, 0.16) !important;
+      border: 1px solid rgba(52, 211, 153, 0.35) !important;
+      color: #6ee7b7 !important;
       border-radius: 999px !important;
       padding: 4px 12px !important;
       font-weight: 700 !important;
     }
+    .admin-profile-pill {
+      background: rgba(255, 255, 255, 0.08) !important;
+      border: 1px solid rgba(255, 255, 255, 0.14) !important;
+      border-radius: 999px !important;
+    }
+    .admin-label {
+      color: #ffffff !important;
+    }
+    .avatar-circle {
+      background: #10b981 !important;
+      color: #052e16 !important;
+      font-weight: 800 !important;
+    }
 
-    /* 2. Velvet Deep-Navy Sticky Left Sidebar */
+    /* 2. Floating Obsidian Jade Left Studio Dock (Detached Rounded Island) */
     @media (min-width: 992px) {
       .app-sidebar {
-        background: linear-gradient(180deg, #041e42 0%, #072a5c 55%, #041a38 100%) !important;
-        border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
-        box-shadow: 8px 0 30px -10px rgba(0, 24, 64, 0.25) !important;
+        background: linear-gradient(175deg, #0c261f 0%, #12372d 60%, #091d17 100%) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 28px !important;
+        margin: 14px 0 16px 20px !important;
+        top: 82px !important;
+        height: calc(100vh - 98px) !important;
+        box-shadow: 0 24px 50px -12px rgba(12, 38, 31, 0.32) !important;
+      }
+      .app-main-content {
+        padding: 14px 20px 32px 18px !important;
       }
     }
     .sidebar-brand-box {
-      background: rgba(255, 255, 255, 0.07) !important;
+      background: rgba(255, 255, 255, 0.06) !important;
       border: 1px solid rgba(255, 255, 255, 0.12) !important;
-      border-radius: 14px !important;
-      backdrop-filter: blur(12px) !important;
+      border-radius: 18px !important;
+    }
+    .sidebar-section-title {
+      color: rgba(110, 231, 183, 0.65) !important;
+      letter-spacing: 0.08em !important;
     }
     .nav-btn {
-      border-radius: 12px !important;
-      padding: 10px 12px !important;
+      border-radius: 14px !important;
+      padding: 10px 13px !important;
       font-weight: 600 !important;
+      color: rgba(255, 255, 255, 0.75) !important;
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
     }
-    .nav-btn.active {
-      background: linear-gradient(135deg, #0284c7 0%, #004b93 100%) !important;
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.08) !important;
       color: #ffffff !important;
-      box-shadow: 0 6px 16px -3px rgba(2, 132, 199, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.35) !important;
+    }
+    .nav-btn.active {
+      background: #10b981 !important;
+      color: #052e16 !important;
+      font-weight: 700 !important;
+      box-shadow: 0 8px 20px -4px rgba(16, 185, 129, 0.45) !important;
+    }
+    .nav-btn.active .material-icons-round {
+      color: #052e16 !important;
     }
 
-    /* 3. Minimalist Pill Switcher (High-Risk Daily vs Low-Risk Monthly) */
+    /* 3. Warm Stone Segmented Pill Switcher */
     .summary-risk-switcher {
-      background: rgba(255, 255, 255, 0.78) !important;
-      backdrop-filter: blur(16px) !important;
-      border: 1px solid rgba(203, 213, 225, 0.8) !important;
-      border-radius: 16px !important;
+      background: #e7e5de !important;
+      border: 1px solid rgba(24, 24, 27, 0.06) !important;
+      border-radius: 999px !important;
       padding: 5px !important;
       gap: 6px !important;
-      box-shadow: 0 4px 16px -4px rgba(0, 46, 110, 0.05) !important;
+      display: inline-flex !important;
+      width: auto !important;
+      margin-bottom: 16px !important;
     }
     .risk-switch-tab {
-      border-radius: 12px !important;
-      padding: 9px 16px !important;
+      border-radius: 999px !important;
+      padding: 8px 20px !important;
       font-size: 13px !important;
       font-weight: 700 !important;
+      color: #52525b !important;
       transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
     }
     .risk-switch-tab.active {
-      background: #ffffff !important;
-      color: #002e6e !important;
-      box-shadow: 0 4px 14px -2px rgba(0, 46, 110, 0.12), 0 0 0 1px rgba(2, 132, 199, 0.18) !important;
+      background: #0c261f !important;
+      color: #ffffff !important;
+      box-shadow: 0 6px 16px -3px rgba(12, 38, 31, 0.25) !important;
+    }
+    .risk-switch-tab.active .risk-tab-badge {
+      background: rgba(16, 185, 129, 0.25) !important;
+      color: #6ee7b7 !important;
+      border-color: transparent !important;
     }
 
-    /* 4. Weightless Glass KPI Pods */
+    /* 4. Sculpted Bento Metric Tiles (Vertical Studio Layout) */
+    .kpi-strip-5,
+    .kpi-strip-4 {
+      gap: 12px !important;
+      margin-bottom: 18px !important;
+    }
     .kpi-card {
-      background: rgba(255, 255, 255, 0.92) !important;
-      backdrop-filter: blur(16px) !important;
-      border: 1px solid rgba(226, 232, 240, 0.95) !important;
-      border-radius: 18px !important;
-      padding: 12px 15px !important;
-      box-shadow: 0 6px 20px -6px rgba(0, 46, 110, 0.06), inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+      background: #ffffff !important;
+      border: 1px solid rgba(24, 24, 27, 0.07) !important;
+      border-radius: 24px !important;
+      padding: 16px 18px !important;
+      display: flex !important;
+      flex-direction: row-reverse !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      box-shadow: 0 10px 26px -10px rgba(12, 38, 31, 0.06) !important;
       transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
     }
     .kpi-card:hover {
-      transform: translateY(-2px) !important;
-      border-color: #93c5fd !important;
-      box-shadow: 0 12px 26px -6px rgba(0, 75, 147, 0.12) !important;
+      transform: translateY(-3px) !important;
+      border-color: #0d9488 !important;
+      box-shadow: 0 16px 32px -10px rgba(12, 38, 31, 0.12) !important;
     }
     .kpi-card.active-kpi {
-      background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%) !important;
-      border: 1.5px solid #0284c7 !important;
-      box-shadow: 0 10px 24px -6px rgba(2, 132, 199, 0.22), 0 0 0 3px rgba(2, 132, 199, 0.12) !important;
+      background: #0c261f !important;
+      border-color: #0c261f !important;
+      color: #ffffff !important;
+      box-shadow: 0 16px 32px -8px rgba(12, 38, 31, 0.32) !important;
+    }
+    .kpi-card.active-kpi .kpi-val,
+    .kpi-card.active-kpi .kpi-label {
+      color: #ffffff !important;
+    }
+    .kpi-card.active-kpi .kpi-icon-box {
+      background: rgba(16, 185, 129, 0.22) !important;
+      color: #6ee7b7 !important;
     }
     .kpi-icon-box {
-      width: 40px !important;
-      height: 40px !important;
-      border-radius: 12px !important;
+      width: 44px !important;
+      height: 44px !important;
+      border-radius: 16px !important;
+    }
+    .kpi-icon-blue {
+      background: #f0fdf4 !important;
+      color: #0f3d32 !important;
     }
     .kpi-val {
       font-family: var(--font-display) !important;
-      font-size: 22px !important;
+      font-size: 28px !important;
       font-weight: 800 !important;
       letter-spacing: -0.03em !important;
+      line-height: 1.05 !important;
       font-variant-numeric: tabular-nums !important;
     }
     .kpi-label {
-      font-size: 11.5px !important;
+      font-size: 12px !important;
       font-weight: 600 !important;
-      color: #64748b !important;
+      color: #71717a !important;
+      margin-top: 3px !important;
     }
 
-    /* 5. Elevated Glass Content Panels & Clean Tables */
+    /* 5. Floating Studio Content Panels & Separated Card-Row Table */
     .content-panel,
     .dash-panel {
-      background: rgba(255, 255, 255, 0.95) !important;
+      background: rgba(255, 255, 255, 0.72) !important;
       backdrop-filter: blur(20px) !important;
-      border: 1px solid rgba(226, 232, 240, 0.95) !important;
-      border-radius: 20px !important;
-      box-shadow: 0 14px 34px -10px rgba(0, 46, 110, 0.07), 0 2px 8px -2px rgba(15, 23, 42, 0.03) !important;
+      border: 1px solid rgba(24, 24, 27, 0.07) !important;
+      border-radius: 28px !important;
+      padding: 6px !important;
+      box-shadow: 0 20px 44px -16px rgba(12, 38, 31, 0.07) !important;
     }
     .panel-header {
       padding: 14px 20px !important;
-      border-bottom: 1px solid #f1f5f9 !important;
-      background: rgba(255, 255, 255, 0.7) !important;
+      border-bottom: none !important;
+      background: transparent !important;
     }
-    .device-table thead th,
-    .data-table-modern thead th {
-      background: #f8fafc !important;
-      color: #475569 !important;
-      font-size: 11.5px !important;
+    .panel-title {
+      font-size: 16px !important;
+      font-weight: 800 !important;
+      color: #0c261f !important;
+    }
+    .panel-badge {
+      background: #0c261f !important;
+      color: #6ee7b7 !important;
+      border: none !important;
+      border-radius: 999px !important;
+      padding: 3px 11px !important;
+      font-family: var(--font-mono) !important;
       font-weight: 700 !important;
-      letter-spacing: 0.02em !important;
-      padding: 11px 14px !important;
-      border-bottom: 1px solid #e2e8f0 !important;
     }
-    .device-table tbody td,
-    .data-table-modern tbody td {
-      padding: 11px 14px !important;
-      border-bottom: 1px solid #f1f5f9 !important;
-      transition: background 0.15s ease !important;
+
+    @media (min-width: 992px) {
+      .device-table {
+        border-collapse: separate !important;
+        border-spacing: 0 7px !important;
+        padding: 0 10px 10px 10px !important;
+      }
+      .device-table thead th {
+        background: transparent !important;
+        color: #71717a !important;
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.04em !important;
+        padding: 6px 16px !important;
+        border: none !important;
+      }
+      .device-table tbody tr {
+        background: #ffffff !important;
+        box-shadow: 0 3px 12px -3px rgba(12, 38, 31, 0.05) !important;
+        transition: transform 0.18s ease, box-shadow 0.18s ease !important;
+      }
+      .device-table tbody tr:hover {
+        transform: translateY(-1px) !important;
+        box-shadow: 0 8px 20px -4px rgba(12, 38, 31, 0.1) !important;
+      }
+      .device-table tbody td {
+        background: #ffffff !important;
+        padding: 12px 16px !important;
+        border-top: 1px solid #f4f4f5 !important;
+        border-bottom: 1px solid #f4f4f5 !important;
+      }
+      .device-table tbody td:first-child {
+        border-left: 1px solid #f4f4f5 !important;
+        border-top-left-radius: 16px !important;
+        border-bottom-left-radius: 16px !important;
+      }
+      .device-table tbody td:last-child {
+        border-right: 1px solid #f4f4f5 !important;
+        border-top-right-radius: 16px !important;
+        border-bottom-right-radius: 16px !important;
+      }
     }
-    .device-table tbody tr:hover td,
-    .data-table-modern tbody tr:hover td {
-      background: #f8fbff !important;
-    }
+
     .asset-code-clean {
       font-family: var(--font-mono) !important;
       font-size: 12px !important;
       font-weight: 700 !important;
-      color: #004b93 !important;
-      background: #f0f7ff !important;
-      border: 1px solid #bfdbfe !important;
-      padding: 3px 9px !important;
-      border-radius: 8px !important;
-      letter-spacing: 0.2px !important;
+      color: #0c261f !important;
+      background: #ecfdf5 !important;
+      border: 1px solid #a7f3d0 !important;
+      padding: 4px 10px !important;
+      border-radius: 10px !important;
+      letter-spacing: 0.3px !important;
+    }
+
+    .btn-tool-primary {
+      background: #0c261f !important;
+      border-color: #0c261f !important;
+      color: #ffffff !important;
+      border-radius: 999px !important;
+    }
+    .btn-tool-primary:hover {
+      background: #0d9488 !important;
+      border-color: #0d9488 !important;
     }
 
     /* 6. 3D-Tactile Status Symbol Orbs (Symbol-First Design) */
     .status-symbol-btn {
-      width: 36px !important;
-      height: 36px !important;
-      min-width: 36px !important;
+      width: 38px !important;
+      height: 38px !important;
+      min-width: 38px !important;
       border-radius: 50% !important;
       border-width: 1.5px !important;
       transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
@@ -3840,29 +3978,29 @@
     }
     .status-symbol-btn.symbol-ready,
     .status-symbol-btn.symbol-ready-repaired {
-      background: linear-gradient(145deg, #ecfdf5 0%, #d1fae5 100%) !important;
-      color: #059669 !important;
-      border-color: #6ee7b7 !important;
-      box-shadow: 0 3px 10px -2px rgba(16, 185, 129, 0.25), inset 0 1px 1px #ffffff !important;
+      background: #10b981 !important;
+      color: #ffffff !important;
+      border-color: #059669 !important;
+      box-shadow: 0 4px 12px -2px rgba(16, 185, 129, 0.4) !important;
     }
     .status-symbol-btn.symbol-conditional,
     .status-symbol-btn.symbol-in-progress {
-      background: linear-gradient(145deg, #fffbeb 0%, #fef3c7 100%) !important;
-      color: #d97706 !important;
-      border-color: #fcd34d !important;
-      box-shadow: 0 3px 10px -2px rgba(245, 158, 11, 0.28), inset 0 1px 1px #ffffff !important;
+      background: #f59e0b !important;
+      color: #ffffff !important;
+      border-color: #d97706 !important;
+      box-shadow: 0 4px 12px -2px rgba(245, 158, 11, 0.4) !important;
     }
     .status-symbol-btn.symbol-abnormal {
-      background: linear-gradient(145deg, #fef2f2 0%, #fee2e2 100%) !important;
-      color: #dc2626 !important;
-      border-color: #fca5a5 !important;
-      box-shadow: 0 3px 10px -2px rgba(239, 68, 68, 0.28), inset 0 1px 1px #ffffff !important;
+      background: #e11d48 !important;
+      color: #ffffff !important;
+      border-color: #be123c !important;
+      box-shadow: 0 4px 12px -2px rgba(225, 29, 72, 0.4) !important;
     }
     .status-symbol-btn.symbol-pending {
-      background: linear-gradient(145deg, #ffffff 0%, #f1f5f9 100%) !important;
-      color: #94a3b8 !important;
-      border-color: #cbd5e1 !important;
-      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05), inset 0 1px 1px #ffffff !important;
+      background: #f4f4f5 !important;
+      color: #a1a1aa !important;
+      border-color: #e4e4e7 !important;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04) !important;
     }
     .status-symbol-btn:hover {
       transform: translateY(-2px) scale(1.14) !important;
@@ -3870,20 +4008,23 @@
 
     /* 7. Tactile Speed Dial Trigger & Tray */
     .btn-floating-trigger {
-      width: 34px !important;
-      height: 34px !important;
-      min-width: 34px !important;
-      background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%) !important;
-      border: 1.5px solid #cbd5e1 !important;
-      box-shadow: 0 3px 8px rgba(0, 46, 110, 0.08) !important;
+      width: 36px !important;
+      height: 36px !important;
+      min-width: 36px !important;
+      background: #fafaf9 !important;
+      color: #0c261f !important;
+      border: 1.5px solid #d4d4d8 !important;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+    }
+    .floating-badge-count {
+      background: #0c261f !important;
     }
     .floating-action-tray {
-      background: rgba(255, 255, 255, 0.96) !important;
-      backdrop-filter: blur(16px) !important;
-      border: 1px solid #bae6fd !important;
+      background: #0c261f !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
       border-radius: 999px !important;
-      padding: 4px 8px !important;
-      box-shadow: 0 12px 28px -4px rgba(0, 46, 110, 0.24) !important;
+      padding: 5px 10px !important;
+      box-shadow: 0 14px 32px -4px rgba(12, 38, 31, 0.45) !important;
     }
   </style>
 </head>
@@ -3934,9 +4075,9 @@
       </div>
 
       <div class="topbar-right">
-        <a href="eval-v2.html" class="btn-tool" style="text-decoration: none; padding: 5px 12px; font-size: 12px; font-weight: 700; color: #004b93; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 999px; display: inline-flex; align-items: center; gap: 5px;" title="เปิดหน้าแบบตรวจเช็คประจำวัน V2">
-          <span class="material-icons-round" style="font-size: 16px; color: #0284c7;">fact_check</span>
-          <span>หน้าตรวจเช็ค V2</span>
+        <a href="eval-v2.html" class="btn-tool" style="text-decoration: none; padding: 6px 14px; font-size: 12px; font-weight: 700; color: #052e16; background: #10b981; border: 1px solid #34d399; border-radius: 999px; display: inline-flex; align-items: center; gap: 5px;" title="เปิดหน้าแบบตรวจเช็คประจำวัน V2">
+          <span class="material-icons-round" style="font-size: 16px; color: #052e16;">fact_check</span>
+          <span>หน้าตรวจเช็ค</span>
         </a>
         <div class="status-realtime-badge">
           <span class="pulse-indicator-dot"></span>
@@ -3946,7 +4087,7 @@
           <div class="avatar-circle">ชก</div>
           <span class="admin-label">Admin</span>
         </div>
-        <a href="index-v2.html" class="btn-tool" style="text-decoration: none; padding: 5px 10px; font-size: 12px; color: var(--text-muted); border-radius: 999px; display: inline-flex; align-items: center; gap: 4px;" title="กลับสู่หน้าแรก V2">
+        <a href="index-v2.html" class="btn-tool" style="text-decoration: none; padding: 6px 10px; font-size: 12px; color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; display: inline-flex; align-items: center; gap: 4px;" title="กลับสู่หน้าแรก V2">
           <span class="material-icons-round" style="font-size: 16px;">logout</span>
         </a>
       </div>
