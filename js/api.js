@@ -259,7 +259,7 @@
             callback({
               success: true,
               data: responseData,
-              serverTime: new Date().toISOString()
+              serverTime: new Date().toISOString() }); } self.checkDailySummarySchedule(); if (false) { callback({
             });
           }
         })
@@ -989,6 +989,35 @@
     saveLineSettings: function (settings, callback) {
       var payload = Object.assign({ action: 'saveLineSettings' }, settings);
       this.postToGas(payload, callback);
+    },
+    _dailySummaryCheckedSlot: '',
+    checkDailySummarySchedule: function (callback) {
+      var gasUrl = this.getGasEndpoint();
+      if (!gasUrl) return;
+      try {
+        var now = new Date();
+        var bkkHour = (now.getUTCHours() + 7) % 24;
+        var slot = null;
+        if (bkkHour >= 10 && bkkHour <= 12) slot = '10';
+        else if (bkkHour >= 0 && bkkHour <= 2) slot = '0';
+        if (!slot) return;
+        var slotToken = now.toISOString().slice(0, 10) + '_' + slot;
+        if (this._dailySummaryCheckedSlot === slotToken) return;
+        this._dailySummaryCheckedSlot = slotToken;
+        var cbName = 'ppch_autosummary_cb_' + Date.now();
+        var script = document.createElement('script');
+        script.src = gasUrl + (gasUrl.indexOf('?') === -1 ? '?' : '&') + 'action=checkDailySummarySchedule&callback=' + cbName;
+        window[cbName] = function (data) {
+          delete window[cbName];
+          if (script.parentNode) script.parentNode.removeChild(script);
+          if (callback) callback(data);
+        };
+        script.onerror = function () {
+          delete window[cbName];
+          if (script.parentNode) script.parentNode.removeChild(script);
+        };
+        document.body.appendChild(script);
+      } catch (e) {}
     },
 
     // 11. Save Employee (Insert/Update in Supabase + Mirror to Memory & GAS)

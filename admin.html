@@ -5165,7 +5165,7 @@
                           <option value="10">10.00 น. (รอบเช้า ติดตามแผนกที่ยังไม่ตรวจ)</option>
                           <option value="0">00.00 น. (รอบเที่ยงคืน สรุปประจำวัน)</option>
                         </select>
-                        <span style="font-size: 11px; color: #059669; font-weight: 600;">✓ ติดตั้งระบบ Trigger อัตโนมัติ</span>
+                        <span id="lineScheduleStatusBadge" style="font-size: 11px; color: #059669; font-weight: 600;">✓ ระบบส่งอัตโนมัติทำงาน (Cloud Scheduler + Auto-Check)</span>
                       </div>
                     </div>
                   </div>
@@ -8144,10 +8144,12 @@
             var chkAbn = document.getElementById('lineAlertAbnormal');
             var chkDaily = document.getElementById('lineDailyAlertEnabled');
             var bStatus = document.getElementById('badgeSettingsLineStatus');
+            var schedBadge = document.getElementById('lineScheduleStatusBadge');
 
-            if (tInput) tInput.value = res.data.channelAccessToken || '';
+            if (tInput) tInput.value = res.data.channelAccessToken || res.data.channelAccessTokenMasked || '';
             if (idInput) idInput.value = res.data.targetId || '';
-            if (chkAbn) chkAbn.checked = res.data.alertAbnormal !== false;
+            var abnEnabled = (res.data.alertOnAbnormal !== undefined) ? res.data.alertOnAbnormal : res.data.alertAbnormal;
+            if (chkAbn) chkAbn.checked = abnEnabled !== false;
             if (chkDaily) chkDaily.checked = res.data.dailyAlertEnabled !== false;
 
             var selHour = document.getElementById('lineDailyAlertHour');
@@ -8156,8 +8158,21 @@
               selHour.value = (val === '0' || val === '10' || val === '10,0') ? val : '10,0';
             }
 
+            if (schedBadge) {
+              if (res.data.dailyAlertEnabled === false) {
+                schedBadge.innerText = '⏸ ปิดการแจ้งเตือนสรุปประจำวันชั่วคราว';
+                schedBadge.style.color = '#64748b';
+              } else if (res.data.lastAutoSummaryAt) {
+                schedBadge.innerText = '✓ ระบบตั้งเวลาทำงานปกติ (ส่งอัตโนมัติล่าสุด: ' + res.data.lastAutoSummaryAt + ')';
+                schedBadge.style.color = '#059669';
+              } else {
+                schedBadge.innerText = '✓ ระบบตั้งเวลาอัตโนมัติพร้อมทำงาน (10:00 น. และ 00:00 น.)';
+                schedBadge.style.color = '#059669';
+              }
+            }
+
             if (bStatus) {
-              if (res.data.channelAccessToken) {
+              if (res.data.channelAccessTokenConfigured || res.data.channelAccessToken) {
                 bStatus.innerText = 'เชื่อมต่อแล้ว';
                 bStatus.style.background = '#dcfce7';
                 bStatus.style.color = '#15803d';
@@ -8195,6 +8210,7 @@
         window.PPCH_API.saveLineSettings({
           channelAccessToken: token,
           targetId: targetId,
+          alertOnAbnormal: alertAbn,
           alertAbnormal: alertAbn,
           dailyAlertEnabled: dailyEnabled,
           dailyAlertHour: dailyHour,
@@ -8206,7 +8222,7 @@
           }
           var bStatus = document.getElementById('badgeSettingsLineStatus');
           if (bStatus) {
-            if (token) {
+            if (token || (lineSettingsCache && lineSettingsCache.channelAccessTokenConfigured)) {
               bStatus.innerText = 'เชื่อมต่อแล้ว';
               bStatus.style.background = '#dcfce7';
               bStatus.style.color = '#15803d';
@@ -8216,7 +8232,8 @@
               bStatus.style.color = '#b45309';
             }
           }
-          showToast('บันทึกการตั้งค่า LINE สำเร็จ (ตั้งเวลาแจ้งเตือน 10:00 น. และ 00:00 น. เรียบร้อย)');
+          var hourDesc = (dailyHour === '10') ? '10:00 น.' : ((dailyHour === '0') ? '00:00 น.' : '10:00 น. และ 00:00 น.');
+          showToast('บันทึกการตั้งค่า LINE สำเร็จ (ตั้งเวลาแจ้งเตือน ' + hourDesc + ' เรียบร้อย)');
         });
       }
     }

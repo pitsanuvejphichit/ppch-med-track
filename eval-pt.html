@@ -376,26 +376,6 @@
       color: #ffffff;
     }
 
-    .btn-quick-pass {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 4px 11px;
-      border-radius: 9999px;
-      font-size: 11.5px;
-      font-weight: 700;
-      color: #047857;
-      background: #ecfdf5;
-      border: 1.5px solid #a7f3d0;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .btn-quick-pass:hover {
-      background: #d1fae5;
-      border-color: #6ee7b7;
-      transform: translateY(-1px);
-    }
-
     /* Submit CTA */
     .btn-submit-main {
       width: 100%;
@@ -623,10 +603,9 @@
           <span class="material-icons-round" style="color: var(--royal-blue); font-size: 18px;">playlist_add_check</span>
           <span>รายการตรวจสอบความพร้อมการทำงาน</span>
         </div>
-        <button type="button" class="btn-quick-pass" onclick="markAllPass()" title="เลือกทุกข้อเป็นปกติ">
-          <span class="material-icons-round" style="font-size: 16px;">done_all</span>
-          <span>เลือกผ่านทั้งหมด</span>
-        </button>
+        <div id="ptChecklistProgressBadge" style="font-size: 11.5px; font-weight: 600; color: var(--text-muted); background: #f1f5f9; border: 1px solid var(--border-main); padding: 3px 10px; border-radius: 9999px;">
+          ประเมินแล้ว 0/0 ข้อ
+        </div>
       </div>
 
       <!-- Hydrocollator Temperature Check -->
@@ -941,6 +920,7 @@
       def.items.forEach(function (text, idx) {
         var row = document.createElement('div');
         row.className = 'checklist-item';
+        row.id = 'ptCheckRow_' + idx;
         row.innerHTML = '<div class="item-text">' + (idx + 1) + '. ' + text + '</div>' +
           '<div class="item-btn-group">' +
             '<button type="button" class="btn-check-choice" id="btnPass_' + idx + '" onclick="setChoice(' + idx + ', true)">ผ่าน</button>' +
@@ -949,8 +929,7 @@
         container.appendChild(row);
       });
 
-      // Default all to PASS for smooth workflow
-      markAllPass();
+      recalcSummary();
     }
 
     function setChoice(idx, isPass) {
@@ -966,19 +945,6 @@
         bFail.classList.add('active-fail');
       }
       recalcSummary();
-    }
-
-    function markAllPass() {
-      if (!selectedItemId || !PT_CHECKLISTS[selectedItemId]) return;
-      var def = PT_CHECKLISTS[selectedItemId];
-      def.items.forEach(function (_, idx) {
-        setChoice(idx, true);
-      });
-      if (selectedItemId === 'pt_hydro') {
-        var tempInp = document.getElementById('hydroTempInput');
-        if (!tempInp.value) tempInp.value = '65.5';
-        validateHydroTemp();
-      }
     }
 
     function validateHydroTemp() {
@@ -999,11 +965,32 @@
     }
 
     function recalcSummary() {
+      var def = selectedItemId ? PT_CHECKLISTS[selectedItemId] : null;
+      var total = (def && def.items) ? def.items.length : 0;
+      var answered = 0;
       var hasFail = false;
+
       for (var k in currentAnswers) {
-        if (currentAnswers[k] === false) {
-          hasFail = true;
-          break;
+        if (currentAnswers[k] !== undefined && currentAnswers[k] !== null) {
+          answered++;
+          if (currentAnswers[k] === false) {
+            hasFail = true;
+          }
+        }
+      }
+
+      var progBadge = document.getElementById('ptChecklistProgressBadge');
+      if (progBadge) {
+        if (total > 0 && answered === total) {
+          progBadge.innerHTML = '✓ ประเมินครบ ' + answered + '/' + total + ' ข้อ';
+          progBadge.style.color = '#059669';
+          progBadge.style.background = '#ecfdf5';
+          progBadge.style.borderColor = '#a7f3d0';
+        } else {
+          progBadge.textContent = 'ประเมินแล้ว ' + answered + '/' + total + ' ข้อ (ยังไม่ครบ)';
+          progBadge.style.color = '#d97706';
+          progBadge.style.background = '#fffbeb';
+          progBadge.style.borderColor = '#fde68a';
         }
       }
 
@@ -1015,7 +1002,12 @@
       }
 
       var pill = document.getElementById('summaryResultPill');
-      if (hasFail) {
+      if (answered < total) {
+        pill.textContent = 'รอตรวจเช็คให้ครบทุกข้อ (' + answered + '/' + total + ')';
+        pill.style.background = '#fffbeb';
+        pill.style.color = '#d97706';
+        pill.style.borderColor = '#fde68a';
+      } else if (hasFail) {
         pill.textContent = 'พบความผิดปกติ / ไม่พร้อมใช้งาน';
         pill.style.background = '#fef2f2';
         pill.style.color = '#dc2626';
@@ -1039,20 +1031,20 @@
     /* Submit Evaluation to Supabase */
     function submitEvaluation() {
       if (!selectedItemId) {
-        alert('กรุณาเลือกเครื่องมือแพทย์ก่อนทำการบันทึก');
+        showToast('กรุณาเลือกเครื่องมือแพทย์ก่อนทำการบันทึก');
         return;
       }
 
       var staffVal = document.getElementById('evalStaffSelect').value;
       var staffName = '';
       if (!staffVal) {
-        alert('กรุณาระบุชื่อผู้ตรวจเช็ค');
+        showToast('กรุณาระบุชื่อผู้ตรวจเช็ค');
         document.getElementById('evalStaffSelect').focus();
         return;
       } else if (staffVal === 'other') {
         staffName = (document.getElementById('evalStaffCustom').value || '').trim();
         if (!staffName) {
-          alert('กรุณาพิมพ์ชื่อผู้ตรวจเช็ค');
+          showToast('กรุณาพิมพ์ชื่อผู้ตรวจเช็ค');
           document.getElementById('evalStaffCustom').focus();
           return;
         }
@@ -1062,7 +1054,7 @@
 
       var evalDate = document.getElementById('evalDateInput').value;
       if (!evalDate) {
-        alert('กรุณาระบุวันที่ตรวจเช็ค');
+        showToast('กรุณาระบุวันที่ตรวจเช็ค');
         return;
       }
 
@@ -1070,7 +1062,9 @@
       var def = PT_CHECKLISTS[selectedItemId];
       for (var i = 0; i < def.items.length; i++) {
         if (currentAnswers[i] === undefined) {
-          alert('กรุณาตรวจเช็คข้อที่ ' + (i + 1) + ' ให้ครบถ้วน');
+          showToast('กรุณาตรวจเช็คข้อที่ ' + (i + 1) + ' ให้ครบถ้วน');
+          var rowEl = document.getElementById('ptCheckRow_' + i);
+          if (rowEl) rowEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
           return;
         }
       }
@@ -1078,7 +1072,7 @@
       var isHydro = (selectedItemId === 'pt_hydro');
       var hydroTemp = isHydro ? parseFloat(document.getElementById('hydroTempInput').value) : null;
       if (isHydro && isNaN(hydroTemp)) {
-        alert('กรุณากรอกอุณหภูมิหม้อต้ม Hydrocollator');
+        showToast('กรุณากรอกอุณหภูมิหม้อต้ม Hydrocollator');
         document.getElementById('hydroTempInput').focus();
         return;
       }
@@ -1115,7 +1109,7 @@
           btn.innerHTML = '<span class="material-icons-round">cloud_upload</span> <span>บันทึกผลการตรวจเช็ค</span>';
 
           if (err) {
-            alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' + (err.message || JSON.stringify(err)));
+            showToast('เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' + (err.message || JSON.stringify(err)));
           } else {
             showToast('✓ บันทึกผลตรวจเช็ค ' + def.name + ' สำเร็จแล้ว');
             updateStepper(3);

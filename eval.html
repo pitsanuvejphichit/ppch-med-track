@@ -502,30 +502,6 @@
       box-shadow: 0 3px 10px rgba(220, 38, 38, 0.25);
     }
 
-    .btn-quick-pass {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 4px 11px;
-      border-radius: 9999px;
-      font-size: 11.5px;
-      font-weight: 700;
-      color: #047857;
-      background: #ecfdf5;
-      border: 1.5px solid #a7f3d0;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      user-select: none;
-    }
-    .btn-quick-pass:hover {
-      background: #d1fae5;
-      border-color: #6ee7b7;
-      transform: translateY(-1px);
-    }
-    .btn-quick-pass:active {
-      transform: scale(0.96);
-    }
-
     /* Visual Stepper / Progress Bar */
     .eval-stepper-bar {
       display: flex;
@@ -1138,10 +1114,6 @@
             <span>รายการตรวจเช็คความพร้อมใช้งาน</span>
           </div>
           <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-            <button type="button" class="btn-quick-pass" onclick="setAllChoices('pass')" title="เลือกผ่านทุกข้อในคลิกเดียว">
-              <span class="material-icons-round" style="font-size: 14px;">done_all</span>
-              <span>ผ่านทั้งหมด</span>
-            </button>
             <div id="checklistProgressBadge" style="font-size: 11.5px; font-weight: 600; color: var(--text-muted); background: #f1f5f9; border: 1px solid var(--border-main); padding: 3px 10px; border-radius: 9999px;">
               ประเมินแล้ว 0/0 ข้อ
             </div>
@@ -2065,32 +2037,6 @@
         btnFail.className = 'btn-check-choice active-fail';
       }
 
-      updateChecklistProgress();
-    }
-
-    function setAllChoices(choice) {
-      if (isDeviceLockedForRepair) return;
-      var total = (currentForm && currentForm.items) ? currentForm.items.length : 0;
-      for (var i = 0; i < total; i++) {
-        checklistState[i] = choice;
-        var row = document.getElementById('checkItemRow_' + i);
-        if (row) {
-          row.classList.remove('item-unanswered-highlight', 'row-pass', 'row-fail');
-          row.classList.add(choice === 'pass' ? 'row-pass' : 'row-fail');
-        }
-
-        var btnPass = document.getElementById('btnPass_' + i);
-        var btnFail = document.getElementById('btnFail_' + i);
-        if (btnPass && btnFail) {
-          if (choice === 'pass') {
-            btnPass.className = 'btn-check-choice active-pass';
-            btnFail.className = 'btn-check-choice';
-          } else {
-            btnPass.className = 'btn-check-choice';
-            btnFail.className = 'btn-check-choice active-fail';
-          }
-        }
-      }
       updateChecklistProgress();
     }
 
