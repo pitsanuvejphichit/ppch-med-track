@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PPCH MedTrack V2 | โรงพยาบาลพิษณุเวช พิจิตร</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+  <style>
+    :root {
+      --brand-navy: #002e6e;
+      --brand-blue: #004b93;
+      --brand-sky: #0284c7;
+      --brand-cyan: #38bdf8;
+      --brand-emerald: #10b981;
+      --bg-light: #f4f8fd;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Prompt', 'Plus Jakarta Sans', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      background: var(--bg-light);
+    }
+
+    /* Seamless Admin V2 Workstation Frame */
+    #adminFrame {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      z-index: 1;
+      opacity: 0;
+      transform: scale(1.02) translateY(12px);
+      filter: blur(4px);
+      pointer-events: none;
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                  filter 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    #adminFrame.is-active {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      filter: blur(0px);
+      pointer-events: auto;
+    }
+
+    /* Minimalist Luxury Gate Stage */
+    #gateStage {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at 20% 15%, rgba(186, 230, 253, 0.55) 0%, transparent 45%),
+        radial-gradient(circle at 80% 85%, rgba(167, 243, 208, 0.35) 0%, transparent 45%),
+        radial-gradient(circle at 50% 45%, #ffffff 0%, #eff6ff 65%, #e0f2fe 100%);
+      padding: 24px;
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                  filter 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    #gateStage.is-exiting {
+      opacity: 0;
+      transform: translateY(-28px) scale(0.95);
+      filter: blur(8px);
+      pointer-events: none;
+    }
+
+    .bg-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(2, 132, 199, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(2, 132, 199, 0.045) 1px, transparent 1px);
+      background-size: 36px 36px;
+      pointer-events: none;
+    }
+
+    #ecgCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Minimalist Glass Monolith Card */
+    .gate-wrapper {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 540px;
+      perspective: 1200px;
+    }
+
+    .gate-card {
+      position: relative;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 46px 40px 38px 40px;
+      border-radius: 32px;
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(28px) saturate(190%);
+      -webkit-backdrop-filter: blur(28px) saturate(190%);
+      border: 1px solid rgba(255, 255, 255, 0.92);
+      box-shadow:
+        0 32px 70px -14px rgba(0, 46, 110, 0.14),
+        0 8px 24px -4px rgba(15, 23, 42, 0.04),
+        inset 0 1px 2px rgba(255, 255, 255, 1);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+    }
+
+    .edition-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.12), rgba(16, 185, 129, 0.12));
+      border: 1px solid rgba(2, 132, 199, 0.25);
+      color: var(--brand-navy);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .edition-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--brand-emerald);
+      box-shadow: 0 0 8px var(--brand-emerald);
+    }
+
+    .emblem-wrapper {
+      position: relative;
+      width: 156px;
+      height: 156px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: floatLevitate 5s ease-in-out infinite;
+    }
+    @keyframes floatLevitate {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+    .emblem-glow {
+      position: absolute;
+      inset: -12px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(2, 132, 199, 0.2), transparent 70%);
+      animation: pulseAura 3.2s ease-in-out infinite;
+    }
+    @keyframes pulseAura {
+      0%, 100% { transform: scale(0.95); opacity: 0.45; }
+      50% { transform: scale(1.15); opacity: 0.9; }
+    }
+    .hospital-logo {
+      position: relative;
+      z-index: 2;
+      width: 146px;
+      height: 146px;
+      object-fit: contain;
+      filter: drop-shadow(0 12px 24px rgba(0, 46, 110, 0.16));
+    }
+
+    .main-title {
+      font-size: clamp(22px, 2.8vw, 29px);
+      font-weight: 700;
+      color: var(--brand-navy);
+      letter-spacing: -0.3px;
+      margin-bottom: 28px;
+    }
+
+    /* Dual Minimalist Launch Pods */
+    .action-stack {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .btn-launch {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 18px 16px;
+      border-radius: 20px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      border: 1.5px solid transparent;
+      font-family: 'Prompt', sans-serif;
+    }
+
+    .btn-launch-primary {
+      background: linear-gradient(135deg, #004b93 0%, #002e6e 100%);
+      color: #ffffff;
+      box-shadow: 0 14px 28px -6px rgba(0, 46, 110, 0.35);
+    }
+    .btn-launch-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 34px -6px rgba(0, 46, 110, 0.45);
+    }
+
+    .btn-launch-secondary {
+      background: #ffffff;
+      color: var(--brand-navy);
+      border-color: #bae6fd;
+      box-shadow: 0 8px 20px -6px rgba(2, 132, 199, 0.14);
+    }
+    .btn-launch-secondary:hover {
+      transform: translateY(-3px);
+      background: #f0f9ff;
+      border-color: #38bdf8;
+      box-shadow: 0 14px 28px -6px rgba(2, 132, 199, 0.22);
+    }
+
+    .launch-icon-orb {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-launch-primary .launch-icon-orb {
+      background: rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+    }
+    .btn-launch-secondary .launch-icon-orb {
+      background: #e0f2fe;
+      color: #0284c7;
+    }
+
+    .launch-label {
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .launch-sub {
+      font-size: 11px;
+      opacity: 0.78;
+      font-weight: 500;
+    }
+
+    .v1-switch-link {
+      margin-top: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #64748b;
+      text-decoration: none;
+      padding: 5px 12px;
+      border-radius: 999px;
+      transition: all 0.2s;
+    }
+    .v1-switch-link:hover {
+      color: var(--brand-blue);
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    @media (max-width: 520px) {
+      .gate-card {
+        padding: 34px 22px 28px 22px;
+      }
+      .action-stack {
+        grid-template-columns: 1fr;
+      }
+      .btn-launch {
+        flex-direction: row;
+        justify-content: flex-start;
+        padding: 14px 18px;
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Pre-loaded Admin V2 Workstation -->
+  <iframe id="adminFrame" src="admin-v2.html" title="PPCH MedTrack V2 Admin"></iframe>
+
+  <!-- Minimalist V2 Gate Stage -->
+  <div id="gateStage">
+    <div class="bg-grid"></div>
+    <canvas id="ecgCanvas"></canvas>
+
+    <main class="gate-wrapper">
+      <div class="gate-card" id="gateCard">
+        <div class="edition-pill">
+          <span class="edition-dot"></span>
+          <span>PPCH MedTrack • V2 Edition</span>
+        </div>
+
+        <div class="emblem-wrapper">
+          <div class="emblem-glow"></div>
+          <img src="logo.png" alt="โลโก้โรงพยาบาลพิษณุเวช" class="hospital-logo">
+        </div>
+
+        <h1 class="main-title">ระบบเครื่องมือแพทย์</h1>
+
+        <div class="action-stack">
+          <button type="button" id="btnEnter" class="btn-launch btn-launch-primary" onclick="handleEnter(event)">
+            <div class="launch-icon-orb">
+              <span class="material-icons-round" style="font-size: 24px;">space_dashboard</span>
+            </div>
+            <div>
+              <div class="launch-label">ศูนย์ควบคุม</div>
+              <div class="launch-sub">Admin Hub V2</div>
+            </div>
+          </button>
+
+          <a href="eval-v2.html" class="btn-launch btn-launch-secondary">
+            <div class="launch-icon-orb">
+              <span class="material-icons-round" style="font-size: 24px;">fact_check</span>
+            </div>
+            <div>
+              <div class="launch-label">ตรวจเช็ครายวัน</div>
+              <div class="launch-sub">Daily Check V2</div>
+            </div>
+          </a>
+        </div>
+
+        <a href="index.html" class="v1-switch-link" title="สลับไปยังเวอร์ชันเดิม (V1)">
+          <span class="material-icons-round" style="font-size: 14px;">history</span>
+          <span>สลับไปหน้าเว็บเวอร์ชันเดิม (V1)</span>
+        </a>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    var isTransitioning = false;
+
+    function handleEnter(e) {
+      if (e) e.preventDefault();
+      if (isTransitioning) return;
+      isTransitioning = true;
+
+      var gateStage = document.getElementById('gateStage');
+      var adminFrame = document.getElementById('adminFrame');
+
+      if (gateStage) gateStage.classList.add('is-exiting');
+      if (adminFrame) adminFrame.classList.add('is-active');
+
+      setTimeout(function () {
+        if (gateStage) gateStage.style.display = 'none';
+        try {
+          window.history.pushState({ page: 'admin-v2' }, 'PPCH MedTrack V2 (Admin)', 'admin-v2.html');
+        } catch (err) {}
+        if (adminFrame && adminFrame.contentWindow) {
+          try { adminFrame.contentWindow.focus(); } catch (err) {}
+        }
+      }, 600);
+    }
+
+    (function initEcgWave() {
+      var canvas = document.getElementById('ecgCanvas');
+      if (!canvas) return;
+      var ctx = canvas.getContext('2d');
+      var width = canvas.width = window.innerWidth;
+      var height = canvas.height = window.innerHeight;
+      var centerY = height * 0.52;
+      var x = 0;
+      var points = [];
+
+      window.addEventListener('resize', function () {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        centerY = height * 0.52;
+        points = [];
+        x = 0;
+      });
+
+      function renderEcg() {
+        if (isTransitioning) return;
+        ctx.fillStyle = 'rgba(244, 248, 253, 0.14)';
+        ctx.fillRect(0, 0, width, height);
+
+        var stepY = 0;
+        var phase = x % 220;
+        if (phase >= 40 && phase < 60) {
+          stepY = -Math.sin((phase - 40) / 20 * Math.PI) * 14;
+        } else if (phase >= 70 && phase < 75) {
+          stepY = ((phase - 70) / 5) * 12;
+        } else if (phase >= 75 && phase < 85) {
+          stepY = -Math.sin((phase - 75) / 10 * Math.PI) * 82;
+        } else if (phase >= 85 && phase < 95) {
+          stepY = Math.sin((phase - 85) / 10 * Math.PI) * 22;
+        } else if (phase >= 120 && phase < 155) {
+          stepY = -Math.sin((phase - 120) / 35 * Math.PI) * 20;
+        }
+
+        points.push({ x: x, y: centerY + stepY });
+        if (points.length > 1) {
+          ctx.beginPath();
+          ctx.strokeStyle = '#0284c7';
+          ctx.lineWidth = 2.6;
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = 'rgba(2, 132, 199, 0.4)';
+          var p1 = points[points.length - 2];
+          var p2 = points[points.length - 1];
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.stroke();
+          ctx.shadowBlur = 0;
+        }
+
+        x += 3.5;
+        if (x > width) {
+          x = 0;
+          points = [];
+          ctx.clearRect(0, 0, width, height);
+        }
+        requestAnimationFrame(renderEcg);
+      }
+      renderEcg();
+    })();
+  </script>
+</body>
+</html>
