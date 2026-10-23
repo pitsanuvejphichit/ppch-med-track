@@ -991,15 +991,21 @@
       this.postToGas(payload, callback);
     },
     _dailySummaryCheckedSlot: '',
+    _dailySummaryTimerStarted: false,
     checkDailySummarySchedule: function (callback) {
+      var self = this;
       var gasUrl = this.getGasEndpoint();
       if (!gasUrl) return;
+      if (!this._dailySummaryTimerStarted) {
+        this._dailySummaryTimerStarted = true;
+        setInterval(function () { self.checkDailySummarySchedule(); }, 10 * 60 * 1000);
+      }
       try {
         var now = new Date();
         var bkkHour = (now.getUTCHours() + 7) % 24;
         var slot = null;
-        if (bkkHour >= 10 && bkkHour <= 12) slot = '10';
-        else if (bkkHour >= 0 && bkkHour <= 2) slot = '0';
+        if (bkkHour >= 10 && bkkHour <= 21) slot = '10';
+        else if (bkkHour >= 0 && bkkHour <= 5) slot = '0';
         if (!slot) return;
         var slotToken = now.toISOString().slice(0, 10) + '_' + slot;
         if (this._dailySummaryCheckedSlot === slotToken) return;
