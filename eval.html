@@ -429,6 +429,9 @@
     .checklist-item.row-fail {
       background: rgba(254, 242, 242, 0.65);
     }
+    .checklist-item.row-conditional {
+      background: rgba(255, 251, 235, 0.72);
+    }
     .checklist-item:last-child {
       border-bottom: none;
     }
@@ -455,6 +458,24 @@
     .checklist-item.row-fail .item-num-badge {
       background: #fee2e2;
       color: #b91c1c;
+    }
+    .checklist-item.row-conditional .item-num-badge {
+      background: #fef3c7;
+      color: #b45309;
+    }
+    .badge-conditional-locked {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: #fffbeb;
+      border: 1.5px solid #fcd34d;
+      color: #b45309;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 0 1px 2px rgba(180, 83, 9, 0.08);
     }
     .item-text {
       font-size: 13.5px;
@@ -1579,6 +1600,7 @@
       var evals = (window.PPCH_STORE && window.PPCH_STORE.getEvaluations) ? window.PPCH_STORE.getEvaluations() : [];
       
       var evalsOnDate = evals.filter(function (ev) {
+        if (window.PPCH_STORE && window.PPCH_STORE.isRepairResolutionLog && window.PPCH_STORE.isRepairResolutionLog(ev)) return false;
         return ev.deviceId === currentDevice.id && ev.evaluatedAt && ev.evaluatedAt.indexOf(selectedDateStr) === 0;
       });
 
@@ -1995,21 +2017,42 @@
       container.innerHTML = '';
       checklistState = {};
 
+      var isConditionalDevice = !!(currentDevice && (currentDevice.status === 'conditional_ready' || currentDevice.allowUse));
+      var defectInfo = (isConditionalDevice && window.PPCH_STORE && window.PPCH_STORE.getActiveDefectInfo)
+        ? window.PPCH_STORE.getActiveDefectInfo(currentDevice.id)
+        : null;
+      var lockedDefectIndices = (defectInfo && Array.isArray(defectInfo.failedIndices)) ? defectInfo.failedIndices : [];
+
       items.forEach(function (text, idx) {
-        checklistState[idx] = null; // Default to UNCHECKED (พนักงานต้องกดประเมินเองทีละข้อ)
+        var isCondLockedItem = isConditionalDevice && lockedDefectIndices.indexOf(idx) !== -1;
 
         var div = document.createElement('div');
-        div.className = 'checklist-item';
         div.id = 'checkItemRow_' + idx;
-        div.innerHTML = '<div class="item-text"><span class="item-num-badge">' + (idx + 1) + '</span>' + text + '</div>' +
-          '<div class="item-btn-group">' +
-            '<button type="button" class="btn-check-choice" id="btnPass_' + idx + '" onclick="setChoice(' + idx + ', \'pass\')" ' + (isDeviceLockedForRepair ? 'disabled' : '') + '>' +
-              '<span class="material-icons-round" style="font-size: 14px;">check</span> ผ่าน' +
-            '</button>' +
-            '<button type="button" class="btn-check-choice" id="btnFail_' + idx + '" onclick="setChoice(' + idx + ', \'fail\')" ' + (isDeviceLockedForRepair ? 'disabled' : '') + '>' +
-              '<span class="material-icons-round" style="font-size: 14px;">close</span> ไม่ผ่าน' +
-            '</button>' +
-          '</div>';
+
+        if (isCondLockedItem) {
+          checklistState[idx] = 'conditional';
+          div.className = 'checklist-item row-conditional';
+          div.innerHTML = '<div class="item-text"><span class="item-num-badge">' + (idx + 1) + '</span>' + text +
+            '<div style="font-size: 11px; color: #b45309; font-weight: 600; margin-top: 3px;">↳ ข้อบกพร่องเดิมที่รับทราบและผ่อนผันให้ใช้งานชั่วคราว (รอซ่อม)</div></div>' +
+            '<div class="item-btn-group">' +
+              '<span class="badge-conditional-locked" title="หัวข้อนี้ชำรุดและได้รับอนุญาตให้ใช้งานชั่วคราวแล้ว ไม่ต้องประเมินซ้ำ">' +
+                '<span class="material-icons-round" style="font-size: 15px;">build_circle</span>' +
+                '<span>ผ่อนผันรอซ่อม (รับทราบแล้ว)</span>' +
+              '</span>' +
+            '</div>';
+        } else {
+          checklistState[idx] = null; // Default to UNCHECKED (พนักงานต้องกดประเมินเองทีละข้อ)
+          div.className = 'checklist-item';
+          div.innerHTML = '<div class="item-text"><span class="item-num-badge">' + (idx + 1) + '</span>' + text + '</div>' +
+            '<div class="item-btn-group">' +
+              '<button type="button" class="btn-check-choice" id="btnPass_' + idx + '" onclick="setChoice(' + idx + ', \'pass\')" ' + (isDeviceLockedForRepair ? 'disabled' : '') + '>' +
+                '<span class="material-icons-round" style="font-size: 14px;">check</span> ผ่าน' +
+              '</button>' +
+              '<button type="button" class="btn-check-choice" id="btnFail_' + idx + '" onclick="setChoice(' + idx + ', \'fail\')" ' + (isDeviceLockedForRepair ? 'disabled' : '') + '>' +
+                '<span class="material-icons-round" style="font-size: 14px;">close</span> ไม่ผ่าน' +
+              '</button>' +
+            '</div>';
+        }
         container.appendChild(div);
       });
 
@@ -2163,8 +2206,28 @@
       }
 
       // Determine result
-      var hasFail = Object.values(checklistState).some(function (v) { return v === 'fail'; });
+      var hasNewFail = Object.values(checklistState).some(function (v) { return v === 'fail'; });
+      var hasConditional = Object.values(checklistState).some(function (v) { return v === 'conditional'; }) ||
+        !!(currentDevice && (currentDevice.status === 'conditional_ready' || currentDevice.allowUse));
+      var isKeepConditional = (!hasNewFail && hasConditional);
       var note = document.getElementById('evalAbnormalNote').value.trim();
+
+      if (hasNewFail && !note && currentForm && currentForm.items) {
+        var failedNames = [];
+        currentForm.items.forEach(function (it, idx) {
+          if (checklistState[idx] === 'fail') {
+            var t = (typeof it === 'string') ? it.trim() : (it.text || ('ข้อ ' + (idx + 1)));
+            failedNames.push('ข้อ ' + (idx + 1) + ': ' + t);
+          }
+        });
+        note = failedNames.join(', ');
+      } else if (isKeepConditional) {
+        var baseReason = currentDevice.abnormalReason || 'รอซ่อมตามเงื่อนไขผ่อนผัน';
+        note = note
+          ? ('[ตรวจเช็คประจำวันผ่าน - คงสถานะผ่อนผันรอซ่อม] ' + note + ' (อาการเดิม: ' + baseReason + ')')
+          : ('[ตรวจเช็คประจำวันผ่าน - คงสถานะผ่อนผันรอซ่อม] ' + baseReason);
+      }
+
       var evalDtInput = document.getElementById('evalDateTimeInput');
       var evalTimeStr = '';
       var evalDateObj = new Date();
@@ -2223,7 +2286,8 @@
         evaluatedBy: evaluator,
         evaluatorEmpId: evaluatorEmpId,
         evaluatedAt: evalTimeStr,
-        result: hasFail ? 'abnormal' : 'normal',
+        result: hasNewFail ? 'abnormal' : 'normal',
+        keepConditional: isKeepConditional,
         abnormalNote: note,
         checklist: checklistState,
         checklistDetails: checklistDetails,
@@ -2244,7 +2308,10 @@
           btnSubmit.innerHTML = '<span class="material-icons-round">check_circle</span><span>บันทึกผลการตรวจเช็ค</span>';
         }
         window.PPCH_STORE.recordEvaluation(record);
-        document.getElementById('successModalSub').innerText = 'บันทึก ' + currentDevice.name + ' (' + currentDevice.assetCode + ') ลงฐานข้อมูล Supabase สำเร็จ!\n(ระบบกำลังซิงค์สำรองข้อมูลลง Google Sheets ในเบื้องหลัง)\nสถานะ: ' + (record.result === 'normal' ? 'พร้อมใช้งาน' : 'พบข้อบกพร่อง (ส่งแจ้งซ่อม)');
+        var statusMsgText = record.result === 'abnormal'
+          ? 'พบข้อบกพร่องใหม่ (ส่งแจ้งซ่อม)'
+          : (record.keepConditional ? 'ตรวจเช็คประจำวันผ่าน (คงสถานะผ่อนผันรอซ่อม)' : 'พร้อมใช้งานปกติ');
+        document.getElementById('successModalSub').innerText = 'บันทึก ' + currentDevice.name + ' (' + currentDevice.assetCode + ') ลงฐานข้อมูล Supabase สำเร็จ!\n(ระบบกำลังซิงค์สำรองข้อมูลลง Google Sheets ในเบื้องหลัง)\nสถานะ: ' + statusMsgText;
         document.getElementById('successModal').classList.remove('hidden');
       }
 

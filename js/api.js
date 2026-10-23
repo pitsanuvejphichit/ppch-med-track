@@ -293,6 +293,7 @@
     submitEvaluation: function (record, callback) {
       var evalId = record.id || ('EV-' + Date.now());
       var isAbnormal = record.result === 'abnormal';
+      var isKeepConditional = !!record.keepConditional;
 
       var evalRow = {
         id: evalId,
@@ -312,8 +313,6 @@
       };
 
       var eqUpdate = {
-        status: isAbnormal ? 'abnormal' : 'ready',
-        repair_status: isAbnormal ? 'reported' : 'ready',
         last_evaluated_at: record.evaluatedAt,
         last_evaluated_by: record.evaluatedBy,
         current_dept: record.department,
@@ -321,10 +320,16 @@
       };
 
       if (isAbnormal) {
+        eqUpdate.status = 'abnormal';
+        eqUpdate.repair_status = 'reported';
         eqUpdate.repair_reported_at = record.evaluatedAt;
         eqUpdate.repair_reported_by = record.evaluatedBy;
         eqUpdate.abnormal_reason = record.abnormalNote || 'พบข้อบกพร่องจากการตรวจเช็ค';
+      } else if (isKeepConditional) {
+        eqUpdate.status = 'conditional_ready';
       } else {
+        eqUpdate.status = 'ready';
+        eqUpdate.repair_status = 'ready';
         eqUpdate.abnormal_reason = '';
       }
 
@@ -351,6 +356,7 @@
             department: record.department,
             evaluatedBy: record.evaluatedBy,
             result: record.result,
+            keepConditional: isKeepConditional,
             abnormalNote: record.abnormalNote || '',
             checklist: record.checklist || {},
             checklistDetails: record.checklistDetails || [],
@@ -488,26 +494,7 @@
         status: 'ready',
         repair_status: 'ready',
         abnormal_reason: '',
-        last_evaluated_at: nowStr,
-        last_evaluated_by: techName || 'อาภากร บุญเกตกูล',
         updated_at: new Date().toISOString()
-      };
-
-      var resEvalRow = {
-        id: 'EV-' + Date.now(),
-        device_id: deviceId,
-        device_asset: deviceAsset,
-        device_name: deviceName,
-        department: dept,
-        form_id: eq ? (eq.formId || '') : '',
-        evaluated_at: nowStr,
-        evaluated_by: (techName || 'อาภากร บุญเกตกูล') + ' (ซ่อมเสร็จ: ' + (actionTaken || 'แก้ไขเรียบร้อย') + ')',
-        result: 'normal',
-        abnormal_note: 'แก้ไขเรียบร้อย: ' + (actionTaken || '') + (testNote ? ' | ' + testNote : ''),
-        answers: {},
-        ups_tested: false,
-        ups_duration: '',
-        sheet_synced: false
       };
 
       var pInsertRepair = supabaseFetch('repairs', { method: 'POST', body: repairRow });
@@ -515,25 +502,23 @@
         method: 'PATCH',
         body: eqUpdate
       });
-      var pInsertEval = supabaseFetch('evaluations', { method: 'POST', body: resEvalRow }).catch(function () { return null; });
 
-      Promise.all([pInsertRepair, pUpdateEq, pInsertEval])
+      Promise.all([pInsertRepair, pUpdateEq])
         .then(function () {
           if (callback) callback({ success: true, message: 'บันทึกการแก้ไขใน Supabase สำเร็จ ปลดล็อกเครื่องพร้อมใช้งาน' });
 
-          // Background Google Sheets Synchronization: Post evaluation with 'normal' result to clear defect in Sheets
+          // Background Google Sheets Synchronization: Resolve defect status without creating a fake daily evaluation
           var gasPayload = {
-            action: 'submitEvaluation',
+            action: 'resolveAbnormal',
             id: repairId,
             deviceId: deviceId,
             deviceAsset: deviceAsset,
             deviceName: deviceName,
-            formId: eq ? eq.formId : '',
             department: dept,
-            evaluatedBy: (techName || 'อาภากร บุญเกตกูล') + ' (ซ่อมเสร็จ: ' + actionTaken + ')',
-            evaluatedAt: nowStr,
-            result: 'normal',
-            abnormalNote: 'แก้ไขเรียบร้อย: ' + actionTaken + (testNote ? ' | ' + testNote : '')
+            resolvedBy: techName || 'อาภากร บุญเกตกูล',
+            resolvedAt: nowStr,
+            actionTaken: actionTaken || 'ดำเนินการแก้ไขและทดสอบระบบเรียบร้อย',
+            testNote: testNote || ''
           };
 
           PPCH_API.postToGas(gasPayload, function (gasRes) {

@@ -39,6 +39,24 @@
     window.dispatchEvent(new CustomEvent('ppch:data-updated', { detail: inMemoryData }));
   }
 
+  function isRepairResolutionLog(ev) {
+    if (!ev) return false;
+    return !!(ev.isRepairResolution ||
+      (ev.evaluatedBy && ev.evaluatedBy.indexOf('ซ่อมเสร็จ') !== -1) ||
+      (ev.abnormalNote && ev.abnormalNote.indexOf('แก้ไขเรียบร้อย') === 0));
+  }
+
+  function hasConditionalItems(ev) {
+    if (!ev) return false;
+    if (ev.keepConditional) return true;
+    if (ev.abnormalNote && ev.abnormalNote.indexOf('[ตรวจเช็คประจำวันผ่าน - คงสถานะผ่อนผันรอซ่อม]') !== -1) return true;
+    var chk = ev.checklist || {};
+    if (typeof chk === 'string') {
+      try { chk = JSON.parse(chk); } catch (e) { chk = {}; }
+    }
+    return Object.keys(chk).some(function (k) { return chk[k] === 'conditional'; });
+  }
+
   function isNewerEvaluation(newEv, oldEv) {
     if (!oldEv) return true;
     if (!newEv) return false;
@@ -47,10 +65,10 @@
     if (atNew > atOld) return true;
     if (atNew < atOld) return false;
 
-    var isResNew = !!(newEv.isRepairResolution || (newEv.evaluatedBy && newEv.evaluatedBy.indexOf('ซ่อมเสร็จ') !== -1) || (newEv.abnormalNote && newEv.abnormalNote.indexOf('แก้ไขเรียบร้อย') !== -1));
-    var isResOld = !!(oldEv.isRepairResolution || (oldEv.evaluatedBy && oldEv.evaluatedBy.indexOf('ซ่อมเสร็จ') !== -1) || (oldEv.abnormalNote && oldEv.abnormalNote.indexOf('แก้ไขเรียบร้อย') !== -1));
-    if (isResNew && !isResOld) return true;
-    if (!isResNew && isResOld) return false;
+    var isResNew = isRepairResolutionLog(newEv);
+    var isResOld = isRepairResolutionLog(oldEv);
+    if (!isResNew && isResOld) return true;
+    if (isResNew && !isResOld) return false;
 
     var idNew = String(newEv.id || '');
     var idOld = String(oldEv.id || '');
@@ -62,6 +80,94 @@
   }
 
   window.PPCH_STORE = {
+    isRepairResolutionLog: isRepairResolutionLog,
+    hasConditionalItems: hasConditionalItems,
+
+    getActiveDefectInfo: function (deviceId) {
+      var eq = this.getEquipmentById(deviceId);
+      if (!eq) return null;
+
+      var allRepairs = inMemoryData.repairs || [];
+      var latestResolvedAt = '';
+      allRepairs.forEach(function (rep) {
+        var matchDev = (rep.device_id === eq.id || rep.device_asset === eq.assetCode || rep.deviceId === eq.id || rep.deviceAsset === eq.assetCode);
+        if (matchDev) {
+          var rAt = String(rep.resolved_at || rep.resolvedAt || '');
+          if (rAt && rAt > latestResolvedAt) {
+            latestResolvedAt = rAt;
+          }
+        }
+      });
+
+      var devEvals = (inMemoryData.evaluations || []).filter(function (ev) {
+        if (!ev || isRepairResolutionLog(ev)) return false;
+        var matchDev = (ev.deviceId === eq.id || ev.deviceAsset === eq.assetCode);
+        return matchDev && ev.result === 'abnormal' && (!latestResolvedAt || String(ev.evaluatedAt || '') > latestResolvedAt);
+      });
+
+      devEvals.sort(function (a, b) {
+        return String(b.evaluatedAt || '').localeCompare(String(a.evaluatedAt || ''));
+      });
+
+      var latestAbnormalEv = devEvals.length > 0 ? devEvals[0] : null;
+      var failedIndices = [];
+      var form = this.getFormById(eq.formId);
+      var formItems = (form && Array.isArray(form.items)) ? form.items : [];
+
+      if (latestAbnormalEv) {
+        var chk = latestAbnormalEv.checklist || {};
+        if (typeof chk === 'string') {
+          try { chk = JSON.parse(chk); } catch (e) { chk = {}; }
+        }
+        formItems.forEach(function (qItem, idx) {
+          var qText = (typeof qItem === 'string') ? qItem : (qItem.text || qItem.title || qItem.label || '');
+          var val = undefined;
+          if (chk[idx] !== undefined) val = chk[idx];
+          else if (chk[String(idx)] !== undefined) val = chk[String(idx)];
+          else if (chk[idx + 1] !== undefined) val = chk[idx + 1];
+          else if (chk[String(idx + 1)] !== undefined) val = chk[String(idx + 1)];
+          else if (qText && chk[qText] !== undefined) val = chk[qText];
+
+          if (val === 'fail' || val === 'abnormal' || val === false || val === 0 || val === 'ไม่ผ่าน' || val === 'conditional') {
+            failedIndices.push(idx);
+          }
+        });
+
+        if (failedIndices.length === 0) {
+          Object.keys(chk).forEach(function (k) {
+            var v = chk[k];
+            if (v === 'fail' || v === 'abnormal' || v === false || v === 0 || v === 'ไม่ผ่าน' || v === 'conditional') {
+              var num = parseInt(String(k).replace(/\D/g, ''), 10);
+              if (!isNaN(num)) {
+                var zeroIdx = (chk['0'] !== undefined || chk[0] !== undefined) ? num : (num > 0 ? num - 1 : 0);
+                if (failedIndices.indexOf(zeroIdx) === -1) failedIndices.push(zeroIdx);
+              }
+            }
+          });
+        }
+      }
+
+      if (failedIndices.length === 0 && (eq.status === 'conditional_ready' || eq.allowUse || eq.status === 'abnormal' || eq.status === 'in_progress')) {
+        var reasonLower = String(eq.abnormalReason || (latestAbnormalEv && latestAbnormalEv.abnormalNote) || '').toLowerCase();
+        if (reasonLower && formItems.length > 0) {
+          formItems.forEach(function (qItem, idx) {
+            var qText = String((typeof qItem === 'string') ? qItem : (qItem.text || '')).toLowerCase();
+            if (qText && (reasonLower.indexOf(qText.slice(0, 12)) !== -1 || qText.indexOf(reasonLower.slice(0, 12)) !== -1)) {
+              if (failedIndices.indexOf(idx) === -1) failedIndices.push(idx);
+            }
+          });
+        }
+      }
+
+      return {
+        evalRecord: latestAbnormalEv,
+        failedIndices: failedIndices,
+        abnormalReason: eq.abnormalReason || (latestAbnormalEv ? latestAbnormalEv.abnormalNote : '') || 'ตรวจพบข้อบกพร่อง',
+        reportedAt: eq.repairReportedAt || (latestAbnormalEv ? latestAbnormalEv.evaluatedAt : ''),
+        reportedBy: eq.repairReportedBy || (latestAbnormalEv ? latestAbnormalEv.evaluatedBy : '')
+      };
+    },
+
     // Initialize or refresh live data directly from Google Apps Script / Google Sheets
     initFromCloud: function (cloudData) {
       if (!cloudData) return inMemoryData;
@@ -92,10 +198,12 @@
       if (Array.isArray(cloudData.evaluations)) {
         inMemoryData.evaluations = cloudData.evaluations;
 
-        // Group latest evaluation per device
+        // Group latest REAL daily evaluation and latest abnormal evaluation per device
         var latestEvalMap = {};
+        var latestAbnormalMap = {};
         cloudData.evaluations.forEach(function (ev) {
           if (!ev || !ev.evaluatedAt) return;
+          if (isRepairResolutionLog(ev)) return; // Ignore fake repair logs!
           var k1 = ev.deviceId;
           var k2 = ev.deviceAsset;
           if (k1 && isNewerEvaluation(ev, latestEvalMap[k1])) {
@@ -104,54 +212,73 @@
           if (k2 && isNewerEvaluation(ev, latestEvalMap[k2])) {
             latestEvalMap[k2] = ev;
           }
+          if (ev.result === 'abnormal') {
+            if (k1 && isNewerEvaluation(ev, latestAbnormalMap[k1])) {
+              latestAbnormalMap[k1] = ev;
+            }
+            if (k2 && isNewerEvaluation(ev, latestAbnormalMap[k2])) {
+              latestAbnormalMap[k2] = ev;
+            }
+          }
         });
 
         // Update equipment status based on backend equipment status, repairs, and latest evaluation
         inMemoryData.equipment.forEach(function (item) {
           var latestEv = latestEvalMap[item.id] || latestEvalMap[item.assetCode];
-          if (latestEv) {
-            if (!item.lastEvaluatedAt || latestEv.evaluatedAt >= item.lastEvaluatedAt) {
-              item.lastEvaluatedAt = latestEv.evaluatedAt;
-              item.lastEvaluatedBy = latestEv.evaluatedBy;
-            }
+          var latestAbn = latestAbnormalMap[item.id] || latestAbnormalMap[item.assetCode];
 
-            // Check if this equipment defect has already been resolved in repairs
-            var isResolvedInRepairs = (inMemoryData.repairs || []).some(function (rep) {
+          if (latestEv) {
+            item.lastEvaluatedAt = latestEv.evaluatedAt;
+            item.lastEvaluatedBy = latestEv.evaluatedBy;
+          }
+
+          var refDefectEv = latestAbn || latestEv;
+          var isResolvedInRepairs = false;
+          if (refDefectEv) {
+            isResolvedInRepairs = (inMemoryData.repairs || []).some(function (rep) {
               var matchDev = (rep.device_id === item.id || rep.device_asset === item.assetCode || rep.deviceId === item.id || rep.deviceAsset === item.assetCode);
-              var matchReport = (rep.reported_at === latestEv.evaluatedAt || rep.reportedAt === latestEv.evaluatedAt);
-              var isAfterReport = (rep.resolved_at && rep.resolved_at >= latestEv.evaluatedAt) || (rep.resolvedAt && rep.resolvedAt >= latestEv.evaluatedAt);
+              var matchReport = (rep.reported_at === refDefectEv.evaluatedAt || rep.reportedAt === refDefectEv.evaluatedAt);
+              var isAfterReport = (rep.resolved_at && rep.resolved_at >= refDefectEv.evaluatedAt) || (rep.resolvedAt && rep.resolvedAt >= refDefectEv.evaluatedAt);
               return matchDev && (matchReport || isAfterReport);
             });
+          }
 
-            var isBackendReady = (item.status === 'ready' && (item.repairStatus === 'ready' || !item.repairStatus));
+          var isBackendReady = (item.status === 'ready' && (item.repairStatus === 'ready' || !item.repairStatus));
 
-            if (isBackendReady || isResolvedInRepairs) {
+          if (isBackendReady || isResolvedInRepairs) {
+            if (!latestAbn || isResolvedInRepairs || isBackendReady) {
               item.status = 'ready';
               item.repairStatus = 'ready';
               item.abnormalReason = '';
               item.allowUse = false;
-            } else if (latestEv.result === 'normal') {
-              if (item.status !== 'in_progress' && item.status !== 'conditional_ready' && item.status !== 'abnormal') {
-                item.status = 'ready';
-                item.repairStatus = 'ready';
-                item.abnormalReason = '';
-                item.allowUse = false;
-              }
-            } else if (latestEv.result === 'abnormal') {
-              if (item.allowUse || item.status === 'conditional_ready') {
-                item.status = 'conditional_ready';
-                item.allowUse = true;
-              } else if (item.status === 'in_progress' || item.repairStatus === 'in_progress') {
-                item.status = 'in_progress';
-                item.repairStatus = 'in_progress';
-              } else {
-                item.status = 'abnormal';
-                item.repairStatus = 'reported';
-              }
-              item.abnormalReason = latestEv.abnormalNote || item.abnormalReason || 'พบข้อบกพร่องจากการตรวจเช็ค';
-              item.repairReportedAt = item.repairReportedAt || latestEv.evaluatedAt;
-              item.repairReportedBy = item.repairReportedBy || latestEv.evaluatedBy;
             }
+          } else if (latestEv && latestEv.result === 'normal') {
+            if (hasConditionalItems(latestEv) || item.status === 'conditional_ready' || item.allowUse) {
+              item.status = 'conditional_ready';
+              item.allowUse = true;
+              if (latestAbn && !item.abnormalReason) {
+                item.abnormalReason = latestAbn.abnormalNote || 'พบข้อบกพร่องจากการตรวจเช็ค';
+              }
+            } else if (item.status !== 'in_progress' && item.status !== 'abnormal') {
+              item.status = 'ready';
+              item.repairStatus = 'ready';
+              item.abnormalReason = '';
+              item.allowUse = false;
+            }
+          } else if (latestAbn) {
+            if (item.allowUse || item.status === 'conditional_ready') {
+              item.status = 'conditional_ready';
+              item.allowUse = true;
+            } else if (item.status === 'in_progress' || item.repairStatus === 'in_progress') {
+              item.status = 'in_progress';
+              item.repairStatus = 'in_progress';
+            } else {
+              item.status = 'abnormal';
+              item.repairStatus = 'reported';
+            }
+            item.abnormalReason = item.abnormalReason || latestAbn.abnormalNote || 'พบข้อบกพร่องจากการตรวจเช็ค';
+            item.repairReportedAt = item.repairReportedAt || latestAbn.evaluatedAt;
+            item.repairReportedBy = item.repairReportedBy || latestAbn.evaluatedBy;
           }
         });
       } else {
@@ -194,8 +321,10 @@
       inMemoryData.evaluations = cloudEvals;
 
       var latestEvalMap = {};
+      var latestAbnormalMap = {};
       cloudEvals.forEach(function (ev) {
         if (!ev || !ev.evaluatedAt) return;
+        if (isRepairResolutionLog(ev)) return; // Ignore fake repair logs
         var k1 = ev.deviceId;
         var k2 = ev.deviceAsset;
         if (k1 && isNewerEvaluation(ev, latestEvalMap[k1])) {
@@ -204,44 +333,68 @@
         if (k2 && isNewerEvaluation(ev, latestEvalMap[k2])) {
           latestEvalMap[k2] = ev;
         }
+        if (ev.result === 'abnormal') {
+          if (k1 && isNewerEvaluation(ev, latestAbnormalMap[k1])) {
+            latestAbnormalMap[k1] = ev;
+          }
+          if (k2 && isNewerEvaluation(ev, latestAbnormalMap[k2])) {
+            latestAbnormalMap[k2] = ev;
+          }
+        }
       });
 
       inMemoryData.equipment.forEach(function (eq) {
         var latestEv = latestEvalMap[eq.id] || latestEvalMap[eq.assetCode];
+        var latestAbn = latestAbnormalMap[eq.id] || latestAbnormalMap[eq.assetCode];
         if (latestEv) {
-          if (!eq.lastEvaluatedAt || latestEv.evaluatedAt >= eq.lastEvaluatedAt) {
-            eq.lastEvaluatedAt = latestEv.evaluatedAt;
-            eq.lastEvaluatedBy = latestEv.evaluatedBy;
-          }
+          eq.lastEvaluatedAt = latestEv.evaluatedAt;
+          eq.lastEvaluatedBy = latestEv.evaluatedBy;
+        }
 
-          var isResolvedInRepairs = (inMemoryData.repairs || []).some(function (rep) {
+        var refDefectEv = latestAbn || latestEv;
+        var isResolvedInRepairs = false;
+        if (refDefectEv) {
+          isResolvedInRepairs = (inMemoryData.repairs || []).some(function (rep) {
             var matchDev = (rep.device_id === eq.id || rep.device_asset === eq.assetCode || rep.deviceId === eq.id || rep.deviceAsset === eq.assetCode);
-            var matchReport = (rep.reported_at === latestEv.evaluatedAt || rep.reportedAt === latestEv.evaluatedAt);
-            var isAfterReport = (rep.resolved_at && rep.resolved_at >= latestEv.evaluatedAt) || (rep.resolvedAt && rep.resolvedAt >= latestEv.evaluatedAt);
+            var matchReport = (rep.reported_at === refDefectEv.evaluatedAt || rep.reportedAt === refDefectEv.evaluatedAt);
+            var isAfterReport = (rep.resolved_at && rep.resolved_at >= refDefectEv.evaluatedAt) || (rep.resolvedAt && rep.resolvedAt >= refDefectEv.evaluatedAt);
             return matchDev && (matchReport || isAfterReport);
           });
-          var isBackendReady = (eq.status === 'ready' && (eq.repairStatus === 'ready' || !eq.repairStatus));
+        }
+        var isBackendReady = (eq.status === 'ready' && (eq.repairStatus === 'ready' || !eq.repairStatus));
 
-          if (isBackendReady || isResolvedInRepairs || latestEv.result === 'normal') {
+        if (isBackendReady || isResolvedInRepairs) {
+          eq.status = 'ready';
+          eq.repairStatus = 'ready';
+          eq.abnormalReason = '';
+          eq.allowUse = false;
+        } else if (latestEv && latestEv.result === 'normal') {
+          if (hasConditionalItems(latestEv) || eq.status === 'conditional_ready' || eq.allowUse) {
+            eq.status = 'conditional_ready';
+            eq.allowUse = true;
+            if (latestAbn && !eq.abnormalReason) {
+              eq.abnormalReason = latestAbn.abnormalNote || 'พบข้อบกพร่องจากการตรวจเช็ค';
+            }
+          } else if (eq.status !== 'in_progress' && eq.status !== 'abnormal') {
             eq.status = 'ready';
             eq.repairStatus = 'ready';
             eq.abnormalReason = '';
             eq.allowUse = false;
-          } else if (latestEv.result === 'abnormal') {
-            if (eq.allowUse || eq.status === 'conditional_ready') {
-              eq.status = 'conditional_ready';
-              eq.allowUse = true;
-            } else if (eq.status === 'in_progress' || eq.repairStatus === 'in_progress') {
-              eq.status = 'in_progress';
-              eq.repairStatus = 'in_progress';
-            } else {
-              eq.status = 'abnormal';
-              eq.repairStatus = 'reported';
-            }
-            eq.abnormalReason = latestEv.abnormalNote || eq.abnormalReason || 'พบข้อบกพร่องจากการตรวจเช็ค';
-            eq.repairReportedAt = eq.repairReportedAt || latestEv.evaluatedAt;
-            eq.repairReportedBy = eq.repairReportedBy || latestEv.evaluatedBy;
           }
+        } else if (latestAbn) {
+          if (eq.allowUse || eq.status === 'conditional_ready') {
+            eq.status = 'conditional_ready';
+            eq.allowUse = true;
+          } else if (eq.status === 'in_progress' || eq.repairStatus === 'in_progress') {
+            eq.status = 'in_progress';
+            eq.repairStatus = 'in_progress';
+          } else {
+            eq.status = 'abnormal';
+            eq.repairStatus = 'reported';
+          }
+          eq.abnormalReason = eq.abnormalReason || latestAbn.abnormalNote || 'พบข้อบกพร่องจากการตรวจเช็ค';
+          eq.repairReportedAt = eq.repairReportedAt || latestAbn.evaluatedAt;
+          eq.repairReportedBy = eq.repairReportedBy || latestAbn.evaluatedBy;
         }
       });
 
@@ -405,6 +558,7 @@
       }
 
       var nowStr = evalPayload.evaluatedAt || new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }).slice(0, 16).replace('T', ' ');
+      var isKeepConditional = !!(evalPayload.keepConditional || hasConditionalItems(evalPayload));
 
       if (eq) {
         eq.lastEvaluatedAt = nowStr;
@@ -417,14 +571,19 @@
 
         if (evalPayload.result === 'abnormal') {
           eq.status = 'abnormal';
+          eq.allowUse = false;
           eq.abnormalReason = evalPayload.abnormalNote || 'พบข้อบกพร่องจากการตรวจเช็ค';
           eq.repairStatus = 'reported';
           eq.repairReportedAt = nowStr;
           eq.repairReportedBy = evalPayload.evaluatedBy;
+        } else if (isKeepConditional || eq.status === 'conditional_ready' || eq.allowUse) {
+          eq.status = 'conditional_ready';
+          eq.allowUse = true;
         } else {
           eq.status = 'ready';
           eq.abnormalReason = '';
           eq.repairStatus = 'ready';
+          eq.allowUse = false;
         }
 
         if (evalPayload.upsBattery && evalPayload.upsBattery.tested) {
@@ -448,6 +607,7 @@
         result: evalPayload.result,
         abnormalNote: evalPayload.abnormalNote || '',
         checklist: evalPayload.checklist || {},
+        keepConditional: isKeepConditional,
         upsBattery: evalPayload.upsBattery || null
       };
 
@@ -586,6 +746,7 @@
         testResultNote: testNote || ''
       };
 
+      // Unlock ONLY equipment readiness status — DO NOT create a fake daily evaluation or overwrite lastEvaluatedAt
       eq.status = 'ready';
       eq.repairStatus = 'ready';
       eq.abnormalReason = '';
@@ -593,29 +754,10 @@
       eq.allowUseBy = '';
       eq.allowUseAt = '';
       eq.allowUseReason = '';
-      eq.lastEvaluatedAt = nowStr;
-      eq.lastEvaluatedBy = techName;
-      eq.lastEvaluatedStatus = 'normal';
 
-      var resEval = {
-        id: 'EV-' + Date.now(),
-        deviceId: eq.id,
-        deviceAsset: eq.assetCode,
-        deviceName: eq.name,
-        formId: eq.formId,
-        department: eq.currentDept,
-        evaluatedBy: techName + ' (ซ่อมเสร็จ: ' + actionTaken + ')',
-        evaluatedAt: nowStr,
-        result: 'normal',
-        abnormalNote: 'แก้ไขเรียบร้อย: ' + actionTaken + (testNote ? ' | ' + testNote : ''),
-        checklist: {},
-        isRepairResolution: true
-      };
-
-      inMemoryData.evaluations.unshift(resEval);
       inMemoryData.repairs.unshift(defectLog);
       notifyUpdated();
-      return { success: true, equipment: eq, repairRecord: defectLog, resolutionEval: resEval };
+      return { success: true, equipment: eq, repairRecord: defectLog };
     },
 
     getDefectiveEquipment: function () {

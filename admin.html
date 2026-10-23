@@ -4165,9 +4165,10 @@
                 <select id="filterStatus" class="filter-input" onchange="applyFilters()">
                   <option value="all">ทุกสถานะ</option>
                   <option value="ready">พร้อมใช้งาน (ปกติ)</option>
-                  <option value="conditional_ready">อนุญาตให้ใช้งานต่อ (ผ่อนผัน)</option>
-                  <option value="pending">รอตรวจ</option>
-                  <option value="abnormal">พบข้อบกพร่อง (ชำรุด/ซ่อม/ผ่อนผัน)</option>
+                  <option value="conditional_ready">ผ่อนผันใช้งานชั่วคราว (รอซ่อม)</option>
+                  <option value="abnormal">พบข้อบกพร่อง / กำลังซ่อม</option>
+                  <option value="checked">ตรวจเช็ควันนี้แล้ว</option>
+                  <option value="pending">ยังไม่ได้ตรวจเช็ควันนี้</option>
                 </select>
 
                 <!-- Reset Button -->
@@ -4183,8 +4184,9 @@
                   <tr>
                     <th style="width: 130px;">รหัสเครื่อง</th>
                     <th>เครื่องมือแพทย์</th>
-                    <th style="width: 160px;">แผนกรับผิดชอบ</th>
-                    <th style="width: 75px; text-align: center;">สถานะ</th>
+                    <th style="width: 155px;">แผนกรับผิดชอบ</th>
+                    <th style="width: 95px; text-align: center;" title="สถานะความพร้อมใช้งานของตัวเครื่อง (พร้อมใช้ / ผ่อนผัน / กำลังซ่อม / ชำรุด)">ความพร้อมใช้</th>
+                    <th style="width: 95px; text-align: center;" id="thDailyCheckCol" title="สถานะการตรวจเช็คประจำวัน (ตรวจแล้ว / ยังไม่ตรวจ)">ตรวจเช็ควันนี้</th>
                     <th class="btn-action-col no-print" style="width: 80px; text-align: center;">จัดการ</th>
                   </tr>
                 </thead>
@@ -5887,10 +5889,10 @@
       var dateEl = document.getElementById('dashLiveDateText');
       if (dateEl) dateEl.innerText = thaiDateStr;
 
-      // Group latest evaluation today per device
+      // Group latest REAL daily evaluation today per device (excluding fake repair resolution logs)
       var todayEvalMap = {};
       allEvaluations.forEach(function (ev) {
-        if (!ev || !ev.evaluatedAt) return;
+        if (!ev || !ev.evaluatedAt || isRepairResolutionLog(ev)) return;
         if (ev.evaluatedAt.indexOf(todayStr) === 0) {
           if (!todayEvalMap[ev.deviceId] || ev.evaluatedAt > todayEvalMap[ev.deviceId].evaluatedAt) {
             todayEvalMap[ev.deviceId] = ev;
@@ -5901,11 +5903,11 @@
         }
       });
 
-      // Group latest evaluation this month per device (for monthly low-risk compliance)
+      // Group latest REAL evaluation this month per device (for monthly low-risk compliance)
       var currentMonthStr = todayStr.slice(0, 7);
       var monthEvalMap = {};
       allEvaluations.forEach(function (ev) {
-        if (!ev || !ev.evaluatedAt) return;
+        if (!ev || !ev.evaluatedAt || isRepairResolutionLog(ev)) return;
         if (ev.evaluatedAt.indexOf(currentMonthStr) === 0) {
           if (!monthEvalMap[ev.deviceId] || ev.evaluatedAt > monthEvalMap[ev.deviceId].evaluatedAt) {
             monthEvalMap[ev.deviceId] = ev;
@@ -6825,6 +6827,81 @@
       filterByKpi('all');
     }
 
+    function isRepairResolutionLog(ev) {
+      if (!ev) return false;
+      if (window.PPCH_STORE && window.PPCH_STORE.isRepairResolutionLog) {
+        return window.PPCH_STORE.isRepairResolutionLog(ev);
+      }
+      return !!(ev.isRepairResolution ||
+        (ev.evaluatedBy && ev.evaluatedBy.indexOf('ซ่อมเสร็จ') !== -1) ||
+        (ev.abnormalNote && ev.abnormalNote.indexOf('แก้ไขเรียบร้อย') === 0));
+    }
+
+    function hasConditionalItems(ev) {
+      if (!ev) return false;
+      if (window.PPCH_STORE && window.PPCH_STORE.hasConditionalItems) {
+        return window.PPCH_STORE.hasConditionalItems(ev);
+      }
+      if (ev.keepConditional) return true;
+      if (ev.abnormalNote && ev.abnormalNote.indexOf('[ตรวจเช็คประจำวันผ่าน - คงสถานะผ่อนผันรอซ่อม]') !== -1) return true;
+      var chk = ev.checklist || {};
+      if (typeof chk === 'string') {
+        try { chk = JSON.parse(chk); } catch (e) { chk = {}; }
+      }
+      return Object.keys(chk).some(function (k) { return chk[k] === 'conditional'; });
+    }
+
+    function computeEquipmentDualStatus(eq, evOnDate, refDateStr) {
+      var isConditionalReady = (eq.status === 'conditional_ready' || eq.allowUse);
+      var isUnderFix = (eq.status === 'in_progress' || eq.repairStatus === 'in_progress');
+      var isCurrentlyDefective = (eq.status === 'abnormal' || eq.repairStatus === 'reported');
+
+      var repairList = ((typeof allRepairs !== 'undefined' && Array.isArray(allRepairs)) ? allRepairs : ((window.PPCH_STORE && window.PPCH_STORE.getRepairs) ? window.PPCH_STORE.getRepairs() : []));
+      var isResolvedByDate = false;
+      if (evOnDate && evOnDate.result === 'abnormal') {
+        isResolvedByDate = repairList.some(function (rep) {
+          var matchDev = (rep.deviceId === eq.id || rep.deviceAsset === eq.assetCode || rep.device_id === eq.id || rep.device_asset === eq.assetCode);
+          var matchReport = (rep.reportedAt === evOnDate.evaluatedAt || rep.reported_at === evOnDate.evaluatedAt);
+          var isResolvedAfterReport = (rep.resolvedAt && rep.resolvedAt >= evOnDate.evaluatedAt) || (rep.resolved_at && rep.resolved_at >= evOnDate.evaluatedAt);
+          var repResolvedDate = (rep.resolvedAt || rep.resolved_at || '').slice(0, 10);
+          return matchDev && (matchReport || isResolvedAfterReport) && repResolvedDate && (!refDateStr || repResolvedDate <= refDateStr);
+        });
+      }
+
+      // 1. Daily Inspection Status (ตรวจเช็ควันนี้ / รอบนี้)
+      var dailyCheckState = 'pending'; // 'checked_pass', 'checked_conditional', 'checked_fail', 'pending'
+      if (evOnDate) {
+        if (evOnDate.result === 'abnormal') {
+          dailyCheckState = 'checked_fail';
+        } else if (hasConditionalItems(evOnDate)) {
+          dailyCheckState = 'checked_conditional';
+        } else {
+          dailyCheckState = 'checked_pass';
+        }
+      }
+
+      // 2. Equipment Readiness Status (ความพร้อมใช้ของตัวเครื่อง)
+      var readinessState = 'ready'; // 'ready', 'conditional_ready', 'in_progress', 'abnormal'
+      if (isConditionalReady) {
+        readinessState = 'conditional_ready';
+      } else if (isUnderFix) {
+        readinessState = 'in_progress';
+      } else if (isCurrentlyDefective) {
+        readinessState = 'abnormal';
+      } else if (evOnDate && evOnDate.result === 'abnormal' && !isResolvedByDate && eq.status !== 'ready') {
+        readinessState = 'abnormal';
+      } else {
+        readinessState = 'ready';
+      }
+
+      return {
+        readinessState: readinessState,
+        dailyCheckState: dailyCheckState,
+        isChecked: (dailyCheckState !== 'pending'),
+        isResolvedByDate: isResolvedByDate
+      };
+    }
+
     function isNewerEvaluation(newEv, oldEv) {
       if (!oldEv) return true;
       if (!newEv) return false;
@@ -6833,10 +6910,10 @@
       if (atNew > atOld) return true;
       if (atNew < atOld) return false;
 
-      var isResNew = !!(newEv.isRepairResolution || (newEv.evaluatedBy && newEv.evaluatedBy.indexOf('ซ่อมเสร็จ') !== -1) || (newEv.abnormalNote && newEv.abnormalNote.indexOf('แก้ไขเรียบร้อย') !== -1));
-      var isResOld = !!(oldEv.isRepairResolution || (oldEv.evaluatedBy && oldEv.evaluatedBy.indexOf('ซ่อมเสร็จ') !== -1) || (oldEv.abnormalNote && oldEv.abnormalNote.indexOf('แก้ไขเรียบร้อย') !== -1));
-      if (isResNew && !isResOld) return true;
-      if (!isResNew && isResOld) return false;
+      var isResNew = isRepairResolutionLog(newEv);
+      var isResOld = isRepairResolutionLog(oldEv);
+      if (!isResNew && isResOld) return true;
+      if (isResNew && !isResOld) return false;
 
       var idNew = String(newEv.id || '');
       var idOld = String(oldEv.id || '');
@@ -6855,6 +6932,11 @@
       var catVal = document.getElementById('filterCategory').value;
       var statusVal = document.getElementById('filterStatus').value;
       var currentRisk = window.currentSummaryRisk || 'high';
+
+      var thDailyCol = document.getElementById('thDailyCheckCol');
+      if (thDailyCol) {
+        thDailyCol.innerText = (currentRisk === 'low') ? 'ตรวจรอบเดือน' : 'ตรวจเช็ควันนี้';
+      }
 
       var todayStr = new Date().toISOString().slice(0, 10);
       var btnToday = document.getElementById('btnDateToday');
@@ -6890,17 +6972,15 @@
         }
       }
 
-      // Map evaluations according to currentRisk:
-      // High-risk: by dateVal (e.g. 2026-10-21)
-      // Low-risk: by monthVal (e.g. 2026-10) evaluated in the 1-5 window
+      // Map REAL daily evaluations according to currentRisk (excluding fake repair resolution logs!):
       var evalsForView = [];
       if (currentRisk === 'low') {
         evalsForView = allEvaluations.filter(function (ev) {
-          return ev.evaluatedAt && ev.evaluatedAt.indexOf(monthVal) === 0;
+          return ev && !isRepairResolutionLog(ev) && ev.evaluatedAt && ev.evaluatedAt.indexOf(monthVal) === 0;
         });
       } else {
         evalsForView = allEvaluations.filter(function (ev) {
-          return ev.evaluatedAt && ev.evaluatedAt.indexOf(dateVal) === 0;
+          return ev && !isRepairResolutionLog(ev) && ev.evaluatedAt && ev.evaluatedAt.indexOf(dateVal) === 0;
         });
       }
 
@@ -6921,80 +7001,38 @@
       var abnormalCount = 0;
       var checkedCount = 0;
 
-      // Filter machines
+      // Filter machines using dual status engine (Readiness vs Daily Check)
       var filtered = targetPool.filter(function (eq) {
         var ev = evalMapByDevice[eq.id] || evalMapByDevice[eq.assetCode];
-        var isConditionalReady = (eq.status === 'conditional_ready' || eq.allowUse);
-        var isUnderFix = (eq.status === 'in_progress' || eq.repairStatus === 'in_progress');
-        var isCurrentlyDefective = (eq.status === 'abnormal' || eq.repairStatus === 'reported');
-        var status = 'pending';
+        var dual = computeEquipmentDualStatus(eq, ev, dateVal);
 
-        // Check if defect on or before this date was resolved by repair
-        var isCurrentlyBroken = (isCurrentlyDefective || isUnderFix || isConditionalReady);
-        var repairList = ((typeof allRepairs !== 'undefined' && Array.isArray(allRepairs)) ? allRepairs : ((window.PPCH_STORE && window.PPCH_STORE.getRepairs) ? window.PPCH_STORE.getRepairs() : []));
-        var isResolvedRepair = false;
-        if (!isCurrentlyBroken) {
-          if (eq.status === 'ready' && (eq.repairStatus === 'ready' || !eq.repairStatus)) {
-            isResolvedRepair = true;
-          } else if (ev) {
-            isResolvedRepair = repairList.some(function (rep) {
-              var matchDev = (rep.deviceId === eq.id || rep.deviceAsset === eq.assetCode || rep.device_id === eq.id || rep.device_asset === eq.assetCode);
-              var matchReport = (rep.reportedAt === ev.evaluatedAt || rep.reported_at === ev.evaluatedAt);
-              var isResolvedAfterReport = (rep.resolvedAt && rep.resolvedAt >= ev.evaluatedAt) || (rep.resolved_at && rep.resolved_at >= ev.evaluatedAt);
-              var repResolvedDate = (rep.resolvedAt || rep.resolved_at || '').slice(0, 10);
-              return matchDev && (matchReport || isResolvedAfterReport) && repResolvedDate && (repResolvedDate <= dateVal);
-            });
-          }
+        // 1. Daily Check KPI Counter (Strictly counts ONLY real evaluations performed on the target date/month!)
+        if (dual.isChecked) {
+          checkedCount++;
         }
 
-        if (ev) {
-          if (ev.result === 'normal' || isResolvedRepair) {
-            status = 'ready';
-            checkedCount++;
-            readyCount++;
-          } else {
-            checkedCount++;
-            if (isConditionalReady) {
-              status = 'conditional_ready';
-              abnormalCount++;
-            } else if (isUnderFix) {
-              status = 'in_progress';
-              abnormalCount++;
-            } else {
-              status = 'abnormal';
-              abnormalCount++;
-            }
-          }
+        // 2. Readiness KPI Counter (Ready vs Defective/Under Repair/Conditional)
+        if (dual.readinessState === 'ready') {
+          readyCount++;
         } else {
-          var isReportedBeforeOrOnDate = eq.repairReportedAt && (eq.repairReportedAt.slice(0, 10) <= dateVal);
-          if (isReportedBeforeOrOnDate && !isResolvedRepair && (isConditionalReady || isUnderFix || isCurrentlyDefective)) {
-            checkedCount++;
-            if (isConditionalReady) {
-              status = 'conditional_ready';
-              abnormalCount++;
-            } else if (isUnderFix) {
-              status = 'in_progress';
-              abnormalCount++;
-            } else {
-              status = 'abnormal';
-              abnormalCount++;
-            }
-          } else {
-            status = 'pending';
-          }
+          abnormalCount++;
         }
+
         if (deptVal !== 'all' && eq.currentDept !== deptVal) return false;
         if (catVal !== 'all' && eq.formId !== catVal) return false;
+
         if (statusVal !== 'all') {
-          if (statusVal === 'ready' && status !== 'ready') return false;
-          if (statusVal === 'conditional_ready' && status !== 'conditional_ready') return false;
-          if (statusVal === 'pending' && status !== 'pending') return false;
-          if (statusVal === 'abnormal' && (status !== 'abnormal' && status !== 'in_progress' && status !== 'conditional_ready')) return false;
+          if (statusVal === 'ready' && dual.readinessState !== 'ready') return false;
+          if (statusVal === 'conditional_ready' && dual.readinessState !== 'conditional_ready') return false;
+          if (statusVal === 'abnormal' && dual.readinessState === 'ready') return false;
+          if (statusVal === 'checked' && !dual.isChecked) return false;
+          if (statusVal === 'pending' && dual.isChecked) return false;
         }
-        if (activeKpiFilter === 'ready' && status !== 'ready') return false;
-        if (activeKpiFilter === 'abnormal' && (status !== 'abnormal' && status !== 'in_progress' && status !== 'conditional_ready')) return false;
-        if (activeKpiFilter === 'pending' && status !== 'pending') return false;
-        if (activeKpiFilter === 'checked' && status === 'pending') return false;
+
+        if (activeKpiFilter === 'ready' && dual.readinessState !== 'ready') return false;
+        if (activeKpiFilter === 'abnormal' && dual.readinessState === 'ready') return false;
+        if (activeKpiFilter === 'pending' && dual.isChecked) return false;
+        if (activeKpiFilter === 'checked' && !dual.isChecked) return false;
 
         if (search) {
           var mAsset = (eq.assetCode || '').toLowerCase().indexOf(search) !== -1;
@@ -7022,93 +7060,79 @@
       if (!tbody) return;
 
       if (equipmentList.length === 0) {
-        tbody.innerHTML = '<tr class="table-empty-row"><td colspan="5" style="text-align: center; padding: 36px; color: var(--text-light);">ไม่พบเครื่องมือแพทย์ที่ตรงกับตัวกรอง</td></tr>';
+        tbody.innerHTML = '<tr class="table-empty-row"><td colspan="6" style="text-align: center; padding: 36px; color: var(--text-light);">ไม่พบเครื่องมือแพทย์ที่ตรงกับตัวกรอง</td></tr>';
         return;
       }
 
       var html = '';
       var filterDateVal = document.getElementById('filterDate').value;
+      var currentRisk = window.currentSummaryRisk || 'high';
+      var dailyColLabel = (currentRisk === 'low') ? 'ตรวจรอบเดือน' : 'ตรวจเช็ควันนี้';
+
       equipmentList.forEach(function (eq) {
         var ev = evalMap[eq.id] || evalMap[eq.assetCode];
         var deptName = window.PPCH_STORE.getDepartmentName(eq.currentDept);
+        var dual = computeEquipmentDualStatus(eq, ev, filterDateVal);
 
-        var isConditional = (eq.status === 'conditional_ready' || eq.allowUse);
-        var isUnderFix = (eq.status === 'in_progress' || eq.repairStatus === 'in_progress');
-        var isDefective = (eq.status === 'abnormal' || eq.repairStatus === 'reported');
-
-        var statusBadge = '';
+        var readinessBadge = '';
+        var dailyCheckBadge = '';
         var actionBtns = [];
 
-        // Check if defect on or before this date was resolved by repair
-        var isCurrentlyBroken = (isDefective || isUnderFix || isConditional);
-        var repairList = ((typeof allRepairs !== 'undefined' && Array.isArray(allRepairs)) ? allRepairs : ((window.PPCH_STORE && window.PPCH_STORE.getRepairs) ? window.PPCH_STORE.getRepairs() : []));
-        var isResolvedRepair = false;
-        if (!isCurrentlyBroken) {
-          if (eq.status === 'ready' && (eq.repairStatus === 'ready' || !eq.repairStatus)) {
-            isResolvedRepair = true;
-          } else if (ev) {
-            isResolvedRepair = repairList.some(function (rep) {
-              var matchDev = (rep.deviceId === eq.id || rep.deviceAsset === eq.assetCode || rep.device_id === eq.id || rep.device_asset === eq.assetCode);
-              var matchReport = (rep.reportedAt === ev.evaluatedAt || rep.reported_at === ev.evaluatedAt);
-              var isResolvedAfterReport = (rep.resolvedAt && rep.resolvedAt >= ev.evaluatedAt) || (rep.resolved_at && rep.resolved_at >= ev.evaluatedAt);
-              var repResolvedDate = (rep.resolvedAt || rep.resolved_at || '').slice(0, 10);
-              return matchDev && (matchReport || isResolvedAfterReport) && repResolvedDate && (repResolvedDate <= filterDateVal);
-            });
+        // ==================== COLUMN 1: ความพร้อมใช้ของเครื่อง (READINESS STATUS) ====================
+        if (dual.readinessState === 'ready') {
+          readinessBadge = '<div class="status-symbol-btn symbol-ready" title="ความพร้อมใช้: พร้อมใช้งานปกติ" onclick="location.href=\'eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '\'"><span class="material-icons-round">check_circle</span></div>';
+        } else if (dual.readinessState === 'conditional_ready') {
+          var allowReasonTxt = eq.allowUseReason ? (' (' + eq.allowUseReason + ')') : '';
+          var allowDefectTxt = eq.abnormalReason ? (' | อาการรอซ่อม: ' + eq.abnormalReason) : '';
+          readinessBadge = '<div class="status-symbol-btn symbol-conditional" title="ความพร้อมใช้: ผ่อนผันใช้งานชั่วคราว' + allowReasonTxt + allowDefectTxt + ' (โดย ' + (eq.allowUseBy || 'เจ้าหน้าที่') + ')" onclick="openResolveModal(\'' + eq.id + '\')"><span class="material-icons-round">build_circle</span></div>';
+        } else if (dual.readinessState === 'in_progress') {
+          var ackInfoTxt = eq.repairAcknowledgedBy ? (' (รับทราบโดย ' + eq.repairAcknowledgedBy + ')') : '';
+          readinessBadge = '<div class="status-symbol-btn symbol-in-progress" title="ความพร้อมใช้: กำลังซ่อมบำรุง / งดใช้ชั่วคราว' + ackInfoTxt + '" onclick="switchView(\'defective\')"><span class="material-icons-round">build</span></div>';
+        } else {
+          var defectTxt = (eq.abnormalReason || (ev && ev.abnormalNote)) ? (' (' + (eq.abnormalReason || ev.abnormalNote) + ')') : '';
+          readinessBadge = '<div class="status-symbol-btn symbol-abnormal" title="ความพร้อมใช้: พบข้อบกพร่อง / รอรับทราบ' + defectTxt + '" onclick="openAcknowledgeModal(\'' + eq.id + '\')"><span class="material-icons-round">cancel</span></div>';
+        }
+
+        // ==================== COLUMN 2: ตรวจเช็ควันนี้ (DAILY INSPECTION STATUS) ====================
+        if (dual.dailyCheckState === 'checked_pass') {
+          var passTime = (ev && ev.evaluatedAt) ? ev.evaluatedAt.slice(11, 16) : '';
+          dailyCheckBadge = '<div class="status-symbol-btn symbol-ready" title="ตรวจเช็ควันนี้แล้ว: ปกติทุกข้อ' + (passTime ? ' (เวลา ' + passTime + ' น. โดย ' + (ev.evaluatedBy || '-') + ')' : '') + ' • คลิกเพื่อดูสลิป" onclick="openSlipModal(\'' + ev.id + '\')"><span class="material-icons-round">fact_check</span></div>';
+        } else if (dual.dailyCheckState === 'checked_conditional') {
+          var condTime = (ev && ev.evaluatedAt) ? ev.evaluatedAt.slice(11, 16) : '';
+          dailyCheckBadge = '<div class="status-symbol-btn symbol-ready" title="ตรวจเช็ควันนี้แล้ว: ผ่านเกณฑ์ตามเงื่อนไขผ่อนผัน' + (condTime ? ' (เวลา ' + condTime + ' น. โดย ' + (ev.evaluatedBy || '-') + ')' : '') + ' • คลิกเพื่อดูสลิป" onclick="openSlipModal(\'' + ev.id + '\')"><span class="material-icons-round">fact_check</span></div>';
+        } else if (dual.dailyCheckState === 'checked_fail') {
+          var failTime = (ev && ev.evaluatedAt) ? ev.evaluatedAt.slice(11, 16) : '';
+          dailyCheckBadge = '<div class="status-symbol-btn symbol-abnormal" title="ตรวจเช็ควันนี้แล้ว: พบข้อบกพร่อง' + (failTime ? ' (เวลา ' + failTime + ' น. โดย ' + (ev.evaluatedBy || '-') + ')' : '') + ' • คลิกเพื่อดูสลิป" onclick="openSlipModal(\'' + ev.id + '\')"><span class="material-icons-round">report_problem</span></div>';
+        } else {
+          if (dual.readinessState === 'in_progress' || dual.readinessState === 'abnormal') {
+            dailyCheckBadge = '<div class="status-symbol-btn symbol-pending" title="ยังไม่ได้ตรวจเช็ควันนี้ (เครื่องอยู่ระหว่างแจ้งซ่อม/งดใช้งาน)" onclick="switchView(\'defective\')"><span class="material-icons-round">schedule</span></div>';
+          } else {
+            dailyCheckBadge = '<div class="status-symbol-btn symbol-pending" title="ยังไม่ได้ตรวจเช็ควันนี้ • คลิกเพื่อเปิดหน้าตรวจเช็ค" onclick="location.href=\'eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '\'"><span class="material-icons-round">schedule</span></div>';
           }
         }
 
-        if (ev && (ev.result === 'normal' || isResolvedRepair)) {
-          var isRepaired = isResolvedRepair || ev.isRepairResolution || (ev.evaluatedBy && ev.evaluatedBy.indexOf('ซ่อมเสร็จ') !== -1) || (ev.abnormalNote && ev.abnormalNote.indexOf('แก้ไขเรียบร้อย') !== -1);
-          if (isRepaired) {
-            statusBadge = '<div class="status-symbol-btn symbol-ready-repaired" title="พร้อมใช้งาน (แก้ไข/ซ่อมแซมเสร็จสิ้นแล้ว)" onclick="openSlipModal(\'' + ev.id + '\')"><span class="material-icons-round">task_alt</span></div>';
+        // ==================== ACTION BUTTONS (SPEED DIAL) ====================
+        if (ev) {
+          actionBtns.push('<button type="button" onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-icon btn-icon-slip" title="ดูสลิปผลการตรวจวันนี้"><span class="material-icons-round">receipt_long</span></button>');
+        }
+
+        if (dual.readinessState === 'ready') {
+          if (ev) {
+            actionBtns.push('<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-re-eval" title="เปิดหน้าตรวจเช็คซ้ำ"><span class="material-icons-round">refresh</span></a>');
           } else {
-            statusBadge = '<div class="status-symbol-btn symbol-ready" title="พร้อมใช้งาน (ตรวจเรียบร้อยแล้ว)" onclick="openSlipModal(\'' + ev.id + '\')"><span class="material-icons-round">check_circle</span></div>';
+            actionBtns.push('<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-eval" title="เปิดหน้าตรวจเช็คประจำวัน"><span class="material-icons-round">assignment</span></a>');
           }
-          actionBtns.push('<button type="button" onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-icon btn-icon-slip" title="ดูสลิปผลการตรวจ"><span class="material-icons-round">receipt_long</span></button>');
-          actionBtns.push('<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-re-eval" title="เปิดหน้าตรวจเช็คซ้ำ"><span class="material-icons-round">refresh</span></a>');
-          if (isRepaired) {
-            actionBtns.push('<button type="button" onclick="switchView(\'history\')" class="btn-action-icon btn-icon-repair" title="ดูประวัติการซ่อมบำรุง"><span class="material-icons-round">history</span></button>');
-          }
-        } else if (ev && ev.result === 'abnormal') {
-          if (isConditional) {
-            var allowReasonTxt = eq.allowUseReason ? (' (' + eq.allowUseReason + ')') : '';
-            statusBadge = '<div class="status-symbol-btn symbol-conditional" title="อนุญาตให้ใช้งานต่อ' + allowReasonTxt + ' (โดย ' + (eq.allowUseBy || '-') + ')" onclick="openResolveModal(\'' + eq.id + '\')"><span class="material-icons-round">build_circle</span></div>';
-            actionBtns.push('<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-eval" title="เปิดหน้าตรวจเช็ค"><span class="material-icons-round">assignment</span></a>');
-            actionBtns.push('<button type="button" onclick="openResolveModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-resolve" title="บันทึกการแก้ไขเครื่องมือแพทย์เสร็จสิ้น (คืนสถานะพร้อมใช้)"><span class="material-icons-round">task_alt</span></button>');
-            actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="ดูรายการแจ้งซ่อม"><span class="material-icons-round">build</span></button>');
-            actionBtns.push('<button type="button" onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-icon btn-icon-slip" title="ดูสลิปผลการตรวจ"><span class="material-icons-round">receipt_long</span></button>');
-          } else if (isUnderFix) {
-            statusBadge = '<div class="status-symbol-btn symbol-in-progress" title="กำลังดำเนินการแก้ไข / ซ่อมบำรุง" onclick="switchView(\'defective\')"><span class="material-icons-round">build</span></div>';
-            actionBtns.push('<button type="button" onclick="openResolveModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-resolve" title="บันทึกการแก้ไขเครื่องมือแพทย์เสร็จสิ้น (คืนสถานะพร้อมใช้)"><span class="material-icons-round">task_alt</span></button>');
-            actionBtns.push('<button type="button" onclick="openAllowUseModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-allow" title="อนุญาตให้ใช้งานต่อชั่วคราว แม้ไม่พร้อมใช้งาน"><span class="material-icons-round">published_with_changes</span></button>');
-            actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="ดูงานซ่อมบำรุง"><span class="material-icons-round">build</span></button>');
-            actionBtns.push('<button type="button" onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-icon btn-icon-slip" title="ดูสลิปผลการตรวจ"><span class="material-icons-round">receipt_long</span></button>');
-          } else {
-            var defectTxt = (eq.abnormalReason || ev.abnormalNote) ? (' (' + (eq.abnormalReason || ev.abnormalNote) + ')') : '';
-            statusBadge = '<div class="status-symbol-btn symbol-abnormal" title="พบข้อบกพร่อง (รอรับทราบ)' + defectTxt + '" onclick="openAcknowledgeModal(\'' + eq.id + '\')"><span class="material-icons-round">cancel</span></div>';
-            actionBtns.push('<button type="button" onclick="openAcknowledgeModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-repair" title="รับทราบข้อบกพร่องเพื่อเริ่มแก้ไข"><span class="material-icons-round">thumb_up</span></button>');
-            actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="จัดการงานซ่อมบำรุง"><span class="material-icons-round">build</span></button>');
-            actionBtns.push('<button type="button" onclick="openSlipModal(\'' + ev.id + '\')" class="btn-action-icon btn-icon-slip" title="ดูสลิปผลการตรวจ"><span class="material-icons-round">receipt_long</span></button>');
-          }
+        } else if (dual.readinessState === 'conditional_ready') {
+          actionBtns.push('<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-eval" title="เปิดหน้าตรวจเช็คประจำวัน (เครื่องผ่อนผัน)"><span class="material-icons-round">assignment</span></a>');
+          actionBtns.push('<button type="button" onclick="openResolveModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-resolve" title="บันทึกการซ่อมเสร็จสิ้น (ปลดล็อกเป็นพร้อมใช้ปกติ)"><span class="material-icons-round">task_alt</span></button>');
+          actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="ดูรายการแจ้งซ่อม"><span class="material-icons-round">build</span></button>');
+        } else if (dual.readinessState === 'in_progress') {
+          actionBtns.push('<button type="button" onclick="openResolveModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-resolve" title="บันทึกการซ่อมเสร็จสิ้น (ปลดล็อกเป็นพร้อมใช้ปกติ)"><span class="material-icons-round">task_alt</span></button>');
+          actionBtns.push('<button type="button" onclick="openAllowUseModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-allow" title="อนุญาตให้ใช้งานต่อชั่วคราว (ผ่อนผัน)"><span class="material-icons-round">published_with_changes</span></button>');
+          actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="ดูงานซ่อมบำรุง"><span class="material-icons-round">build</span></button>');
         } else {
-          var isReportedBeforeOrOnDate = eq.repairReportedAt && (eq.repairReportedAt.slice(0, 10) <= filterDateVal);
-          if (isReportedBeforeOrOnDate && !isResolvedRepair && isConditional) {
-            statusBadge = '<div class="status-symbol-btn symbol-conditional" title="อนุญาตให้ใช้งานต่อ" onclick="openResolveModal(\'' + eq.id + '\')"><span class="material-icons-round">build_circle</span></div>';
-            actionBtns.push('<button type="button" onclick="openResolveModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-resolve" title="บันทึกการแก้ไข"><span class="material-icons-round">task_alt</span></button>');
-            actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="ดูรายการแจ้งซ่อม"><span class="material-icons-round">build</span></button>');
-          } else if (isReportedBeforeOrOnDate && !isResolvedRepair && isUnderFix) {
-            statusBadge = '<div class="status-symbol-btn symbol-in-progress" title="กำลังดำเนินการแก้ไข" onclick="switchView(\'defective\')"><span class="material-icons-round">build</span></div>';
-            actionBtns.push('<button type="button" onclick="openResolveModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-resolve" title="บันทึกการแก้ไข"><span class="material-icons-round">task_alt</span></button>');
-            actionBtns.push('<button type="button" onclick="openAllowUseModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-allow" title="อนุญาตให้ใช้งานต่อ"><span class="material-icons-round">published_with_changes</span></button>');
-            actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="ดูงานซ่อมบำรุง"><span class="material-icons-round">build</span></button>');
-          } else if (isReportedBeforeOrOnDate && !isResolvedRepair && isDefective) {
-            statusBadge = '<div class="status-symbol-btn symbol-abnormal" title="พบข้อบกพร่อง (รอรับทราบ)" onclick="openAcknowledgeModal(\'' + eq.id + '\')"><span class="material-icons-round">cancel</span></div>';
-            actionBtns.push('<button type="button" onclick="openAcknowledgeModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-repair" title="รับทราบข้อบกพร่อง"><span class="material-icons-round">thumb_up</span></button>');
-            actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="จัดการงานซ่อมบำรุง"><span class="material-icons-round">build</span></button>');
-          } else {
-            statusBadge = '<div class="status-symbol-btn symbol-pending" title="ยังไม่ได้เช็ค / รอตรวจ" onclick="location.href=\'eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '\'"><span class="material-icons-round">schedule</span></div>';
-            actionBtns.push('<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-eval" title="เปิดหน้าตรวจเช็ค"><span class="material-icons-round">assignment</span></a>');
-          }
+          actionBtns.push('<button type="button" onclick="openAcknowledgeModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-repair" title="รับทราบข้อบกพร่องเพื่อเริ่มแก้ไข"><span class="material-icons-round">thumb_up</span></button>');
+          actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="จัดการงานซ่อมบำรุง"><span class="material-icons-round">build</span></button>');
         }
 
         var actionsHtml = '';
@@ -7133,7 +7157,8 @@
           '<td data-label="รหัสเครื่อง"><span class="asset-code-clean">' + eq.assetCode + '</span></td>' +
           '<td class="summary-device-title" data-label=""><div style="font-weight: 700; color: var(--text-main); font-size: 13.5px;">' + eq.name + '</div></td>' +
           '<td data-label="แผนกรับผิดชอบ"><span style="font-weight: 500;">' + deptName + '</span></td>' +
-          '<td data-label="สถานะวันนี้" style="text-align: center;">' + statusBadge + '</td>' +
+          '<td data-label="ความพร้อมใช้" style="text-align: center;">' + readinessBadge + '</td>' +
+          '<td data-label="' + dailyColLabel + '" style="text-align: center;">' + dailyCheckBadge + '</td>' +
           '<td data-label="จัดการ" class="btn-action-col no-print" style="text-align: center; white-space: nowrap;">' + actionsHtml + '</td>' +
         '</tr>';
       });
@@ -7366,8 +7391,9 @@
       var homeDeptName = window.PPCH_STORE.getDepartmentName(eq.homeDept);
       var isBorrowed = (eq.homeDept !== eq.currentDept);
 
-      // Get all evaluations for this equipment
+      // Get all REAL evaluations for this equipment (excluding fake repair logs)
       var devEvals = (allEvaluations || []).filter(function (ev) {
+        if (!ev || isRepairResolutionLog(ev)) return false;
         return ev.deviceId === eq.id || ev.deviceAsset === eq.assetCode;
       });
 
@@ -7902,13 +7928,16 @@
 
           var isPass = (val === 'pass' || val === 'normal' || val === true || val === 1 || val === 'ผ่าน');
           var isFail = (val === 'fail' || val === 'abnormal' || val === false || val === 0 || val === 'ไม่ผ่าน');
+          var isCondItem = (val === 'conditional' || val === 'ผ่อนผัน');
 
-          if (isPass) passCount++;
+          if (isPass || isCondItem) passCount++;
           if (isFail) failCount++;
 
           var badgeHtml = '';
           if (isPass) {
             badgeHtml = '<span style="background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; padding: 2px 7px; border-radius: 999px; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 3px; white-space: nowrap;"><span class="material-icons-round" style="font-size: 13px;">check_circle</span> ผ่าน</span>';
+          } else if (isCondItem) {
+            badgeHtml = '<span style="background: #fffbeb; color: #b45309; border: 1px solid #fcd34d; padding: 2px 7px; border-radius: 999px; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 3px; white-space: nowrap;"><span class="material-icons-round" style="font-size: 13px;">build_circle</span> ผ่อนผันรอซ่อม</span>';
           } else if (isFail) {
             badgeHtml = '<span style="background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; padding: 2px 7px; border-radius: 999px; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 3px; white-space: nowrap;"><span class="material-icons-round" style="font-size: 13px;">cancel</span> ไม่ผ่าน</span>';
           } else {
@@ -9127,7 +9156,7 @@
     function exportExcel() {
       var dateVal = document.getElementById('filterDate').value;
       var evalsOnDate = allEvaluations.filter(function (ev) {
-        return ev.evaluatedAt && ev.evaluatedAt.indexOf(dateVal) === 0;
+        return ev && !isRepairResolutionLog(ev) && ev.evaluatedAt && ev.evaluatedAt.indexOf(dateVal) === 0;
       });
       var evalMapByDevice = {};
       evalsOnDate.forEach(function (ev) {
@@ -9168,7 +9197,8 @@
         '<th>ชื่อเครื่องมือแพทย์</th>' +
         '<th>แผนกรับผิดชอบ</th>' +
         '<th>วันที่ตรวจ</th>' +
-        '<th>สถานะความพร้อม</th>' +
+        '<th>สถานะความพร้อมใช้</th>' +
+        '<th>สถานะตรวจเช็ควันนี้</th>' +
         '<th>ผู้ตรวจเช็ค</th>' +
         '<th>เวลาที่ตรวจ</th>' +
         '<th>อาการข้อบกพร่อง</th>' +
@@ -9180,31 +9210,37 @@
 
       allEquipment.forEach(function (eq, idx) {
         var ev = evalMapByDevice[eq.id] || evalMapByDevice[eq.assetCode];
-        var isConditional = (eq.status === 'conditional_ready' || eq.allowUse);
-        var isUnderFix = (eq.status === 'in_progress' || eq.repairStatus === 'in_progress');
-        var isDefective = (eq.status === 'abnormal' || eq.repairStatus === 'reported');
+        var dual = computeEquipmentDualStatus(eq, ev, dateVal);
+        var isConditional = (dual.readinessState === 'conditional_ready');
 
-        var statusTh = 'รอตรวจวันนี้';
-        var statusCls = 'badge-pending';
-        if (isConditional) {
-          statusTh = 'อนุญาตให้ใช้งานต่อ (มีเงื่อนไข)';
-          statusCls = 'badge-conditional';
-        } else if (isUnderFix) {
-          statusTh = 'กำลังดำเนินการแก้ไข/ซ่อมบำรุง';
-          statusCls = 'badge-conditional';
-        } else if (isDefective) {
-          statusTh = 'พบข้อบกพร่อง/ชำรุด';
-          statusCls = 'badge-abnormal';
-        } else if (eq.status === 'ready' && (ev || (eq.lastEvaluatedAt && eq.lastEvaluatedAt.indexOf(dateVal) === 0))) {
-          statusTh = 'พร้อมใช้งาน';
-          statusCls = 'badge-ready';
-        } else if (ev) {
-          statusTh = (ev.result === 'normal') ? 'พร้อมใช้งาน' : 'พบข้อบกพร่อง/ชำรุด';
-          statusCls = (ev.result === 'normal') ? 'badge-ready' : 'badge-abnormal';
+        var readinessTh = 'พร้อมใช้งานปกติ';
+        var readinessCls = 'badge-ready';
+        if (dual.readinessState === 'conditional_ready') {
+          readinessTh = 'อนุญาตให้ใช้งานต่อ (ผ่อนผันรอซ่อม)';
+          readinessCls = 'badge-conditional';
+        } else if (dual.readinessState === 'in_progress') {
+          readinessTh = 'กำลังดำเนินการแก้ไข/ซ่อมบำรุง';
+          readinessCls = 'badge-conditional';
+        } else if (dual.readinessState === 'abnormal') {
+          readinessTh = 'พบข้อบกพร่อง/ชำรุด';
+          readinessCls = 'badge-abnormal';
         }
 
-        var evaluator = (ev && ev.evaluatedBy) ? ev.evaluatedBy : (eq.lastEvaluatedBy || '-');
-        var evalTime = (ev && ev.evaluatedAt) ? ev.evaluatedAt : (eq.lastEvaluatedAt || '-');
+        var checkTh = 'ยังไม่ได้ตรวจเช็ควันนี้';
+        var checkCls = 'badge-pending';
+        if (dual.dailyCheckState === 'checked_pass') {
+          checkTh = 'ตรวจแล้ว (ปกติ)';
+          checkCls = 'badge-ready';
+        } else if (dual.dailyCheckState === 'checked_conditional') {
+          checkTh = 'ตรวจแล้ว (ผ่านตามเงื่อนไขผ่อนผัน)';
+          checkCls = 'badge-ready';
+        } else if (dual.dailyCheckState === 'checked_fail') {
+          checkTh = 'ตรวจแล้ว (พบข้อบกพร่อง)';
+          checkCls = 'badge-abnormal';
+        }
+
+        var evaluator = (ev && ev.evaluatedBy) ? ev.evaluatedBy : '-';
+        var evalTime = (ev && ev.evaluatedAt) ? ev.evaluatedAt : '-';
         var defectReason = eq.abnormalReason || (ev && ev.abnormalNote) || '-';
         var allowReason = isConditional ? (eq.allowUseReason || '-') : '-';
         var allowBy = isConditional ? (eq.allowUseBy || '-') : '-';
@@ -9216,7 +9252,8 @@
           '<td style="font-weight: 600;">' + eq.name + '</td>' +
           '<td>' + deptName + '</td>' +
           '<td class="text-center" style="mso-number-format:\'\\@\';">' + dateVal + '</td>' +
-          '<td class="' + statusCls + '">' + statusTh + '</td>' +
+          '<td class="' + readinessCls + '">' + readinessTh + '</td>' +
+          '<td class="' + checkCls + '">' + checkTh + '</td>' +
           '<td>' + evaluator + '</td>' +
           '<td class="text-center" style="mso-number-format:\'\\@\';">' + evalTime + '</td>' +
           '<td>' + defectReason + '</td>' +
@@ -9238,7 +9275,7 @@
     function exportCsv() {
       var dateVal = document.getElementById('filterDate').value;
       var evalsOnDate = allEvaluations.filter(function (ev) {
-        return ev.evaluatedAt && ev.evaluatedAt.indexOf(dateVal) === 0;
+        return ev && !isRepairResolutionLog(ev) && ev.evaluatedAt && ev.evaluatedAt.indexOf(dateVal) === 0;
       });
       var evalMapByDevice = {};
       evalsOnDate.forEach(function (ev) {
@@ -9254,29 +9291,33 @@
 
       // UTF-8 BOM (\uFEFF) ensures Excel on Windows reads Thai text correctly
       var csv = '\uFEFF';
-      csv += 'ลำดับ,รหัสครุภัณฑ์,ชื่อเครื่องมือแพทย์,แผนกรับผิดชอบ,วันที่ตรวจ,สถานะความพร้อม,ผู้ตรวจเช็ค,เวลาที่ตรวจ,อาการข้อบกพร่อง,เงื่อนไขการอนุญาตให้ใช้งานต่อ,ผู้อนุญาต\n';
+      csv += 'ลำดับ,รหัสครุภัณฑ์,ชื่อเครื่องมือแพทย์,แผนกรับผิดชอบ,วันที่ตรวจ,สถานะความพร้อมใช้,สถานะตรวจเช็ควันนี้,ผู้ตรวจเช็ค,เวลาที่ตรวจ,อาการข้อบกพร่อง,เงื่อนไขการอนุญาตให้ใช้งานต่อ,ผู้อนุญาต\n';
 
       allEquipment.forEach(function (eq, idx) {
         var ev = evalMapByDevice[eq.id] || evalMapByDevice[eq.assetCode];
-        var isConditional = (eq.status === 'conditional_ready' || eq.allowUse);
-        var isUnderFix = (eq.status === 'in_progress' || eq.repairStatus === 'in_progress');
-        var isDefective = (eq.status === 'abnormal' || eq.repairStatus === 'reported');
+        var dual = computeEquipmentDualStatus(eq, ev, dateVal);
+        var isConditional = (dual.readinessState === 'conditional_ready');
 
-        var statusTh = 'รอตรวจวันนี้';
-        if (isConditional) {
-          statusTh = 'อนุญาตให้ใช้งานต่อ (มีเงื่อนไข)';
-        } else if (isUnderFix) {
-          statusTh = 'กำลังดำเนินการแก้ไข/ซ่อมบำรุง';
-        } else if (isDefective) {
-          statusTh = 'พบข้อบกพร่อง/ชำรุด';
-        } else if (eq.status === 'ready' && (ev || (eq.lastEvaluatedAt && eq.lastEvaluatedAt.indexOf(dateVal) === 0))) {
-          statusTh = 'พร้อมใช้งาน';
-        } else if (ev) {
-          statusTh = (ev.result === 'normal') ? 'พร้อมใช้งาน' : 'พบข้อบกพร่อง/ชำรุด';
+        var readinessTh = 'พร้อมใช้งานปกติ';
+        if (dual.readinessState === 'conditional_ready') {
+          readinessTh = 'อนุญาตให้ใช้งานต่อ (ผ่อนผันรอซ่อม)';
+        } else if (dual.readinessState === 'in_progress') {
+          readinessTh = 'กำลังดำเนินการแก้ไข/ซ่อมบำรุง';
+        } else if (dual.readinessState === 'abnormal') {
+          readinessTh = 'พบข้อบกพร่อง/ชำรุด';
         }
 
-        var evaluator = (ev && ev.evaluatedBy) ? ev.evaluatedBy : (eq.lastEvaluatedBy || '-');
-        var evalTime = (ev && ev.evaluatedAt) ? ev.evaluatedAt : (eq.lastEvaluatedAt || '-');
+        var checkTh = 'ยังไม่ได้ตรวจเช็ควันนี้';
+        if (dual.dailyCheckState === 'checked_pass') {
+          checkTh = 'ตรวจแล้ว (ปกติ)';
+        } else if (dual.dailyCheckState === 'checked_conditional') {
+          checkTh = 'ตรวจแล้ว (ผ่านตามเงื่อนไขผ่อนผัน)';
+        } else if (dual.dailyCheckState === 'checked_fail') {
+          checkTh = 'ตรวจแล้ว (พบข้อบกพร่อง)';
+        }
+
+        var evaluator = (ev && ev.evaluatedBy) ? ev.evaluatedBy : '-';
+        var evalTime = (ev && ev.evaluatedAt) ? ev.evaluatedAt : '-';
         var defectReason = eq.abnormalReason || (ev && ev.abnormalNote) || '-';
         var allowReason = isConditional ? (eq.allowUseReason || '-') : '-';
         var allowBy = isConditional ? (eq.allowUseBy || '-') : '-';
@@ -9293,7 +9334,8 @@
           cleanCell(eq.name),
           cleanCell(deptName),
           cleanCell(dateVal),
-          cleanCell(statusTh),
+          cleanCell(readinessTh),
+          cleanCell(checkTh),
           cleanCell(evaluator),
           cleanCell(evalTime),
           cleanCell(defectReason),
@@ -9422,9 +9464,10 @@
         return cleanChecklistQuestionText(it, idx);
       });
 
-      // Filter evaluations for this device in this month
+      // Filter REAL evaluations for this device in this month (excluding fake repair logs)
       var allEvals = (window.PPCH_STORE && window.PPCH_STORE.getEvaluations) ? window.PPCH_STORE.getEvaluations() : (allEvaluations || []);
       var deviceMonthEvals = allEvals.filter(function (e) {
+        if (!e || isRepairResolutionLog(e)) return false;
         var matchDevice = (e.deviceId === eq.id || e.deviceAsset === eq.assetCode);
         var matchMonth = (e.evaluatedAt && e.evaluatedAt.slice(0, 7) === monthVal);
         return matchDevice && matchMonth;
@@ -9455,6 +9498,7 @@
           if (ev) {
             itemChecks++;
             var isPass = true;
+            var isCondItem = false;
             if (ev.checklist) {
               var val = ev.checklist[qIdx] !== undefined ? ev.checklist[qIdx] :
                         (ev.checklist[String(qIdx)] !== undefined ? ev.checklist[String(qIdx)] :
@@ -9462,6 +9506,9 @@
 
               if (val === 'pass' || val === 'normal' || val === true || val === 'ผ่าน') {
                 isPass = true;
+              } else if (val === 'conditional' || val === 'ผ่อนผัน') {
+                isPass = true;
+                isCondItem = true;
               } else if (val === 'fail' || val === 'abnormal' || val === false || val === 'ไม่ผ่าน') {
                 isPass = false;
               } else {
@@ -9471,7 +9518,10 @@
               isPass = (ev.result === 'normal' || ev.result === 'ready');
             }
 
-            if (isPass) {
+            if (isCondItem) {
+              itemPasses++;
+              dayCells.push({ status: 'warn', label: '△', title: 'วันที่ ' + day + ': ผ่อนผันรอซ่อม (รับทราบแล้ว)' });
+            } else if (isPass) {
               itemPasses++;
               dayCells.push({ status: 'pass', label: '✓', title: 'วันที่ ' + day + ': ผ่านเกณฑ์ (' + (ev.evaluatedBy || '-') + ')' });
             } else {

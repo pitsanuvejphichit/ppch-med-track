@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>PPCH - ระบบเปิดคู่มือเครื่องมือแพทย์ แผนก LAB</title>
+  
+  <!-- Google Fonts: Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Material Symbols Outlined -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  
+  <!-- QR Code Generator & Scanner CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --primary-light: #e0f2fe;
+      --navy: #001f44;
+      --navy-dark: #001733;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --radius: 14px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+      --shadow-lg: 0 10px 25px -5px rgba(15, 23, 42, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* LEFT STICKY SIDEBAR */
+    .sidebar {
+      width: 280px;
+      background: var(--navy);
+      color: #ffffff;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      z-index: 100;
+    }
+
+    .brand {
+      padding: 24px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .brand img {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 3px;
+    }
+
+    .brand-text h2 {
+      font-size: 17px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.2px;
+      line-height: 1.2;
+    }
+
+    .brand-text p {
+      font-size: 11.5px;
+      color: #94a3b8;
+      font-weight: 400;
+      margin-top: 2px;
+    }
+
+    .nav-menu {
+      padding: 20px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      color: #cbd5e1;
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+    }
+
+    .nav-item:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: #ffffff;
+    }
+
+    .nav-item.active {
+      background: rgba(2, 132, 199, 0.2);
+      color: #38bdf8;
+      border-color: rgba(56, 189, 248, 0.3);
+      font-weight: 600;
+    }
+
+    .nav-item .material-symbols-outlined {
+      font-size: 20px;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      background: rgba(255, 255, 255, 0.12);
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 11px;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* MAIN CONTENT WRAPPER */
+    .main-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* TOPBAR */
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 90;
+    }
+
+    .mobile-header {
+      display: none;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mobile-header img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+    }
+
+    .page-title h1 {
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .page-title p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: #ffffff;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    .btn-scan {
+      background: linear-gradient(135deg, #0284c7, #0d9488);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
+    }
+
+    .btn-scan:hover {
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4);
+      transform: translateY(-1px);
+    }
+
+    /* CONTAINER & STREAMLINED FILTER TOOLBAR */
+    .content-area {
+      padding: 24px 28px;
+      flex: 1;
+    }
+
+    .toolbar-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      min-width: 260px;
+    }
+
+    .search-box .material-symbols-outlined {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 20px;
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 9px 36px 9px 38px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-size: 13.5px;
+      font-family: inherit;
+      background: var(--surface);
+      color: var(--text);
+      transition: all 0.15s;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12);
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: none;
+      padding: 2px;
+    }
+
+    .filter-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .pill {
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 12.5px;
+      font-weight: 500;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+
+    .pill:hover {
+      background: #f1f5f9;
+      color: var(--text);
+    }
+
+    .pill.active {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary-dark);
+      font-weight: 600;
+    }
+
+    /* SINGLE-ROW HORIZONTAL STRIP CARDS (Khun Nick's Golden Rule 3) */
+    .manuals-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .manual-strip-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.15s ease;
+    }
+
+    .manual-strip-card:hover {
+      border-color: #cbd5e1;
+      box-shadow: var(--shadow);
+      transform: translateY(-1px);
+    }
+
+    .card-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .type-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .type-pdf {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fca5a5;
+    }
+
+    .type-doc {
+      background: #e0e7ff;
+      color: #3730a3;
+      border: 1px solid #a5b4fc;
+    }
+
+    .card-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .card-header-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 2px;
+      flex-wrap: wrap;
+    }
+
+    .code-tag {
+      font-family: monospace;
+      font-size: 11.5px;
+      font-weight: 700;
+      background: #f1f5f9;
+      color: #334155;
+      padding: 2px 7px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+    }
+
+    .category-tag {
+      font-size: 11px;
+      color: #0369a1;
+      background: #e0f2fe;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+
+    .card-title {
+      font-size: 14.5px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-subtext {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* CARD ACTION BUTTONS */
+    .card-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .action-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .action-btn:hover {
+      background: #f1f5f9;
+      color: var(--primary);
+      border-color: #cbd5e1;
+    }
+
+    .action-btn .material-symbols-outlined {
+      font-size: 19px;
+    }
+
+    .btn-view-direct {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      padding: 7px 14px;
+      width: auto;
+      font-size: 12.5px;
+      font-weight: 600;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-view-direct:hover {
+      background: var(--primary-dark);
+      color: #ffffff;
+    }
+
+    /* MODAL SYSTEM */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 840px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      max-height: 92vh;
+      animation: modalSlide 0.25s ease forwards;
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(20px) scale(0.98); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafc;
+      gap: 12px;
+    }
+
+    .modal-header h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      background: #ffffff;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .modal-close:hover {
+      background: #e2e8f0;
+      color: var(--text);
+    }
+
+    .modal-body {
+      padding: 20px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    /* QR SCANNER */
+    #reader {
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    /* COMPACT QR STICKER (Zero Clutter - Khun Nick's Request) */
+    .print-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      width: 100%;
+    }
+
+    .print-grid.grid-3col {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .qr-sticker {
+      border: 1px dashed #94a3b8;
+      border-radius: 8px;
+      padding: 10px 8px 8px 8px;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      box-sizing: border-box;
+      break-inside: avoid;
+      page-break-inside: avoid;
+      transition: all 0.15s;
+    }
+
+    .qr-sticker:hover {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .sticker-qrcode {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 6px;
+      background: #ffffff;
+    }
+
+    .sticker-name {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.25;
+      text-align: center;
+      margin-bottom: 2px;
+      max-width: 100%;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .sticker-code {
+      font-family: monospace;
+      font-size: 10px;
+      font-weight: 600;
+      color: #475569;
+      letter-spacing: 0.2px;
+    }
+
+    /* SINGLE STICKER MODAL */
+    .single-sticker-box {
+      width: 200px;
+      margin: 0 auto 16px auto;
+      border: 2px dashed #0284c7;
+      border-radius: 12px;
+      padding: 14px 10px;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .single-sticker-box .sticker-name {
+      font-size: 13px;
+      margin-top: 8px;
+      margin-bottom: 4px;
+    }
+
+    .single-sticker-box .sticker-code {
+      font-size: 11px;
+    }
+
+    /* PRINT STYLES (A4 Optimized, Multi-Item Grid, Zero Fluff) */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 8mm 8mm 8mm 8mm;
+      }
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block !important;
+      }
+      .sidebar, .topbar, .toolbar-row, .modal-header, .btn-group, .modal-close, .content-area, .no-print {
+        display: none !important;
+      }
+      .modal-overlay {
+        position: static !important;
+        background: transparent !important;
+        padding: 0 !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+      }
+      .modal-card {
+        box-shadow: none !important;
+        border: none !important;
+        max-width: 100% !important;
+        max-height: none !important;
+        overflow: visible !important;
+        display: block !important;
+      }
+      .modal-body {
+        padding: 0 !important;
+        overflow: visible !important;
+      }
+      .print-grid {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 4mm !important;
+        padding: 0 !important;
+        width: 100% !important;
+      }
+      .print-grid.grid-3col {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 6mm !important;
+      }
+      .qr-sticker {
+        border: 1px dashed #475569 !important;
+        border-radius: 6px !important;
+        padding: 6px 4px !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        box-shadow: none !important;
+      }
+      .sticker-name {
+        color: #000000 !important;
+        font-size: 9.5pt !important;
+        font-weight: 700 !important;
+      }
+      .sticker-code {
+        color: #1e293b !important;
+        font-size: 8pt !important;
+      }
+    }
+
+    .empty-state {
+      padding: 48px 20px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .empty-state .material-symbols-outlined {
+      font-size: 48px;
+      color: #cbd5e1;
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        display: none;
+      }
+      .mobile-header {
+        display: flex;
+      }
+      .page-title {
+        display: none;
+      }
+      .content-area {
+        padding: 16px 14px;
+      }
+      .toolbar-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .search-box {
+        min-width: 100%;
+      }
+      .print-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .manual-strip-card {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 14px;
+        gap: 12px;
+      }
+      .card-left {
+        width: 100%;
+      }
+      .card-actions {
+        width: 100%;
+        justify-content: flex-end;
+        border-top: 1px solid #f1f5f9;
+        padding-top: 10px;
+      }
+      .card-title {
+        white-space: normal;
+        font-size: 13.5px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LEFT STICKY SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="logo.png" alt="PPCH Logo" onerror="this.src='https://raw.githubusercontent.com/pitsanuvejphichit/ppch-med-track/main/src/logo.png'">
+      <div class="brand-text">
+        <h2>PPCH MedOps</h2>
+        <p>คู่มือเครื่องมือแพทย์ (LAB)</p>
+      </div>
+    </div>
+
+    <nav class="nav-menu">
+      <a class="nav-item active" onclick="filterCategory('all')">
+        <span class="material-symbols-outlined">menu_book</span>
+        <span>คู่มือทั้งหมด</span>
+        <span class="nav-badge" id="sideBadgeTotal">27</span>
+      </a>
+      <a class="nav-item" onclick="openScannerModal()">
+        <span class="material-symbols-outlined">qr_code_scanner</span>
+        <span>สแกน QR Code</span>
+      </a>
+      <a class="nav-item" onclick="openPrintAllStickersModal()">
+        <span class="material-symbols-outlined">print</span>
+        <span>พิมพ์สติกเกอร์ QR (27)</span>
+      </a>
+      <a class="nav-item" href="desktop.html">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span>ระบบหลัก MedOps</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <span class="material-symbols-outlined" style="font-size:16px;">health_and_safety</span>
+      <span>โรงพยาบาลพิษณุเวช (PPCH)</span>
+    </div>
+  </aside>
+
+  <!-- MAIN WRAPPER -->
+  <div class="main-wrapper">
+    
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="mobile-header">
+        <img src="logo.png" alt="PPCH Logo" onerror="this.src='https://raw.githubusercontent.com/pitsanuvejphichit/ppch-med-track/main/src/logo.png'">
+        <div>
+          <h2 style="font-size: 15px; font-weight:700; color:var(--navy);">คู่มือ LAB</h2>
+          <p style="font-size: 11px; color:var(--text-muted);">27 เครื่องมือแพทย์</p>
+        </div>
+      </div>
+
+      <div class="page-title">
+        <h1>สารบัญคู่มือการใช้งานเครื่องมือแพทย์ (Laboratory Manuals)</h1>
+        <p>เปิดอ่านคู่มือทันที หรือสแกน QR Code จากตัวเครื่องเพื่อเปิดเอกสาร</p>
+      </div>
+
+      <div class="top-actions">
+        <button class="btn btn-scan" onclick="openScannerModal()">
+          <span class="material-symbols-outlined">qr_code_scanner</span>
+          <span>สแกน QR Code</span>
+        </button>
+        <button class="btn btn-outline" onclick="openPrintAllStickersModal()">
+          <span class="material-symbols-outlined">print</span>
+          <span>พิมพ์สติกเกอร์ (27)</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- CONTENT AREA -->
+    <main class="content-area">
+      
+      <!-- STREAMLINED FILTER TOOLBAR -->
+      <div class="toolbar-row">
+        <div class="search-box">
+          <span class="material-symbols-outlined">search</span>
+          <input type="text" id="searchInput" class="search-input" placeholder="ค้นหาตามรหัส (SD-LAB-...), ชื่อเครื่องมือ, หรือยี่ห้อรุ่น..." oninput="onSearchInput()">
+          <button id="searchClear" class="search-clear" onclick="clearSearch()">
+            <span class="material-symbols-outlined" style="font-size:18px;">close</span>
+          </button>
+        </div>
+
+        <div class="filter-pills">
+          <div class="pill active" onclick="filterType('all', this)">ทั้งหมด (27)</div>
+          <div class="pill" onclick="filterType('pdf', this)">PDF (22)</div>
+          <div class="pill" onclick="filterType('doc', this)">Word (5)</div>
+        </div>
+      </div>
+
+      <!-- MANUALS LIST -->
+      <div id="manualsList" class="manuals-list"></div>
+
+      <div id="emptyState" class="empty-state" style="display: none;">
+        <span class="material-symbols-outlined">search_off</span>
+        <h3>ไม่พบคู่มือที่ค้นหา</h3>
+        <p>ลองค้นหาด้วยคำสำคัญอื่น หรือกดล้างการค้นหา</p>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- MODAL: QR CODE SCANNER -->
+  <div id="scannerModal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3>
+          <span class="material-symbols-outlined" style="color:var(--primary);">qr_code_scanner</span>
+          <span>สแกน QR Code ติดตัวเครื่อง</span>
+        </h3>
+        <button class="modal-close" onclick="closeScannerModal()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px;">
+          นำกล้องมือถือหรือเว็บแคมมาส่องที่ QR Code ประจำเครื่องมือเพื่อเปิดคู่มือทันที
+        </p>
+        <div id="reader"></div>
+        <div id="scannerStatus" style="font-size: 12px; color: var(--primary); margin-top: 10px; font-weight: 500;">
+          กำลังเปิดกล้อง...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: DOCUMENT VIEWER -->
+  <div id="viewerModal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 960px; height: 92vh;">
+      <div class="modal-header">
+        <div style="min-width: 0;">
+          <h3 id="viewerTitle" style="font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            เปิดดูเอกสารคู่มือ
+          </h3>
+          <span id="viewerCode" class="code-tag" style="margin-top: 2px;"></span>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <a id="viewerDownloadBtn" href="#" target="_blank" class="btn btn-outline" style="padding: 6px 12px; font-size: 12px;">
+            <span class="material-symbols-outlined" style="font-size: 16px;">download</span>
+            <span>ดาวน์โหลด</span>
+          </a>
+          <button class="modal-close" onclick="closeViewerModal()">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+      </div>
+      <div class="modal-body" style="padding: 0; display: flex; flex-direction: column;">
+        <iframe id="docIframe" src="" style="width: 100%; height: 100%; border: none; flex: 1; min-height: 480px;"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: SINGLE QR STICKER (Compact) -->
+  <div id="stickerModal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 360px;">
+      <div class="modal-header">
+        <h3>
+          <span class="material-symbols-outlined" style="color:var(--primary);">qr_code_2</span>
+          <span>สติกเกอร์ QR Code ประจำเครื่อง</span>
+        </h3>
+        <button class="modal-close" onclick="closeStickerModal()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <div class="single-sticker-box">
+          <div id="singleQrBox" class="sticker-qrcode"></div>
+          <div id="stickerNameText" class="sticker-name">ชื่อเครื่องมือแพทย์</div>
+          <div id="stickerCodeText" class="sticker-code">SD-E-PPCH-LAB-000</div>
+        </div>
+
+        <button class="btn btn-primary" onclick="window.print()" style="width: 100%;">
+          <span class="material-symbols-outlined">print</span>
+          <span>พิมพ์สติกเกอร์นี้</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: PRINT ALL 27 STICKERS (Multi-Item Grid - Zero Clutter) -->
+  <div id="printAllModal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 980px; height: 92vh;">
+      <div class="modal-header">
+        <div>
+          <h3>
+            <span class="material-symbols-outlined" style="color:var(--primary);">print</span>
+            <span>สติกเกอร์ QR Code ติดเครื่องมือ (ครบ 27 เครื่อง)</span>
+          </h3>
+          <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 2px;">
+            จัดวางหลายอันต่อ 1 หน้า A4 (ประมาณ 20 ดวง/หน้า) เน้นความชัดเจนและตัดติดเครื่องได้ทันที
+          </p>
+        </div>
+        
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <div class="no-print" style="display: flex; gap: 4px; background: #e2e8f0; padding: 2px; border-radius: 8px;">
+            <button id="btnCol4" class="btn btn-primary" style="padding: 5px 10px; font-size: 11.5px;" onclick="setGridDensity(4)">
+              4 คอลัมน์ (แน่น)
+            </button>
+            <button id="btnCol3" class="btn btn-outline" style="padding: 5px 10px; font-size: 11.5px;" onclick="setGridDensity(3)">
+              3 คอลัมน์ (กลาง)
+            </button>
+          </div>
+
+          <button class="btn btn-primary" onclick="window.print()">
+            <span class="material-symbols-outlined">print</span>
+            <span>สั่งพิมพ์ (Ctrl + P)</span>
+          </button>
+          <button class="modal-close" onclick="closePrintAllModal()">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+      </div>
+      <div class="modal-body" style="background: #ffffff;">
+        <div id="allStickersGrid" class="print-grid">
+          <!-- Multi-item stickers generated here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var SHORT_TITLES = {
+      "SD-E-PPCH-LAB-024": "ชุดทดสอบ MultiSure GK Ketone",
+      "SD-E-PPCH-LAB-025": "Fume Hood FH1000(X)",
+      "SD-E-PPCH-LAB-027": "เครื่อง BIOTIME FLI600",
+      "SD-E-PPCH-LAB-029": "Orbital Shaker SK-O180-S",
+      "SD-E-PPCH-LAB-030": "Stat Strip Lactate Hospital Meter",
+      "SD-E-PPCH-LAB-031": "เครื่อง Water Bath",
+      "SD-E-PPCH-LAB-032": "เครื่องตรวจบิลลิรูบิน BR-5200",
+      "SD-E-PPCH-LAB-034": "เครื่องตรวจ epoc Blood Gas",
+      "SD-E-PPCH-LAB-035": "เครื่องตรวจโลหิตวิทยา XN-550",
+      "SD-E-PPCH-LAB-038": "ตู้แช่แข็ง -40°C",
+      "SD-E-PPCH-LAB-039": "เครื่องตรวจ Ketone",
+      "SD-E-PPCH-LAB-040": "เครื่องปั่นเหวี่ยง HC-12C",
+      "SD-E-PPCH-LAB-047": "เครื่องนับแยกเม็ดเลือดขาว",
+      "SD-E-PPCH-LAB-049": "เครื่องปั่น Serofuge",
+      "SD-E-PPCH-LAB-070": "ตู้ปลอดเชื้อ Biosafety Cabinet",
+      "SD-E-PPCH-LAB-080": "Fume Hood FH1000(X)",
+      "SD-E-PPCH-LAB-081": "เครื่องวิเคราะห์ MAGLUMI 800",
+      "SD-E-PPCH-LAB-082": "Stat Strip Xpress Lactate",
+      "SD-E-PPCH-LAB-089": "เครื่องเขย่า BBR-9D",
+      "SD-E-PPCH-LAB-090": "CA-500 Coagulation Analyzer",
+      "SD-E-PPCH-LAB-092": "เครื่องตรวจปัสสาวะ URiSCAN PRO",
+      "SD-E-PPCH-LAB-097": "เครื่องปั่น DM0424",
+      "SD-E-PPCH-LAB-098": "เครื่องปั่น DM0412",
+      "SD-E-PPCH-LAB-099": "กล้องจุลทรรศน์ OLYMPUS CX23",
+      "SD-E-PPCH-LAB-128": "เครื่องเคมี Mindray BS600M",
+      "SD-E-PPCH-LAB-129": "เครื่องตรวจน้ำตาลในเลือด",
+      "SD-E-PPCH-LAB-134": "Auto Blood Culture System"
+    };
+
+    var ALL_MANUALS = [
+      { code: "SD-E-PPCH-LAB-024", title: "คู่มือการใช้งาน ชุดทดสอบ MultiSure GK Blood Ketone Test Strip", ext: "doc", fileName: "SD-E-PPCH-LAB-024 คู่มือการใช้งาน ชุดทดสอบ MultiSure GK Blood Ketone Test Strip.doc", sizeKB: 1943.5, category: "ชุดทดสอบ / Point of Care" },
+      { code: "SD-E-PPCH-LAB-025", title: "คู่มือการใช้งาน Fume Hood FH1000(X)", ext: "pdf", fileName: "SD-E-PPCH-LAB-025 คู่มือการใช้งาน Fume Hood FH1000(X).pdf", sizeKB: 2383.9, category: "ตู้ปลอดเชื้อ / ดูดควัน" },
+      { code: "SD-E-PPCH-LAB-027", title: "คู่มือการใช้งานเครื่อง BIOTIME Model FLI600", ext: "pdf", fileName: "SD-E-PPCH-LAB-027 คู่มือการใช้งานเครื่อง BIOTIME Model FLI600.pdf", sizeKB: 984.1, category: "เครื่องตรวจวิเคราะห์อัตโนมัติ" },
+      { code: "SD-E-PPCH-LAB-029", title: "คู่มือการใช้งานเครื่อง Orbital Shaker Model SK-O180-S", ext: "pdf", fileName: "SD-E-PPCH-LAB-029 คู่มือการใช้งานเครื่อง Orbital Shaker Model SK-O180-S.pdf", sizeKB: 100.6, category: "เครื่องเขย่า / เครื่องผสม" },
+      { code: "SD-E-PPCH-LAB-030", title: "คู่มือการใช้งานเครื่อง Stat Strip Lactate Hospital Meter", ext: "pdf", fileName: "SD-E-PPCH-LAB-030 คู่มือการใช้งานเครื่อง Stat Strip Lactate Hospital Meter.pdf", sizeKB: 907.6, category: "เครื่องตรวจวัดเฉพาะทาง" },
+      { code: "SD-E-PPCH-LAB-031", title: "คู่มือการใช้งานเครื่อง Water Bath", ext: "pdf", fileName: "SD-E-PPCH-LAB-031 คู่มือการใช้งานเครื่อง Water Bath.pdf", sizeKB: 781.2, category: "อ่างควบคุมอุณหภูมิ" },
+      { code: "SD-E-PPCH-LAB-032", title: "คู่มือการใช้งานเครื่องตรวจบิลลิลูบิน BR-5200", ext: "pdf", fileName: "SD-E-PPCH-LAB-032 คู่มือการใช้งานเครื่องตรวจบิลลิลูบิน BR-5200.pdf", sizeKB: 1673.9, category: "เครื่องตรวจวิเคราะห์อัตโนมัติ" },
+      { code: "SD-E-PPCH-LAB-034", title: "คู่มือการใช้งานเครื่อง epoc", ext: "pdf", fileName: "SD-E-PPCH-LAB-034 คู่มือการใช้งานเครื่อง epoc.pdf", sizeKB: 14156.8, category: "เครื่องตรวจวิเคราะห์ก๊าซในเลือด (Blood Gas)" },
+      { code: "SD-E-PPCH-LAB-035", title: "คู่มือการใช้งานเครื่อง XN-550", ext: "pdf", fileName: "SD-E-PPCH-LAB-035 คู่มือการใช้งานเครื่อง XN-550.pdf", sizeKB: 3587.9, category: "เครื่องตรวจวิเคราะห์ทางโลหิตวิทยา (Hematology)" },
+      { code: "SD-E-PPCH-LAB-038", title: "คู่มือการใช้งานตู้แช่แข็ง -40 องศาเซลเซียส", ext: "pdf", fileName: "SD-E-PPCH-LAB-038 คู่มือการใช้งานตู้แช่แข็ง -40 องศาเซลเซียส.pdf", sizeKB: 2260.0, category: "ตู้แช่ / ตู้เก็บรักษาอุณหภูมิต่ำ" },
+      { code: "SD-E-PPCH-LAB-039", title: "วิธีใช้งานเครื่อง Ketone", ext: "docx", fileName: "SD-E-PPCH-LAB-039 วิธีใช้งานเครื่อง Ketone.docx", sizeKB: 597.6, category: "ชุดทดสอบ / Point of Care" },
+      { code: "SD-E-PPCH-LAB-040", title: "คู่มือการใช้งานเครื่อง HC-12C", ext: "pdf", fileName: "SD-E-PPCH-LAB-040  คู่มือการใช้งานเครื่อง HC-12C.pdf", sizeKB: 223.6, category: "เครื่องปั่นตกตะกอน (Centrifuge)" },
+      { code: "SD-E-PPCH-LAB-047", title: "คู่มือการใช้งานและบำรุงรักษาเครื่องกดนับเเยกชนิดเม็ดเลือดขาว", ext: "pdf", fileName: "SD-E-PPCH-LAB-047 คู่มือการใช้งานและบำรุงรักษาเครื่องกดนับเเยกชนิดเม็ดเลือดขาว.pdf", sizeKB: 818.1, category: "เครื่องนับเซลล์เม็ดเลือด" },
+      { code: "SD-E-PPCH-LAB-049", title: "คู่มือการใช้งานเครื่องปั่นตกตะกอนชนิดความเร็ว Serofuge", ext: "pdf", fileName: "SD-E-PPCH-LAB-049 คู่มือการใช้งานเครื่องปั่นตกตะกอนชนิดความเร็ว Serofuge.pdf", sizeKB: 260.1, category: "เครื่องปั่นตกตะกอน (Centrifuge)" },
+      { code: "SD-E-PPCH-LAB-070", title: "คู่มือการใช้งานตู้ปลอดเชื้อ BIOSAFETY CABINET", ext: "pdf", fileName: "SD-E-PPCH-LAB-070 คู่มือการใช้งานตู้ปลอดเชื้อ BIOSAFETY CABINET.pdf", sizeKB: 3440.5, category: "ตู้ปลอดเชื้อ / ดูดควัน" },
+      { code: "SD-E-PPCH-LAB-080", title: "คู่มือการใช้งานเครื่อง Fume Hood FH1000(X)", ext: "pdf", fileName: "SD-E-PPCH-LAB-080 คู่มือการใช้งานเครื่อง Fume Hood FH1000(X).pdf", sizeKB: 2384.2, category: "ตู้ปลอดเชื้อ / ดูดควัน" },
+      { code: "SD-E-PPCH-LAB-081", title: "การใช้เครื่องวิเคราะห์อัตโนมัติทางภูมิคุ้มกันวิทยา MAGLUMI 800", ext: "pdf", fileName: "SD-E-PPCH-LAB-081 การใช้เครื่องวิเคราะห์อัตโนมัติทางภูมิคุ้มกันวิทยา MAGLUMI 800.pdf", sizeKB: 4217.1, category: "เครื่องตรวจวิเคราะห์อัตโนมัติ" },
+      { code: "SD-E-PPCH-LAB-082", title: "รายละเอียดคุณลักษณะเฉพาะเครื่องตรวจวัดปริมาณ Lactate ในเลือด Stat Strip Xpress", ext: "doc", fileName: "SD-E-PPCH-LAB-082 รายละเอียดคุณลักษณะเฉพาะเครื่องตรวจวัดปริมาณ  Lactate ในเลือด Stat Strip Xpress Lactate Hospital Meter.doc", sizeKB: 34.5, category: "เครื่องตรวจวัดเฉพาะทาง" },
+      { code: "SD-E-PPCH-LAB-089", title: "คู่มือการใช้งาน BBR-9D", ext: "pdf", fileName: "SD-E-PPCH-LAB-089 คู่มือการใช้งาน BBR-9D.pdf", sizeKB: 727.9, category: "เครื่องเขย่า / เครื่องผสม" },
+      { code: "SD-E-PPCH-LAB-090", title: "คู่มือการใช้งาน Automated Blood Coagulation Analyzer CA-500 Series", ext: "pdf", fileName: "SD-E-PPCH-LAB-090 คู่มือการใช้งาน Automated Blood Coagulation Analyzer CA-500 Series.pdf", sizeKB: 698.7, category: "เครื่องตรวจวิเคราะห์อัตโนมัติ" },
+      { code: "SD-E-PPCH-LAB-092", title: "คู่มือการใช้งานเครื่อง URiSCAN PRO", ext: "pdf", fileName: "SD-E-PPCH-LAB-092 คู่มือการใช้งานเครื่อง URiSCAN PRO.pdf", sizeKB: 2304.4, category: "เครื่องตรวจวิเคราะห์ปัสสาวะ (Urinalysis)" },
+      { code: "SD-E-PPCH-LAB-097", title: "คู่มือการใช้งานเครื่อง DM0424", ext: "pdf", fileName: "SD-E-PPCH-LAB-097 คู่มือการใช้งานเครื่อง DM0424.pdf", sizeKB: 639.8, category: "เครื่องปั่นตกตะกอน (Centrifuge)" },
+      { code: "SD-E-PPCH-LAB-098", title: "คู่มือการใช้งานเครื่อง DM0412", ext: "pdf", fileName: "SD-E-PPCH-LAB-098 คู่มือการใช้งานเครื่อง DM0412.pdf", sizeKB: 2238.5, category: "เครื่องปั่นตกตะกอน (Centrifuge)" },
+      { code: "SD-E-PPCH-LAB-099", title: "คู่มือการใช้งานกล้องจุลทรรศน์ รุ่น CX23 ยี่ห้อ OLYMPUS", ext: "pdf", fileName: "SD-E-PPCH-LAB-099 คู่มือการใช้งานกล้องจุลทรรศน์ รุ่น CX23 ยี่ห้อ OLYMPUS.pdf", sizeKB: 2444.8, category: "กล้องจุลทรรศน์ (Microscope)" },
+      { code: "SD-E-PPCH-LAB-128", title: "การใช้เครื่องวิคราะห์อัตโนมัติทางเคมีคลินิคยี่ห้อ Mindray รุ่น BS600M", ext: "pdf", fileName: "SD-E-PPCH-LAB-128 การใช้เครื่องวิคราะห์อัตโนมัติทางเคมีคลินิคยี่ห้อ Mindray รุ่น BS600M.pdf", sizeKB: 18582.8, category: "เครื่องตรวจวิเคราะห์อัตโนมัติ" },
+      { code: "SD-E-PPCH-LAB-129", title: "การตรวจหาปริมาณน้ำตาลในเลือด ด้วยเคร", ext: "docx", fileName: "SD-E-PPCH-LAB-129 การตรวจหาปริมาณน้ำตาลในเลือด ด้วยเคร.docx", sizeKB: 165.2, category: "ชุดทดสอบ / Point of Care" },
+      { code: "SD-E-PPCH-LAB-134", title: "คู่มือการใช้งาน เครื่องเพาะเชื้อแบบอัตโนมัติ Auto Blood Culture System", ext: "pdf", fileName: "SD-E-PPCH-LAB-134 คู่มือการใช้งาน เครื่องเพาะเชื้อแบบอัตโนมัติ Auto Blood Culture System.pdf", sizeKB: 12338.5, category: "เครื่องเพาะเชื้ออัตโนมัติ (Microbiology)" }
+    ];
+
+    var WEB_APP_URL = window.location.href.split('?')[0];
+    var currentFilterType = 'all';
+    var searchQuery = '';
+    var html5QrScanner = null;
+    var currentGridCols = 4;
+
+    function getShortName(item) {
+      return SHORT_TITLES[item.code] || item.title.replace(/^(คู่มือการใช้งาน|วิธีใช้งาน|การใช้เครื่องวิเคราะห์อัตโนมัติทางเคมีคลินิคยี่ห้อ|รายละเอียดคุณลักษณะเฉพาะเครื่องตรวจวัดปริมาณ)\s*/, '');
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+      renderManuals();
+      
+      var params = new URLSearchParams(window.location.search);
+      var code = params.get('code') || params.get('id');
+      if (code) {
+        var found = ALL_MANUALS.find(function(m) {
+          return m.code.toUpperCase().indexOf(code.toUpperCase()) !== -1;
+        });
+        if (found) openViewer(found);
+      }
+    });
+
+    function renderManuals() {
+      var container = document.getElementById('manualsList');
+      var empty = document.getElementById('emptyState');
+      
+      var filtered = ALL_MANUALS.filter(function(item) {
+        if (currentFilterType === 'pdf' && item.ext !== 'pdf') return false;
+        if (currentFilterType === 'doc' && item.ext !== 'doc' && item.ext !== 'docx') return false;
+        
+        if (searchQuery) {
+          var q = searchQuery.toLowerCase();
+          var matchCode = item.code.toLowerCase().indexOf(q) !== -1;
+          var matchTitle = item.title.toLowerCase().indexOf(q) !== -1;
+          var matchShort = getShortName(item).toLowerCase().indexOf(q) !== -1;
+          var matchCat = (item.category || '').toLowerCase().indexOf(q) !== -1;
+          if (!matchCode && !matchTitle && !matchShort && !matchCat) return false;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+
+      empty.style.display = 'none';
+
+      var html = filtered.map(function(item) {
+        var isPdf = item.ext === 'pdf';
+        var typeClass = isPdf ? 'type-pdf' : 'type-doc';
+        var typeLabel = item.ext.toUpperCase();
+        var sizeLabel = item.sizeKB ? (item.sizeKB > 1024 ? (item.sizeKB / 1024).toFixed(1) + ' MB' : item.sizeKB + ' KB') : '';
+        var shortName = getShortName(item);
+
+        return `
+          <div class="manual-strip-card" data-code="${item.code}">
+            <div class="card-left">
+              <div class="type-badge ${typeClass}">${typeLabel}</div>
+              <div class="card-info">
+                <div class="card-header-line">
+                  <span class="code-tag">${item.code}</span>
+                  <span class="category-tag">${item.category}</span>
+                </div>
+                <div class="card-title" title="${item.title}">${shortName}</div>
+                <div class="card-subtext">${item.fileName} &bull; ${sizeLabel}</div>
+              </div>
+            </div>
+
+            <div class="card-actions">
+              <button class="action-btn btn-view-direct" onclick="openViewerByCode('${item.code}')">
+                <span class="material-symbols-outlined" style="font-size:17px;">visibility</span>
+                <span>เปิดดูคู่มือ</span>
+              </button>
+              <button class="action-btn" title="QR Code ประจำเครื่อง" onclick="openStickerModal('${item.code}')">
+                <span class="material-symbols-outlined">qr_code_2</span>
+              </button>
+              <a href="../แผนก Laboratory/คู่มือการใช้งานเครื่องมือ (SD-LAB)/${encodeURIComponent(item.fileName)}" download class="action-btn" title="ดาวน์โหลดไฟล์">
+                <span class="material-symbols-outlined">download</span>
+              </a>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.innerHTML = html;
+    }
+
+    function onSearchInput() {
+      var val = document.getElementById('searchInput').value;
+      searchQuery = val.trim();
+      document.getElementById('searchClear').style.display = searchQuery ? 'block' : 'none';
+      renderManuals();
+    }
+
+    function clearSearch() {
+      document.getElementById('searchInput').value = '';
+      searchQuery = '';
+      document.getElementById('searchClear').style.display = 'none';
+      renderManuals();
+    }
+
+    function filterType(type, element) {
+      currentFilterType = type;
+      var pills = document.querySelectorAll('.filter-pills .pill');
+      pills.forEach(function(p) { p.classList.remove('active'); });
+      if (element) element.classList.add('active');
+      renderManuals();
+    }
+
+    function filterCategory(cat) {
+      if (cat === 'all') {
+        currentFilterType = 'all';
+        clearSearch();
+      }
+    }
+
+    function openViewerByCode(code) {
+      var item = ALL_MANUALS.find(function(m) { return m.code === code; });
+      if (item) openViewer(item);
+    }
+
+    function openViewer(item) {
+      var shortName = getShortName(item);
+      document.getElementById('viewerTitle').textContent = shortName;
+      document.getElementById('viewerCode').textContent = item.code + ' (' + item.ext.toUpperCase() + ')';
+      
+      var filePath = '../แผนก Laboratory/คู่มือการใช้งานเครื่องมือ (SD-LAB)/' + encodeURIComponent(item.fileName);
+      document.getElementById('viewerDownloadBtn').href = filePath;
+      document.getElementById('docIframe').src = filePath;
+
+      document.getElementById('viewerModal').classList.add('active');
+    }
+
+    function closeViewerModal() {
+      document.getElementById('viewerModal').classList.remove('active');
+      document.getElementById('docIframe').src = '';
+    }
+
+    function openStickerModal(code) {
+      var item = ALL_MANUALS.find(function(m) { return m.code === code; });
+      if (!item) return;
+
+      var shortName = getShortName(item);
+      document.getElementById('stickerNameText').textContent = shortName;
+      document.getElementById('stickerCodeText').textContent = item.code;
+
+      var qrContainer = document.getElementById('singleQrBox');
+      qrContainer.innerHTML = '';
+
+      var qrTargetUrl = WEB_APP_URL + (WEB_APP_URL.indexOf('?') === -1 ? '?' : '&') + 'code=' + encodeURIComponent(item.code);
+
+      new QRCode(qrContainer, {
+        text: qrTargetUrl,
+        width: 130,
+        height: 130,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
+      });
+
+      document.getElementById('stickerModal').classList.add('active');
+    }
+
+    function closeStickerModal() {
+      document.getElementById('stickerModal').classList.remove('active');
+    }
+
+    function setGridDensity(cols) {
+      currentGridCols = cols;
+      var grid = document.getElementById('allStickersGrid');
+      var btn4 = document.getElementById('btnCol4');
+      var btn3 = document.getElementById('btnCol3');
+
+      if (cols === 3) {
+        grid.classList.add('grid-3col');
+        btn3.className = 'btn btn-primary';
+        btn4.className = 'btn btn-outline';
+      } else {
+        grid.classList.remove('grid-3col');
+        btn4.className = 'btn btn-primary';
+        btn3.className = 'btn btn-outline';
+      }
+    }
+
+    function openPrintAllStickersModal() {
+      var grid = document.getElementById('allStickersGrid');
+      grid.innerHTML = '';
+      setGridDensity(4);
+
+      ALL_MANUALS.forEach(function(item, idx) {
+        var qrId = 'allQrBox_' + idx;
+        var qrTargetUrl = WEB_APP_URL + (WEB_APP_URL.indexOf('?') === -1 ? '?' : '&') + 'code=' + encodeURIComponent(item.code);
+        var shortName = getShortName(item);
+
+        var stickerHtml = `
+          <div class="qr-sticker">
+            <div id="${qrId}" class="sticker-qrcode"></div>
+            <div class="sticker-name">${shortName}</div>
+            <div class="sticker-code">${item.code}</div>
+          </div>
+        `;
+
+        grid.insertAdjacentHTML('beforeend', stickerHtml);
+
+        setTimeout(function() {
+          var targetElem = document.getElementById(qrId);
+          if (targetElem) {
+            new QRCode(targetElem, {
+              text: qrTargetUrl,
+              width: 95,
+              height: 95,
+              colorDark: "#000000",
+              colorLight: "#ffffff",
+              correctLevel: QRCode.CorrectLevel.M
+            });
+          }
+        }, 8 * idx);
+      });
+
+      document.getElementById('printAllModal').classList.add('active');
+    }
+
+    function closePrintAllModal() {
+      document.getElementById('printAllModal').classList.remove('active');
+    }
+
+    function openScannerModal() {
+      document.getElementById('scannerModal').classList.add('active');
+      document.getElementById('scannerStatus').textContent = 'กำลังเปิดกล้อง...';
+
+      if (!html5QrScanner) {
+        html5QrScanner = new Html5Qrcode("reader");
+      }
+
+      var config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+      html5QrScanner.start(
+        { facingMode: "environment" },
+        config,
+        onQrCodeSuccess,
+        function(err) {}
+      ).catch(function(err) {
+        document.getElementById('scannerStatus').textContent = 'ไม่สามารถเข้าถึงกล้องได้: ' + err;
+      });
+    }
+
+    function closeScannerModal() {
+      if (html5QrScanner) {
+        html5QrScanner.stop().then(function() {
+          document.getElementById('scannerModal').classList.remove('active');
+        }).catch(function(err) {
+          document.getElementById('scannerModal').classList.remove('active');
+        });
+      } else {
+        document.getElementById('scannerModal').classList.remove('active');
+      }
+    }
+
+    function onQrCodeSuccess(decodedText, decodedResult) {
+      if (navigator.vibrate) navigator.vibrate(100);
+      closeScannerModal();
+
+      var targetCode = '';
+      if (decodedText.indexOf('code=') !== -1) {
+        var match = decodedText.match(/code=([^&]+)/);
+        if (match) targetCode = decodeURIComponent(match[1]);
+      } else if (decodedText.indexOf('SD-E-PPCH-LAB-') !== -1) {
+        var match = decodedText.match(/SD-E-PPCH-LAB-\d{3}/i);
+        if (match) targetCode = match[0];
+      } else {
+        targetCode = decodedText.trim();
+      }
+
+      if (targetCode) {
+        var found = ALL_MANUALS.find(function(m) {
+          return m.code.toUpperCase().indexOf(targetCode.toUpperCase()) !== -1;
+        });
+
+        if (found) {
+          openViewer(found);
+        } else {
+          alert('สแกนสำเร็จ: ' + targetCode + ' (ไม่พบคู่มือที่ตรงกับรหัสนี้)');
+        }
+      }
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeViewerModal();
+        closeStickerModal();
+        closePrintAllModal();
+        closeScannerModal();
+      }
+    });
+  </script>
+</body>
+</html>
