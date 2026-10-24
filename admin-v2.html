@@ -12,26 +12,26 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   <style>
-    /* ==================== PPCH V2: NORDIC JADE & WARM ALABASTER STUDIO THEME ==================== */
+    /* ==================== PPCH V2: PHITSANUVEJ SIGNATURE LOGO PALETTE (SLATE-STEEL NAVY & CERULEAN SKY) ==================== */
     :root {
-      --royal-dark: #0c261f;
-      --royal-blue: #0f3d32;
-      --royal-hover: #091e18;
-      --royal-light: #0d9488;
-      --royal-subtle: #ecfdf5;
-      --royal-glow: rgba(13, 148, 136, 0.16);
+      --royal-dark: #183652;
+      --royal-blue: #26547c;
+      --royal-hover: #1e4363;
+      --royal-light: #56a8dc;
+      --royal-subtle: #ebf5fc;
+      --royal-glow: rgba(86, 168, 220, 0.22);
 
-      --canvas-bg: #f4f3ef;
+      --canvas-bg: #f0f5fa;
       --surface-white: #ffffff;
-      --border-main: #e4e4e7;
-      --border-subtle: #f4f4f5;
-      --border-focus: #0d9488;
-      --border-blue-soft: #a7f3d0;
+      --border-main: #dbe7f3;
+      --border-subtle: #eef4f9;
+      --border-focus: #56a8dc;
+      --border-blue-soft: #b8dcf5;
 
-      --text-main: #18181b;
-      --text-body: #3f3f46;
-      --text-muted: #71717a;
-      --text-light: #a1a1aa;
+      --text-main: #162a3d;
+      --text-body: #334e68;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
 
       --green-ready: #059669;
       --green-bg: #ecfdf5;
@@ -48,7 +48,7 @@
       --font-sans: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
       color-scheme: light;
-      accent-color: #0d9488;
+      accent-color: #26547c;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -3651,8 +3651,8 @@
     }
 
     /* ============================================================================
-       PPCH MEDTRACK V2 — NORDIC JADE & WARM ALABASTER FLOATING STUDIO ARCHITECTURE
-       (Completely distinct from V1's Royal Blue corporate layout)
+       PPCH MEDTRACK V2 — PHITSANUVEJ LOGO HARMONY FLOATING STUDIO ARCHITECTURE
+       (Slate-Steel Navy #26547C + Cerulean Sky #56A8DC + Cool Porcelain #F0F5FA)
        ============================================================================ */
     :root {
       --font-mono: 'JetBrains Mono', monospace;
@@ -3661,38 +3661,39 @@
 
     body {
       background:
-        radial-gradient(circle at 8% 4%, rgba(16, 185, 129, 0.08) 0%, transparent 40%),
-        radial-gradient(circle at 92% 10%, rgba(217, 119, 6, 0.06) 0%, transparent 42%),
-        #f4f3ef !important;
+        radial-gradient(circle at 8% 4%, rgba(86, 168, 220, 0.16) 0%, transparent 42%),
+        radial-gradient(circle at 92% 10%, rgba(38, 84, 124, 0.10) 0%, transparent 44%),
+        #f0f5fa !important;
       background-attachment: fixed !important;
-      color: #18181b !important;
+      color: #162a3d !important;
     }
 
-    /* 1. Floating Obsidian Jade Pill Command Bar (Replaces full-width white topbar) */
+    /* 1. Floating Slate-Steel Navy Pill Command Bar */
     .app-topbar {
-      background: #0c261f !important;
+      background: linear-gradient(135deg, #183652 0%, #26547c 100%) !important;
       color: #ffffff !important;
-      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+      border: 1px solid rgba(124, 196, 240, 0.25) !important;
       border-radius: 999px !important;
       margin: 12px 20px 0 20px !important;
       height: 56px !important;
       padding: 0 18px !important;
-      box-shadow: 0 18px 38px -10px rgba(12, 38, 31, 0.28) !important;
+      box-shadow: 0 18px 38px -10px rgba(24, 54, 82, 0.28) !important;
     }
     .brand-logo-img {
       background: #ffffff !important;
-      border-radius: 50% !important;
-      padding: 3px !important;
-      height: 34px !important;
-      width: 34px !important;
+      border-radius: 999px !important;
+      padding: 4px 12px !important;
+      height: 36px !important;
+      width: auto !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
     }
     .brand-divider {
-      background: rgba(255, 255, 255, 0.16) !important;
+      background: rgba(255, 255, 255, 0.18) !important;
     }
     .brand-badge-pill {
-      background: rgba(16, 185, 129, 0.2) !important;
-      color: #6ee7b7 !important;
-      border: 1px solid rgba(52, 211, 153, 0.35) !important;
+      background: rgba(86, 168, 220, 0.26) !important;
+      color: #e0f2fe !important;
+      border: 1px solid rgba(124, 196, 240, 0.45) !important;
       padding: 3px 10px !important;
       border-radius: 999px !important;
       font-family: var(--font-mono) !important;
@@ -3701,86 +3702,105 @@
       letter-spacing: 0.5px !important;
     }
     .bread-parent {
-      color: rgba(255, 255, 255, 0.55) !important;
+      color: rgba(255, 255, 255, 0.65) !important;
     }
     .bread-sep {
-      color: rgba(255, 255, 255, 0.3) !important;
+      color: rgba(255, 255, 255, 0.35) !important;
     }
     .bread-current {
       color: #ffffff !important;
       font-weight: 700 !important;
     }
     .status-realtime-badge {
-      background: rgba(16, 185, 129, 0.16) !important;
-      border: 1px solid rgba(52, 211, 153, 0.35) !important;
-      color: #6ee7b7 !important;
+      background: rgba(16, 185, 129, 0.18) !important;
+      border: 1px solid rgba(52, 211, 153, 0.4) !important;
+      color: #a7f3d0 !important;
       border-radius: 999px !important;
       padding: 4px 12px !important;
       font-weight: 700 !important;
     }
     .admin-profile-pill {
-      background: rgba(255, 255, 255, 0.08) !important;
-      border: 1px solid rgba(255, 255, 255, 0.14) !important;
+      background: rgba(255, 255, 255, 0.10) !important;
+      border: 1px solid rgba(255, 255, 255, 0.18) !important;
       border-radius: 999px !important;
     }
     .admin-label {
       color: #ffffff !important;
     }
     .avatar-circle {
-      background: #10b981 !important;
-      color: #052e16 !important;
+      background: #56a8dc !important;
+      color: #ffffff !important;
       font-weight: 800 !important;
     }
 
-    /* 2. Floating Obsidian Jade Left Studio Dock (Detached Rounded Island) */
+    /* 2. Floating Slate-Steel Navy Left Studio Dock (Detached Rounded Island) */
     @media (min-width: 992px) {
       .app-sidebar {
-        background: linear-gradient(175deg, #0c261f 0%, #12372d 60%, #091d17 100%) !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        background: linear-gradient(175deg, #183652 0%, #26547c 62%, #1b3d5c 100%) !important;
+        border: 1px solid rgba(124, 196, 240, 0.22) !important;
         border-radius: 28px !important;
         margin: 14px 0 16px 20px !important;
         top: 82px !important;
         height: calc(100vh - 98px) !important;
-        box-shadow: 0 24px 50px -12px rgba(12, 38, 31, 0.32) !important;
+        box-shadow: 0 24px 50px -12px rgba(24, 54, 82, 0.32) !important;
       }
       .app-main-content {
         padding: 14px 20px 32px 18px !important;
       }
     }
     .sidebar-brand-box {
-      background: rgba(255, 255, 255, 0.06) !important;
-      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+      background: #ffffff !important;
+      border: 2px solid rgba(86, 168, 220, 0.35) !important;
       border-radius: 18px !important;
+      padding: 10px 14px !important;
+      justify-content: center !important;
+      box-shadow: 0 8px 20px rgba(12, 28, 44, 0.18) !important;
+    }
+    .sidebar-brand-logo-wrap {
+      width: 100% !important;
+      height: auto !important;
+      background: transparent !important;
+      padding: 0 !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+    }
+    .sidebar-brand-logo-wrap img {
+      width: 100% !important;
+      max-height: 44px !important;
+      object-fit: contain !important;
+    }
+    .sidebar-brand-text {
+      display: none !important;
     }
     .sidebar-section-title {
-      color: rgba(110, 231, 183, 0.65) !important;
+      color: rgba(186, 230, 253, 0.72) !important;
       letter-spacing: 0.08em !important;
     }
     .nav-btn {
       border-radius: 14px !important;
       padding: 10px 13px !important;
       font-weight: 600 !important;
-      color: rgba(255, 255, 255, 0.75) !important;
+      color: rgba(255, 255, 255, 0.80) !important;
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
     }
     .nav-btn:hover {
-      background: rgba(255, 255, 255, 0.08) !important;
+      background: rgba(255, 255, 255, 0.10) !important;
       color: #ffffff !important;
     }
     .nav-btn.active {
-      background: #10b981 !important;
-      color: #052e16 !important;
+      background: linear-gradient(135deg, #56a8dc 0%, #3b91c9 100%) !important;
+      color: #ffffff !important;
       font-weight: 700 !important;
-      box-shadow: 0 8px 20px -4px rgba(16, 185, 129, 0.45) !important;
+      box-shadow: 0 8px 20px -4px rgba(86, 168, 220, 0.50), inset 0 1px 1px rgba(255, 255, 255, 0.4) !important;
     }
     .nav-btn.active .material-icons-round {
-      color: #052e16 !important;
+      color: #ffffff !important;
     }
 
-    /* 3. Warm Stone Segmented Pill Switcher */
+    /* 3. Cerulean Porcelain Segmented Pill Switcher */
     .summary-risk-switcher {
-      background: #e7e5de !important;
-      border: 1px solid rgba(24, 24, 27, 0.06) !important;
+      background: #dfe9f3 !important;
+      border: 1px solid rgba(38, 84, 124, 0.08) !important;
       border-radius: 999px !important;
       padding: 5px !important;
       gap: 6px !important;
@@ -3793,17 +3813,17 @@
       padding: 8px 20px !important;
       font-size: 13px !important;
       font-weight: 700 !important;
-      color: #52525b !important;
+      color: #47627d !important;
       transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
     }
     .risk-switch-tab.active {
-      background: #0c261f !important;
+      background: #26547c !important;
       color: #ffffff !important;
-      box-shadow: 0 6px 16px -3px rgba(12, 38, 31, 0.25) !important;
+      box-shadow: 0 6px 16px -3px rgba(38, 84, 124, 0.30) !important;
     }
     .risk-switch-tab.active .risk-tab-badge {
-      background: rgba(16, 185, 129, 0.25) !important;
-      color: #6ee7b7 !important;
+      background: rgba(86, 168, 220, 0.35) !important;
+      color: #ffffff !important;
       border-color: transparent !important;
     }
 
@@ -3815,34 +3835,34 @@
     }
     .kpi-card {
       background: #ffffff !important;
-      border: 1px solid rgba(24, 24, 27, 0.07) !important;
+      border: 1px solid rgba(38, 84, 124, 0.10) !important;
       border-radius: 24px !important;
       padding: 16px 18px !important;
       display: flex !important;
       flex-direction: row-reverse !important;
       align-items: center !important;
       justify-content: space-between !important;
-      box-shadow: 0 10px 26px -10px rgba(12, 38, 31, 0.06) !important;
+      box-shadow: 0 10px 26px -10px rgba(24, 54, 82, 0.08) !important;
       transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
     }
     .kpi-card:hover {
       transform: translateY(-3px) !important;
-      border-color: #0d9488 !important;
-      box-shadow: 0 16px 32px -10px rgba(12, 38, 31, 0.12) !important;
+      border-color: #56a8dc !important;
+      box-shadow: 0 16px 32px -10px rgba(38, 84, 124, 0.16) !important;
     }
     .kpi-card.active-kpi {
-      background: #0c261f !important;
-      border-color: #0c261f !important;
+      background: linear-gradient(135deg, #183652 0%, #26547c 100%) !important;
+      border-color: #56a8dc !important;
       color: #ffffff !important;
-      box-shadow: 0 16px 32px -8px rgba(12, 38, 31, 0.32) !important;
+      box-shadow: 0 16px 32px -8px rgba(24, 54, 82, 0.35) !important;
     }
     .kpi-card.active-kpi .kpi-val,
     .kpi-card.active-kpi .kpi-label {
       color: #ffffff !important;
     }
     .kpi-card.active-kpi .kpi-icon-box {
-      background: rgba(16, 185, 129, 0.22) !important;
-      color: #6ee7b7 !important;
+      background: rgba(86, 168, 220, 0.28) !important;
+      color: #bae6fd !important;
     }
     .kpi-icon-box {
       width: 44px !important;
@@ -3850,8 +3870,8 @@
       border-radius: 16px !important;
     }
     .kpi-icon-blue {
-      background: #f0fdf4 !important;
-      color: #0f3d32 !important;
+      background: #ebf5fc !important;
+      color: #26547c !important;
     }
     .kpi-val {
       font-family: var(--font-display) !important;
@@ -3864,19 +3884,19 @@
     .kpi-label {
       font-size: 12px !important;
       font-weight: 600 !important;
-      color: #71717a !important;
+      color: #64748b !important;
       margin-top: 3px !important;
     }
 
     /* 5. Floating Studio Content Panels & Separated Card-Row Table */
     .content-panel,
     .dash-panel {
-      background: rgba(255, 255, 255, 0.72) !important;
+      background: rgba(255, 255, 255, 0.78) !important;
       backdrop-filter: blur(20px) !important;
-      border: 1px solid rgba(24, 24, 27, 0.07) !important;
+      border: 1px solid rgba(38, 84, 124, 0.10) !important;
       border-radius: 28px !important;
       padding: 6px !important;
-      box-shadow: 0 20px 44px -16px rgba(12, 38, 31, 0.07) !important;
+      box-shadow: 0 20px 44px -16px rgba(24, 54, 82, 0.08) !important;
     }
     .panel-header {
       padding: 14px 20px !important;
@@ -3886,11 +3906,11 @@
     .panel-title {
       font-size: 16px !important;
       font-weight: 800 !important;
-      color: #0c261f !important;
+      color: #183652 !important;
     }
     .panel-badge {
-      background: #0c261f !important;
-      color: #6ee7b7 !important;
+      background: #26547c !important;
+      color: #ffffff !important;
       border: none !important;
       border-radius: 999px !important;
       padding: 3px 11px !important;
@@ -3906,7 +3926,7 @@
       }
       .device-table thead th {
         background: transparent !important;
-        color: #71717a !important;
+        color: #64748b !important;
         font-size: 11px !important;
         font-weight: 700 !important;
         text-transform: uppercase !important;
@@ -3916,26 +3936,26 @@
       }
       .device-table tbody tr {
         background: #ffffff !important;
-        box-shadow: 0 3px 12px -3px rgba(12, 38, 31, 0.05) !important;
+        box-shadow: 0 3px 12px -3px rgba(24, 54, 82, 0.06) !important;
         transition: transform 0.18s ease, box-shadow 0.18s ease !important;
       }
       .device-table tbody tr:hover {
         transform: translateY(-1px) !important;
-        box-shadow: 0 8px 20px -4px rgba(12, 38, 31, 0.1) !important;
+        box-shadow: 0 8px 20px -4px rgba(38, 84, 124, 0.14) !important;
       }
       .device-table tbody td {
         background: #ffffff !important;
         padding: 12px 16px !important;
-        border-top: 1px solid #f4f4f5 !important;
-        border-bottom: 1px solid #f4f4f5 !important;
+        border-top: 1px solid #e9f1f8 !important;
+        border-bottom: 1px solid #e9f1f8 !important;
       }
       .device-table tbody td:first-child {
-        border-left: 1px solid #f4f4f5 !important;
+        border-left: 1px solid #e9f1f8 !important;
         border-top-left-radius: 16px !important;
         border-bottom-left-radius: 16px !important;
       }
       .device-table tbody td:last-child {
-        border-right: 1px solid #f4f4f5 !important;
+        border-right: 1px solid #e9f1f8 !important;
         border-top-right-radius: 16px !important;
         border-bottom-right-radius: 16px !important;
       }
@@ -3945,23 +3965,23 @@
       font-family: var(--font-mono) !important;
       font-size: 12px !important;
       font-weight: 700 !important;
-      color: #0c261f !important;
-      background: #ecfdf5 !important;
-      border: 1px solid #a7f3d0 !important;
+      color: #26547c !important;
+      background: #ebf5fc !important;
+      border: 1px solid #b8dcf5 !important;
       padding: 4px 10px !important;
       border-radius: 10px !important;
       letter-spacing: 0.3px !important;
     }
 
     .btn-tool-primary {
-      background: #0c261f !important;
-      border-color: #0c261f !important;
+      background: #26547c !important;
+      border-color: #26547c !important;
       color: #ffffff !important;
       border-radius: 999px !important;
     }
     .btn-tool-primary:hover {
-      background: #0d9488 !important;
-      border-color: #0d9488 !important;
+      background: #56a8dc !important;
+      border-color: #56a8dc !important;
     }
 
     /* 6. 3D-Tactile Status Symbol Orbs (Symbol-First Design) */
@@ -3997,9 +4017,9 @@
       box-shadow: 0 4px 12px -2px rgba(225, 29, 72, 0.4) !important;
     }
     .status-symbol-btn.symbol-pending {
-      background: #f4f4f5 !important;
-      color: #a1a1aa !important;
-      border-color: #e4e4e7 !important;
+      background: #f1f5f9 !important;
+      color: #94a3b8 !important;
+      border-color: #dbe7f3 !important;
       box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04) !important;
     }
     .status-symbol-btn:hover {
@@ -4011,20 +4031,20 @@
       width: 36px !important;
       height: 36px !important;
       min-width: 36px !important;
-      background: #fafaf9 !important;
-      color: #0c261f !important;
-      border: 1.5px solid #d4d4d8 !important;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+      background: #f8fbfe !important;
+      color: #26547c !important;
+      border: 1.5px solid #b8dcf5 !important;
+      box-shadow: 0 2px 6px rgba(38, 84, 124, 0.08) !important;
     }
     .floating-badge-count {
-      background: #0c261f !important;
+      background: #26547c !important;
     }
     .floating-action-tray {
-      background: #0c261f !important;
-      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      background: #183652 !important;
+      border: 1px solid rgba(124, 196, 240, 0.35) !important;
       border-radius: 999px !important;
       padding: 5px 10px !important;
-      box-shadow: 0 14px 32px -4px rgba(12, 38, 31, 0.45) !important;
+      box-shadow: 0 14px 32px -4px rgba(24, 54, 82, 0.45) !important;
     }
   </style>
 </head>
@@ -4075,8 +4095,8 @@
       </div>
 
       <div class="topbar-right">
-        <a href="eval-v2.html" class="btn-tool" style="text-decoration: none; padding: 6px 14px; font-size: 12px; font-weight: 700; color: #052e16; background: #10b981; border: 1px solid #34d399; border-radius: 999px; display: inline-flex; align-items: center; gap: 5px;" title="เปิดหน้าแบบตรวจเช็คประจำวัน V2">
-          <span class="material-icons-round" style="font-size: 16px; color: #052e16;">fact_check</span>
+        <a href="eval-v2.html" class="btn-tool" style="text-decoration: none; padding: 6px 14px; font-size: 12px; font-weight: 700; color: #ffffff; background: #56a8dc; border: 1px solid #7cc4f0; border-radius: 999px; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 4px 12px rgba(86, 168, 220, 0.35);" title="เปิดหน้าแบบตรวจเช็คประจำวัน V2">
+          <span class="material-icons-round" style="font-size: 16px; color: #ffffff;">fact_check</span>
           <span>หน้าตรวจเช็ค</span>
         </a>
         <div class="status-realtime-badge">

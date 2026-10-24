@@ -6,7 +6,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PPCH MedTrack V2 — Bio-Minimalist Studio | โรงพยาบาลพิษณุเวช พิจิตร</title>
+  <title>PPCH MedTrack V2 — Phitsanuvej Studio | โรงพยาบาลพิษณุเวช พิจิตร</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,16 +15,18 @@
 
   <style>
     :root {
-      --bg-alabaster: #f4f3ef;
+      /* Exact Phitsanuvej Phichit Logo Palette */
+      --bg-porcelain: #f0f5fa;
       --surface-ivory: #ffffff;
-      --jade-obsidian: #0c261f;
-      --jade-deep: #133a2f;
-      --jade-emerald: #0d9488;
-      --mint-glow: #10b981;
-      --gold-warm: #d97706;
-      --ink-primary: #18181b;
-      --ink-muted: #71717a;
-      --border-stone: rgba(24, 24, 27, 0.08);
+      --logo-navy-deep: #183652;   /* Deep Slate-Steel Navy */
+      --logo-navy-main: #26547c;   /* Outer Cross Petals & "พิษณุเวช" */
+      --logo-sky-main: #56a8dc;    /* Inner 4 Squares & "พิจิตร" */
+      --logo-sky-light: #7cc4f0;
+      --logo-sky-tint: #ebf5fc;
+      --logo-grey: #7d8790;        /* "โรงพยาบาล" */
+      --ink-primary: #162a3d;
+      --ink-muted: #64748b;
+      --border-soft: rgba(38, 84, 124, 0.10);
     }
 
     *, *::before, *::after {
@@ -38,7 +40,7 @@
       height: 100%;
       overflow: hidden;
       font-family: 'Prompt', 'Plus Jakarta Sans', sans-serif;
-      background: var(--bg-alabaster);
+      background: var(--bg-porcelain);
       color: var(--ink-primary);
       -webkit-font-smoothing: antialiased;
     }
@@ -73,9 +75,9 @@
       justify-content: center;
       padding: 28px;
       background:
-        radial-gradient(circle at 12% 18%, rgba(16, 185, 129, 0.10) 0%, transparent 42%),
-        radial-gradient(circle at 88% 82%, rgba(217, 119, 6, 0.08) 0%, transparent 42%),
-        var(--bg-alabaster);
+        radial-gradient(circle at 14% 18%, rgba(86, 168, 220, 0.18) 0%, transparent 44%),
+        radial-gradient(circle at 86% 82%, rgba(38, 84, 124, 0.12) 0%, transparent 44%),
+        var(--bg-porcelain);
       transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
                   transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
     }
@@ -85,38 +87,38 @@
       pointer-events: none;
     }
 
-    /* Ambient Organic Rings */
+    /* Ambient Orbital Rings */
     .orbital-ring {
       position: absolute;
       border-radius: 50%;
-      border: 1px solid rgba(19, 58, 47, 0.06);
+      border: 1px solid rgba(38, 84, 124, 0.07);
       pointer-events: none;
     }
-    .ring-1 { width: 580px; height: 580px; }
-    .ring-2 { width: 860px; height: 860px; border-style: dashed; }
+    .ring-1 { width: 600px; height: 600px; }
+    .ring-2 { width: 880px; height: 880px; border-style: dashed; }
 
     /* Bento Studio Monolith */
     .bento-portal {
       position: relative;
       z-index: 5;
       width: 100%;
-      max-width: 780px;
+      max-width: 800px;
       display: grid;
-      grid-template-columns: 1.05fr 1fr;
+      grid-template-columns: 1.08fr 1fr;
       background: var(--surface-ivory);
       border-radius: 36px;
-      border: 1px solid var(--border-stone);
+      border: 1px solid rgba(255, 255, 255, 0.9);
       box-shadow:
-        0 32px 80px -20px rgba(12, 38, 31, 0.14),
-        0 4px 16px -2px rgba(24, 24, 27, 0.04);
+        0 32px 80px -20px rgba(24, 54, 82, 0.18),
+        0 4px 16px -2px rgba(24, 54, 82, 0.05);
       overflow: hidden;
     }
 
-    /* Left Column: Obsidian Jade Brand Sanctuary */
+    /* Left Column: Phitsanuvej Slate-Steel Navy & Cerulean Sanctuary */
     .portal-brand-pane {
-      background: linear-gradient(155deg, var(--jade-obsidian) 0%, var(--jade-deep) 100%);
+      background: linear-gradient(150deg, var(--logo-navy-deep) 0%, var(--logo-navy-main) 65%, #346d9e 100%);
       color: #ffffff;
-      padding: 48px 40px;
+      padding: 46px 40px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -126,12 +128,12 @@
     .portal-brand-pane::before {
       content: '';
       position: absolute;
-      right: -80px;
-      bottom: -80px;
+      right: -70px;
+      bottom: -70px;
       width: 280px;
       height: 280px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(16, 185, 129, 0.28) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(86, 168, 220, 0.38) 0%, transparent 70%);
       pointer-events: none;
     }
 
@@ -142,84 +144,89 @@
       align-self: flex-start;
       padding: 6px 14px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.10);
+      border: 1px solid rgba(124, 196, 240, 0.30);
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       font-weight: 700;
       letter-spacing: 0.08em;
-      color: #6ee7b7;
+      color: #bae6fd;
     }
     .live-dot {
       width: 7px;
       height: 7px;
       border-radius: 50%;
-      background: #10b981;
-      box-shadow: 0 0 10px #10b981;
+      background: var(--logo-sky-light);
+      box-shadow: 0 0 10px var(--logo-sky-light);
     }
 
     .brand-center {
-      margin: 36px 0;
+      margin: 32px 0;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      gap: 20px;
+      gap: 22px;
     }
 
-    .logo-squircle {
-      width: 96px;
-      height: 96px;
-      border-radius: 28px;
+    /* Wide Rounded Showcase Pill for Horizontal Hospital Logo */
+    .logo-showcase-pill {
       background: #ffffff;
-      padding: 12px;
-      display: flex;
+      padding: 16px 24px;
+      border-radius: 24px;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.28);
+      box-shadow:
+        0 20px 40px -10px rgba(12, 28, 44, 0.35),
+        0 0 0 4px rgba(86, 168, 220, 0.22);
     }
-    .logo-squircle img {
-      width: 100%;
-      height: 100%;
+    .logo-showcase-pill img {
+      height: 64px;
+      width: auto;
+      max-width: 100%;
       object-fit: contain;
+      display: block;
     }
 
     .brand-headline {
-      font-size: 28px;
+      font-size: 27px;
       font-weight: 700;
       line-height: 1.25;
       letter-spacing: -0.02em;
       color: #ffffff;
     }
     .brand-sub {
-      font-size: 13px;
-      color: rgba(255, 255, 255, 0.68);
+      font-size: 13.5px;
+      color: #bae6fd;
       font-weight: 400;
-      margin-top: -10px;
+      margin-top: -12px;
     }
 
     .brand-footer-symbols {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
+      flex-wrap: wrap;
     }
     .mini-symbol-pill {
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      padding: 5px 10px;
+      padding: 5px 11px;
       border-radius: 10px;
-      background: rgba(255, 255, 255, 0.07);
+      background: rgba(255, 255, 255, 0.09);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       font-size: 11.5px;
-      color: rgba(255, 255, 255, 0.85);
+      color: rgba(255, 255, 255, 0.92);
     }
     .mini-symbol-pill .material-icons-round {
       font-size: 15px;
-      color: #34d399;
+      color: var(--logo-sky-light);
     }
 
     /* Right Column: Tactile Action Pods */
     .portal-action-pane {
-      padding: 48px 40px;
+      padding: 46px 40px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -233,7 +240,7 @@
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.12em;
-      color: var(--ink-muted);
+      color: var(--logo-grey);
       margin-bottom: 4px;
     }
 
@@ -247,8 +254,8 @@
       border-radius: 24px;
       text-decoration: none;
       cursor: pointer;
-      border: 1.5px solid #e4e4e7;
-      background: #fafaf9;
+      border: 1.5px solid #e2ecf5;
+      background: #f8fbfe;
       color: var(--ink-primary);
       font-family: inherit;
       text-align: left;
@@ -256,21 +263,20 @@
     }
     .studio-launch-card:hover {
       transform: translateY(-3px);
-      border-color: var(--jade-obsidian);
+      border-color: var(--logo-sky-main);
       background: #ffffff;
-      box-shadow: 0 16px 32px -10px rgba(12, 38, 31, 0.14);
+      box-shadow: 0 16px 32px -10px rgba(38, 84, 124, 0.16);
     }
 
-    .studio-launch-card.primary-jade {
-      background: var(--jade-obsidian);
-      border-color: var(--jade-obsidian);
+    .studio-launch-card.primary-navy {
+      background: linear-gradient(135deg, var(--logo-navy-deep) 0%, var(--logo-navy-main) 100%);
+      border-color: var(--logo-navy-main);
       color: #ffffff;
-      box-shadow: 0 16px 32px -8px rgba(12, 38, 31, 0.28);
+      box-shadow: 0 16px 32px -8px rgba(24, 54, 82, 0.32);
     }
-    .studio-launch-card.primary-jade:hover {
-      background: var(--jade-deep);
-      border-color: var(--jade-deep);
-      box-shadow: 0 22px 40px -8px rgba(12, 38, 31, 0.38);
+    .studio-launch-card.primary-navy:hover {
+      background: linear-gradient(135deg, var(--logo-navy-main) 0%, #316896 100%);
+      box-shadow: 0 22px 40px -8px rgba(24, 54, 82, 0.42);
     }
 
     .card-orb {
@@ -282,14 +288,15 @@
       justify-content: center;
       flex-shrink: 0;
     }
-    .primary-jade .card-orb {
-      background: rgba(16, 185, 129, 0.2);
-      color: #34d399;
+    .primary-navy .card-orb {
+      background: rgba(86, 168, 220, 0.24);
+      color: #7cc4f0;
+      border: 1px solid rgba(124, 196, 240, 0.35);
     }
-    .secondary-ivory .card-orb {
-      background: #ecfdf5;
-      color: #059669;
-      border: 1px solid #a7f3d0;
+    .secondary-cerulean .card-orb {
+      background: var(--logo-sky-tint);
+      color: var(--logo-navy-main);
+      border: 1px solid rgba(86, 168, 220, 0.35);
     }
 
     .card-title {
@@ -299,13 +306,13 @@
     }
     .card-caption {
       font-size: 12px;
-      opacity: 0.68;
+      opacity: 0.72;
       margin-top: 3px;
     }
 
     .card-arrow {
       margin-left: auto;
-      opacity: 0.5;
+      opacity: 0.55;
       transition: transform 0.2s ease, opacity 0.2s ease;
     }
     .studio-launch-card:hover .card-arrow {
@@ -321,15 +328,15 @@
       gap: 6px;
       font-size: 12px;
       font-weight: 600;
-      color: var(--ink-muted);
+      color: var(--logo-grey);
       text-decoration: none;
       padding: 6px 14px;
       border-radius: 999px;
       transition: all 0.2s;
     }
     .v1-footer-link:hover {
-      background: #f4f4f5;
-      color: var(--ink-primary);
+      background: var(--logo-sky-tint);
+      color: var(--logo-navy-main);
     }
 
     @media (max-width: 720px) {
@@ -339,17 +346,16 @@
         border-radius: 28px;
       }
       .portal-brand-pane {
-        padding: 32px 26px;
+        padding: 30px 24px;
       }
       .brand-center {
-        margin: 20px 0;
-        flex-direction: row;
-        align-items: center;
+        margin: 18px 0;
       }
-      .logo-squircle {
-        width: 68px;
-        height: 68px;
-        border-radius: 20px;
+      .logo-showcase-pill {
+        padding: 12px 18px;
+      }
+      .logo-showcase-pill img {
+        height: 50px;
       }
       .brand-headline { font-size: 22px; }
       .portal-action-pane {
@@ -367,7 +373,7 @@
     <div class="orbital-ring ring-2"></div>
 
     <main class="bento-portal">
-      <!-- Left: Obsidian Jade Sanctuary -->
+      <!-- Left: Phitsanuvej Slate-Steel Navy & Cerulean Sanctuary -->
       <section class="portal-brand-pane">
         <div class="brand-top-tag">
           <span class="live-dot"></span>
@@ -375,11 +381,11 @@
         </div>
 
         <div class="brand-center">
-          <div class="logo-squircle">
+          <div class="logo-showcase-pill">
             <img src="logo.png" alt="โรงพยาบาลพิษณุเวช พิจิตร">
           </div>
           <div>
-            <h1 class="brand-headline">เครื่องมือแพทย์</h1>
+            <h1 class="brand-headline">ระบบเครื่องมือแพทย์</h1>
             <p class="brand-sub">โรงพยาบาลพิษณุเวช พิจิตร</p>
           </div>
         </div>
@@ -395,7 +401,7 @@
       <section class="portal-action-pane">
         <div class="pane-eyebrow">SELECT WORKSPACE</div>
 
-        <button type="button" class="studio-launch-card primary-jade" onclick="handleEnter(event)">
+        <button type="button" class="studio-launch-card primary-navy" onclick="handleEnter(event)">
           <div class="card-orb">
             <span class="material-icons-round" style="font-size: 26px;">space_dashboard</span>
           </div>
@@ -406,7 +412,7 @@
           <span class="material-icons-round card-arrow">arrow_forward</span>
         </button>
 
-        <a href="eval-v2.html" class="studio-launch-card secondary-ivory">
+        <a href="eval-v2.html" class="studio-launch-card secondary-cerulean">
           <div class="card-orb">
             <span class="material-icons-round" style="font-size: 26px;">fact_check</span>
           </div>

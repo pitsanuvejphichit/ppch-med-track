@@ -15,25 +15,25 @@
   <style>
     :root {
       color-scheme: light;
-      accent-color: #0d9488;
+      accent-color: #26547c;
 
-      /* Nordic Jade & Warm Alabaster Studio Palette (Zero V1 Royal Blue) */
-      --bg-canvas: #f4f3ef;
+      /* Exact Phitsanuvej Phichit Logo Palette (#26547C Slate-Steel Navy + #56A8DC Cerulean Sky) */
+      --bg-canvas: #f0f5fa;
       --surface-glass: rgba(255, 255, 255, 0.94);
       --surface-solid: #ffffff;
-      --surface-subtle: #fafaf7;
+      --surface-subtle: #f7fafd;
 
-      --brand-navy: #0c261f;
-      --brand-primary: #0f3d32;
-      --brand-sky: #0d9488;
-      --brand-glow: rgba(13, 148, 136, 0.14);
+      --brand-navy: #183652;
+      --brand-primary: #26547c;
+      --brand-sky: #56a8dc;
+      --brand-glow: rgba(86, 168, 220, 0.20);
 
-      --text-main: #18181b;
-      --text-body: #3f3f46;
-      --text-muted: #71717a;
+      --text-main: #162a3d;
+      --text-body: #334e68;
+      --text-muted: #64748b;
 
-      --border-hairline: rgba(24, 24, 27, 0.08);
-      --border-glass: rgba(24, 24, 27, 0.08);
+      --border-hairline: rgba(38, 84, 124, 0.10);
+      --border-glass: rgba(38, 84, 124, 0.10);
 
       --emerald: #059669;
       --emerald-bg: #ecfdf5;
@@ -59,7 +59,7 @@
     }
 
     html {
-      scrollbar-color: #d4d4d8 transparent;
+      scrollbar-color: #cbd5e1 transparent;
       scrollbar-width: thin;
       scroll-behavior: smooth;
     }
@@ -68,8 +68,8 @@
       font-family: var(--font-sans);
       background-color: var(--bg-canvas);
       background-image:
-        radial-gradient(at 10% 8%, rgba(16, 185, 129, 0.08) 0px, transparent 48%),
-        radial-gradient(at 90% 12%, rgba(217, 119, 6, 0.06) 0px, transparent 48%);
+        radial-gradient(at 10% 8%, rgba(86, 168, 220, 0.16) 0px, transparent 48%),
+        radial-gradient(at 90% 12%, rgba(38, 84, 124, 0.10) 0px, transparent 48%);
       background-attachment: fixed;
       color: var(--text-main);
       min-height: 100vh;
@@ -81,7 +81,7 @@
     #pageLoader {
       position: fixed;
       inset: 0;
-      background: rgba(244, 243, 239, 0.94);
+      background: rgba(240, 245, 250, 0.94);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       z-index: 9999;
@@ -103,35 +103,35 @@
       padding: 32px 42px;
       border-radius: 28px;
       background: #ffffff;
-      box-shadow: 0 24px 60px rgba(12, 38, 31, 0.12);
+      box-shadow: 0 24px 60px rgba(24, 54, 82, 0.14);
       border: 1px solid var(--border-hairline);
     }
     .loader-ring {
       width: 48px;
       height: 48px;
       border-radius: 50%;
-      border: 3.5px solid #d1fae5;
-      border-top-color: var(--brand-navy);
+      border: 3.5px solid #dbeafe;
+      border-top-color: var(--brand-primary);
       animation: spin 0.75s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ==================== FLOATING OBSIDIAN JADE STUDIO BAR ==================== */
+    /* ==================== FLOATING SLATE-NAVY & CERULEAN STUDIO BAR ==================== */
     .app-topbar {
       position: sticky;
       top: 12px;
       z-index: 100;
       max-width: 780px;
       margin: 12px auto 0 auto;
-      background: var(--brand-navy);
+      background: linear-gradient(135deg, var(--brand-navy) 0%, var(--brand-primary) 100%);
       color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(124, 196, 240, 0.25);
       border-radius: 999px;
-      padding: 8px 12px 8px 16px;
+      padding: 8px 12px 8px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 18px 40px -10px rgba(12, 38, 31, 0.32);
+      box-shadow: 0 18px 40px -10px rgba(24, 54, 82, 0.32);
     }
 
     .brand-cluster {
@@ -142,12 +142,13 @@
       color: #ffffff;
     }
     .brand-logo-img {
-      width: 36px;
       height: 36px;
+      width: auto;
       object-fit: contain;
       background: #ffffff;
-      border-radius: 50%;
-      padding: 3px;
+      border-radius: 999px;
+      padding: 4px 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     }
     .brand-title-wrap {
       display: flex;
@@ -169,9 +170,9 @@
       font-weight: 700;
       padding: 2px 8px;
       border-radius: 999px;
-      background: rgba(16, 185, 129, 0.22);
-      border: 1px solid rgba(52, 211, 153, 0.4);
-      color: #6ee7b7;
+      background: rgba(86, 168, 220, 0.28);
+      border: 1px solid rgba(124, 196, 240, 0.5);
+      color: #e0f2fe;
       letter-spacing: 0.5px;
     }
 
@@ -191,15 +192,15 @@
       font-family: var(--font-sans);
       font-size: 12px;
       font-weight: 600;
-      color: rgba(255, 255, 255, 0.88);
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: rgba(255, 255, 255, 0.92);
+      background: rgba(255, 255, 255, 0.10);
+      border: 1px solid rgba(255, 255, 255, 0.18);
       cursor: pointer;
       text-decoration: none;
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .btn-icon-pill:hover {
-      background: rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.18);
       color: #ffffff;
     }
     .btn-icon-pill.active {
@@ -208,13 +209,14 @@
       color: #92400e;
     }
     .btn-icon-pill.primary-nav {
-      background: #10b981;
-      color: #052e16;
-      border-color: #34d399;
+      background: var(--brand-sky);
+      color: #ffffff;
+      border-color: #7cc4f0;
       font-weight: 700;
+      box-shadow: 0 4px 12px rgba(86, 168, 220, 0.35);
     }
     .btn-icon-pill.primary-nav:hover {
-      background: #34d399;
+      background: #4799ce;
     }
 
     /* ==================== MAIN WORKSPACE CONTAINER ==================== */
@@ -232,7 +234,7 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
-      background: #eae8e1;
+      background: #e1ecf5;
       padding: 5px;
       border-radius: 999px;
       border: 1px solid var(--border-hairline);
@@ -259,18 +261,18 @@
       font-family: var(--font-display);
       font-size: 11px;
       font-weight: 800;
-      background: rgba(24, 24, 27, 0.08);
-      color: var(--text-body);
+      background: rgba(38, 84, 124, 0.12);
+      color: var(--brand-primary);
       transition: all 0.25s ease;
     }
     .stepper-step.active {
       background: #ffffff;
-      color: var(--brand-navy);
+      color: var(--brand-primary);
       font-weight: 700;
-      box-shadow: 0 2px 10px rgba(12, 38, 31, 0.08);
+      box-shadow: 0 2px 10px rgba(38, 84, 124, 0.10);
     }
     .stepper-step.active .step-num {
-      background: var(--brand-navy);
+      background: var(--brand-primary);
       color: #ffffff;
     }
     .stepper-step.done {
@@ -288,8 +290,8 @@
       border: 1px solid var(--border-hairline);
       border-radius: 28px;
       box-shadow:
-        0 20px 45px -16px rgba(12, 38, 31, 0.07),
-        0 2px 6px rgba(24, 24, 27, 0.02);
+        0 20px 45px -16px rgba(24, 54, 82, 0.08),
+        0 2px 6px rgba(24, 54, 82, 0.03);
       overflow: hidden;
     }
 
@@ -300,7 +302,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      border-bottom: 1px solid #f4f4f5;
+      border-bottom: 1px solid #eef4f9;
       background: #ffffff;
     }
     .device-hero-title-group {
@@ -313,12 +315,13 @@
       width: 46px;
       height: 46px;
       border-radius: 16px;
-      background: var(--brand-navy);
-      color: #34d399;
+      background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-sky) 100%);
+      color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      box-shadow: 0 6px 14px -4px rgba(38, 84, 124, 0.35);
     }
     .device-hero-name {
       font-size: 17px;
@@ -344,9 +347,9 @@
       border-radius: 999px;
       font-size: 11.5px;
       font-weight: 700;
-      background: #f4f4f5;
-      color: var(--text-body);
-      border: 1px solid var(--border-hairline);
+      background: #f0f6fc;
+      color: var(--brand-primary);
+      border: 1px solid rgba(86, 168, 220, 0.3);
     }
 
     .device-grid-body {
@@ -363,8 +366,8 @@
     }
 
     .field-pod {
-      background: #fafaf7;
-      border: 1.5px solid #e4e4e7;
+      background: #f7fafd;
+      border: 1.5px solid #dce8f3;
       border-radius: 18px;
       padding: 11px 16px;
       transition: all 0.18s ease;
@@ -372,7 +375,7 @@
     }
     .field-pod:focus-within {
       background: #ffffff;
-      border-color: var(--brand-navy);
+      border-color: var(--brand-sky);
       box-shadow: 0 0 0 4px var(--brand-glow);
     }
     .field-pod-label {
@@ -804,7 +807,7 @@
       height: 54px;
       border-radius: 18px;
       border: none;
-      background: linear-gradient(135deg, #0c261f 0%, #133a2f 100%);
+      background: linear-gradient(135deg, #183652 0%, #26547c 65%, #56a8dc 100%);
       color: #ffffff;
       font-family: var(--font-sans);
       font-size: 16px;
@@ -814,13 +817,13 @@
       justify-content: center;
       gap: 10px;
       cursor: pointer;
-      box-shadow: 0 14px 30px -6px rgba(12, 38, 31, 0.38);
+      box-shadow: 0 14px 30px -6px rgba(38, 84, 124, 0.38);
       transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .btn-submit-main:hover:not(:disabled) {
       transform: translateY(-2px);
-      background: linear-gradient(135deg, #133a2f 0%, #0d9488 100%);
-      box-shadow: 0 18px 36px -6px rgba(12, 38, 31, 0.45);
+      background: linear-gradient(135deg, #26547c 0%, #56a8dc 100%);
+      box-shadow: 0 18px 36px -6px rgba(38, 84, 124, 0.48);
     }
     .btn-submit-main:active:not(:disabled) {
       transform: scale(0.99);
