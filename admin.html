@@ -6,49 +6,49 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>PPCH Medical Equipment Hub (Admin) | โรงพยาบาลพิษณุเวช</title>
+  <title>PPCH MedTrack V2 (Minimalist Admin Hub) | โรงพยาบาลพิษณุเวช พิจิตร</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   <style>
-    /* ==================== PPCH DEEP ROYAL BLUE & CRISP WHITE THEME ==================== */
+    /* ==================== PPCH V2: PHITSANUVEJ SIGNATURE LOGO PALETTE (SLATE-STEEL NAVY & CERULEAN SKY) ==================== */
     :root {
-      --royal-dark: #002e6e;
-      --royal-blue: #004b93;
-      --royal-hover: #003a73;
-      --royal-light: #0284c7;
-      --royal-subtle: #f0f7ff;
-      --royal-glow: rgba(0, 75, 147, 0.16);
+      --royal-dark: #183652;
+      --royal-blue: #26547c;
+      --royal-hover: #1e4363;
+      --royal-light: #56a8dc;
+      --royal-subtle: #ebf5fc;
+      --royal-glow: rgba(86, 168, 220, 0.22);
 
-      --canvas-bg: #f4f7fb;
+      --canvas-bg: #f0f5fa;
       --surface-white: #ffffff;
-      --border-main: #e2e8f0;
-      --border-subtle: #edf2f7;
-      --border-focus: #004b93;
-      --border-blue-soft: #bfdbfe;
+      --border-main: #dbe7f3;
+      --border-subtle: #eef4f9;
+      --border-focus: #56a8dc;
+      --border-blue-soft: #b8dcf5;
 
-      --text-main: #0f172a;
-      --text-body: #334155;
+      --text-main: #162a3d;
+      --text-body: #334e68;
       --text-muted: #64748b;
       --text-light: #94a3b8;
 
       --green-ready: #059669;
       --green-bg: #ecfdf5;
-      --green-border: #a7f3d0;
+      --green-border: #6ee7b7;
 
       --amber-pending: #d97706;
       --amber-bg: #fffbeb;
-      --amber-border: #fde68a;
+      --amber-border: #fcd34d;
 
-      --red-abnormal: #dc2626;
-      --red-bg: #fef2f2;
-      --red-border: #fecaca;
+      --red-abnormal: #e11d48;
+      --red-bg: #fff1f2;
+      --red-border: #fda4af;
 
       --font-sans: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-mono: 'Inter', monospace;
+      --font-mono: 'JetBrains Mono', monospace;
       color-scheme: light;
-      accent-color: #004b93;
+      accent-color: #26547c;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -3588,25 +3588,45 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 15px;
+      min-width: 15px;
       height: 15px;
+      padding: 0 1.5px;
       border-radius: 3px;
-      font-size: 9.5px;
+      font-size: 9px;
       font-weight: 800;
       line-height: 1;
+      white-space: nowrap;
     }
     .rpt-badge.pass {
       color: #15803d;
       background: #dcfce7;
     }
+    .rpt-badge.missed,
     .rpt-badge.fail {
-      color: #b91c1c;
+      color: #dc2626;
       background: #fee2e2;
       font-weight: 900;
     }
+    .rpt-badge.broken {
+      color: #ffffff;
+      background: #b91c1c;
+      font-weight: 900;
+      box-shadow: inset 0 0 0 1px #7f1d1d;
+    }
+    .rpt-badge.cond-pass,
     .rpt-badge.warn {
       color: #b45309;
       background: #fef3c7;
+      border: 1px solid #f59e0b;
+      font-size: 7.5px;
+      letter-spacing: -0.5px;
+    }
+    .rpt-badge.cond-missed {
+      color: #c2410c;
+      background: #ffedd5;
+      border: 1px solid #ea580c;
+      font-size: 7.5px;
+      letter-spacing: -0.5px;
     }
     .rpt-badge.none {
       color: #94a3b8;
@@ -3649,6 +3669,464 @@
       border-top: 1px solid #e2e8f0;
       margin-top: 8px;
     }
+
+    /* ============================================================================
+       PPCH MEDTRACK V2 — PHITSANUVEJ LOGO HARMONY FLOATING STUDIO ARCHITECTURE
+       (Slate-Steel Navy #26547C + Cerulean Sky #56A8DC + Cool Porcelain #F0F5FA)
+       ============================================================================ */
+    :root {
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-display: 'Plus Jakarta Sans', 'Prompt', sans-serif;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 8% 4%, rgba(86, 168, 220, 0.16) 0%, transparent 42%),
+        radial-gradient(circle at 92% 10%, rgba(38, 84, 124, 0.10) 0%, transparent 44%),
+        #f0f5fa !important;
+      background-attachment: fixed !important;
+      color: #162a3d !important;
+    }
+
+    /* 1. Floating Slate-Steel Navy Pill Command Bar */
+    .app-topbar {
+      background: linear-gradient(135deg, #183652 0%, #26547c 100%) !important;
+      color: #ffffff !important;
+      border: 1px solid rgba(124, 196, 240, 0.25) !important;
+      border-radius: 999px !important;
+      margin: 12px 20px 0 20px !important;
+      height: 56px !important;
+      padding: 0 18px !important;
+      box-shadow: 0 18px 38px -10px rgba(24, 54, 82, 0.28) !important;
+    }
+    .brand-logo-img {
+      background: #ffffff !important;
+      border-radius: 999px !important;
+      padding: 4px 12px !important;
+      height: 36px !important;
+      width: auto !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+    }
+    .brand-divider {
+      background: rgba(255, 255, 255, 0.18) !important;
+    }
+    .brand-badge-pill {
+      background: rgba(86, 168, 220, 0.26) !important;
+      color: #e0f2fe !important;
+      border: 1px solid rgba(124, 196, 240, 0.45) !important;
+      padding: 3px 10px !important;
+      border-radius: 999px !important;
+      font-family: var(--font-mono) !important;
+      font-size: 10.5px !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.5px !important;
+    }
+    .bread-parent {
+      color: rgba(255, 255, 255, 0.65) !important;
+    }
+    .bread-sep {
+      color: rgba(255, 255, 255, 0.35) !important;
+    }
+    .bread-current {
+      color: #ffffff !important;
+      font-weight: 700 !important;
+    }
+    .status-realtime-badge {
+      background: rgba(16, 185, 129, 0.18) !important;
+      border: 1px solid rgba(52, 211, 153, 0.4) !important;
+      color: #a7f3d0 !important;
+      border-radius: 999px !important;
+      padding: 4px 12px !important;
+      font-weight: 700 !important;
+    }
+    .admin-profile-pill {
+      background: rgba(255, 255, 255, 0.10) !important;
+      border: 1px solid rgba(255, 255, 255, 0.18) !important;
+      border-radius: 999px !important;
+    }
+    .admin-label {
+      color: #ffffff !important;
+    }
+    .avatar-circle {
+      background: #56a8dc !important;
+      color: #ffffff !important;
+      font-weight: 800 !important;
+    }
+
+    /* 2. Floating Slate-Steel Navy Left Studio Dock (Compact Icon Dock + Single-Icon Hover Pill Expansion) */
+    @media (min-width: 992px) {
+      .app-sidebar,
+      .app-sidebar:hover,
+      .app-sidebar.is-expanded {
+        width: 72px !important;
+        min-width: 72px !important;
+        max-width: 72px !important;
+        padding: 12px 12px !important;
+        background: linear-gradient(175deg, #183652 0%, #26547c 62%, #1b3d5c 100%) !important;
+        border: 1px solid rgba(124, 196, 240, 0.24) !important;
+        border-radius: 26px !important;
+        margin: 14px 0 16px 20px !important;
+        top: 82px !important;
+        height: calc(100vh - 98px) !important;
+        box-shadow: 0 24px 50px -12px rgba(24, 54, 82, 0.32) !important;
+        overflow: visible !important;
+        z-index: 400 !important;
+      }
+      .app-main-content {
+        padding: 14px 20px 32px 18px !important;
+      }
+      .app-sidebar .sidebar-brand-box {
+        display: none !important;
+      }
+      .app-sidebar .sidebar-section-title,
+      .app-sidebar:hover .sidebar-section-title,
+      .app-sidebar.is-expanded .sidebar-section-title {
+        display: none !important;
+      }
+      .app-sidebar .sidebar-nav {
+        align-items: flex-start !important;
+        overflow: visible !important;
+        gap: 6px !important;
+      }
+      .app-sidebar .nav-btn {
+        width: 46px !important;
+        height: 46px !important;
+        padding: 0 11px !important;
+        border-radius: 14px !important;
+        justify-content: flex-start !important;
+        gap: 0 !important;
+        overflow: hidden !important;
+        position: relative !important;
+      }
+      /* Keep all non-hovered icons collapsed even when sidebar is hovered */
+      .app-sidebar:hover .nav-btn:not(:hover) > span:not(.material-icons-round):not(.nav-count-badge),
+      .app-sidebar.is-expanded .nav-btn:not(:hover) > span:not(.material-icons-round):not(.nav-count-badge) {
+        opacity: 0 !important;
+        max-width: 0 !important;
+        transform: translateX(-4px) !important;
+        pointer-events: none !important;
+      }
+      .app-sidebar:hover .nav-btn:not(:hover) .nav-ext-icon,
+      .app-sidebar.is-expanded .nav-btn:not(:hover) .nav-ext-icon {
+        opacity: 0 !important;
+      }
+      .app-sidebar:hover .nav-btn:not(:hover) .nav-count-badge,
+      .app-sidebar.is-expanded .nav-btn:not(:hover) .nav-count-badge {
+        position: absolute !important;
+        top: 4px !important;
+        right: 4px !important;
+        margin-left: 0 !important;
+        font-size: 9.5px !important;
+        padding: 1px 4px !important;
+        min-width: 15px !important;
+      }
+      /* Expand ONLY the single hovered icon horizontally to reveal its label */
+      .app-sidebar .nav-btn:hover {
+        width: max-content !important;
+        min-width: 168px !important;
+        padding: 0 18px 0 11px !important;
+        gap: 11px !important;
+        background: linear-gradient(135deg, #183652 0%, #26547c 50%, #56a8dc 100%) !important;
+        color: #ffffff !important;
+        box-shadow: 0 14px 30px -4px rgba(15, 36, 57, 0.50), 0 0 0 1.5px rgba(124, 196, 240, 0.70) !important;
+        z-index: 600 !important;
+        overflow: visible !important;
+        transform: none !important;
+      }
+      .app-sidebar .nav-btn:hover > span:not(.material-icons-round):not(.nav-count-badge) {
+        opacity: 1 !important;
+        max-width: 220px !important;
+        transform: translateX(0) !important;
+        pointer-events: auto !important;
+        font-weight: 700 !important;
+      }
+      .app-sidebar .nav-btn:hover .nav-ext-icon {
+        opacity: 1 !important;
+        margin-left: 6px !important;
+        color: #bae6fd !important;
+      }
+      .app-sidebar .nav-btn:hover .nav-count-badge {
+        position: static !important;
+        margin-left: auto !important;
+        font-size: 11px !important;
+        padding: 1px 7px !important;
+        min-width: 19px !important;
+      }
+      .app-sidebar .sidebar-bottom-status {
+        justify-content: center !important;
+        padding-left: 0 !important;
+      }
+      .app-sidebar #syncText,
+      .app-sidebar:hover #syncText,
+      .app-sidebar.is-expanded #syncText {
+        display: none !important;
+      }
+    }
+    .nav-btn {
+      border-radius: 14px !important;
+      font-weight: 600 !important;
+      color: rgba(255, 255, 255, 0.82) !important;
+      transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.18s ease, box-shadow 0.18s ease !important;
+    }
+    .nav-btn.active {
+      background: linear-gradient(135deg, #56a8dc 0%, #3b91c9 100%) !important;
+      color: #ffffff !important;
+      font-weight: 700 !important;
+      box-shadow: 0 8px 20px -4px rgba(86, 168, 220, 0.50), inset 0 1px 1px rgba(255, 255, 255, 0.4) !important;
+    }
+    .nav-btn.active .material-icons-round {
+      color: #ffffff !important;
+    }
+
+    /* 3. Cerulean Porcelain Segmented Pill Switcher */
+    .summary-risk-switcher {
+      background: #dfe9f3 !important;
+      border: 1px solid rgba(38, 84, 124, 0.08) !important;
+      border-radius: 999px !important;
+      padding: 5px !important;
+      gap: 6px !important;
+      display: inline-flex !important;
+      width: auto !important;
+      margin-bottom: 16px !important;
+    }
+    .risk-switch-tab {
+      border-radius: 999px !important;
+      padding: 8px 20px !important;
+      font-size: 13px !important;
+      font-weight: 700 !important;
+      color: #47627d !important;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+    .risk-switch-tab.active {
+      background: #26547c !important;
+      color: #ffffff !important;
+      box-shadow: 0 6px 16px -3px rgba(38, 84, 124, 0.30) !important;
+    }
+    .risk-switch-tab.active .risk-tab-badge {
+      background: rgba(86, 168, 220, 0.35) !important;
+      color: #ffffff !important;
+      border-color: transparent !important;
+    }
+
+    /* 4. Sculpted Bento Metric Tiles (Vertical Studio Layout) */
+    .kpi-strip-5,
+    .kpi-strip-4 {
+      gap: 12px !important;
+      margin-bottom: 18px !important;
+    }
+    .kpi-card {
+      background: #ffffff !important;
+      border: 1px solid rgba(38, 84, 124, 0.10) !important;
+      border-radius: 24px !important;
+      padding: 16px 18px !important;
+      display: flex !important;
+      flex-direction: row-reverse !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      box-shadow: 0 10px 26px -10px rgba(24, 54, 82, 0.08) !important;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+    .kpi-card:hover {
+      transform: translateY(-3px) !important;
+      border-color: #56a8dc !important;
+      box-shadow: 0 16px 32px -10px rgba(38, 84, 124, 0.16) !important;
+    }
+    .kpi-card.active-kpi {
+      background: linear-gradient(135deg, #183652 0%, #26547c 100%) !important;
+      border-color: #56a8dc !important;
+      color: #ffffff !important;
+      box-shadow: 0 16px 32px -8px rgba(24, 54, 82, 0.35) !important;
+    }
+    .kpi-card.active-kpi .kpi-val,
+    .kpi-card.active-kpi .kpi-label {
+      color: #ffffff !important;
+    }
+    .kpi-card.active-kpi .kpi-icon-box {
+      background: rgba(86, 168, 220, 0.28) !important;
+      color: #bae6fd !important;
+    }
+    .kpi-icon-box {
+      width: 44px !important;
+      height: 44px !important;
+      border-radius: 16px !important;
+    }
+    .kpi-icon-blue {
+      background: #ebf5fc !important;
+      color: #26547c !important;
+    }
+    .kpi-val {
+      font-family: var(--font-display) !important;
+      font-size: 28px !important;
+      font-weight: 800 !important;
+      letter-spacing: -0.03em !important;
+      line-height: 1.05 !important;
+      font-variant-numeric: tabular-nums !important;
+    }
+    .kpi-label {
+      font-size: 12px !important;
+      font-weight: 600 !important;
+      color: #64748b !important;
+      margin-top: 3px !important;
+    }
+
+    /* 5. Floating Studio Content Panels & Separated Card-Row Table */
+    .content-panel,
+    .dash-panel {
+      background: rgba(255, 255, 255, 0.78) !important;
+      backdrop-filter: blur(20px) !important;
+      border: 1px solid rgba(38, 84, 124, 0.10) !important;
+      border-radius: 28px !important;
+      padding: 6px !important;
+      box-shadow: 0 20px 44px -16px rgba(24, 54, 82, 0.08) !important;
+    }
+    .panel-header {
+      padding: 14px 20px !important;
+      border-bottom: none !important;
+      background: transparent !important;
+    }
+    .panel-title {
+      font-size: 16px !important;
+      font-weight: 800 !important;
+      color: #183652 !important;
+    }
+    .panel-badge {
+      background: #26547c !important;
+      color: #ffffff !important;
+      border: none !important;
+      border-radius: 999px !important;
+      padding: 3px 11px !important;
+      font-family: var(--font-mono) !important;
+      font-weight: 700 !important;
+    }
+
+    @media (min-width: 992px) {
+      .device-table {
+        border-collapse: separate !important;
+        border-spacing: 0 7px !important;
+        padding: 0 10px 10px 10px !important;
+      }
+      .device-table thead th {
+        background: transparent !important;
+        color: #64748b !important;
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.04em !important;
+        padding: 6px 16px !important;
+        border: none !important;
+      }
+      .device-table tbody tr {
+        background: #ffffff !important;
+        box-shadow: 0 3px 12px -3px rgba(24, 54, 82, 0.06) !important;
+        transition: transform 0.18s ease, box-shadow 0.18s ease !important;
+      }
+      .device-table tbody tr:hover {
+        transform: translateY(-1px) !important;
+        box-shadow: 0 8px 20px -4px rgba(38, 84, 124, 0.14) !important;
+      }
+      .device-table tbody td {
+        background: #ffffff !important;
+        padding: 12px 16px !important;
+        border-top: 1px solid #e9f1f8 !important;
+        border-bottom: 1px solid #e9f1f8 !important;
+      }
+      .device-table tbody td:first-child {
+        border-left: 1px solid #e9f1f8 !important;
+        border-top-left-radius: 16px !important;
+        border-bottom-left-radius: 16px !important;
+      }
+      .device-table tbody td:last-child {
+        border-right: 1px solid #e9f1f8 !important;
+        border-top-right-radius: 16px !important;
+        border-bottom-right-radius: 16px !important;
+      }
+    }
+
+    .asset-code-clean {
+      font-family: var(--font-mono) !important;
+      font-size: 12px !important;
+      font-weight: 700 !important;
+      color: #26547c !important;
+      background: #ebf5fc !important;
+      border: 1px solid #b8dcf5 !important;
+      padding: 4px 10px !important;
+      border-radius: 10px !important;
+      letter-spacing: 0.3px !important;
+    }
+
+    .btn-tool-primary {
+      background: #26547c !important;
+      border-color: #26547c !important;
+      color: #ffffff !important;
+      border-radius: 999px !important;
+    }
+    .btn-tool-primary:hover {
+      background: #56a8dc !important;
+      border-color: #56a8dc !important;
+    }
+
+    /* 6. 3D-Tactile Status Symbol Orbs (Symbol-First Design) */
+    .status-symbol-btn {
+      width: 38px !important;
+      height: 38px !important;
+      min-width: 38px !important;
+      border-radius: 50% !important;
+      border-width: 1.5px !important;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+    .status-symbol-btn .material-icons-round {
+      font-size: 20px !important;
+    }
+    .status-symbol-btn.symbol-ready,
+    .status-symbol-btn.symbol-ready-repaired {
+      background: #10b981 !important;
+      color: #ffffff !important;
+      border-color: #059669 !important;
+      box-shadow: 0 4px 12px -2px rgba(16, 185, 129, 0.4) !important;
+    }
+    .status-symbol-btn.symbol-conditional,
+    .status-symbol-btn.symbol-in-progress {
+      background: #f59e0b !important;
+      color: #ffffff !important;
+      border-color: #d97706 !important;
+      box-shadow: 0 4px 12px -2px rgba(245, 158, 11, 0.4) !important;
+    }
+    .status-symbol-btn.symbol-abnormal {
+      background: #e11d48 !important;
+      color: #ffffff !important;
+      border-color: #be123c !important;
+      box-shadow: 0 4px 12px -2px rgba(225, 29, 72, 0.4) !important;
+    }
+    .status-symbol-btn.symbol-pending {
+      background: #f1f5f9 !important;
+      color: #94a3b8 !important;
+      border-color: #dbe7f3 !important;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+    }
+    .status-symbol-btn:hover {
+      transform: translateY(-2px) scale(1.14) !important;
+    }
+
+    /* 7. Tactile Speed Dial Trigger & Tray */
+    .btn-floating-trigger {
+      width: 36px !important;
+      height: 36px !important;
+      min-width: 36px !important;
+      background: #f8fbfe !important;
+      color: #26547c !important;
+      border: 1.5px solid #b8dcf5 !important;
+      box-shadow: 0 2px 6px rgba(38, 84, 124, 0.08) !important;
+    }
+    .floating-badge-count {
+      background: #26547c !important;
+    }
+    .floating-action-tray {
+      background: #183652 !important;
+      border: 1px solid rgba(124, 196, 240, 0.35) !important;
+      border-radius: 999px !important;
+      padding: 5px 10px !important;
+      box-shadow: 0 14px 32px -4px rgba(24, 54, 82, 0.45) !important;
+    }
   </style>
 </head>
 <body>
@@ -3685,30 +4163,33 @@
         <button type="button" id="btnToggleSidebar" class="btn-sidebar-toggle" onclick="toggleMobileSidebar()" aria-label="เปิดเมนู">
           <span class="material-icons-round">menu</span>
         </button>
-        <a href="admin.html" class="topbar-brand" title="PPCH Medical Equipment Hub">
+        <a href="admin.html" class="topbar-brand" title="PPCH MedTrack">
           <img src="logo.png" alt="โรงพยาบาลพิษณุเวช" class="brand-logo-img">
           <div class="brand-divider"></div>
-          <div class="brand-badge-pill">Med Track</div>
+          <div class="brand-badge-pill">MedTrack</div>
         </a>
         <div class="topbar-breadcrumbs">
-          <span class="bread-parent">ระบบเครื่องมือแพทย์</span>
+          <span class="bread-parent">เครื่องมือแพทย์</span>
           <span class="bread-sep">/</span>
           <span class="bread-current" id="breadCurrent">สรุปรายวัน</span>
         </div>
       </div>
 
       <div class="topbar-right">
+        <a href="eval.html" class="btn-tool" style="text-decoration: none; padding: 6px 14px; font-size: 12px; font-weight: 700; color: #ffffff; background: #56a8dc; border: 1px solid #7cc4f0; border-radius: 999px; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 4px 12px rgba(86, 168, 220, 0.35);" title="เปิดหน้าแบบตรวจเช็คประจำวัน">
+          <span class="material-icons-round" style="font-size: 16px; color: #ffffff;">fact_check</span>
+          <span>หน้าตรวจเช็ค</span>
+        </a>
         <div class="status-realtime-badge">
           <span class="pulse-indicator-dot"></span>
-          <span id="topStatusText">สถานะวันนี้ • พร้อมใช้</span>
+          <span id="topStatusText">ออนไลน์</span>
         </div>
         <div class="admin-profile-pill">
           <div class="avatar-circle">ชก</div>
-          <span class="admin-label">ผู้ดูแลระบบ</span>
+          <span class="admin-label">Admin</span>
         </div>
-        <a href="index.html" class="btn-tool" style="text-decoration: none; padding: 5px 12px; font-size: 12px; color: var(--text-muted); border-radius: 8px; display: inline-flex; align-items: center; gap: 4px;" title="ออกจากระบบ / กลับสู่หน้าแรก">
+        <a href="index.html" class="btn-tool" style="text-decoration: none; padding: 6px 10px; font-size: 12px; color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; display: inline-flex; align-items: center; gap: 4px;" title="กลับสู่หน้าแรก">
           <span class="material-icons-round" style="font-size: 16px;">logout</span>
-          <span>ออกจากระบบ</span>
         </a>
       </div>
     </header>
@@ -3720,7 +4201,7 @@
       <div id="sidebarBackdrop" class="sidebar-backdrop hidden" onclick="closeMobileSidebar()"></div>
 
       <!-- Left Sidebar -->
-      <aside class="app-sidebar is-expanded no-print">
+      <aside class="app-sidebar no-print">
         <div class="sidebar-mobile-header">
           <div style="display: flex; align-items: center;">
             <img src="logo.png" style="height: 38px; width: auto; object-fit: contain;" alt="โรงพยาบาลพิษณุเวช">
@@ -3736,7 +4217,7 @@
           </div>
           <div class="sidebar-brand-text">
             <div style="font-size: 12px; font-weight: 700; color: #ffffff; line-height: 1.2;">รพ.พิษณุเวช พิจิตร</div>
-            <div style="font-size: 10px; color: #93c5fd; font-weight: 500;">Medical Equipment</div>
+            <div style="font-size: 10px; color: #7dd3fc; font-weight: 600;">MedTrack V2</div>
           </div>
         </div>
 
@@ -3744,36 +4225,36 @@
         <nav class="sidebar-nav">
           <button onclick="switchView('dashboard')" id="navBtn_dashboard" class="nav-btn" title="แดชบอร์ดภาพรวม">
             <span class="material-icons-round">dashboard</span>
-            <span>แดชบอร์ดภาพรวม</span>
+            <span>แดชบอร์ด</span>
           </button>
-          <button onclick="switchView('summary')" id="navBtn_summary" class="nav-btn active" title="สรุปข้อมูล">
+          <button onclick="switchView('summary')" id="navBtn_summary" class="nav-btn active" title="สรุปรายวัน">
             <span class="material-icons-round">analytics</span>
-            <span>สรุปข้อมูล</span>
+            <span>สรุปรายวัน</span>
           </button>
-          <button onclick="switchView('device_summary')" id="navBtn_device_summary" class="nav-btn" title="สรุปรายเครื่อง">
+          <button onclick="switchView('device_summary')" id="navBtn_device_summary" class="nav-btn" title="ประวัตินรายเครื่อง">
             <span class="material-icons-round">medical_information</span>
-            <span>สรุปรายเครื่อง</span>
+            <span>รายเครื่อง</span>
           </button>
-          <button onclick="switchView('defective')" id="navBtn_defective" class="nav-btn" title="เครื่องมือไม่พร้อมใช้งาน">
+          <button onclick="switchView('defective')" id="navBtn_defective" class="nav-btn" title="ซ่อมบำรุง / ผ่อนผัน">
             <span class="material-icons-round">build_circle</span>
-            <span>เครื่องมือไม่พร้อมใช้งาน</span>
+            <span>ซ่อมบำรุง</span>
             <span id="badgeDefectiveNav" class="nav-count-badge" style="display: none;">0</span>
           </button>
-          <button onclick="switchView('relocate')" id="navBtn_relocate" class="nav-btn" title="มอบหมายแผนก">
-            <span class="material-icons-round">assignment_ind</span>
-            <span>มอบหมายแผนก</span>
+          <button onclick="switchView('relocate')" id="navBtn_relocate" class="nav-btn" title="ย้ายแผนก">
+            <span class="material-icons-round">swap_horiz</span>
+            <span>ย้ายแผนก</span>
           </button>
-          <button onclick="switchView('directory')" id="navBtn_directory" class="nav-btn" title="รายการเครื่อง & QR Code">
+          <button onclick="switchView('directory')" id="navBtn_directory" class="nav-btn" title="คลังเครื่อง & QR Code">
             <span class="material-icons-round">qr_code_2</span>
-            <span>รายการเครื่อง & QR Code</span>
+            <span>คลัง & QR</span>
           </button>
-          <button onclick="switchView('report')" id="navBtn_report" class="nav-btn" title="รายงานประจำเดือน (A4 แนวนอน)">
+          <button onclick="switchView('report')" id="navBtn_report" class="nav-btn" title="รายงานประจำเดือน (A4)">
             <span class="material-icons-round">description</span>
-            <span>รายงานประจำเดือน</span>
+            <span>รายงาน A4</span>
           </button>
           <button onclick="switchView('settings')" id="navBtn_settings" class="nav-btn" title="ตั้งค่าระบบ">
             <span class="material-icons-round">settings</span>
-            <span>ตั้งค่าระบบ</span>
+            <span>ตั้งค่า</span>
           </button>
         </nav>
 
@@ -3995,14 +4476,14 @@
           <!-- Risk Level Segmented Switcher (เสี่ยงสูงรายวัน vs เสี่ยงต่ำรายเดือน) -->
           <div class="summary-risk-switcher no-print">
             <button type="button" class="risk-switch-tab active" id="tabRiskHigh" onclick="switchSummaryRiskTab('high')">
-              <span class="material-icons-round" style="font-size: 17px; color: #dc2626;">warning</span>
-              <span>สรุปผลการตรวจเช็คเครื่องมือแพทย์ประจำวัน (เสี่ยงสูง)</span>
-              <span class="risk-tab-badge badge-high" id="badgeHighRiskCount">23 เครื่อง</span>
+              <span class="material-icons-round" style="font-size: 17px; color: #dc2626;">bolt</span>
+              <span>รายวัน • เสี่ยงสูง</span>
+              <span class="risk-tab-badge badge-high" id="badgeHighRiskCount">23</span>
             </button>
             <button type="button" class="risk-switch-tab" id="tabRiskLow" onclick="switchSummaryRiskTab('low')">
               <span class="material-icons-round" style="font-size: 17px; color: #0284c7;">verified_user</span>
-              <span>สรุปผลการตรวจเช็คเครื่องมือแพทย์ประจำเดือน (เสี่ยงต่ำ)</span>
-              <span class="risk-tab-badge badge-low" id="badgeLowRiskCount">2 เครื่อง</span>
+              <span>รายเดือน • เสี่ยงต่ำ</span>
+              <span class="risk-tab-badge badge-low" id="badgeLowRiskCount">2</span>
             </button>
           </div>
 
@@ -4010,11 +4491,10 @@
           <div id="lowRiskPeriodBanner" class="low-risk-period-banner no-print" style="display: none; padding: 8px 14px; align-items: center;">
             <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
               <span class="material-icons-round" style="color: #0284c7; font-size: 19px;">event_repeat</span>
-              <span style="font-weight: 700; font-size: 12.5px; color: #0369a1;">รอบตรวจเช็คเครื่องมือแพทย์ความเสี่ยงต่ำ:</span>
-              <span style="font-size: 12px; color: #0284c7;">ประเมินเดือนละ 1 ครั้ง (วันที่ 1 - 5 ของทุกเดือน)</span>
+              <span style="font-weight: 700; font-size: 12.5px; color: #0369a1;">รอบตรวจรายเดือน (วันที่ 1–5)</span>
             </div>
             <div id="lowRiskPeriodStatusPill" style="padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: #e0f2fe; color: #0284c7; border: 1px solid #7dd3fc; white-space: nowrap;">
-              รอบถัดไป: 1 - 5 พ.ย. 2569
+              1 - 5 พ.ย. 2569
             </div>
           </div>
 
@@ -4075,7 +4555,7 @@
           <div class="content-panel">
             <div class="panel-header">
               <div style="display: flex; align-items: center; gap: 8px;">
-                <div class="panel-title" id="summaryTableTitle">สรุปผลการตรวจเช็คเครื่องมือแพทย์ประจำวัน</div>
+                <div class="panel-title" id="summaryTableTitle">ตารางสถานะเครื่องมือแพทย์</div>
                 <span class="panel-badge" id="summaryCountBadge">14 เครื่อง</span>
               </div>
 
@@ -4182,12 +4662,12 @@
               <table class="device-table">
                 <thead>
                   <tr>
-                    <th style="width: 130px;">รหัสเครื่อง</th>
+                    <th style="width: 125px;">รหัส</th>
                     <th>เครื่องมือแพทย์</th>
-                    <th style="width: 155px;">แผนกรับผิดชอบ</th>
-                    <th style="width: 95px; text-align: center;" title="สถานะความพร้อมใช้งานของตัวเครื่อง (พร้อมใช้ / ผ่อนผัน / กำลังซ่อม / ชำรุด)">ความพร้อมใช้</th>
-                    <th style="width: 95px; text-align: center;" id="thDailyCheckCol" title="สถานะการตรวจเช็คประจำวัน (ตรวจแล้ว / ยังไม่ตรวจ)">ตรวจเช็ควันนี้</th>
-                    <th class="btn-action-col no-print" style="width: 80px; text-align: center;">จัดการ</th>
+                    <th style="width: 150px;">แผนก</th>
+                    <th style="width: 90px; text-align: center;" title="สถานะความพร้อมใช้ของเครื่อง (✓ พร้อมใช้ / 🔧 ผ่อนผัน / 🔨 กำลังซ่อม / ✕ ชำรุด)">พร้อมใช้</th>
+                    <th style="width: 90px; text-align: center;" id="thDailyCheckCol" title="สถานะการตรวจเช็ควันนี้ (✓ ตรวจแล้ว / 🕒 รอตรวจ)">ตรวจวันนี้</th>
+                    <th class="btn-action-col no-print" style="width: 76px; text-align: center;">จัดการ</th>
                   </tr>
                 </thead>
                 <tbody id="summaryTableBody">
@@ -4607,15 +5087,15 @@
               <!-- Page 1 Summary Metrics -->
               <div class="report-stat-strip" style="margin-bottom: 10px;">
                 <div class="report-stat-item">
-                  <span class="report-stat-label">จำนวนวันที่ตรวจเช็ค</span>
+                  <span class="report-stat-label">จำนวนวันที่ตรวจเช็ค (✓ / 🔧✓)</span>
                   <span class="report-stat-val" id="rptStatDaysChecked">0 / 31 วัน</span>
                 </div>
                 <div class="report-stat-item">
-                  <span class="report-stat-label">วันที่ผ่านเกณฑ์ครบทุกข้อ (✓)</span>
-                  <span class="report-stat-val" id="rptStatDaysPass" style="color: #15803d;">0 วัน</span>
+                  <span class="report-stat-label">วันที่ไม่ได้ประเมิน (✗ / 🔧✗)</span>
+                  <span class="report-stat-val" id="rptStatDaysPass" style="color: #dc2626;">0 วัน</span>
                 </div>
                 <div class="report-stat-item">
-                  <span class="report-stat-label">วันที่พบข้อบกพร่อง (✗)</span>
+                  <span class="report-stat-label">วันที่เครื่องเสีย/ผ่อนผัน (! / 🔧)</span>
                   <span class="report-stat-val" id="rptStatDaysFail" style="color: #b91c1c;">0 วัน</span>
                 </div>
                 <div class="report-stat-item">
@@ -4624,13 +5104,16 @@
                 </div>
               </div>
 
-              <!-- Legend Bar (No signature boxes) -->
+              <!-- Legend Bar (5-Symbol System) -->
               <div class="report-legend-bar">
-                <div>
+                <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 8px;">
                   <strong>สัญลักษณ์:</strong>
-                  <span style="margin-left: 6px;"><span class="rpt-badge pass" style="width: 13px; height: 13px; font-size: 8px;">✓</span> ผ่าน/ปกติ</span>
-                  <span style="margin-left: 10px;"><span class="rpt-badge fail" style="width: 13px; height: 13px; font-size: 8px;">✗</span> ไม่ผ่าน/พบข้อบกพร่อง</span>
-                  <span style="margin-left: 10px;"><span class="rpt-badge none" style="width: 13px; height: 13px; font-size: 8px;">-</span> ไม่ได้ลงตรวจ/เวรหยุด</span>
+                  <span><span class="rpt-badge pass">✓</span> พร้อมใช้ (ประเมินแล้ว)</span>
+                  <span><span class="rpt-badge missed">✗</span> ไม่ได้ประเมิน</span>
+                  <span><span class="rpt-badge broken">!</span> เครื่องเสีย/งดใช้งาน</span>
+                  <span><span class="rpt-badge cond-pass">🔧✓</span> อนุญาตใช้ต่อ (ประเมินแล้ว)</span>
+                  <span><span class="rpt-badge cond-missed">🔧✗</span> อนุญาตใช้ต่อ (ไม่ได้ประเมิน)</span>
+                  <span><span class="rpt-badge none">-</span> ยังไม่ถึงกำหนด</span>
                 </div>
                 <div>โรงพยาบาลพิษณุเวช พิจิตร ในเครือพริ้นซิเพิล เฮลท์แคร์ (PRINC)</div>
               </div>
@@ -6793,8 +7276,8 @@
       var titleEl = document.getElementById('summaryTableTitle');
       if (titleEl) {
         titleEl.innerText = (risk === 'high')
-          ? 'สรุปผลการตรวจเช็คเครื่องมือแพทย์ประจำวัน (เสี่ยงสูง)'
-          : 'สรุปผลการตรวจเช็คเครื่องมือแพทย์ประจำเดือน (เสี่ยงต่ำ)';
+          ? 'ตารางสถานะรายวัน (เสี่ยงสูง)'
+          : 'ตารางสถานะรายเดือน (เสี่ยงต่ำ)';
       }
 
       applyFilters();
@@ -6935,7 +7418,7 @@
 
       var thDailyCol = document.getElementById('thDailyCheckCol');
       if (thDailyCol) {
-        thDailyCol.innerText = (currentRisk === 'low') ? 'ตรวจรอบเดือน' : 'ตรวจเช็ควันนี้';
+        thDailyCol.innerText = (currentRisk === 'low') ? 'ตรวจเดือนนี้' : 'ตรวจวันนี้';
       }
 
       var todayStr = new Date().toISOString().slice(0, 10);
@@ -7465,7 +7948,7 @@
                 '<button type="button" onclick="openQrModal(\'' + eq.id + '\')" class="btn-action-icon" style="background: #eff6ff; color: var(--royal-blue); border-color: #bfdbfe;" title="ดู / พิมพ์ QR Code">' +
                   '<span class="material-icons-round">qr_code_2</span>' +
                 '</button>' +
-                '<button type="button" class="btn-floating-close" onclick="closeFloatingMenu(this, event)" title="หุบเก็บ">' +
+                '<button type="button" onclick="closeFloatingMenu(this, event)" class="btn-floating-close" title="หุบเก็บ">' +
                   '<span class="material-icons-round">close</span>' +
                 '</button>' +
               '</div>' +
@@ -7756,7 +8239,7 @@
       document.getElementById('qrDeviceTitle').innerText = eq.name;
       document.getElementById('qrDeviceAsset').innerText = 'รหัสครุภัณฑ์: ' + eq.assetCode + ' • ' + window.PPCH_STORE.getDepartmentName(eq.currentDept);
 
-      var hostUrl = window.location.origin + window.location.pathname.replace('admin.html', '').replace('index.html', '');
+      var hostUrl = window.location.origin + window.location.pathname.replace('admin-v2.html', '').replace('admin.html', '').replace('index-v2.html', '').replace('index.html', '');
       if (!hostUrl.endsWith('/')) hostUrl += '/';
       selectedQrUrl = hostUrl + 'eval.html?formId=' + eq.formId + '&deviceId=' + eq.id;
       document.getElementById('qrLinkText').innerText = selectedQrUrl;
@@ -9466,11 +9949,12 @@
 
       // Filter REAL evaluations for this device in this month (excluding fake repair logs)
       var allEvals = (window.PPCH_STORE && window.PPCH_STORE.getEvaluations) ? window.PPCH_STORE.getEvaluations() : (allEvaluations || []);
-      var deviceMonthEvals = allEvals.filter(function (e) {
+      var allDeviceEvals = allEvals.filter(function (e) {
         if (!e || isRepairResolutionLog(e)) return false;
-        var matchDevice = (e.deviceId === eq.id || e.deviceAsset === eq.assetCode);
-        var matchMonth = (e.evaluatedAt && e.evaluatedAt.slice(0, 7) === monthVal);
-        return matchDevice && matchMonth;
+        return (e.deviceId === eq.id || e.deviceAsset === eq.assetCode);
+      });
+      var deviceMonthEvals = allDeviceEvals.filter(function (e) {
+        return (e.evaluatedAt && e.evaluatedAt.slice(0, 7) === monthVal);
       });
 
       var dayEvalMap = {};
@@ -9481,7 +9965,51 @@
         }
       });
 
-      // Matrix Item Rows
+      // Repairs for this device to know when it was broken / allowed conditional use
+      var allRepairs = (window.PPCH_STORE && window.PPCH_STORE.getRepairs) ? window.PPCH_STORE.getRepairs() : [];
+      var allDeviceRepairs = allRepairs.filter(function (r) {
+        return (r.deviceId === eq.id || r.deviceAsset === eq.assetCode || r.device_id === eq.id || r.device_asset === eq.assetCode);
+      });
+
+      var nowLocal = new Date();
+      var todayDateStr = nowLocal.getFullYear() + '-' + ('0' + (nowLocal.getMonth() + 1)).slice(-2) + '-' + ('0' + nowLocal.getDate()).slice(-2);
+
+      var activeDefectInfo = (window.PPCH_STORE && window.PPCH_STORE.getActiveDefectInfo) ? window.PPCH_STORE.getActiveDefectInfo(eq.id) : null;
+      var activeDefectStartDate = '';
+      if (eq.status === 'abnormal' || eq.status === 'in_progress' || eq.status === 'conditional_ready' || eq.allowUse) {
+        activeDefectStartDate = (eq.repairReportedAt || (activeDefectInfo && activeDefectInfo.reportedAt) || todayDateStr).slice(0, 10);
+      }
+      var allowUseStartDate = '';
+      if (eq.status === 'conditional_ready' || eq.allowUse) {
+        allowUseStartDate = (eq.allowUseAt || activeDefectStartDate || todayDateStr).slice(0, 10);
+      }
+
+      // Helper: determine device operational state on a specific YYYY-MM-DD
+      function getDeviceDayOperationalMode(dateStr) {
+        // 1. Check active ongoing defect episode on equipment
+        if (activeDefectStartDate && dateStr >= activeDefectStartDate && dateStr <= todayDateStr) {
+          if ((eq.status === 'conditional_ready' || eq.allowUse) && allowUseStartDate && dateStr >= allowUseStartDate) {
+            return 'conditional';
+          }
+          return 'broken';
+        }
+        // 2. Check historical repair episodes
+        for (var r = 0; r < allDeviceRepairs.length; r++) {
+          var rep = allDeviceRepairs[r];
+          var rStart = (rep.reportedAt || rep.reported_at || '').slice(0, 10);
+          var rEnd = (rep.resolvedAt || rep.resolved_at || '9999-99-99').slice(0, 10);
+          if (rStart && dateStr >= rStart && dateStr < rEnd) {
+            var actTxt = String(rep.actionTaken || rep.action_taken || '');
+            if (actTxt.indexOf('ผ่อนผัน') !== -1 || actTxt.indexOf('อนุโลม') !== -1 || actTxt.indexOf('ใช้งานต่อ') !== -1) {
+              return 'conditional';
+            }
+            return 'broken';
+          }
+        }
+        return 'ready';
+      }
+
+      // Matrix Item Rows (5-Symbol System)
       var itemRows = [];
       formItems.forEach(function (itemText, qIdx) {
         var itemChecks = 0;
@@ -9494,12 +10022,27 @@
             continue;
           }
 
+          var dateStr = monthVal + '-' + ('0' + day).slice(-2);
+          if (dateStr > todayDateStr) {
+            dayCells.push({ status: 'none', label: '-', title: 'วันที่ ' + day + ': ยังไม่ถึงกำหนดตรวจ' });
+            continue;
+          }
+
           var ev = dayEvalMap[day];
+          var dayMode = getDeviceDayOperationalMode(dateStr);
+
           if (ev) {
             itemChecks++;
             var isPass = true;
             var isCondItem = false;
+            var hasAnyCondInEv = !!ev.keepConditional;
+
             if (ev.checklist) {
+              for (var ck in ev.checklist) {
+                if (ev.checklist[ck] === 'conditional' || ev.checklist[ck] === 'ผ่อนผัน') {
+                  hasAnyCondInEv = true;
+                }
+              }
               var val = ev.checklist[qIdx] !== undefined ? ev.checklist[qIdx] :
                         (ev.checklist[String(qIdx)] !== undefined ? ev.checklist[String(qIdx)] :
                         (ev.checklist[itemText] !== undefined ? ev.checklist[itemText] : null));
@@ -9518,17 +10061,54 @@
               isPass = (ev.result === 'normal' || ev.result === 'ready');
             }
 
-            if (isCondItem) {
+            if (!isPass) {
+              // เครื่องเสีย / พบข้อบกพร่องในวันนั้น -> '!'
+              dayCells.push({
+                status: 'broken',
+                label: '!',
+                title: 'วันที่ ' + day + ': เครื่องเสีย/พบข้อบกพร่อง (' + (ev.abnormalNote || 'ชำรุด') + ')'
+              });
+            } else if (isCondItem || hasAnyCondInEv || dayMode === 'conditional') {
+              // อนุญาตให้ใช้งานต่อ (ผ่อนผัน) และ ประเมินแล้ว -> '🔧✓'
               itemPasses++;
-              dayCells.push({ status: 'warn', label: '△', title: 'วันที่ ' + day + ': ผ่อนผันรอซ่อม (รับทราบแล้ว)' });
-            } else if (isPass) {
-              itemPasses++;
-              dayCells.push({ status: 'pass', label: '✓', title: 'วันที่ ' + day + ': ผ่านเกณฑ์ (' + (ev.evaluatedBy || '-') + ')' });
+              dayCells.push({
+                status: 'cond_pass',
+                label: '🔧✓',
+                title: 'วันที่ ' + day + ': อนุญาตให้ใช้งานต่อ (ผ่อนผัน) และประเมินแล้ว (' + (ev.evaluatedBy || '-') + ')'
+              });
             } else {
-              dayCells.push({ status: 'fail', label: '✗', title: 'วันที่ ' + day + ': พบข้อบกพร่อง (' + (ev.abnormalNote || 'ชำรุด') + ')' });
+              // เครื่องพร้อมใช้ปกติ และ ประเมินแล้ว -> '✓'
+              itemPasses++;
+              dayCells.push({
+                status: 'pass',
+                label: '✓',
+                title: 'วันที่ ' + day + ': เครื่องพร้อมใช้และประเมินแล้ว (' + (ev.evaluatedBy || '-') + ')'
+              });
             }
           } else {
-            dayCells.push({ status: 'none', label: '-', title: 'วันที่ ' + day + ': ไม่ได้ลงตรวจ' });
+            // ไม่ได้ทำการประเมินในวันนั้นๆ (Past or Today)
+            if (dayMode === 'conditional') {
+              // อนุญาตให้ใช้งานต่อ (ผ่อนผัน) แต่ ไม่ได้ประเมิน -> '🔧✗'
+              dayCells.push({
+                status: 'cond_missed',
+                label: '🔧✗',
+                title: 'วันที่ ' + day + ': อนุญาตให้ใช้งานต่อ (ผ่อนผัน) แต่ไม่ได้ทำการประเมิน'
+              });
+            } else if (dayMode === 'broken') {
+              // เครื่องเสีย / งดใช้งาน รอซ่อม -> '!'
+              dayCells.push({
+                status: 'broken',
+                label: '!',
+                title: 'วันที่ ' + day + ': เครื่องเสีย / อยู่ระหว่างซ่อมบำรุง (งดใช้งาน)'
+              });
+            } else {
+              // เครื่องปกติ แต่ ไม่ได้ทำการประเมินในวันนั้น -> '✗'
+              dayCells.push({
+                status: 'missed',
+                label: '✗',
+                title: 'วันที่ ' + day + ': ไม่ได้ทำการประเมินประจำวัน'
+              });
+            }
           }
         }
 
@@ -9544,32 +10124,42 @@
         });
       });
 
-      // KPI Summary
+      // KPI Summary (across elapsed days in month)
       var daysInspectedCount = 0;
-      var daysPassCount = 0;
+      var daysMissedCount = 0;
       var daysDefectCount = 0;
+      var elapsedDaysCount = 0;
 
       for (var day = 1; day <= daysInMonth; day++) {
+        var dStr = monthVal + '-' + ('0' + day).slice(-2);
+        if (dStr > todayDateStr) continue;
+        elapsedDaysCount++;
         var evDay = dayEvalMap[day];
+        var dMode = getDeviceDayOperationalMode(dStr);
         if (evDay) {
           daysInspectedCount++;
-          if (evDay.result === 'abnormal' || evDay.result === 'not_ready') {
+          if (evDay.result === 'abnormal' || evDay.result === 'not_ready' || evDay.keepConditional || dMode === 'conditional') {
+            daysDefectCount++;
+          }
+        } else {
+          if (dMode === 'broken') {
+            daysDefectCount++;
+          } else if (dMode === 'conditional') {
+            daysMissedCount++;
             daysDefectCount++;
           } else {
-            daysPassCount++;
+            daysMissedCount++;
           }
         }
       }
 
-      var readinessRate = daysInspectedCount > 0 ? Math.round((daysPassCount / daysInspectedCount) * 100) : 100;
+      var readinessRate = elapsedDaysCount > 0 ? Math.round((daysInspectedCount / elapsedDaysCount) * 100) : 100;
 
       // Defect Log
-      var allRepairs = (window.PPCH_STORE && window.PPCH_STORE.getRepairs) ? window.PPCH_STORE.getRepairs() : [];
-      var deviceMonthRepairs = allRepairs.filter(function (r) {
-        var matchDevice = (r.deviceId === eq.id || r.deviceAsset === eq.assetCode);
-        var matchMonth = (r.reportedAt && r.reportedAt.slice(0, 7) === monthVal) ||
-                         (r.resolvedAt && r.resolvedAt.slice(0, 7) === monthVal);
-        return matchDevice && matchMonth;
+      var deviceMonthRepairs = allDeviceRepairs.filter(function (r) {
+        var rRep = r.reportedAt || r.reported_at || '';
+        var rRes = r.resolvedAt || r.resolved_at || '';
+        return (rRep && rRep.slice(0, 7) === monthVal) || (rRes && rRes.slice(0, 7) === monthVal);
       });
 
       var abnormalEvals = deviceMonthEvals.filter(function (e) {
@@ -9666,8 +10256,10 @@
         itemRows: itemRows,
         kpi: {
           daysInspectedCount: daysInspectedCount,
-          daysPassCount: daysPassCount,
+          daysPassCount: daysMissedCount,
+          daysMissedCount: daysMissedCount,
           daysDefectCount: daysDefectCount,
+          elapsedDaysCount: elapsedDaysCount,
           readinessRate: readinessRate
         },
         defectIncidents: defectIncidents
@@ -9746,7 +10338,7 @@
       headHtml += '<th style="width: 58px;">อัตราผ่าน</th></tr>';
       if (theadEl) theadEl.innerHTML = headHtml;
 
-      // Table Rows (Checklist items only - No signature row)
+      // Table Rows (Checklist items only - 5-Symbol Standard)
       var bodyHtml = '';
       data.itemRows.forEach(function (row) {
         var daysCells = '';
@@ -9755,10 +10347,16 @@
             daysCells += '<td style="background: #f8fafc; color: #cbd5e1; font-size: 8px;">N/A</td>';
           } else if (c.status === 'pass') {
             daysCells += '<td><span class="rpt-badge pass" title="' + c.title + '">✓</span></td>';
-          } else if (c.status === 'fail') {
-            daysCells += '<td><span class="rpt-badge fail" title="' + c.title + '">✗</span></td>';
+          } else if (c.status === 'missed' || c.status === 'fail') {
+            daysCells += '<td><span class="rpt-badge missed" title="' + c.title + '">✗</span></td>';
+          } else if (c.status === 'broken') {
+            daysCells += '<td><span class="rpt-badge broken" title="' + c.title + '">!</span></td>';
+          } else if (c.status === 'cond_pass' || c.status === 'warn') {
+            daysCells += '<td><span class="rpt-badge cond-pass" title="' + c.title + '">🔧✓</span></td>';
+          } else if (c.status === 'cond_missed') {
+            daysCells += '<td><span class="rpt-badge cond-missed" title="' + c.title + '">🔧✗</span></td>';
           } else {
-            daysCells += '<td><span class="rpt-badge none">-</span></td>';
+            daysCells += '<td><span class="rpt-badge none" title="' + (c.title || '') + '">-</span></td>';
           }
         });
 
@@ -9777,7 +10375,7 @@
       if (elDaysChecked) elDaysChecked.innerText = data.kpi.daysInspectedCount + ' / ' + data.daysInMonth + ' วัน';
 
       var elDaysPass = document.getElementById('rptStatDaysPass');
-      if (elDaysPass) elDaysPass.innerText = data.kpi.daysPassCount + ' วัน';
+      if (elDaysPass) elDaysPass.innerText = data.kpi.daysMissedCount + ' วัน';
 
       var elDaysFail = document.getElementById('rptStatDaysFail');
       if (elDaysFail) elDaysFail.innerText = data.kpi.daysDefectCount + ' วัน';
@@ -9895,7 +10493,10 @@
         row.dayCells.forEach(function (c) {
           if (c.status === 'na') cells += '<td style="background: #f8fafc; color: #cbd5e1; font-size: 8px;">N/A</td>';
           else if (c.status === 'pass') cells += '<td><span class="rpt-badge pass">✓</span></td>';
-          else if (c.status === 'fail') cells += '<td><span class="rpt-badge fail">✗</span></td>';
+          else if (c.status === 'missed' || c.status === 'fail') cells += '<td><span class="rpt-badge missed">✗</span></td>';
+          else if (c.status === 'broken') cells += '<td><span class="rpt-badge broken">!</span></td>';
+          else if (c.status === 'cond_pass' || c.status === 'warn') cells += '<td><span class="rpt-badge cond-pass">🔧✓</span></td>';
+          else if (c.status === 'cond_missed') cells += '<td><span class="rpt-badge cond-missed">🔧✗</span></td>';
           else cells += '<td><span class="rpt-badge none">-</span></td>';
         });
 
@@ -9989,14 +10590,14 @@
           '</div>' +
 
           '<div class="report-stat-strip">' +
-            '<div class="report-stat-item"><span class="report-stat-label">จำนวนวันที่ตรวจเช็ค</span><span class="report-stat-val">' + data.kpi.daysInspectedCount + ' / ' + data.daysInMonth + ' วัน</span></div>' +
-            '<div class="report-stat-item"><span class="report-stat-label">วันที่ผ่านเกณฑ์ครบทุกข้อ (✓)</span><span class="report-stat-val" style="color: #15803d;">' + data.kpi.daysPassCount + ' วัน</span></div>' +
-            '<div class="report-stat-item"><span class="report-stat-label">วันที่พบข้อบกพร่อง (✗)</span><span class="report-stat-val" style="color: #b91c1c;">' + data.kpi.daysDefectCount + ' วัน</span></div>' +
+            '<div class="report-stat-item"><span class="report-stat-label">จำนวนวันที่ตรวจเช็ค (✓ / 🔧✓)</span><span class="report-stat-val">' + data.kpi.daysInspectedCount + ' / ' + data.daysInMonth + ' วัน</span></div>' +
+            '<div class="report-stat-item"><span class="report-stat-label">วันที่ไม่ได้ประเมิน (✗ / 🔧✗)</span><span class="report-stat-val" style="color: #dc2626;">' + data.kpi.daysMissedCount + ' วัน</span></div>' +
+            '<div class="report-stat-item"><span class="report-stat-label">วันที่เครื่องเสีย/ผ่อนผัน (! / 🔧)</span><span class="report-stat-val" style="color: #b91c1c;">' + data.kpi.daysDefectCount + ' วัน</span></div>' +
             '<div class="report-stat-item"><span class="report-stat-label">อัตราความพร้อมใช้งาน</span><span class="report-stat-val" style="color: ' + (data.kpi.readinessRate >= 95 ? '#15803d' : '#b91c1c') + ';">' + data.kpi.readinessRate + '%</span></div>' +
           '</div>' +
 
           '<div class="report-legend-bar">' +
-            '<div><strong>สัญลักษณ์:</strong> <span class="rpt-badge pass">✓</span> ผ่าน/ปกติ <span class="rpt-badge fail" style="margin-left: 10px;">✗</span> ไม่ผ่าน/พบข้อบกพร่อง <span class="rpt-badge none" style="margin-left: 10px;">-</span> ไม่ได้ลงตรวจ/เวรหยุด</div>' +
+            '<div><strong>สัญลักษณ์:</strong> <span class="rpt-badge pass">✓</span> พร้อมใช้ (ประเมินแล้ว) <span class="rpt-badge missed" style="margin-left: 8px;">✗</span> ไม่ได้ประเมิน <span class="rpt-badge broken" style="margin-left: 8px;">!</span> เครื่องเสีย/งดใช้ <span class="rpt-badge cond-pass" style="margin-left: 8px;">🔧✓</span> ผ่อนผัน (ประเมินแล้ว) <span class="rpt-badge cond-missed" style="margin-left: 8px;">🔧✗</span> ผ่อนผัน (ไม่ได้ประเมิน) <span class="rpt-badge none" style="margin-left: 8px;">-</span> ยังไม่ถึงกำหนด</div>' +
             '<div>โรงพยาบาลพิษณุเวช พิจิตร ในเครือพริ้นซิเพิล เฮลท์แคร์ (PRINC)</div>' +
           '</div>' +
         '</div>' +
@@ -10063,10 +10664,12 @@
         '  .report-matrix-table th { background: #002e6e; color: #ffffff; font-weight: 700; font-size: 9.5px; line-height: 1.2; }\n' +
         '  .report-matrix-table th.col-day { width: 19px; min-width: 18px; padding: 3px 1px; font-family: monospace; font-weight: 600; }\n' +
         '  .report-matrix-table tr:nth-child(even) td { background: #f8fafc; }\n' +
-        '  .rpt-badge { display: inline-flex; align-items: center; justify-content: center; width: 15px; height: 15px; border-radius: 3px; font-size: 9.5px; font-weight: 800; line-height: 1; }\n' +
+        '  .rpt-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 15px; height: 15px; padding: 0 1.5px; border-radius: 3px; font-size: 9px; font-weight: 800; line-height: 1; white-space: nowrap; }\n' +
         '  .rpt-badge.pass { color: #15803d; background: #dcfce7; }\n' +
-        '  .rpt-badge.fail { color: #b91c1c; background: #fee2e2; font-weight: 900; }\n' +
-        '  .rpt-badge.warn { color: #b45309; background: #fef3c7; }\n' +
+        '  .rpt-badge.missed, .rpt-badge.fail { color: #dc2626; background: #fee2e2; font-weight: 900; }\n' +
+        '  .rpt-badge.broken { color: #ffffff; background: #b91c1c; font-weight: 900; }\n' +
+        '  .rpt-badge.cond-pass, .rpt-badge.warn { color: #b45309; background: #fef3c7; border: 1px solid #f59e0b; font-size: 7.5px; letter-spacing: -0.5px; }\n' +
+        '  .rpt-badge.cond-missed { color: #c2410c; background: #ffedd5; border: 1px solid #ea580c; font-size: 7.5px; letter-spacing: -0.5px; }\n' +
         '  .rpt-badge.none { color: #94a3b8; }\n' +
         '  .report-stat-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px 12px; }\n' +
         '  .report-stat-item { display: flex; align-items: center; justify-content: space-between; padding: 0 8px; border-right: 1px solid #e2e8f0; }\n' +

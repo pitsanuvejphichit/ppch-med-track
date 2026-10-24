@@ -6,26 +6,27 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ระบบบริหารจัดการเครื่องมือแพทย์ | โรงพยาบาลพิษณุเวช</title>
+  <title>ระบบเครื่องมือแพทย์ (PPCH MedTrack) | โรงพยาบาลพิษณุเวช พิจิตร</title>
 
-  <!-- Typography: Prompt (Hospital Modern Healthcare) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Prompt:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
   <style>
-    /* ==================== DESIGN TOKENS: ECG VITAL HORIZON (LIGHT THEME) ==================== */
     :root {
-      --brand-navy: #002e6e;
-      --brand-blue: #004b93;
-      --brand-sky: #0284c7;
-      --brand-cyan: #38bdf8;
-      --brand-emerald: #059669;
-      --bg-light: #f8fafc;
-
-      color-scheme: light;
-      accent-color: var(--brand-sky);
+      /* Exact Phitsanuvej Phichit Logo Palette */
+      --bg-porcelain: #f0f5fa;
+      --surface-ivory: #ffffff;
+      --logo-navy-deep: #183652;   /* Deep Slate-Steel Navy */
+      --logo-navy-main: #26547c;   /* Outer Cross Petals & "พิษณุเวช" */
+      --logo-sky-main: #56a8dc;    /* Inner 4 Squares & "พิจิตร" */
+      --logo-sky-light: #7cc4f0;
+      --logo-sky-tint: #ebf5fc;
+      --logo-grey: #7d8790;        /* "โรงพยาบาล" */
+      --ink-primary: #162a3d;
+      --ink-muted: #64748b;
+      --border-soft: rgba(38, 84, 124, 0.10);
     }
 
     *, *::before, *::after {
@@ -34,27 +35,17 @@
       padding: 0;
     }
 
-    ::selection {
-      background-color: var(--brand-sky);
-      color: #ffffff;
-    }
-
-    :focus-visible {
-      outline: 2px solid var(--brand-sky);
-      outline-offset: 3px;
-    }
-
     html, body {
       width: 100%;
       height: 100%;
       overflow: hidden;
-      font-family: 'Prompt', system-ui, -apple-system, sans-serif;
+      font-family: 'Prompt', 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg-porcelain);
+      color: var(--ink-primary);
       -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      background: var(--bg-light);
     }
 
-    /* ==================== SEAMLESS ADMIN WORKSTATION FRAME ==================== */
+    /* Pre-loaded Admin Frame */
     #adminFrame {
       position: fixed;
       inset: 0;
@@ -63,511 +54,381 @@
       border: none;
       z-index: 1;
       opacity: 0;
-      transform: scale(1.03) translateY(16px);
-      filter: blur(4px);
+      transform: scale(1.02);
       pointer-events: none;
-      transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-                  transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-                  filter 0.65s cubic-bezier(0.16, 1, 0.3, 1);
-      will-change: opacity, transform, filter;
+      transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
     }
-
     #adminFrame.is-active {
       opacity: 1;
-      transform: scale(1) translateY(0);
-      filter: blur(0px);
+      transform: scale(1);
       pointer-events: auto;
     }
 
-    /* ==================== GATE STAGE (LIGHT THEME AMBIENCE) ==================== */
+    /* Architectural Split-Bento Portal Stage */
     #gateStage {
       position: fixed;
       inset: 0;
-      width: 100%;
-      height: 100%;
       z-index: 10;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle at 50% 42%, #ffffff 0%, #f0f7ff 55%, #e1effe 100%);
-      padding: 24px;
-      transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-                  transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-                  filter 0.65s cubic-bezier(0.16, 1, 0.3, 1);
-      will-change: opacity, transform, filter;
+      padding: 28px;
+      background:
+        radial-gradient(circle at 14% 18%, rgba(86, 168, 220, 0.18) 0%, transparent 44%),
+        radial-gradient(circle at 86% 82%, rgba(38, 84, 124, 0.12) 0%, transparent 44%),
+        var(--bg-porcelain);
+      transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
     }
-
     #gateStage.is-exiting {
       opacity: 0;
-      transform: translateY(-36px) scale(0.93);
-      filter: blur(8px);
+      transform: scale(0.96) translateY(-20px);
       pointer-events: none;
     }
 
-    /* Background Medical Grid (32px x 32px) */
-    .bg-stage {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      pointer-events: none;
-      background-image: 
-        linear-gradient(rgba(2, 132, 199, 0.07) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(2, 132, 199, 0.07) 1px, transparent 1px);
-      background-size: 32px 32px;
-    }
-
-    /* Real-Time ECG Heartbeat Wave Canvas */
-    #ecgCanvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    /* Ambient Soft Blue Radial Glows */
-    .ambient-glow {
+    /* Ambient Orbital Rings */
+    .orbital-ring {
       position: absolute;
       border-radius: 50%;
+      border: 1px solid rgba(38, 84, 124, 0.07);
       pointer-events: none;
-      z-index: 0;
     }
-    .glow-1 {
-      top: 15%;
-      left: 18%;
-      width: 520px;
-      height: 520px;
-      background: rgba(56, 189, 248, 0.22);
-      filter: blur(95px);
-    }
-    .glow-2 {
-      bottom: 12%;
-      right: 16%;
-      width: 560px;
-      height: 560px;
-      background: rgba(0, 75, 147, 0.12);
-      filter: blur(105px);
+    .ring-1 { width: 600px; height: 600px; }
+    .ring-2 { width: 880px; height: 880px; border-style: dashed; }
+
+    /* Bento Studio Monolith */
+    .bento-portal {
+      position: relative;
+      z-index: 5;
+      width: 100%;
+      max-width: 800px;
+      display: grid;
+      grid-template-columns: 1.08fr 1fr;
+      background: var(--surface-ivory);
+      border-radius: 36px;
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow:
+        0 32px 80px -20px rgba(24, 54, 82, 0.18),
+        0 4px 16px -2px rgba(24, 54, 82, 0.05);
+      overflow: hidden;
     }
 
-    /* ==================== CORE GATE CARD CONTAINER (LIGHT FRAME) ==================== */
-    .gate-wrapper {
-      position: relative;
-      z-index: 10;
-      width: 100%;
-      max-width: 620px;
-      perspective: 1200px;
+    /* Left Column: Phitsanuvej Slate-Steel Navy & Cerulean Sanctuary */
+    .portal-brand-pane {
+      background: linear-gradient(150deg, var(--logo-navy-deep) 0%, var(--logo-navy-main) 65%, #346d9e 100%);
+      color: #ffffff;
+      padding: 46px 40px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-    }
-
-    .gate-card {
+      justify-content: space-between;
       position: relative;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding: 50px 44px 46px 44px;
-      border-radius: 32px;
-      background: rgba(255, 255, 255, 0.72);
-      backdrop-filter: blur(24px) saturate(190%);
-      -webkit-backdrop-filter: blur(24px) saturate(190%);
-      border: 1px solid rgba(255, 255, 255, 0.85);
-      box-shadow: 
-        0 28px 65px -12px rgba(0, 46, 110, 0.12),
-        0 8px 24px -4px rgba(15, 23, 42, 0.04),
-        inset 0 1px 1px rgba(255, 255, 255, 0.95);
-      transition: box-shadow 0.4s ease, border-color 0.4s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      will-change: transform;
-      transform-style: preserve-3d;
+      overflow: hidden;
     }
-
-    .gate-card:hover {
-      border-color: rgba(56, 189, 248, 0.75);
-      box-shadow: 
-        0 36px 80px -12px rgba(0, 46, 110, 0.18),
-        0 12px 30px -4px rgba(15, 23, 42, 0.06),
-        inset 0 1px 2px rgba(255, 255, 255, 1);
-    }
-
-    /* 1. Hospital Logo Container (Enlarged) */
-    .emblem-wrapper {
-      position: relative;
-      width: 184px;
-      height: 184px;
-      margin-bottom: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      animation: floatLevitate 5s ease-in-out infinite;
-      will-change: transform;
-    }
-
-    @keyframes floatLevitate {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-7px); }
-    }
-
-    .emblem-glow {
+    .portal-brand-pane::before {
+      content: '';
       position: absolute;
-      inset: -14px;
+      right: -70px;
+      bottom: -70px;
+      width: 280px;
+      height: 280px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(2, 132, 199, 0.22), transparent 70%);
-      opacity: 0.85;
-      animation: pulseAura 3.2s ease-in-out infinite;
-      z-index: 0;
+      background: radial-gradient(circle, rgba(86, 168, 220, 0.38) 0%, transparent 70%);
       pointer-events: none;
     }
 
-    @keyframes pulseAura {
-      0%, 100% { transform: scale(0.95); opacity: 0.45; }
-      50% { transform: scale(1.18); opacity: 0.95; }
-    }
-
-    .hospital-logo {
-      position: relative;
-      z-index: 2;
-      width: 172px;
-      height: 172px;
-      object-fit: contain;
-      filter: drop-shadow(0 12px 24px rgba(0, 46, 110, 0.16));
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
-      user-select: none;
-      -webkit-user-drag: none;
-    }
-
-    .hospital-logo:hover {
-      transform: scale(1.05);
-      filter: drop-shadow(0 16px 30px rgba(2, 132, 199, 0.30));
-    }
-
-    /* 2. Main Title: ระบบบริหารจัดการเครื่องมือแพทย์ (Strictly Single Row) */
-    .main-title {
-      font-size: clamp(22px, 2.7vw, 32px);
+    .brand-top-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      align-self: flex-start;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.10);
+      border: 1px solid rgba(124, 196, 240, 0.30);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
       font-weight: 700;
-      line-height: 1.35;
-      white-space: nowrap;
-      color: var(--brand-navy);
-      letter-spacing: -0.2px;
-      margin-bottom: 34px;
-      text-shadow: 0 1px 2px rgba(0, 46, 110, 0.08);
+      letter-spacing: 0.08em;
+      color: #bae6fd;
+    }
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--logo-sky-light);
+      box-shadow: 0 0 10px var(--logo-sky-light);
     }
 
-    /* 3. Button: เข้าสู่ระบบ (Royal Navy & Hospital Blue Gradient) */
-    .btn-enter {
-      position: relative;
+    .brand-center {
+      margin: 32px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 22px;
+    }
+
+    /* Wide Rounded Showcase Pill for Horizontal Hospital Logo */
+    .logo-showcase-pill {
+      background: #ffffff;
+      padding: 16px 24px;
+      border-radius: 24px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 12px;
-      width: 100%;
-      max-width: 360px;
-      padding: 17px 42px;
-      border-radius: 9999px;
-      font-family: 'Prompt', sans-serif;
-      font-size: 18px;
-      font-weight: 600;
-      text-decoration: none;
-      background: linear-gradient(135deg, #004b93 0%, #002e6e 100%);
+      box-shadow:
+        0 20px 40px -10px rgba(12, 28, 44, 0.35),
+        0 0 0 4px rgba(86, 168, 220, 0.22);
+    }
+    .logo-showcase-pill img {
+      height: 64px;
+      width: auto;
+      max-width: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .brand-headline {
+      font-size: 27px;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
       color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      box-shadow: 
-        0 14px 28px -6px rgba(0, 75, 147, 0.40),
-        0 4px 12px -2px rgba(0, 46, 110, 0.25);
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .brand-sub {
+      font-size: 13.5px;
+      color: #bae6fd;
+      font-weight: 400;
+      margin-top: -12px;
+    }
+
+    .brand-footer-symbols {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .mini-symbol-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 11px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.09);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 11.5px;
+      color: rgba(255, 255, 255, 0.92);
+    }
+    .mini-symbol-pill .material-icons-round {
+      font-size: 15px;
+      color: var(--logo-sky-light);
+    }
+
+    /* Right Column: Tactile Action Pods */
+    .portal-action-pane {
+      padding: 46px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 16px;
+      background: var(--surface-ivory);
+    }
+
+    .pane-eyebrow {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--logo-grey);
+      margin-bottom: 4px;
+    }
+
+    .studio-launch-card {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      padding: 22px 22px;
+      border-radius: 24px;
+      text-decoration: none;
       cursor: pointer;
-      outline: none;
-      overflow: hidden;
-      user-select: none;
-      min-height: 56px;
+      border: 1.5px solid #e2ecf5;
+      background: #f8fbfe;
+      color: var(--ink-primary);
+      font-family: inherit;
+      text-align: left;
+      transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .studio-launch-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--logo-sky-main);
+      background: #ffffff;
+      box-shadow: 0 16px 32px -10px rgba(38, 84, 124, 0.16);
     }
 
-    .btn-enter .btn-text {
-      position: relative;
-      z-index: 2;
-      letter-spacing: 0.3px;
+    .studio-launch-card.primary-navy {
+      background: linear-gradient(135deg, var(--logo-navy-deep) 0%, var(--logo-navy-main) 100%);
+      border-color: var(--logo-navy-main);
+      color: #ffffff;
+      box-shadow: 0 16px 32px -8px rgba(24, 54, 82, 0.32);
+    }
+    .studio-launch-card.primary-navy:hover {
+      background: linear-gradient(135deg, var(--logo-navy-main) 0%, #316896 100%);
+      box-shadow: 0 22px 40px -8px rgba(24, 54, 82, 0.42);
     }
 
-    .btn-enter .btn-icon {
-      position: relative;
-      z-index: 2;
-      font-size: 22px;
-      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    .card-orb {
+      width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .primary-navy .card-orb {
+      background: rgba(86, 168, 220, 0.24);
+      color: #7cc4f0;
+      border: 1px solid rgba(124, 196, 240, 0.35);
+    }
+    .secondary-cerulean .card-orb {
+      background: var(--logo-sky-tint);
+      color: var(--logo-navy-main);
+      border: 1px solid rgba(86, 168, 220, 0.35);
     }
 
-    .btn-enter:hover {
-      transform: translateY(-2px) scale(1.02);
-      box-shadow: 
-        0 20px 38px -6px rgba(0, 75, 147, 0.50),
-        0 8px 16px -2px rgba(0, 46, 110, 0.30);
-      border-color: rgba(255, 255, 255, 0.6);
+    .card-title {
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+    .card-caption {
+      font-size: 12px;
+      opacity: 0.72;
+      margin-top: 3px;
     }
 
-    .btn-enter:hover .btn-icon {
-      transform: translateX(6px);
+    .card-arrow {
+      margin-left: auto;
+      opacity: 0.55;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+    .studio-launch-card:hover .card-arrow {
+      transform: translateX(4px);
+      opacity: 1;
     }
 
-    .btn-enter:active,
-    .btn-enter.is-pressed {
-      transform: translateY(1px) scale(0.97);
-      box-shadow: 0 8px 18px -4px rgba(0, 46, 110, 0.35);
-    }
-
-    /* Ambient Shimmer Sweep on Button Hover */
-    .btn-enter::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -60%;
-      width: 45%;
-      height: 200%;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.35),
-        transparent
-      );
-      transform: rotate(25deg);
-      pointer-events: none;
-    }
-
-    .btn-enter:hover::after {
-      animation: shimmerSweep 1s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    @keyframes shimmerSweep {
-      0% { left: -60%; }
-      100% { left: 140%; }
-    }
-
-    /* ==================== ACCESSIBILITY: REDUCED MOTION ==================== */
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
+    @media (max-width: 720px) {
+      #gateStage { padding: 16px; }
+      .bento-portal {
+        grid-template-columns: 1fr;
+        border-radius: 28px;
       }
-    }
-
-    /* ==================== RESPONSIVE TUNING ==================== */
-    @media (max-width: 640px) {
-      #gateStage {
-        padding: 20px;
+      .portal-brand-pane {
+        padding: 30px 24px;
       }
-      .gate-card {
-        padding: 40px 24px 36px 24px;
-        border-radius: 26px;
+      .brand-center {
+        margin: 18px 0;
       }
-      .emblem-wrapper {
-        width: 144px;
-        height: 144px;
-        margin-bottom: 20px;
+      .logo-showcase-pill {
+        padding: 12px 18px;
       }
-      .hospital-logo {
-        width: 134px;
-        height: 134px;
+      .logo-showcase-pill img {
+        height: 50px;
       }
-      .main-title {
-        font-size: clamp(18px, 5.2vw, 24px);
-        margin-bottom: 26px;
-        white-space: nowrap;
-      }
-      .btn-enter {
-        padding: 16px 32px;
-        font-size: 17px;
-        width: 100%;
+      .brand-headline { font-size: 22px; }
+      .portal-action-pane {
+        padding: 28px 24px;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- ==================== BACKGROUND PRE-LOADED ADMIN WORKSTATION ==================== -->
-  <iframe id="adminFrame" src="admin.html" title="ระบบบริหารจัดการเครื่องมือแพทย์ (Admin Workstation)"></iframe>
+  <iframe id="adminFrame" src="admin.html" title="PPCH MedTrack Studio"></iframe>
 
-  <!-- ==================== MAIN GATE STAGE (LIGHT THEME) ==================== -->
   <div id="gateStage">
-    <!-- Fullscreen Medical Grid Stage -->
-    <div class="bg-stage">
-      <div class="ambient-glow glow-1"></div>
-      <div class="ambient-glow glow-2"></div>
-    </div>
+    <div class="orbital-ring ring-1"></div>
+    <div class="orbital-ring ring-2"></div>
 
-    <!-- Real-Time ECG Heartbeat Wave Canvas (Medical Blue Glow) -->
-    <canvas id="ecgCanvas"></canvas>
-
-    <!-- Core Gate Card Container (Light Frame) -->
-    <main class="gate-wrapper" id="gateWrapper">
-      <div class="gate-card" id="gateCard">
-
-        <!-- 1. โลโก้โรงพยาบาล (ขยายใหญ่ขึ้น คมชัด พร้อมแสงเรืองออร่า) -->
-        <div class="emblem-wrapper">
-          <div class="emblem-glow"></div>
-          <img src="logo.png" alt="โลโก้โรงพยาบาล" class="hospital-logo" id="hospitalLogo">
+    <main class="bento-portal">
+      <!-- Left: Phitsanuvej Slate-Steel Navy & Cerulean Sanctuary -->
+      <section class="portal-brand-pane">
+        <div class="brand-top-tag">
+          <span class="live-dot"></span>
+          <span>PPCH MEDTRACK STUDIO</span>
         </div>
 
-        <!-- 2. ข้อความ: ระบบบริหารจัดการเครื่องมือแพทย์ (แถวเดียว) -->
-        <h1 class="main-title">ระบบบริหารจัดการเครื่องมือแพทย์</h1>
+        <div class="brand-center">
+          <div class="logo-showcase-pill">
+            <img src="logo.png" alt="โรงพยาบาลพิษณุเวช พิจิตร">
+          </div>
+          <div>
+            <h1 class="brand-headline">ระบบเครื่องมือแพทย์</h1>
+            <p class="brand-sub">โรงพยาบาลพิษณุเวช พิจิตร</p>
+          </div>
+        </div>
 
-        <!-- 3. ปุ่มเข้าสู่ระบบ (เปิดไปยังหน้า admin ด้วยอนิเมชั่นสลับหน้า) -->
-        <button id="btnEnter" class="btn-enter" onclick="handleEnter(event)">
-          <span class="btn-text">เข้าสู่ระบบ</span>
-          <span class="material-icons-round btn-icon">arrow_forward</span>
+        <div class="brand-footer-symbols">
+          <span class="mini-symbol-pill"><span class="material-icons-round">check_circle</span> พร้อมใช้</span>
+          <span class="mini-symbol-pill"><span class="material-icons-round">fact_check</span> ตรวจรายวัน</span>
+          <span class="mini-symbol-pill"><span class="material-icons-round">bolt</span> Real-time</span>
+        </div>
+      </section>
+
+      <!-- Right: Tactile Launch Cards -->
+      <section class="portal-action-pane">
+        <div class="pane-eyebrow">SELECT WORKSPACE</div>
+
+        <button type="button" class="studio-launch-card primary-navy" onclick="handleEnter(event)">
+          <div class="card-orb">
+            <span class="material-icons-round" style="font-size: 26px;">space_dashboard</span>
+          </div>
+          <div>
+            <div class="card-title">ศูนย์ควบคุม</div>
+            <div class="card-caption">แดชบอร์ด • สถานะ • ซ่อมบำรุง</div>
+          </div>
+          <span class="material-icons-round card-arrow">arrow_forward</span>
         </button>
 
-        <!-- 4. ลิงก์ด่วนสำหรับหน้างาน (Point-of-Care Checklist) -->
-        <a href="eval.html" style="margin-top: 14px; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--brand-blue); text-decoration: none; padding: 6px 16px; border-radius: 9999px; background: rgba(240, 247, 255, 0.85); border: 1px solid rgba(2, 132, 199, 0.22); transition: all 0.2s ease;">
-          <span class="material-icons-round" style="font-size: 16px; color: var(--brand-sky);">fact_check</span>
-          <span>จุดตรวจเช็คความพร้อมใช้ประจำวัน (สำหรับหน้างาน)</span>
+        <a href="eval.html" class="studio-launch-card secondary-cerulean">
+          <div class="card-orb">
+            <span class="material-icons-round" style="font-size: 26px;">fact_check</span>
+          </div>
+          <div>
+            <div class="card-title">ตรวจเช็ครายวัน</div>
+            <div class="card-caption">แบบฟอร์มสัญลักษณ์ • หน้างาน</div>
+          </div>
+          <span class="material-icons-round card-arrow">arrow_forward</span>
         </a>
-
-      </div>
+      </section>
     </main>
   </div>
 
   <script>
-    /* ==================== SEAMLESS ANIMATED PAGE SWITCH TO ADMIN ==================== */
     var isTransitioning = false;
-
     function handleEnter(e) {
       if (e) e.preventDefault();
       if (isTransitioning) return;
       isTransitioning = true;
 
-      var btn = document.getElementById('btnEnter');
-      if (btn) btn.classList.add('is-pressed');
-
       var gateStage = document.getElementById('gateStage');
       var adminFrame = document.getElementById('adminFrame');
-
-      // Trigger cinematic exit & zoom reveal
       if (gateStage) gateStage.classList.add('is-exiting');
       if (adminFrame) adminFrame.classList.add('is-active');
 
       setTimeout(function () {
-        if (gateStage) {
-          gateStage.style.display = 'none';
-        }
+        if (gateStage) gateStage.style.display = 'none';
         try {
-          window.history.pushState({ page: 'admin' }, 'ระบบบริหารจัดการเครื่องมือแพทย์ (Admin)', 'admin.html');
+          window.history.pushState({ page: 'admin' }, 'PPCH MedTrack', 'admin.html');
         } catch (err) {}
-
         if (adminFrame && adminFrame.contentWindow) {
           try { adminFrame.contentWindow.focus(); } catch (err) {}
         }
-      }, 650);
+      }, 550);
     }
-
-    /* ==================== 3D GYRO TILT EFFECT ON MOUSEMOVE ==================== */
-    var gateCard = document.getElementById('gateCard');
-    var targetRotateX = 0, targetRotateY = 0;
-    var currentRotateX = 0, currentRotateY = 0;
-
-    window.addEventListener('mousemove', function (e) {
-      if (window.innerWidth < 768 || isTransitioning) return;
-      var cx = window.innerWidth / 2;
-      var cy = window.innerHeight / 2;
-      var dx = (e.clientX - cx) / cx;
-      var dy = (e.clientY - cy) / cy;
-
-      targetRotateY = dx * 7;
-      targetRotateX = -dy * 7;
-    });
-
-    window.addEventListener('mouseleave', function () {
-      targetRotateX = 0;
-      targetRotateY = 0;
-    });
-
-    function updateCardTilt() {
-      if (!isTransitioning && gateCard) {
-        currentRotateX += (targetRotateX - currentRotateX) * 0.08;
-        currentRotateY += (targetRotateY - currentRotateY) * 0.08;
-        gateCard.style.transform = 'perspective(1000px) rotateX(' + currentRotateX.toFixed(2) + 'deg) rotateY(' + currentRotateY.toFixed(2) + 'deg)';
-      }
-      if (!isTransitioning) {
-        requestAnimationFrame(updateCardTilt);
-      }
-    }
-    updateCardTilt();
-
-    /* ==================== REAL-TIME ECG HEARTBEAT WAVE ANIMATION (LIGHT THEME) ==================== */
-    (function initEcgWave() {
-      var canvas = document.getElementById('ecgCanvas');
-      if (!canvas) return;
-      var ctx = canvas.getContext('2d');
-      var width = canvas.width = window.innerWidth;
-      var height = canvas.height = window.innerHeight;
-
-      var centerY = height * 0.52;
-      var x = 0;
-      var points = [];
-
-      window.addEventListener('resize', function () {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-        centerY = height * 0.52;
-        points = [];
-        x = 0;
-      });
-
-      function renderEcg() {
-        if (isTransitioning) return;
-
-        // Subtle soft clear for gentle trail on light background
-        ctx.fillStyle = 'rgba(240, 247, 255, 0.12)';
-        ctx.fillRect(0, 0, width, height);
-
-        var stepY = 0;
-        var phase = x % 220;
-
-        // Clinical P-Q-R-S-T curve
-        if (phase >= 40 && phase < 60) {
-          stepY = -Math.sin((phase - 40) / 20 * Math.PI) * 14; // P wave
-        } else if (phase >= 70 && phase < 75) {
-          stepY = ((phase - 70) / 5) * 12; // Q dip
-        } else if (phase >= 75 && phase < 85) {
-          stepY = -Math.sin((phase - 75) / 10 * Math.PI) * 85; // R peak
-        } else if (phase >= 85 && phase < 95) {
-          stepY = Math.sin((phase - 85) / 10 * Math.PI) * 22; // S dip
-        } else if (phase >= 120 && phase < 155) {
-          stepY = -Math.sin((phase - 120) / 35 * Math.PI) * 20; // T wave
-        }
-
-        var currentY = centerY + stepY;
-        points.push({ x: x, y: currentY });
-
-        if (points.length > 1) {
-          ctx.beginPath();
-          ctx.strokeStyle = '#0284c7'; // Vibrant Medical Cyan-Blue
-          ctx.lineWidth = 2.8;
-          ctx.shadowBlur = 8;
-          ctx.shadowColor = 'rgba(2, 132, 199, 0.45)';
-
-          var p1 = points[points.length - 2];
-          var p2 = points[points.length - 1];
-          ctx.moveTo(p1.x, p1.y);
-          ctx.lineTo(p2.x, p2.y);
-          ctx.stroke();
-          ctx.shadowBlur = 0;
-        }
-
-        x += 3.5;
-        if (x > width) {
-          x = 0;
-          points = [];
-          ctx.clearRect(0, 0, width, height);
-        }
-
-        requestAnimationFrame(renderEcg);
-      }
-
-      renderEcg();
-    })();
   </script>
 </body>
 </html>

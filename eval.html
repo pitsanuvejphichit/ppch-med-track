@@ -2,747 +2,735 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PPCH แบบตรวจเช็คความพร้อมใช้เครื่องมือแพทย์ | โรงพยาบาลพิษณุเวช</title>
+  <title>ตรวจเช็คเครื่องมือแพทย์ | PPCH MedTrack</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Prompt:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
   <style>
-    /* ==================== PPCH DEEP ROYAL BLUE THEME ==================== */
     :root {
-      --royal-dark: #002e6e;
-      --royal-blue: #004b93;
-      --royal-hover: #003a73;
-      --royal-light: #0284c7;
-      --royal-subtle: #f0f7ff;
-      --royal-glow: rgba(0, 75, 147, 0.16);
+      color-scheme: light;
+      accent-color: #26547c;
 
-      --canvas-bg: #f4f7fb;
-      --surface-white: #ffffff;
-      --border-main: #e2e8f0;
-      --border-subtle: #edf2f7;
-      --border-focus: #004b93;
-      --border-blue-soft: #bfdbfe;
+      /* Exact Phitsanuvej Phichit Logo Palette (#26547C Slate-Steel Navy + #56A8DC Cerulean Sky) */
+      --bg-canvas: #f0f5fa;
+      --surface-glass: rgba(255, 255, 255, 0.94);
+      --surface-solid: #ffffff;
+      --surface-subtle: #f7fafd;
 
-      --text-main: #0f172a;
-      --text-body: #334155;
+      --brand-navy: #183652;
+      --brand-primary: #26547c;
+      --brand-sky: #56a8dc;
+      --brand-glow: rgba(86, 168, 220, 0.20);
+
+      --text-main: #162a3d;
+      --text-body: #334e68;
       --text-muted: #64748b;
-      --text-light: #94a3b8;
 
-      --green-ready: #059669;
-      --green-bg: #ecfdf5;
-      --green-border: #a7f3d0;
+      --border-hairline: rgba(38, 84, 124, 0.10);
+      --border-glass: rgba(38, 84, 124, 0.10);
 
-      --amber-pending: #d97706;
+      --emerald: #059669;
+      --emerald-bg: #ecfdf5;
+      --emerald-border: #6ee7b7;
+
+      --amber: #d97706;
       --amber-bg: #fffbeb;
-      --amber-border: #fde68a;
+      --amber-border: #fcd34d;
 
-      --red-abnormal: #dc2626;
-      --red-bg: #fef2f2;
-      --red-border: #fecaca;
+      --crimson: #e11d48;
+      --crimson-bg: #fff1f2;
+      --crimson-border: #fda4af;
 
       --font-sans: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-mono: 'Inter', monospace;
-      color-scheme: light;
-      accent-color: #004b93;
+      --font-display: 'Plus Jakarta Sans', 'Prompt', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    /* Modern Web Guidance: Branded Selection & Accessible Contrast */
-    ::selection {
-      background-color: var(--royal-blue);
-      color: #ffffff;
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    /* Modern Web Guidance: Standardized Baseline Scrollbar Theming */
     html {
-      scrollbar-color: #94a3b8 #f1f5f9;
+      scrollbar-color: #cbd5e1 transparent;
       scrollbar-width: thin;
+      scroll-behavior: smooth;
     }
 
     body {
-      background-color: var(--canvas-bg);
-      color: var(--text-main);
       font-family: var(--font-sans);
-      font-size: 13px;
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
+      background-color: var(--bg-canvas);
+      background-image:
+        radial-gradient(at 10% 8%, rgba(86, 168, 220, 0.16) 0px, transparent 48%),
+        radial-gradient(at 90% 12%, rgba(38, 84, 124, 0.10) 0px, transparent 48%);
+      background-attachment: fixed;
+      color: var(--text-main);
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow-wrap: break-word;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 56px;
     }
 
-    /* Modern Web Guidance: Headings Balanced Wrapping */
-    h1, h2, h3, h4, h5, h6, .card-title, .form-title {
-      text-wrap: balance;
-    }
-
-    /* Modern Web Guidance: Checklist & Body Copy Pretty Wrapping */
-    p, .checklist-label, .note-text, .alert-box {
-      text-wrap: pretty;
-    }
-
-    /* Modern Web Guidance: Form Controls Theming & Layout Integrity */
-    textarea {
-      resize: vertical;
-      font-family: inherit;
-    }
-
-    input, select, textarea, button {
-      accent-color: var(--royal-blue);
-    }
-
-    /* Modern Web Guidance: User-Interacted Validity (Not Hostile on Load) */
-    input:user-invalid, select:user-invalid, textarea:user-invalid {
-      border-color: var(--red-abnormal) !important;
-      background-color: #fff8f8;
-    }
-
-    /* Modern Web Guidance: Accessible High-Contrast Focus Indicator */
-    :focus-visible {
-      outline: 2px solid var(--royal-blue);
-      outline-offset: 2px;
-    }
-
-    /* Modern Web Guidance: Mobile Touch Target Ergonomics */
-    @media (pointer: coarse) {
-      .btn-submit, .btn-secondary, .checklist-opt-btn {
-        min-height: 48px;
-      }
-    }
-
-    /* ==================== PHITSANUVEJ CSS MEDICAL CROSS LOADER ==================== */
+    /* ==================== PAGE LOADER ==================== */
     #pageLoader {
       position: fixed;
       inset: 0;
-      background: rgba(244, 247, 251, 0.95);
-      backdrop-filter: blur(8px);
+      background: rgba(240, 245, 250, 0.94);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 9999;
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 9999;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
+      transition: opacity 0.35s ease, visibility 0.35s ease;
     }
     #pageLoader.hidden {
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
     }
-
-    .loader-card {
+    .loader-orb {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      padding: 32px 42px;
+      border-radius: 28px;
       background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 20px;
-      padding: 38px 46px;
-      text-align: center;
-      box-shadow: 0 20px 40px rgba(0, 46, 110, 0.08);
-      min-width: 290px;
-      animation: loaderPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      box-shadow: 0 24px 60px rgba(24, 54, 82, 0.14);
+      border: 1px solid var(--border-hairline);
     }
-
-    .css-logo-loader {
-      position: relative;
-      width: 80px;
-      height: 80px;
-      margin: 10px auto 30px;
-      transform: scale(1.4);
-      transform-origin: center;
+    .loader-ring {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 3.5px solid #dbeafe;
+      border-top-color: var(--brand-primary);
+      animation: spin 0.75s linear infinite;
     }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    .logo-petal {
-      position: absolute;
-      animation: loadingPulse 1.6s ease-in-out infinite;
-      will-change: transform, opacity;
-    }
-    .logo-petal.outer { background: #1e5387; border-radius: 6px; }
-    .logo-petal.inner { background: #5faee3; border-radius: 5px; }
-
-    .logo-petal.outer.top { top: 0px; left: 30px; width: 20px; height: 24px; animation-delay: 0s; }
-    .logo-petal.inner.top-right { top: 14px; right: 14px; width: 20px; height: 20px; animation-delay: 0.2s; }
-    .logo-petal.outer.right { top: 30px; right: 0px; width: 24px; height: 20px; animation-delay: 0.4s; }
-    .logo-petal.inner.bottom-right { bottom: 14px; right: 14px; width: 20px; height: 20px; animation-delay: 0.6s; }
-    .logo-petal.outer.bottom { bottom: 0px; left: 30px; width: 20px; height: 24px; animation-delay: 0.8s; }
-    .logo-petal.inner.bottom-left { bottom: 14px; left: 14px; width: 20px; height: 20px; animation-delay: 1.0s; }
-    .logo-petal.outer.left { top: 30px; left: 0px; width: 24px; height: 20px; animation-delay: 1.2s; }
-    .logo-petal.inner.top-left { top: 14px; left: 14px; width: 20px; height: 20px; animation-delay: 1.4s; }
-
-    @keyframes loadingPulse {
-      0%, 100% { transform: scale(1); opacity: 0.35; }
-      50% { transform: scale(1.15); opacity: 1; }
-    }
-    @keyframes loaderPop {
-      0% { transform: scale(0.9); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    /* Top Header */
+    /* ==================== FLOATING SLATE-NAVY & CERULEAN STUDIO BAR ==================== */
     .app-topbar {
-      height: 58px;
-      background: rgba(255, 255, 255, 0.94);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 2px solid var(--royal-blue);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
       position: sticky;
-      top: 0;
+      top: 12px;
       z-index: 100;
-      box-shadow: 0 4px 16px -2px rgba(0, 46, 110, 0.06);
-    }
-
-    .topbar-brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-    }
-    .brand-logo-img { height: 36px; }
-    .brand-divider { width: 1px; height: 22px; background: var(--border-main); }
-    .brand-badge-pill {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--royal-blue);
-      background: var(--royal-subtle);
-      border: 1px solid var(--border-blue-soft);
-      padding: 3px 9px;
-      border-radius: 6px;
-      letter-spacing: 0.2px;
-    }
-
-    .btn-topbar-nav {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 11.5px;
-      font-weight: 600;
-      color: var(--royal-blue);
-      background: var(--royal-subtle);
-      border: 1px solid var(--border-blue-soft);
-      text-decoration: none;
-      transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .btn-topbar-nav:hover {
-      background: #e0f2fe;
-      border-color: #7dd3fc;
-      transform: translateY(-1px);
-    }
-
-    .btn-dev-sim {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 6px 12px;
-      border-radius: 9999px;
-      font-size: 11.5px;
-      font-weight: 600;
-      color: #92400e;
-      background: #fef3c7;
-      border: 1px solid #fde68a;
-      cursor: pointer;
-      transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
-      user-select: none;
-    }
-    .btn-dev-sim:hover {
-      background: #fde68a;
-      color: #78350f;
-    }
-    .btn-dev-sim.active {
-      background: #d97706;
-      color: #ffffff;
-      border-color: #b45309;
-      box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2);
-    }
-
-    /* Main Container */
-    .eval-container {
       max-width: 780px;
-      width: 100%;
-      margin: 18px auto 44px auto;
-      padding: 0 16px;
-      flex: 1;
-    }
-
-    .eval-card {
-      background: #ffffff;
-      border: 1px solid rgba(226, 232, 240, 0.95);
-      border-radius: 14px;
-      box-shadow: 0 4px 16px -2px rgba(0, 46, 110, 0.05), 0 1px 3px rgba(15, 23, 42, 0.03);
-      margin-bottom: 16px;
-      overflow: visible;
-      position: relative;
-    }
-
-    .eval-card-header {
-      padding: 13px 18px;
-      background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
-      border-bottom: 1px solid var(--border-main);
-      border-radius: 14px 14px 0 0;
+      margin: 12px auto 0 auto;
+      background: linear-gradient(135deg, var(--brand-navy) 0%, var(--brand-primary) 100%);
+      color: #ffffff;
+      border: 1px solid rgba(124, 196, 240, 0.25);
+      border-radius: 999px;
+      padding: 8px 12px 8px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      box-shadow: 0 18px 40px -10px rgba(24, 54, 82, 0.32);
     }
-    .eval-card-title {
-      font-size: 14px;
+
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #ffffff;
+    }
+    .brand-logo-img {
+      height: 36px;
+      width: auto;
+      object-fit: contain;
+      background: #ffffff;
+      border-radius: 999px;
+      padding: 4px 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+    .brand-title-wrap {
+      display: flex;
+      flex-direction: column;
+    }
+    .brand-title-main {
+      font-size: 14.5px;
       font-weight: 700;
-      color: var(--royal-dark);
+      color: #ffffff;
+      letter-spacing: -0.2px;
+      line-height: 1.2;
       display: flex;
       align-items: center;
       gap: 8px;
     }
-    .eval-card-body {
-      padding: 18px;
+    .v2-pill {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(86, 168, 220, 0.28);
+      border: 1px solid rgba(124, 196, 240, 0.5);
+      color: #e0f2fe;
+      letter-spacing: 0.5px;
     }
 
-    @media (max-width: 640px) {
-      .topbar-subtitle {
-        display: none !important;
-      }
-      .eval-card-header {
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        gap: 8px !important;
-        padding: 10px 14px !important;
-      }
-      .eval-card-title {
-        font-size: 13.5px !important;
-        line-height: 1.4 !important;
-      }
-      .eval-header-badges {
-        width: 100% !important;
-      }
-      .eval-card-body {
-        padding: 14px !important;
-      }
-      .eval-container {
-        padding: 0 10px !important;
-        margin: 12px auto 30px auto !important;
-      }
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    .form-control-select, .form-control-input {
-      width: 100%;
-      background: #f8fafc;
-      border: 1px solid var(--border-main);
-      border-radius: 8px;
-      padding: 9px 12px;
-      font-family: inherit;
-      font-size: 13px;
-      color: var(--text-main);
-      outline: none;
-      transition: all 0.15s;
+    .btn-icon-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 36px;
+      padding: 0 14px;
+      border-radius: 999px;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.92);
+      background: rgba(255, 255, 255, 0.10);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .form-control-select:focus, .form-control-input:focus {
-      background: #ffffff;
-      border-color: var(--royal-blue);
-      box-shadow: 0 0 0 2px rgba(0, 75, 147, 0.12);
+    .btn-icon-pill:hover {
+      background: rgba(255, 255, 255, 0.18);
+      color: #ffffff;
+    }
+    .btn-icon-pill.active {
+      background: #fef3c7;
+      border-color: #fcd34d;
+      color: #92400e;
+    }
+    .btn-icon-pill.primary-nav {
+      background: var(--brand-sky);
+      color: #ffffff;
+      border-color: #7cc4f0;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(86, 168, 220, 0.35);
+    }
+    .btn-icon-pill.primary-nav:hover {
+      background: #4799ce;
     }
 
-    /* UPS Battery Section */
-    .ups-banner-enforced {
-      background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
-      border: 1.5px solid #93c5fd;
-      border-radius: 10px;
-      padding: 14px 16px;
-      margin-bottom: 14px;
-    }
-    .ups-banner-normal {
-      background: #f8fafc;
-      border: 1px solid var(--border-main);
-      border-radius: 10px;
-      padding: 12px 16px;
-      margin-bottom: 14px;
+    /* ==================== MAIN WORKSPACE CONTAINER ==================== */
+    .eval-container {
+      max-width: 780px;
+      margin: 18px auto 0 auto;
+      padding: 0 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
 
-    .runtime-box {
+    /* ==================== COMPACT VISUAL STEPPER ==================== */
+    .stepper-pill-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      background: #e1ecf5;
+      padding: 5px;
+      border-radius: 999px;
+      border: 1px solid var(--border-hairline);
+    }
+    .stepper-step {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      margin: 14px 0;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: all 0.25s ease;
     }
-    .runtime-digit-input {
-      width: 64px;
-      height: 48px;
-      text-align: center;
-      font-family: var(--font-mono);
-      font-size: 24px;
+    .stepper-step .step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 11px;
       font-weight: 800;
-      color: var(--royal-blue);
+      background: rgba(38, 84, 124, 0.12);
+      color: var(--brand-primary);
+      transition: all 0.25s ease;
+    }
+    .stepper-step.active {
       background: #ffffff;
-      border: 2px solid var(--border-blue-soft);
-      border-radius: 8px;
-      outline: none;
-      transition: all 0.15s;
+      color: var(--brand-primary);
+      font-weight: 700;
+      box-shadow: 0 2px 10px rgba(38, 84, 124, 0.10);
     }
-    .runtime-digit-input:focus {
-      border-color: var(--royal-blue);
-      box-shadow: 0 0 0 3px rgba(0, 75, 147, 0.15);
+    .stepper-step.active .step-num {
+      background: var(--brand-primary);
+      color: #ffffff;
     }
-    .runtime-colon {
-      font-size: 26px;
-      font-weight: 800;
-      color: var(--royal-blue);
+    .stepper-step.done {
+      color: var(--emerald);
+      font-weight: 700;
+    }
+    .stepper-step.done .step-num {
+      background: var(--emerald);
+      color: #ffffff;
     }
 
-    /* Locked Checklist Overlay */
+    /* ==================== STUDIO IVORY CARDS ==================== */
+    .glass-card {
+      background: #ffffff;
+      border: 1px solid var(--border-hairline);
+      border-radius: 28px;
+      box-shadow:
+        0 20px 45px -16px rgba(24, 54, 82, 0.08),
+        0 2px 6px rgba(24, 54, 82, 0.03);
+      overflow: hidden;
+    }
+
+    /* ==================== HERO DEVICE POD ==================== */
+    .device-hero-header {
+      padding: 20px 24px 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid #eef4f9;
+      background: #ffffff;
+    }
+    .device-hero-title-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+    .device-hero-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-sky) 100%);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 6px 14px -4px rgba(38, 84, 124, 0.35);
+    }
+    .device-hero-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .device-hero-chips {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+    .symbol-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 700;
+      background: #f0f6fc;
+      color: var(--brand-primary);
+      border: 1px solid rgba(86, 168, 220, 0.3);
+    }
+
+    .device-grid-body {
+      padding: 18px 24px 22px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .selector-grid-2x2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .field-pod {
+      background: #f7fafd;
+      border: 1.5px solid #dce8f3;
+      border-radius: 18px;
+      padding: 11px 16px;
+      transition: all 0.18s ease;
+      position: relative;
+    }
+    .field-pod:focus-within {
+      background: #ffffff;
+      border-color: var(--brand-sky);
+      box-shadow: 0 0 0 4px var(--brand-glow);
+    }
+    .field-pod-label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-bottom: 4px;
+    }
+    .field-pod-label .material-icons-round {
+      font-size: 14px;
+      color: var(--brand-sky);
+    }
+    .field-pod select,
+    .field-pod input {
+      width: 100%;
+      border: none;
+      background: transparent;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+      outline: none;
+      cursor: pointer;
+    }
+    .field-pod input[type="datetime-local"] {
+      font-family: var(--font-mono);
+      font-size: 13px;
+    }
+
+    /* ==================== COMPACT STATUS BANNERS ==================== */
+    .status-strip-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 12.5px;
+      font-weight: 600;
+      flex-wrap: wrap;
+    }
+    .status-strip-banner.info {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      color: #0369a1;
+    }
+    .status-strip-banner.amber {
+      background: #fffbeb;
+      border: 1.5px solid #fcd34d;
+      color: #92400e;
+    }
+    .status-strip-banner.danger {
+      background: #fef2f2;
+      border: 1.5px solid #fca5a5;
+      color: #991b1b;
+    }
+
+    /* ==================== UPS BATTERY POD ==================== */
+    .ups-pod {
+      padding: 18px 22px;
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+      border: 1.5px solid #fcd34d;
+      border-radius: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .runtime-box {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .runtime-digit-input {
+      width: 58px;
+      height: 46px;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--brand-navy);
+      background: #ffffff;
+      border: 2px solid #f59e0b;
+      border-radius: 12px;
+      outline: none;
+    }
+    .runtime-colon {
+      font-size: 22px;
+      font-weight: 800;
+      color: #b45309;
+    }
+
+    /* ==================== CHECKLIST SECTION ==================== */
     .checklist-locked-wrapper {
       position: relative;
     }
     .checklist-lock-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(248, 250, 252, 0.88);
-      backdrop-filter: blur(3px);
-      z-index: 10;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 30;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      border-radius: 12px;
+      border-radius: 24px;
       text-align: center;
-      padding: 24px;
+      padding: 28px;
     }
 
-    /* Checklist Items */
-    .checklist-item {
-      padding: 13px 16px;
-      border-bottom: 1px solid var(--border-subtle);
+    .checklist-header-bar {
+      padding: 16px 22px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      transition: all 0.14s ease;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.7);
+    }
+    .checklist-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .progress-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 13px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #f1f5f9;
+      color: var(--text-muted);
+      border: 1px solid var(--border-hairline);
+      transition: all 0.2s ease;
+    }
+
+    /* Tactile Horizontal Strip Checklist Cards */
+    #checklistItemsList {
+      padding: 14px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .checklist-item {
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.02);
     }
     .checklist-item:hover {
-      background: #f8fafc;
+      border-color: #cbd5e1;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(0, 31, 68, 0.05);
     }
     .checklist-item.row-pass {
-      background: rgba(236, 253, 245, 0.45);
+      background: linear-gradient(90deg, rgba(236, 253, 245, 0.75) 0%, #ffffff 60%);
+      border-color: #6ee7b7;
     }
     .checklist-item.row-fail {
-      background: rgba(254, 242, 242, 0.65);
+      background: linear-gradient(90deg, rgba(254, 242, 242, 0.85) 0%, #ffffff 60%);
+      border-color: #fca5a5;
     }
     .checklist-item.row-conditional {
-      background: rgba(255, 251, 235, 0.72);
+      background: linear-gradient(90deg, rgba(255, 251, 235, 0.9) 0%, #ffffff 65%);
+      border-color: #fcd34d;
     }
-    .checklist-item:last-child {
-      border-bottom: none;
+
+    .item-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      min-width: 0;
     }
+
     .item-num-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: #f1f5f9;
+      color: var(--brand-primary);
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 800;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-width: 24px;
-      height: 24px;
-      padding: 0 6px;
-      border-radius: 6px;
-      background: #f1f5f9;
-      color: var(--royal-blue);
-      font-family: var(--font-mono);
-      font-size: 11.5px;
-      font-weight: 800;
-      margin-right: 8px;
-      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+      transition: all 0.18s ease;
     }
     .checklist-item.row-pass .item-num-badge {
-      background: #d1fae5;
-      color: #047857;
+      background: var(--emerald);
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(5, 150, 105, 0.25);
     }
     .checklist-item.row-fail .item-num-badge {
-      background: #fee2e2;
-      color: #b91c1c;
+      background: var(--crimson);
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(220, 38, 38, 0.25);
     }
     .checklist-item.row-conditional .item-num-badge {
-      background: #fef3c7;
-      color: #b45309;
+      background: var(--amber);
+      color: #ffffff;
     }
-    .badge-conditional-locked {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 6px 12px;
-      border-radius: 8px;
-      background: #fffbeb;
-      border: 1.5px solid #fcd34d;
-      color: #b45309;
-      font-size: 12px;
-      font-weight: 700;
-      white-space: nowrap;
-      box-shadow: 0 1px 2px rgba(180, 83, 9, 0.08);
-    }
+
     .item-text {
-      font-size: 13.5px;
-      color: var(--text-main);
+      font-size: 14.5px;
       font-weight: 500;
-      flex: 1;
-      line-height: 1.45;
+      color: var(--text-main);
+      line-height: 1.42;
+      text-wrap: pretty;
     }
 
     .item-btn-group {
       display: flex;
-      gap: 6px;
+      align-items: center;
+      gap: 8px;
       flex-shrink: 0;
     }
+
     .btn-check-choice {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      padding: 7px 14px;
-      border-radius: 8px;
-      font-size: 12.5px;
-      font-weight: 600;
+      justify-content: center;
+      gap: 5px;
+      min-width: 88px;
+      height: 42px;
+      padding: 0 16px;
+      border-radius: 12px;
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      font-weight: 700;
       cursor: pointer;
-      border: 1px solid var(--border-main);
-      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      background: #f8fafc;
       color: var(--text-muted);
-      transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+      transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
     }
     .btn-check-choice:hover:not(:disabled) {
-      border-color: #cbd5e1;
+      background: #ffffff;
+      border-color: #94a3b8;
       color: var(--text-main);
       transform: translateY(-1px);
     }
     .btn-check-choice.active-pass {
-      background: var(--green-ready);
-      border-color: var(--green-ready);
+      background: var(--emerald);
+      border-color: var(--emerald);
       color: #ffffff;
-      box-shadow: 0 3px 10px rgba(5, 150, 105, 0.25);
+      box-shadow: 0 6px 16px -3px rgba(5, 150, 105, 0.42);
+      transform: scale(1.02);
     }
     .btn-check-choice.active-fail {
-      background: var(--red-abnormal);
-      border-color: var(--red-abnormal);
+      background: var(--crimson);
+      border-color: var(--crimson);
       color: #ffffff;
-      box-shadow: 0 3px 10px rgba(220, 38, 38, 0.25);
+      box-shadow: 0 6px 16px -3px rgba(220, 38, 38, 0.42);
+      transform: scale(1.02);
     }
 
-    /* Visual Stepper / Progress Bar */
-    .eval-stepper-bar {
-      display: flex;
+    .badge-conditional-locked {
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-      padding: 10px 16px;
-      background: #ffffff;
-      border: 1px solid var(--border-main);
+      gap: 6px;
+      height: 40px;
+      padding: 0 14px;
       border-radius: 12px;
-      box-shadow: 0 1px 3px rgba(0, 46, 110, 0.03);
-    }
-    .stepper-step {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
-      transition: all 0.2s ease;
-    }
-    .stepper-step.active {
-      color: var(--royal-blue);
+      background: #fffbeb;
+      border: 1.5px solid #fcd34d;
+      color: #b45309;
+      font-size: 12.5px;
       font-weight: 700;
-    }
-    .stepper-step.done {
-      color: var(--green-ready);
-      font-weight: 700;
-    }
-    .stepper-step .step-num {
-      width: 24px;
-      height: 24px;
-      border-radius: 9999px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: 800;
-      background: #f1f5f9;
-      color: var(--text-muted);
-      transition: all 0.2s ease;
-    }
-    .stepper-step.active .step-num {
-      background: var(--royal-blue);
-      color: #ffffff;
-      box-shadow: 0 2px 6px rgba(0, 75, 147, 0.3);
-    }
-    .stepper-step.done .step-num {
-      background: var(--green-ready);
-      color: #ffffff;
-    }
-    .stepper-line {
-      flex: 1;
-      height: 2px;
-      background: #e2e8f0;
-      margin: 0 10px;
-      border-radius: 9999px;
-      transition: background 0.2s ease;
-    }
-    .stepper-line.done {
-      background: var(--green-ready);
-    }
-
-    /* Primary Hero CTA (Concept 1: One Clear Main Action) */
-    .btn-submit-main {
-      width: 100%;
-      height: 48px;
-      padding: 0 20px;
-      border-radius: 10px;
-      font-size: 15px;
-      font-weight: 700;
-      color: #ffffff;
-      background: linear-gradient(135deg, var(--royal-blue) 0%, var(--royal-light) 100%);
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      box-shadow: 0 4px 14px rgba(0, 75, 147, 0.28);
-      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .btn-submit-main:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0, 75, 147, 0.38);
-    }
-    .btn-submit-main:active {
-      transform: scale(0.98);
-    }
-
-    /* Modal */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.45);
-      backdrop-filter: blur(4px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      transition: all 0.2s;
-      /* Modern Web Guidance: Prevent Page Scroll Underneath Modal Dialog without Layout Shift */
-      overflow: hidden;
-      overscroll-behavior: contain;
-    }
-    .modal-overlay.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-    .modal-box {
-      background: #ffffff;
-      border-radius: 16px;
-      box-shadow: 0 20px 40px rgba(0, 46, 110, 0.16);
-      border: 1px solid var(--border-main);
-      padding: 24px;
-      max-width: 440px;
-      width: 90%;
-      text-align: center;
-      /* Modern Web Guidance: Contain Modal Inner Scroll */
-      overscroll-behavior: contain;
-    }
-
-    /* Device Under Repair Banner & Overlay */
-    .repair-lock-banner {
-      background: #fef2f2;
-      border: 1.5px solid #f87171;
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      box-shadow: 0 4px 14px rgba(220, 38, 38, 0.08);
-      animation: loaderPop 0.3s ease;
-    }
-    .repair-banner-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 10px;
-      background: #fee2e2;
-      color: #dc2626;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      font-size: 24px;
-    }
-    .repair-pill-status {
-      font-size: 11px;
-      font-weight: 700;
-      padding: 3px 9px;
-      border-radius: 9999px;
-      background: #dc2626;
-      color: #ffffff;
       white-space: nowrap;
     }
-    .repair-pill-status.in-progress {
-      background: #d97706;
-    }
+
     .item-unanswered-highlight {
+      border-color: #f97316 !important;
       background: #fff7ed !important;
-      border-left: 4px solid #f97316 !important;
-      animation: pulseHighlight 1s infinite alternate;
+      animation: pulseWarn 0.9s infinite alternate;
     }
-    @keyframes pulseHighlight {
-      0% { background: #fff7ed; }
-      100% { background: #ffedd5; }
+    @keyframes pulseWarn {
+      from { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.25); }
+      to { box-shadow: 0 0 0 5px rgba(249, 115, 22, 0.12); }
     }
-    /* Toast Notification */
-    #toastNotice {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #0f172a;
-      color: #ffffff;
-      padding: 10px 18px;
-      border-radius: 8px;
-      font-size: 13px;
+
+    /* ==================== SIGN-OFF FOOTER ==================== */
+    .signoff-section {
+      padding: 18px 22px 22px 22px;
+      border-top: 1px solid rgba(226, 232, 240, 0.8);
+      background: rgba(248, 250, 252, 0.6);
       display: flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-      z-index: 2000;
-      transform: translateY(60px);
-      opacity: 0;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      pointer-events: none;
+      flex-direction: column;
+      gap: 14px;
     }
-    #toastNotice.show {
-      transform: translateY(0);
-      opacity: 1;
-      pointer-events: auto;
+
+    .signoff-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 12px;
     }
-    /* ==================== EVALUATOR SEARCHABLE DROPDOWN (PREMIUM TACTILE DESIGN) ==================== */
+
+    .input-clean {
+      width: 100%;
+      height: 46px;
+      padding: 0 14px;
+      border-radius: 14px;
+      border: 1.5px solid #e2e8f0;
+      background: #ffffff;
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text-main);
+      outline: none;
+      transition: all 0.18s ease;
+    }
+    .input-clean:focus {
+      border-color: var(--brand-sky);
+      box-shadow: 0 0 0 4px var(--brand-glow);
+    }
+
+    /* Evaluator Autocomplete Tray */
     .evaluator-dropdown-tray {
       position: absolute;
-      top: calc(100% + 6px);
+      bottom: calc(100% + 8px);
       left: 0;
       right: 0;
       z-index: 9999;
       background: #ffffff;
-      border: 2px solid #0284c7; /* Prominent royal accent border */
-      border-radius: 12px;
-      box-shadow: 0 18px 40px -4px rgba(0, 46, 110, 0.22), 0 0 0 1px rgba(2, 132, 199, 0.15);
-      max-height: 290px;
+      border: 2px solid var(--brand-sky);
+      border-radius: 16px;
+      box-shadow: 0 20px 45px -8px rgba(0, 31, 68, 0.24);
+      max-height: 270px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      animation: dropdownSlideIn 0.16s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    @keyframes dropdownSlideIn {
-      from {
-        opacity: 0;
-        transform: translateY(-6px) scale(0.99);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
     }
     .eval-tray-header {
       display: flex;
@@ -754,98 +742,168 @@
       font-size: 11.5px;
       font-weight: 700;
       color: #334155;
-      flex-shrink: 0;
     }
     .eval-tray-header-count {
       background: #e0f2fe;
       color: #0369a1;
-      padding: 1px 7px;
+      padding: 1px 8px;
       border-radius: 999px;
       font-size: 11px;
       font-weight: 800;
-      margin-left: 2px;
     }
     .eval-tray-list {
       overflow-y: auto;
-      max-height: 245px;
-    }
-    .eval-tray-list::-webkit-scrollbar {
-      width: 6px;
-    }
-    .eval-tray-list::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 4px;
+      max-height: 225px;
     }
     .eval-emp-option {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 11px 14px;
+      padding: 10px 14px;
       border-bottom: 1px solid #f1f5f9;
       cursor: pointer;
-      background: #ffffff;
-      transition: all 0.14s ease;
-      gap: 12px;
+      transition: background 0.12s ease;
     }
     .eval-emp-option:hover,
     .eval-emp-option.active-item {
-      background: #f0f7ff;
-      border-left: 4px solid #0284c7;
-      padding-left: 10px;
-    }
-    .eval-emp-option:last-child {
-      border-bottom: none;
+      background: #f0f9ff;
     }
     .eval-emp-info {
       display: flex;
       align-items: center;
       gap: 10px;
-      flex: 1;
       min-width: 0;
     }
     .eval-emp-id-badge {
-      font-family: var(--font-mono, monospace);
+      font-family: var(--font-mono);
       font-size: 12px;
       font-weight: 700;
       background: #eff6ff;
       color: #1d4ed8;
       border: 1px solid #bfdbfe;
-      padding: 3px 8px;
-      border-radius: 6px;
-      letter-spacing: 0.8px;
-      flex-shrink: 0;
-      display: inline-flex;
-      align-items: center;
-      box-shadow: 0 1px 2px rgba(29, 78, 216, 0.06);
+      padding: 2px 8px;
+      border-radius: 7px;
     }
     .eval-emp-name {
       font-weight: 600;
-      color: #0f172a;
       font-size: 13.5px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      color: var(--text-main);
     }
     .eval-emp-select-pill {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
       padding: 3px 10px;
-      border-radius: 20px;
+      border-radius: 999px;
       font-size: 11px;
       font-weight: 700;
-      background: #f1f5f9;
-      color: #64748b;
-      flex-shrink: 0;
-      border: 1px solid #e2e8f0;
-      transition: all 0.14s ease;
+      background: #e0f2fe;
+      color: #0369a1;
     }
-    .eval-emp-option:hover .eval-emp-select-pill,
-    .eval-emp-option.active-item .eval-emp-select-pill {
-      background: #0284c7;
+
+    /* Grand Submit CTA */
+    .btn-submit-main {
+      width: 100%;
+      height: 54px;
+      border-radius: 18px;
+      border: none;
+      background: linear-gradient(135deg, #183652 0%, #26547c 65%, #56a8dc 100%);
       color: #ffffff;
-      border-color: #0284c7;
-      box-shadow: 0 2px 4px rgba(2, 132, 199, 0.25);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      box-shadow: 0 14px 30px -6px rgba(38, 84, 124, 0.38);
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-submit-main:hover:not(:disabled) {
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, #26547c 0%, #56a8dc 100%);
+      box-shadow: 0 18px 36px -6px rgba(38, 84, 124, 0.48);
+    }
+    .btn-submit-main:active:not(:disabled) {
+      transform: scale(0.99);
+    }
+
+    /* ==================== MODAL & TOAST ==================== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      transition: all 0.22s ease;
+      overscroll-behavior: contain;
+    }
+    .modal-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .modal-box {
+      background: #ffffff;
+      border-radius: 26px;
+      padding: 30px 26px;
+      max-width: 420px;
+      width: 92%;
+      text-align: center;
+      box-shadow: 0 28px 60px rgba(0, 31, 68, 0.22);
+      border: 1px solid var(--border-hairline);
+    }
+
+    #toastNotice {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--brand-navy);
+      color: #ffffff;
+      padding: 12px 20px;
+      border-radius: 14px;
+      font-size: 13.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 14px 32px rgba(0, 31, 68, 0.28);
+      z-index: 3000;
+      transform: translateY(70px);
+      opacity: 0;
+      transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+    #toastNotice.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* ==================== MOBILE RESPONSIVE ==================== */
+    @media (max-width: 640px) {
+      .app-topbar { padding: 10px 14px; }
+      .selector-grid-2x2 { grid-template-columns: 1fr; }
+      .signoff-grid { grid-template-columns: 1fr; }
+      .checklist-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+      .item-btn-group {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+      .btn-check-choice { width: 100%; }
+      .badge-conditional-locked {
+        grid-column: span 2;
+        justify-content: center;
+      }
     }
   </style>
 </head>
@@ -853,336 +911,241 @@
 
   <!-- Loading Screen -->
   <div id="pageLoader">
-    <div class="loader-card">
-      <div class="css-logo-loader">
-        <div class="logo-petal outer top"></div>
-        <div class="logo-petal inner top-right"></div>
-        <div class="logo-petal outer right"></div>
-        <div class="logo-petal inner bottom-right"></div>
-        <div class="logo-petal outer bottom"></div>
-        <div class="logo-petal inner bottom-left"></div>
-        <div class="logo-petal outer left"></div>
-        <div class="logo-petal inner top-left"></div>
-      </div>
-      <div style="margin-top: 14px;">
-        <div id="loaderTitle" style="font-size: 16px; font-weight: 700; color: #004b93; margin-bottom: 4px;">
-          แบบตรวจเช็คความพร้อมใช้
-        </div>
-        <div id="loaderSubtitle" style="font-size: 12px; font-weight: 500; color: #64748b;">
-          โรงพยาบาลพิษณุเวช พิจิตร
-        </div>
-      </div>
+    <div class="loader-orb">
+      <div class="loader-ring"></div>
+      <div style="font-size: 14.5px; font-weight: 700; color: var(--brand-navy);">กำลังเตรียมแบบตรวจเช็ค...</div>
     </div>
   </div>
 
-  <!-- Top Bar -->
+  <!-- Minimal Floating Topbar -->
   <header class="app-topbar">
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <div class="topbar-brand">
-        <img src="logo.png" alt="โรงพยาบาลพิษณุเวช" class="brand-logo-img">
-        <div class="brand-divider"></div>
-        <div class="brand-badge-pill">Med Track</div>
+    <a href="index.html" class="brand-cluster" title="หน้าหลัก">
+      <img src="logo.png" alt="PPCH" class="brand-logo-img">
+      <div class="brand-title-wrap">
+        <div class="brand-title-main">
+          <span>ตรวจเช็คเครื่องมือแพทย์</span>
+          <span class="v2-pill">MedTrack</span>
+        </div>
       </div>
-      <span class="topbar-subtitle" style="font-size: 12.5px; color: var(--text-muted); margin-left: 4px; font-weight: 500;">จุดตรวจเช็คความพร้อมใช้เครื่องมือแพทย์</span>
-    </div>
+    </a>
 
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <button type="button" id="btnDevSimUps" onclick="toggleSimulateUpsCycle()" class="btn-dev-sim" title="เปิด/ปิด การจำลองรอบบังคับตรวจ UPS วันที่ 1 & 16 สำหรับทดสอบ">
-        <span class="material-icons-round" style="font-size: 15px;">bolt</span>
-        <span id="btnDevSimUpsText">จำลองรอบ UPS (Dev)</span>
+    <div class="topbar-actions">
+      <button type="button" id="btnDevSimUps" onclick="toggleSimulateUpsCycle()" class="btn-icon-pill" title="จำลองรอบตรวจแบตเตอรี่ UPS (วันที่ 1 & 16)">
+        <span class="material-icons-round" style="font-size: 17px; color: #d97706;">bolt</span>
+        <span id="btnDevSimUpsText">UPS</span>
       </button>
-      <a href="admin.html" class="btn-topbar-nav" title="เปิดแดชบอร์ดและระบบบริหารจัดการ">
-        <span class="material-icons-round" style="font-size: 15px;">dashboard</span>
+      <a href="admin.html" class="btn-icon-pill primary-nav" title="เปิดหน้าแดชบอร์ดบริหารจัดการ">
+        <span class="material-icons-round" style="font-size: 17px;">space_dashboard</span>
         <span>แดชบอร์ด</span>
       </a>
     </div>
   </header>
 
-  <!-- Main Container -->
   <main class="eval-container">
 
-    <!-- Visual Progress Stepper (Video Concept 5: Form Chunking) -->
-    <div class="eval-stepper-bar" id="evalStepper">
+    <!-- Minimal 3-Step Visual Indicator -->
+    <div class="stepper-pill-bar" id="evalStepper">
       <div class="stepper-step active" id="step1_device">
-        <div class="step-num">1</div>
-        <div class="step-label">เลือกเครื่องมือ</div>
+        <span class="step-num">1</span>
+        <span>เลือกเครื่อง</span>
       </div>
-      <div class="stepper-line" id="stepperLine1"></div>
       <div class="stepper-step" id="step2_check">
-        <div class="step-num">2</div>
-        <div class="step-label">ตรวจเช็คความพร้อม</div>
+        <span class="step-num">2</span>
+        <span>ตรวจเช็ค</span>
       </div>
-      <div class="stepper-line" id="stepperLine2"></div>
       <div class="stepper-step" id="step3_submit">
-        <div class="step-num">3</div>
-        <div class="step-label">บันทึกผล</div>
+        <span class="step-num">3</span>
+        <span>บันทึกผล</span>
       </div>
     </div>
 
-    <!-- Card 1: Equipment Selection & Header -->
-    <section class="eval-card" style="overflow: visible;">
-      <div class="eval-card-header">
-        <div class="eval-card-title">
-          <span class="material-icons-round" style="color: var(--royal-blue); font-size: 18px;">medical_services</span>
-          <span id="formNameHeading">แบบตรวจเช็คเครื่องมือแพทย์</span>
+    <!-- Card 1: Hero Equipment Selector -->
+    <section class="glass-card">
+      <div class="device-hero-header">
+        <div class="device-hero-title-group">
+          <div class="device-hero-icon">
+            <span class="material-icons-round" style="font-size: 24px;">medical_services</span>
+          </div>
+          <div style="min-width: 0;">
+            <div class="device-hero-name" id="formNameHeading">เลือกเครื่องมือแพทย์</div>
+          </div>
         </div>
-        <div class="eval-header-badges" style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
-          <span id="badgeRiskPill" style="display: none; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px;">-</span>
-          <span id="badgeCategoryPill" style="font-size: 11px; font-weight: 700; color: var(--royal-blue); background: var(--royal-subtle); padding: 3px 8px; border-radius: 4px; border: 1px solid var(--border-blue-soft);">-</span>
+        <div class="device-hero-chips">
+          <span id="badgeRiskPill" class="symbol-chip" style="display: none;">-</span>
+          <span id="badgeCategoryPill" class="symbol-chip" style="background: #eff6ff; color: var(--brand-primary); border-color: #bfdbfe;">-</span>
         </div>
       </div>
-      <div class="eval-card-body">
-        <!-- 2-Step Cascade Equipment Selection -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-bottom: 12px;">
-          <div>
-            <label for="evalDeviceTypeSelect" style="display: block; font-size: 12px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">1. เลือกชื่อเครื่องมือแพทย์ *</label>
-            <select id="evalDeviceTypeSelect" class="form-control-select" onchange="onDeviceTypeChanged()">
-              <option value="">-- กรุณาเลือกชื่อเครื่องมือแพทย์ --</option>
-            </select>
-          </div>
-          <div>
-            <label for="evalDeviceSelect" style="display: block; font-size: 12px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">2. เลือกรหัสเครื่อง / ครุภัณฑ์ *</label>
-            <select id="evalDeviceSelect" class="form-control-select" onchange="onDeviceSelected()">
-              <option value="">-- เลือกรหัสเครื่อง / ครุภัณฑ์ --</option>
-            </select>
-          </div>
-        </div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
-          <div style="background: #f8fafc; border: 1px solid var(--border-main); padding: 8px 12px; border-radius: 10px;">
-            <label for="evalDeptSelect" style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--text-muted); cursor: pointer; margin-bottom: 3px;">
-              <span>แผนกที่ตรวจเช็ค *</span>
-              <span style="font-size: 10px; color: var(--royal-blue); font-weight: 600;">(เปลี่ยนได้หากย้ายเครื่อง)</span>
-            </label>
-            <select id="evalDeptSelect" class="form-control-select" style="padding: 6px 8px; font-size: 13px; font-weight: 700; color: var(--royal-blue); background: #ffffff; cursor: pointer; width: 100%;">
-              <option value="">-- กำลังโหลดแผนก --</option>
-            </select>
-          </div>
-          <div style="background: #f8fafc; border: 1px solid var(--border-main); padding: 8px 12px; border-radius: 10px;">
-            <label for="evalDateTimeInput" style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--text-muted); cursor: pointer; margin-bottom: 2px;">
-              <span>วัน-เวลาประเมิน</span>
-              <span style="font-size: 10px; color: var(--royal-blue); font-weight: 600;">(คลิกเปลี่ยนวัน-เวลาได้)</span>
-            </label>
-            <input type="datetime-local" id="evalDateTimeInput" class="form-control-input" style="padding: 6px 8px; font-size: 13px; font-weight: 700; color: var(--royal-blue); background: #ffffff; cursor: pointer; font-family: var(--font-mono); width: 100%;" onchange="onDateTimeChanged()">
-          </div>
-        </div>
-
-        <!-- Re-evaluation / Intra-day failure reporting banner (Compact & Zero Clutter) -->
-        <div id="reCheckNoticeBanner" style="display: none; background: #eff6ff; border: 1.5px solid #93c5fd; border-radius: 10px; padding: 9px 14px; margin-top: 12px; animation: loaderPop 0.25s ease;">
-          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-            <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0;">
-              <span class="material-icons-round" style="color: var(--royal-blue); font-size: 19px; flex-shrink: 0;">history</span>
-              <div style="min-width: 0;">
-                <span style="font-size: 12.5px; font-weight: 700; color: var(--royal-dark);" id="reCheckTitle">
-                  มีบันทึกตรวจเช็คเครื่องนี้ในวันที่เลือกแล้ว
-                </span>
-                <span style="font-size: 11.5px; color: var(--text-body); margin-left: 6px;" id="reCheckDesc">
-                  ตรวจล่าสุดเมื่อเวลา 08:00 น.
-                </span>
-              </div>
+      <div class="device-grid-body">
+        <!-- 2x2 Clean Grid: 1. Name, 2. Asset Code, 3. Dept, 4. DateTime -->
+        <div class="selector-grid-2x2">
+          <div class="field-pod">
+            <div class="field-pod-label">
+              <span class="material-icons-round">category</span>
+              <span>1. ชื่อเครื่องมือแพทย์</span>
             </div>
-            <span id="reCheckPrevStatusBadge" style="font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 9999px; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;">
-              พร้อมใช้งาน
-            </span>
+            <select id="evalDeviceTypeSelect" onchange="onDeviceTypeChanged()">
+              <option value="">-- เลือกเครื่องมือ --</option>
+            </select>
           </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- Repair Lock Banner (Displayed if Equipment is Abnormal / In Repair) -->
-    <div id="repairLockBanner" class="repair-lock-banner" style="display: none;">
-      <div class="repair-banner-icon">
-        <span class="material-icons-round">build_circle</span>
-      </div>
-      <div style="flex: 1;">
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;">
-          <div style="font-size: 14px; font-weight: 700; color: #991b1b;" id="repairLockTitle">
-            เครื่องมือแพทย์ไม่พร้อมใช้งาน (อยู่ระหว่างซ่อมบำรุง)
-          </div>
-          <span id="repairStatusBadgePill" class="repair-pill-status">พบข้อบกพร่อง</span>
-        </div>
-        <div style="font-size: 12.5px; color: #7f1d1d; margin-bottom: 6px;" id="repairLockReason">
-          อาการข้อบกพร่องที่พบ: -
-        </div>
-        <div style="font-size: 11.5px; color: #991b1b; display: flex; flex-wrap: wrap; gap: 14px; background: rgba(254, 226, 226, 0.6); padding: 6px 10px; border-radius: 6px; margin-bottom: 6px;">
-          <span id="repairLockReportedBy">ผู้รายงาน: -</span>
-          <span id="repairLockReportedAt">วันที่ตรวจพบ: -</span>
-        </div>
-        <div style="font-size: 12px; font-weight: 600; color: #b91c1c; display: flex; align-items: center; gap: 5px;">
-          <span class="material-icons-round" style="font-size: 16px;">lock</span>
-          <span>ระบบล็อกไม่ให้กรอกแบบตรวจเช็ค จนกว่าเจ้าหน้าที่เครื่องมือแพทย์จะบันทึกการแก้ไขเสร็จสิ้นในระบบ Admin</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Conditional Use Allowed Banner (Shown if Equipment is permitted for use despite minor defects) -->
-    <div id="conditionalUseBanner" style="display: none; background: #fffbeb; border: 1.5px solid #fde68a; border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; box-shadow: 0 4px 14px rgba(217, 119, 6, 0.08); animation: loaderPop 0.3s ease;">
-      <div style="display: flex; align-items: flex-start; gap: 12px;">
-        <div style="width: 42px; height: 42px; border-radius: 10px; background: #fef3c7; color: #b45309; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-          <span class="material-icons-round" style="font-size: 24px;">published_with_changes</span>
-        </div>
-        <div style="flex: 1;">
-          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;">
-            <div style="font-size: 14px; font-weight: 700; color: #92400e;">
-              เครื่องมือแพทย์ได้รับอนุญาตให้ใช้งานต่อได้ (มีเงื่อนไขชั่วคราว)
+          <div class="field-pod">
+            <div class="field-pod-label">
+              <span class="material-icons-round">qr_code_2</span>
+              <span>2. รหัสครุภัณฑ์</span>
             </div>
-            <span style="font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 9999px; background: #d97706; color: #ffffff;">
-              อนุญาตให้ใช้งานต่อ
-            </span>
+            <select id="evalDeviceSelect" onchange="onDeviceSelected()">
+              <option value="">-- เลือกรหัส --</option>
+            </select>
           </div>
-          <div style="font-size: 12px; color: #b91c1c; margin-bottom: 4px;" id="conditionalUseDefectReason">
-            ข้อบกพร่องเดิม: -
+
+          <div class="field-pod">
+            <div class="field-pod-label">
+              <span class="material-icons-round">meeting_room</span>
+              <span>แผนกที่ใช้งาน</span>
+            </div>
+            <select id="evalDeptSelect">
+              <option value="">-- โหลดแผนก --</option>
+            </select>
           </div>
-          <div style="font-size: 12.5px; color: #78350f; margin-bottom: 4px;" id="conditionalUseReasonText">
-            เหตุผล/เงื่อนไข: -
-          </div>
-          <div style="font-size: 11.5px; color: #92400e; display: flex; flex-wrap: wrap; gap: 14px; background: rgba(254, 243, 199, 0.7); padding: 5px 10px; border-radius: 6px; margin-bottom: 6px;">
-            <span id="conditionalUseBy">ผู้อนุญาต: -</span>
-            <span id="conditionalUseAt">วันที่อนุญาต: -</span>
-          </div>
-          <div style="font-size: 12px; font-weight: 600; color: #15803d; display: flex; align-items: center; gap: 5px;">
-            <span class="material-icons-round" style="font-size: 16px;">check_circle</span>
-            <span>ปลดล็อกแบบตรวจเช็คแล้ว เจ้าหน้าที่สามารถตรวจเช็คความพร้อมใช้ประจำวันได้ตามปกติ</span>
+
+          <div class="field-pod">
+            <div class="field-pod-label">
+              <span class="material-icons-round">schedule</span>
+              <span>วัน-เวลาตรวจ</span>
+            </div>
+            <input type="datetime-local" id="evalDateTimeInput" onchange="onDateTimeChanged()">
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Card 2: UPS Battery Check (Shown ONLY on 1st & 16th of Month or when Dev Simulation is ON) -->
-    <section class="eval-card" id="cardUpsBattery" style="display: none;">
-      <div class="eval-card-header">
-        <div class="eval-card-title">
-          <span class="material-icons-round" style="color: #d97706; font-size: 18px;">battery_charging_full</span>
-          <span>การตรวจสอบระยะเวลาใช้งานแบตเตอรี่ UPS (รอบวันที่ 1 & 16)</span>
+        <!-- Compact Re-check Banner -->
+        <div id="reCheckNoticeBanner" class="status-strip-banner info" style="display: none;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="material-icons-round" style="font-size: 18px;">verified</span>
+            <span id="reCheckTitle">ตรวจวันนี้แล้ว</span>
+            <span id="reCheckDesc" style="font-weight: 500; opacity: 0.85; font-size: 11.5px;"></span>
+          </div>
+          <span id="reCheckPrevStatusBadge" style="font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 999px; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;">พร้อมใช้</span>
         </div>
-        <span style="font-size: 11px; font-weight: 700; color: #b45309; background: #fef3c7; border: 1px solid #fde68a; padding: 2px 8px; border-radius: 4px;">
-          รอบบังคับตรวจ
-        </span>
-      </div>
 
-      <div class="eval-card-body">
-        <!-- Banner Message -->
-        <div id="upsCycleNotice" class="ups-banner-enforced">
-          <div style="display: flex; align-items: flex-start; gap: 8px;">
-            <span class="material-icons-round" style="color: var(--royal-blue); font-size: 20px;">bolt</span>
+        <!-- Compact Conditional Use Banner -->
+        <div id="conditionalUseBanner" class="status-strip-banner amber" style="display: none;">
+          <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
+            <span class="material-icons-round" style="font-size: 20px; color: #d97706;">build_circle</span>
             <div>
-              <div style="font-size: 13px; font-weight: 700; color: var(--royal-dark);" id="upsNoticeTitle">
-                ⚡ รอบบังคับตรวจสอบแบตเตอรี่สำรอง UPS (ทุกวันที่ 1 และ 16 ของเดือน)
-              </div>
-              <div style="font-size: 12px; color: var(--text-body); margin-top: 2px;">
-                วิธีตรวจ: <strong>ถอดปลั๊กไฟ UPS ของเครื่องออก</strong> แล้วจับเวลาจริงว่าสามารถจ่ายไฟสำรองอยู่ได้นานกี่ชั่วโมง กี่นาที แล้วกรอกลงในช่องด้านล่าง (ต้องกรอกเพื่อปลดล็อกรายการประเมิน)
-              </div>
+              <div style="font-weight: 700;">🔧 ผ่อนผันให้ใช้งานชั่วคราว (ล็อกข้อที่รอซ่อมให้อัตโนมัติ)</div>
+              <div id="conditionalUseDefectReason" style="font-size: 11.5px; color: #b91c1c; margin-top: 1px;"></div>
+              <div id="conditionalUseReasonText" style="font-size: 11.5px; color: #78350f;"></div>
+              <div style="display: none;"><span id="conditionalUseBy"></span><span id="conditionalUseAt"></span></div>
             </div>
           </div>
         </div>
 
-        <!-- Masked Runtime Inputs: _ _ : _ _ -->
-        <div style="text-align: center; margin: 16px 0;">
-          <div style="font-size: 12px; font-weight: 600; color: var(--text-body); margin-bottom: 6px;">
-            ระยะเวลาสำรองไฟจริง (ชั่วโมง : นาที)
+        <!-- Compact Repair Lock Banner -->
+        <div id="repairLockBanner" class="status-strip-banner danger" style="display: none;">
+          <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
+            <span class="material-icons-round" style="font-size: 20px;">lock</span>
+            <div>
+              <div id="repairLockTitle" style="font-weight: 700;">งดใช้งานชั่วคราว (อยู่ระหว่างซ่อมบำรุง)</div>
+              <div id="repairLockReason" style="font-size: 11.5px; opacity: 0.9;"></div>
+              <div style="display: none;"><span id="repairLockReportedBy"></span><span id="repairLockReportedAt"></span></div>
+            </div>
           </div>
-          <div class="runtime-box">
-            <input type="text" id="upsHours" class="runtime-digit-input" maxlength="2" placeholder="00" oninput="formatUpsDigit(this); validateUpsRuntime();" onkeydown="handleUpsDigitKey(event, 'upsMinutes')">
-            <span class="runtime-colon">:</span>
-            <input type="text" id="upsMinutes" class="runtime-digit-input" maxlength="2" placeholder="00" oninput="formatUpsDigit(this); validateUpsRuntime();" onkeydown="handleUpsDigitKey(event, null)">
-          </div>
-          <div id="upsStatusFeedback" style="font-size: 12px; font-weight: 600; color: var(--text-muted); margin-top: 6px;">
-            กรุณากรอกระยะเวลาสำรองไฟให้ครบถ้วนเพื่อปลดล็อก
-          </div>
+          <span id="repairStatusBadgePill" style="font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: #dc2626; color: #fff;">รอซ่อม</span>
         </div>
       </div>
     </section>
 
-    <!-- Card 3: Evaluation Checklist Items -->
+    <!-- Card 2: UPS Battery Check (Shown only on 1st & 16th or Sim) -->
+    <section id="cardUpsBattery" class="ups-pod" style="display: none;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span class="material-icons-round" style="font-size: 28px; color: #d97706;">battery_charging_full</span>
+        <div>
+          <div style="font-size: 14px; font-weight: 700; color: #92400e;" id="upsNoticeTitle">ทดสอบสำรองไฟ UPS (รอบวันที่ 1 & 16)</div>
+          <div id="upsStatusFeedback" style="font-size: 12px; color: #b45309; font-weight: 600;">กรอกชั่วโมง : นาที เพื่อปลดล็อก</div>
+        </div>
+      </div>
+      <div class="runtime-box">
+        <input type="text" id="upsHours" class="runtime-digit-input" maxlength="2" placeholder="00" oninput="formatUpsDigit(this); validateUpsRuntime();" onkeydown="handleUpsDigitKey(event, 'upsMinutes')">
+        <span class="runtime-colon">:</span>
+        <input type="text" id="upsMinutes" class="runtime-digit-input" maxlength="2" placeholder="00" oninput="formatUpsDigit(this); validateUpsRuntime();" onkeydown="handleUpsDigitKey(event, null)">
+      </div>
+    </section>
+
+    <!-- Card 3: Tactile Checklist & Sign-Off -->
     <div class="checklist-locked-wrapper" id="checklistWrapper">
-      <!-- Lock Overlay for Equipment Under Repair -->
-      <div class="checklist-lock-overlay" id="deviceRepairLockOverlay" style="display: none; background: rgba(254, 242, 242, 0.94); z-index: 25;">
-        <span class="material-icons-round" style="font-size: 44px; color: #dc2626; margin-bottom: 8px;">build_circle</span>
-        <div style="font-size: 15px; font-weight: 700; color: #991b1b; margin-bottom: 4px;">
-          แบบตรวจเช็คถูกล็อก (เครื่องมือไม่พร้อมใช้งาน)
-        </div>
-        <div style="font-size: 12.5px; color: #7f1d1d; max-width: 360px; line-height: 1.5;" id="deviceRepairLockMsg">
-          เครื่องมือนี้ถูกระบุว่าพบข้อบกพร่อง หรืออยู่ระหว่างการซ่อมบำรุงแก้ไข ไม่สามารถบันทึกการตรวจเช็คได้ในขณะนี้
-        </div>
+      <!-- Lock Overlay: Under Repair -->
+      <div class="checklist-lock-overlay" id="deviceRepairLockOverlay" style="display: none;">
+        <span class="material-icons-round" style="font-size: 46px; color: #dc2626; margin-bottom: 8px;">build_circle</span>
+        <div style="font-size: 16px; font-weight: 700; color: #991b1b;">เครื่องมืออยู่ระหว่างแจ้งซ่อม</div>
+        <div style="font-size: 12.5px; color: #64748b; margin-top: 4px;" id="deviceRepairLockMsg">รอช่างบันทึกซ่อมเสร็จสิ้น หรือกดอนุญาตให้ใช้ชั่วคราวในหน้า Admin</div>
       </div>
 
-      <!-- Lock Overlay for Low-Risk Devices Outside Period (Days 6-31) -->
-      <div class="checklist-lock-overlay" id="devicePeriodLockOverlay" style="display: none; background: rgba(240, 249, 255, 0.96); z-index: 25;">
-        <span class="material-icons-round" style="font-size: 44px; color: #0284c7; margin-bottom: 8px;">event_busy</span>
-        <div style="font-size: 15px; font-weight: 700; color: #0369a1; margin-bottom: 4px;">
-          อยู่นอกรอบการประเมินประจำเดือน
-        </div>
-        <div style="font-size: 12.5px; color: #0369a1; max-width: 380px; line-height: 1.5;" id="devicePeriodLockMsg">
-          เครื่องมือแพทย์ความเสี่ยงต่ำ กำหนดรอบการประเมินเฉพาะวันที่ 1 - 5 ของทุกเดือนเท่านั้น (ขณะนี้นอกรอบการประเมิน)
-        </div>
+      <!-- Lock Overlay: Outside Monthly Period -->
+      <div class="checklist-lock-overlay" id="devicePeriodLockOverlay" style="display: none;">
+        <span class="material-icons-round" style="font-size: 46px; color: #0284c7; margin-bottom: 8px;">event_busy</span>
+        <div style="font-size: 16px; font-weight: 700; color: #0369a1;">นอกรอบตรวจรายเดือน (เปิดวันที่ 1–5)</div>
+        <div style="font-size: 12.5px; color: #64748b; margin-top: 4px;" id="devicePeriodLockMsg">เครื่องความเสี่ยงต่ำประเมินเฉพาะวันที่ 1–5 ของเดือน</div>
       </div>
 
-      <!-- Lock Overlay (Displayed if UPS not filled on mandatory dates) -->
+      <!-- Lock Overlay: UPS Required -->
       <div class="checklist-lock-overlay" id="checklistLockOverlay" style="display: none;">
-        <span class="material-icons-round" style="font-size: 36px; color: #d97706; margin-bottom: 8px;">lock</span>
-        <div style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">
-          รายการประเมินถูกล็อกชั่วคราว
-        </div>
-        <div style="font-size: 12px; color: var(--text-muted); max-width: 320px;">
-          เนื่องจากอยู่ในรอบบังคับตรวจ UPS (วันที่ 1 และ 16) กรุณาถอดปลั๊กและกรอกเวลาสำรองไฟที่การ์ดด้านบนก่อนทำการประเมิน
-        </div>
+        <span class="material-icons-round" style="font-size: 42px; color: #d97706; margin-bottom: 8px;">bolt</span>
+        <div style="font-size: 15px; font-weight: 700; color: #92400e;">กรุณากรอกเวลาสำรองไฟ UPS ด้านบนก่อน</div>
       </div>
 
-      <section class="eval-card">
-        <div class="eval-card-header" style="flex-wrap: wrap; gap: 8px;">
-          <div class="eval-card-title">
-            <span class="material-icons-round" style="color: var(--royal-blue); font-size: 18px;">checklist</span>
-            <span>รายการตรวจเช็คความพร้อมใช้งาน</span>
+      <section class="glass-card" style="overflow: visible;">
+        <div class="checklist-header-bar">
+          <div class="checklist-title-wrap">
+            <span class="material-icons-round" style="color: var(--brand-primary); font-size: 20px;">fact_check</span>
+            <span>หัวข้อตรวจเช็ค</span>
           </div>
-          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-            <div id="checklistProgressBadge" style="font-size: 11.5px; font-weight: 600; color: var(--text-muted); background: #f1f5f9; border: 1px solid var(--border-main); padding: 3px 10px; border-radius: 9999px;">
-              ประเมินแล้ว 0/0 ข้อ
-            </div>
-          </div>
+          <div id="checklistProgressBadge" class="progress-pill">0 / 0</div>
         </div>
 
-        <div id="checklistItemsList">
-          <!-- Populated by JavaScript -->
-        </div>
+        <div id="checklistItemsList"></div>
 
-        <div style="padding: 16px; border-top: 1px solid var(--border-subtle);">
-          <div style="margin-bottom: 12px;">
-            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-body); margin-bottom: 4px;">หมายเหตุ / บันทึกอาการผิดปกติ (ถ้ามี)</label>
-            <textarea id="evalAbnormalNote" class="form-control-input" style="height: 60px; resize: vertical;" placeholder="ระบุรายละเอียดอาการผิดปกติ หรือข้อเสนอแนะ..."></textarea>
-          </div>
+        <!-- Sign-off & Submit -->
+        <div class="signoff-section">
+          <div class="signoff-grid">
+            <!-- Evaluator Search -->
+            <div style="position: relative;" id="evaluatorFieldContainer">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px;">
+                <label for="evaluatorSearchInput" style="font-size: 11.5px; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
+                  <span class="material-icons-round" style="font-size: 15px; color: var(--brand-sky);">badge</span>
+                  <span>ผู้ตรวจเช็ค (รหัส 6 หลัก / ชื่อ) *</span>
+                </label>
+                <span id="evaluatorVerifiedBadge" style="display: none; font-size: 11px; color: var(--emerald); font-weight: 700; align-items: center; gap: 3px;">
+                  <span class="material-icons-round" style="font-size: 14px;">verified</span> ยืนยันแล้ว
+                </span>
+              </div>
 
-          <div style="margin-bottom: 16px; position: relative;" id="evaluatorFieldContainer">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-              <label for="evaluatorSearchInput" style="font-size: 12px; font-weight: 600; color: var(--text-body);">ผู้ตรวจเช็คความพร้อมใช้ (ค้นหาด้วยรหัส/ชื่อ) *</label>
-              <span id="evaluatorVerifiedBadge" style="display: none; font-size: 11px; color: #15803d; font-weight: 700; align-items: center; gap: 3px;">
-                <span class="material-icons-round" style="font-size: 14px;">verified</span> ยืนยันข้อมูลในระบบ
-              </span>
+              <div style="position: relative;" id="evaluatorInputWrapper">
+                <input type="text" id="evaluatorSearchInput" class="input-clean"
+                       style="padding-right: 36px; font-weight: 600;"
+                       placeholder="พิมพ์รหัสพนักงาน หรือ ชื่อ..."
+                       autocomplete="off"
+                       oninput="handleEvaluatorSearch(this.value)"
+                       onfocus="handleEvaluatorFocus()"
+                       onkeydown="handleEvaluatorKeyDown(event)" required>
+                <button type="button" id="btnClearEvaluator" onclick="clearEvaluatorSelection()"
+                        style="display: none; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: #f1f5f9; border: none; color: #64748b; cursor: pointer; border-radius: 50%; width: 24px; height: 24px; align-items: center; justify-content: center;">
+                  <span class="material-icons-round" style="font-size: 15px;">close</span>
+                </button>
+                <div id="evaluatorDropdownTray" class="evaluator-dropdown-tray" style="display: none;"></div>
+              </div>
+              <input type="hidden" id="evaluatorName" value="">
+              <input type="hidden" id="evaluatorEmpId" value="">
             </div>
 
-            <!-- Autocomplete Combobox Wrapper (Tray anchored directly inside) -->
-            <div style="position: relative;" id="evaluatorInputWrapper">
-              <span class="material-icons-round" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 18px; color: #0284c7; pointer-events: none;">badge</span>
-              <input type="text" id="evaluatorSearchInput" class="form-control-input" 
-                     style="padding-left: 36px; padding-right: 36px; font-weight: 500;"
-                     placeholder="พิมพ์รหัสพนักงาน (เช่น 014125) หรือชื่อ-นามสกุล..." 
-                     autocomplete="off" 
-                     oninput="handleEvaluatorSearch(this.value)"
-                     onfocus="handleEvaluatorFocus()"
-                     onkeydown="handleEvaluatorKeyDown(event)" required>
-              
-              <button type="button" id="btnClearEvaluator" onclick="clearEvaluatorSelection()" 
-                      style="display: none; position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: #f1f5f9; border: none; color: #64748b; cursor: pointer; padding: 3px; border-radius: 50%; width: 22px; height: 22px; align-items: center; justify-content: center;" 
-                      title="ล้างเพื่อค้นหาใหม่">
-                <span class="material-icons-round" style="font-size: 14px;">close</span>
-              </button>
-
-              <!-- Floating Suggestions Dropdown Tray anchored directly to input -->
-              <div id="evaluatorDropdownTray" class="evaluator-dropdown-tray" style="display: none;"></div>
+            <!-- Optional Note -->
+            <div>
+              <label for="evalAbnormalNote" style="font-size: 11.5px; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 4px; margin-bottom: 5px;">
+                <span class="material-icons-round" style="font-size: 15px; color: var(--text-muted);">edit_note</span>
+                <span>หมายเหตุ / อาการ (ถ้ามี)</span>
+              </label>
+              <input type="text" id="evalAbnormalNote" class="input-clean" placeholder="ระบุเพิ่มเติม (ไม่บังคับ)...">
             </div>
-
-            <!-- Hidden values to preserve form integration -->
-            <input type="hidden" id="evaluatorName" value="">
-            <input type="hidden" id="evaluatorEmpId" value="">
           </div>
 
           <button type="button" onclick="submitEvaluation()" id="btnSubmitEval" class="btn-submit-main">
@@ -1198,34 +1161,28 @@
   <!-- Success Modal -->
   <div id="successModal" class="modal-overlay hidden" onclick="if(event.target === this) closeSuccessModal()">
     <div class="modal-box">
-      <div style="width: 56px; height: 56px; border-radius: 50%; background: #ecfdf5; color: var(--green-ready); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px auto;">
-        <span class="material-icons-round" style="font-size: 32px;">check_circle</span>
+      <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--emerald-bg); color: var(--emerald); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px auto;">
+        <span class="material-icons-round" style="font-size: 36px;">check_circle</span>
       </div>
-      <div style="font-size: 16px; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">
-        บันทึกผลการตรวจเช็คสำเร็จ
-      </div>
-      <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;" id="successModalSub">
-        ข้อมูลถูกบันทึกและซิงค์เข้าระบบเรียบร้อยแล้ว
-      </div>
-
-      <div style="display: flex; gap: 8px; justify-content: center;">
-        <button type="button" onclick="resetFormForNext()" class="btn-check-choice" style="background: var(--royal-blue); color: #ffffff; border-color: var(--royal-blue); padding: 8px 18px;">
-          <span class="material-icons-round" style="font-size: 16px; vertical-align: middle;">arrow_forward</span> ตรวจเครื่องอื่นต่อ
+      <div style="font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">บันทึกผลสำเร็จ</div>
+      <div style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 22px; white-space: pre-line;" id="successModalSub">ซิงค์ข้อมูลเรียบร้อยแล้ว</div>
+      <div style="display: flex; gap: 10px; justify-content: center;">
+        <button type="button" onclick="resetFormForNext()" class="btn-check-choice active-pass" style="min-width: 150px;">
+          <span class="material-icons-round" style="font-size: 18px;">arrow_forward</span>
+          <span>ตรวจเครื่องถัดไป</span>
         </button>
-        <button type="button" onclick="closeSuccessModal()" class="btn-check-choice" style="padding: 8px 16px;">
-          ปิด
-        </button>
+        <button type="button" onclick="closeSuccessModal()" class="btn-check-choice">ปิด</button>
       </div>
     </div>
   </div>
 
-  <!-- Toast Notice -->
+  <!-- Toast -->
   <div id="toastNotice">
-    <span class="material-icons-round" style="color: #38bdf8; font-size: 18px;">info</span>
-    <span id="toastMsg">ข้อความ</span>
+    <span class="material-icons-round" style="color: #38bdf8; font-size: 19px;">info</span>
+    <span id="toastMsg">แจ้งเตือน</span>
   </div>
 
-  <!-- Scripts -->
+  <!-- Shared Core Data & Cloud Sync Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/config.js"></script>
   <script src="js/storage.js"></script>
@@ -1251,16 +1208,14 @@
         .replace(/'/g, '&#39;');
     }
 
-    // ==================== EVALUATOR AUTOCOMPLETE / SEARCHABLE DROPDOWN ====================
+    // ==================== EVALUATOR AUTOCOMPLETE ====================
     var activeEvaluatorIndex = -1;
     var currentEvaluatorList = [];
 
     function handleEvaluatorFocus() {
       var input = document.getElementById('evaluatorSearchInput');
       var val = input ? input.value.trim() : '';
-      if (val.length > 0) {
-        handleEvaluatorSearch(val);
-      }
+      if (val.length > 0) handleEvaluatorSearch(val);
     }
 
     function handleEvaluatorSearch(query) {
@@ -1271,7 +1226,6 @@
       var q = (query || '').toLowerCase().trim();
       if (clearBtn) clearBtn.style.display = q ? 'inline-flex' : 'none';
 
-      // DO NOT show dropdown if empty query! User must type at least 1 character.
       if (!q) {
         tray.style.display = 'none';
         tray.innerHTML = '';
@@ -1297,39 +1251,25 @@
       activeEvaluatorIndex = -1;
 
       if (filtered.length === 0) {
-        tray.innerHTML = '<div style="padding: 24px 16px; text-align: center; color: var(--text-muted);">' +
-          '<div style="width: 44px; height: 44px; border-radius: 50%; background: #fef2f2; color: #ef4444; display: inline-flex; align-items: center; justify-content: center; margin: 0 auto 8px auto;">' +
-            '<span class="material-icons-round" style="font-size: 22px;">person_search</span>' +
-          '</div>' +
-          '<div style="font-size: 13.5px; font-weight: 700; color: #1e293b;">ไม่พบรายชื่อพนักงานที่ตรงกับ "' + escapeHtml(query) + '"</div>' +
-          '<div style="font-size: 11.5px; color: #64748b; margin-top: 4px;">ลองค้นหาด้วยรหัสพนักงาน 6 หลัก หรือชื่อ-นามสกุล</div>' +
-        '</div>';
+        tray.innerHTML = '<div style="padding: 18px; text-align: center; color: var(--text-muted); font-size: 13px;">ไม่พบรหัสหรือชื่อ "' + escapeHtml(query) + '"</div>';
       } else {
         var headerHtml = '<div class="eval-tray-header">' +
           '<span class="material-icons-round" style="font-size: 15px; color: #0284c7;">badge</span>' +
-          '<span>รายชื่อพนักงานที่ตรงกัน</span>' +
-          '<span class="eval-tray-header-count">' + filtered.length + ' คน</span>' +
-          '<span style="font-size: 10.5px; color: var(--text-muted); margin-left: auto;">คลิกเพื่อเลือก</span>' +
+          '<span>พนักงานที่ตรงกัน</span>' +
+          '<span class="eval-tray-header-count">' + filtered.length + '</span>' +
         '</div>';
 
         var listHtml = '<div class="eval-tray-list">';
         filtered.forEach(function (emp, idx) {
           listHtml += '<div class="eval-emp-option" data-index="' + idx + '" onclick="selectEvaluator(\'' + emp.empId + '\')">' +
             '<div class="eval-emp-info">' +
-              '<span class="eval-emp-id-badge">' +
-                '<span class="material-icons-round" style="font-size: 13px; margin-right: 2px;">pin</span>' +
-                escapeHtml(emp.empId) +
-              '</span>' +
+              '<span class="eval-emp-id-badge">' + escapeHtml(emp.empId) + '</span>' +
               '<span class="eval-emp-name">' + escapeHtml(emp.fullName) + '</span>' +
             '</div>' +
-            '<div class="eval-emp-select-pill">' +
-              '<span>เลือก</span>' +
-              '<span class="material-icons-round" style="font-size: 13px;">check</span>' +
-            '</div>' +
+            '<div class="eval-emp-select-pill"><span class="material-icons-round" style="font-size: 13px;">check</span></div>' +
           '</div>';
         });
         listHtml += '</div>';
-
         tray.innerHTML = headerHtml + listHtml;
       }
       tray.style.display = 'flex';
@@ -1353,7 +1293,7 @@
       if (hName) hName.value = emp.fullName;
       if (hId) hId.value = emp.empId;
       if (vBadge) vBadge.style.display = 'inline-flex';
-      if (clearBtn) clearBtn.style.display = 'block';
+      if (clearBtn) clearBtn.style.display = 'inline-flex';
       if (tray) tray.style.display = 'none';
     }
 
@@ -1365,18 +1305,12 @@
       var clearBtn = document.getElementById('btnClearEvaluator');
       var tray = document.getElementById('evaluatorDropdownTray');
 
-      if (sInput) {
-        sInput.value = '';
-        sInput.focus();
-      }
+      if (sInput) { sInput.value = ''; sInput.focus(); }
       if (hName) hName.value = '';
       if (hId) hId.value = '';
       if (vBadge) vBadge.style.display = 'none';
       if (clearBtn) clearBtn.style.display = 'none';
-      if (tray) {
-        tray.style.display = 'none';
-        tray.innerHTML = '';
-      }
+      if (tray) { tray.style.display = 'none'; tray.innerHTML = ''; }
       currentEvaluatorList = [];
       activeEvaluatorIndex = -1;
     }
@@ -1391,19 +1325,16 @@
         }
         return;
       }
-
       var items = tray.querySelectorAll('.eval-emp-option');
       if (!items || items.length === 0) return;
 
       if (e.key === 'ArrowDown') {
         e.preventDefault();
-        activeEvaluatorIndex++;
-        if (activeEvaluatorIndex >= items.length) activeEvaluatorIndex = 0;
+        activeEvaluatorIndex = (activeEvaluatorIndex + 1) % items.length;
         updateActiveEvaluatorItem(items);
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
-        activeEvaluatorIndex--;
-        if (activeEvaluatorIndex < 0) activeEvaluatorIndex = items.length - 1;
+        activeEvaluatorIndex = (activeEvaluatorIndex - 1 + items.length) % items.length;
         updateActiveEvaluatorItem(items);
       } else if (e.key === 'Enter') {
         e.preventDefault();
@@ -1428,7 +1359,6 @@
       });
     }
 
-    // Dismiss tray when clicking outside
     document.addEventListener('click', function (e) {
       var container = document.getElementById('evaluatorFieldContainer');
       var tray = document.getElementById('evaluatorDropdownTray');
@@ -1438,49 +1368,80 @@
     });
 
     document.addEventListener('DOMContentLoaded', function () {
-      try {
-        initEvalPage();
-      } catch (err) {
-        console.error('initEvalPage error:', err);
-        hidePageLoader();
-      }
+      try { initEvalPage(); } catch (err) { hidePageLoader(); }
     });
-
-    // Safety fallback: Ensure loader is always dismissed even if offline
     setTimeout(hidePageLoader, 6000);
 
     function hidePageLoader() {
       var loader = document.getElementById('pageLoader');
-      if (loader && !loader.classList.contains('hidden')) {
-        loader.classList.add('hidden');
+      if (loader && !loader.classList.contains('hidden')) loader.classList.add('hidden');
+    }
+
+    var lastKnownDatePrefix = '';
+
+    function getLocalTodayDatePrefix() {
+      var now = new Date();
+      return now.getFullYear() + '-' + ('0' + (now.getMonth() + 1)).slice(-2) + '-' + ('0' + now.getDate()).slice(-2);
+    }
+
+    function getLocalNowDateTimeValue() {
+      var now = new Date();
+      return now.getFullYear() + '-' + ('0' + (now.getMonth() + 1)).slice(-2) + '-' + ('0' + now.getDate()).slice(-2) + 'T' + ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+    }
+
+    // Strict Midnight (00:00) Cutoff: Do not allow backdating to previous days
+    function enforceTodayMidnightCutoff(notifyUser) {
+      var dtInput = document.getElementById('evalDateTimeInput');
+      if (!dtInput) return true;
+      var todayPrefix = getLocalTodayDatePrefix();
+      dtInput.min = todayPrefix + 'T00:00';
+      dtInput.max = todayPrefix + 'T23:59';
+
+      var val = dtInput.value || '';
+      var selectedPrefix = val.slice(0, 10);
+      if (!val || selectedPrefix !== todayPrefix) {
+        dtInput.value = getLocalNowDateTimeValue();
+        if (notifyUser && selectedPrefix) {
+          if (selectedPrefix < todayPrefix) {
+            showToast('ตัดรอบทุกเที่ยงคืน (00:00 น.) ไม่อนุญาตให้ประเมินเครื่องของวันก่อนหน้า');
+          } else {
+            showToast('อนุญาตให้ประเมินเฉพาะวันปัจจุบันเท่านั้น');
+          }
+        }
+        return false;
       }
+      return true;
     }
 
     function initEvalPage() {
-      // 1. Set default timestamp to now (user can click to change date/time)
       var now = new Date();
-      var year = now.getFullYear();
-      var month = ('0' + (now.getMonth() + 1)).slice(-2);
-      var day = ('0' + now.getDate()).slice(-2);
-      var hours = ('0' + now.getHours()).slice(-2);
-      var minutes = ('0' + now.getMinutes()).slice(-2);
-      var dtInput = document.getElementById('evalDateTimeInput');
-      if (dtInput) {
-        dtInput.value = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
-      }
+      lastKnownDatePrefix = getLocalTodayDatePrefix();
+      enforceTodayMidnightCutoff(false);
+
+      // Watch for 00:00 midnight rollover automatically
+      setInterval(function () {
+        var currentPrefix = getLocalTodayDatePrefix();
+        if (lastKnownDatePrefix && currentPrefix !== lastKnownDatePrefix) {
+          lastKnownDatePrefix = currentPrefix;
+          enforceTodayMidnightCutoff(false);
+          var d = new Date();
+          isRealUpsDay = (d.getDate() === 1 || d.getDate() === 16);
+          updateUpsMode();
+          checkLowRiskPeriodLock();
+          checkExistingEvaluationOnDate();
+          showToast('ตัดรอบเที่ยงคืน (00:00 น.) เข้าสู่วันใหม่เรียบร้อยแล้ว');
+        }
+      }, 15000);
 
       var urlParams = new URLSearchParams(window.location.search);
       var preselectedDeviceId = urlParams.get('deviceId');
       var preselectedFormId = urlParams.get('formId');
 
       isRealUpsDay = (now.getDate() === 1 || now.getDate() === 16);
-      if (urlParams.get('batteryCheck') === '1') {
-        isSimulateActive = true;
-      }
+      if (urlParams.get('batteryCheck') === '1') isSimulateActive = true;
 
       function setupDropdownAndDevice() {
         var typeSelect = document.getElementById('evalDeviceTypeSelect');
-        var select = document.getElementById('evalDeviceSelect');
         var deptSelect = document.getElementById('evalDeptSelect');
         var allEq = (window.PPCH_STORE && window.PPCH_STORE.getEquipment ? window.PPCH_STORE.getEquipment() : []) || [];
 
@@ -1494,7 +1455,6 @@
           });
         }
 
-        // 1. Group distinct equipment types / names
         var distinctNames = [];
         var nameMap = {};
         allEq.forEach(function (eq) {
@@ -1503,12 +1463,10 @@
             distinctNames.push(eq.name);
           }
         });
-        distinctNames.sort(function (a, b) {
-          return a.localeCompare(b, 'th');
-        });
+        distinctNames.sort(function (a, b) { return a.localeCompare(b, 'th'); });
 
         if (typeSelect) {
-          typeSelect.innerHTML = '<option value="">-- กรุณาเลือกชื่อเครื่องมือแพทย์ --</option>';
+          typeSelect.innerHTML = '<option value="">-- เลือกเครื่องมือแพทย์ --</option>';
           distinctNames.forEach(function (name) {
             var opt = document.createElement('option');
             opt.value = name;
@@ -1517,21 +1475,13 @@
           });
         }
 
-        // 2. Select initial device (from query param or default to first device)
         var targetEq = null;
         if (preselectedDeviceId) {
-          targetEq = allEq.find(function (eq) {
-            return eq.id === preselectedDeviceId || eq.assetCode === preselectedDeviceId;
-          });
+          targetEq = allEq.find(function (eq) { return eq.id === preselectedDeviceId || eq.assetCode === preselectedDeviceId; });
         } else if (preselectedFormId) {
-          targetEq = allEq.find(function (eq) {
-            return eq.formId === preselectedFormId;
-          });
+          targetEq = allEq.find(function (eq) { return eq.formId === preselectedFormId; });
         }
-
-        if (!targetEq && allEq.length > 0) {
-          targetEq = allEq[0];
-        }
+        if (!targetEq && allEq.length > 0) targetEq = allEq[0];
 
         if (targetEq && typeSelect) {
           typeSelect.value = targetEq.name;
@@ -1539,20 +1489,15 @@
         } else {
           onDeviceTypeChanged();
         }
-
         updateUpsMode();
       }
 
-      // 2. Fetch live data directly from Supabase Cloud
       if (window.PPCH_API && window.PPCH_API.isConfigured()) {
         window.PPCH_API.fetchOverview(function (res) {
-          if (res && res.success && res.data) {
-            window.PPCH_STORE.initFromCloud(res.data);
-          }
+          if (res && res.success && res.data) window.PPCH_STORE.initFromCloud(res.data);
           setupDropdownAndDevice();
           hidePageLoader();
         });
-
         if (window.PPCH_API.initRealtime) {
           window.PPCH_API.initRealtime(function () {
             window.PPCH_API.fetchOverview(function (res2) {
@@ -1571,15 +1516,14 @@
 
     function onDateTimeChanged() {
       var dtInput = document.getElementById('evalDateTimeInput');
-      if (!dtInput || !dtInput.value) return;
-
+      if (!dtInput) return;
+      enforceTodayMidnightCutoff(true);
       var selectedDate = new Date(dtInput.value);
       if (!isNaN(selectedDate.getTime())) {
         var d = selectedDate.getDate();
         isRealUpsDay = (d === 1 || d === 16);
         updateUpsMode();
       }
-
       checkExistingEvaluationOnDate();
     }
 
@@ -1589,26 +1533,20 @@
         if (banner) banner.style.display = 'none';
         return;
       }
-
       var dtInput = document.getElementById('evalDateTimeInput');
       if (!dtInput || !dtInput.value) {
         banner.style.display = 'none';
         return;
       }
-
-      var selectedDateStr = dtInput.value.slice(0, 10); // YYYY-MM-DD
+      var selectedDateStr = dtInput.value.slice(0, 10);
       var evals = (window.PPCH_STORE && window.PPCH_STORE.getEvaluations) ? window.PPCH_STORE.getEvaluations() : [];
-      
       var evalsOnDate = evals.filter(function (ev) {
         if (window.PPCH_STORE && window.PPCH_STORE.isRepairResolutionLog && window.PPCH_STORE.isRepairResolutionLog(ev)) return false;
         return ev.deviceId === currentDevice.id && ev.evaluatedAt && ev.evaluatedAt.indexOf(selectedDateStr) === 0;
       });
 
       if (evalsOnDate.length > 0) {
-        // Sort descending by evaluatedAt
-        evalsOnDate.sort(function (a, b) {
-          return (b.evaluatedAt || '').localeCompare(a.evaluatedAt || '');
-        });
+        evalsOnDate.sort(function (a, b) { return (b.evaluatedAt || '').localeCompare(a.evaluatedAt || ''); });
         var latestEv = evalsOnDate[0];
         var isNormal = (currentDevice.status === 'ready' || latestEv.result === 'normal');
         var timeOnly = (latestEv.evaluatedAt || '').slice(11, 16);
@@ -1617,31 +1555,15 @@
         var badgeEl = document.getElementById('reCheckPrevStatusBadge');
         var descEl = document.getElementById('reCheckDesc');
 
-        if (titleEl) {
-          titleEl.innerText = 'เครื่องนี้มีการตรวจเช็คในวันที่ ' + selectedDateStr + ' แล้ว (' + evalsOnDate.length + ' ครั้ง)';
-        }
+        if (titleEl) titleEl.innerText = 'ตรวจวันนี้แล้ว (' + evalsOnDate.length + ' ครั้ง)';
         if (badgeEl) {
-          if (currentDevice.status === 'ready' && latestEv.result === 'abnormal') {
-            badgeEl.innerText = 'รอบล่าสุด: แก้ไขเสร็จสิ้น & พร้อมใช้งานแล้ว';
-            badgeEl.style.background = '#ecfdf5';
-            badgeEl.style.color = '#059669';
-            badgeEl.style.borderColor = '#a7f3d0';
-          } else {
-            badgeEl.innerText = isNormal ? 'รอบล่าสุด (' + timeOnly + ' น.): พร้อมใช้งาน' : 'รอบล่าสุด (' + timeOnly + ' น.): พบข้อบกพร่อง';
-            badgeEl.style.background = isNormal ? '#ecfdf5' : '#fef2f2';
-            badgeEl.style.color = isNormal ? '#059669' : '#dc2626';
-            badgeEl.style.borderColor = isNormal ? '#a7f3d0' : '#fecaca';
-          }
+          badgeEl.innerText = isNormal ? ('✓ ' + timeOnly + ' น.') : ('✕ ' + timeOnly + ' น.');
+          badgeEl.style.background = isNormal ? '#ecfdf5' : '#fef2f2';
+          badgeEl.style.color = isNormal ? '#059669' : '#dc2626';
+          badgeEl.style.borderColor = isNormal ? '#a7f3d0' : '#fecaca';
         }
-        if (descEl) {
-          if (currentDevice.status === 'ready' && latestEv.result === 'abnormal') {
-            descEl.innerText = 'เจ้าหน้าที่ได้ทำการแก้ไขเสร็จสิ้นและปลดล็อกเครื่องแล้ว สามารถตรวจเช็คความพร้อมใช้ได้ตามปกติ';
-          } else {
-            descEl.innerText = 'ผู้ตรวจล่าสุด: ' + (latestEv.evaluatedBy || 'ไม่ระบุ') + ' (เวลา ' + timeOnly + ' น.)' + (latestEv.abnormalNote ? ' | ปัญหา: ' + latestEv.abnormalNote : '');
-          }
-        }
-
-        banner.style.display = 'block';
+        if (descEl) descEl.innerText = 'โดย ' + (latestEv.evaluatedBy || '-');
+        banner.style.display = 'flex';
       } else {
         banner.style.display = 'none';
       }
@@ -1658,31 +1580,26 @@
 
       select.innerHTML = '';
       if (filteredEq.length === 0) {
-        select.innerHTML = '<option value="">-- กรุณาเลือกชื่อเครื่องมือก่อน --</option>';
+        select.innerHTML = '<option value="">-- เลือกเครื่องมือก่อน --</option>';
         onDeviceSelected();
         return;
       }
 
-      select.innerHTML = '<option value="">-- กรุณาเลือกรหัสเครื่อง / ครุภัณฑ์ --</option>';
       filteredEq.forEach(function (eq) {
         var deptName = window.PPCH_STORE ? window.PPCH_STORE.getDepartmentName(eq.currentDept) : eq.currentDept;
         var opt = document.createElement('option');
         opt.value = eq.id;
         var statusTag = '';
-        if (eq.status === 'abnormal' || eq.status === 'in_progress') {
-          statusTag = eq.status === 'in_progress' ? ' [🔧 กำลังซ่อม]' : ' [⛔ มีข้อบกพร่อง]';
-        }
-        opt.innerText = eq.assetCode + ' [' + deptName + ']' + statusTag;
+        if (eq.status === 'conditional_ready' || eq.allowUse) statusTag = ' • 🔧 ผ่อนผัน';
+        else if (eq.status === 'abnormal' || eq.status === 'in_progress') statusTag = ' • ⛔ รอซ่อม';
+        opt.innerText = eq.assetCode + ' (' + deptName + ')' + statusTag;
         if (preferredDeviceId && (eq.id === preferredDeviceId || eq.assetCode === preferredDeviceId)) {
           opt.selected = true;
         }
         select.appendChild(opt);
       });
 
-      if (!select.value && filteredEq.length > 0) {
-        select.value = filteredEq[0].id;
-      }
-
+      if (!select.value && filteredEq.length > 0) select.value = filteredEq[0].id;
       onDeviceSelected();
     }
 
@@ -1700,7 +1617,6 @@
       currentDevice = window.PPCH_STORE.getEquipmentById(devId);
       if (!currentDevice) return;
 
-      // Sync type select if needed
       var typeSel = document.getElementById('evalDeviceTypeSelect');
       if (typeSel && currentDevice.name && typeSel.value !== currentDevice.name) {
         typeSel.value = currentDevice.name;
@@ -1709,163 +1625,92 @@
       currentForm = window.PPCH_STORE.getFormById(currentDevice.formId);
       if (!currentForm) currentForm = (window.PPCH_CONFIG.forms || [])[0];
 
-      document.getElementById('formNameHeading').innerText = currentForm.name;
-      document.getElementById('badgeCategoryPill').innerText = currentForm.category;
+      document.getElementById('formNameHeading').innerText = currentDevice.name || currentForm.name;
+      document.getElementById('badgeCategoryPill').innerText = currentDevice.assetCode || currentForm.category;
 
       if (riskPill) {
         var eqRisk = currentDevice.riskLevel || (currentDevice.frequency === 'monthly' ? 'low' : 'high');
         riskPill.style.display = 'inline-flex';
-        riskPill.style.alignItems = 'center';
-        riskPill.style.gap = '3px';
         if (eqRisk === 'high') {
           riskPill.style.background = '#fef2f2';
           riskPill.style.color = '#dc2626';
-          riskPill.style.border = '1px solid #fecaca';
-          riskPill.innerHTML = '<span class="material-icons-round" style="font-size: 13px;">warning</span> เสี่ยงมาก (ตรวจทุกวัน)';
+          riskPill.style.borderColor = '#fecaca';
+          riskPill.innerHTML = '<span class="material-icons-round" style="font-size: 13px;">bolt</span> รายวัน';
         } else {
           riskPill.style.background = '#eff6ff';
           riskPill.style.color = '#2563eb';
-          riskPill.style.border = '1px solid #bfdbfe';
-          riskPill.innerHTML = '<span class="material-icons-round" style="font-size: 13px;">verified_user</span> เสี่ยงน้อย (ตรวจเดือนละครั้ง)';
+          riskPill.style.borderColor = '#bfdbfe';
+          riskPill.innerHTML = '<span class="material-icons-round" style="font-size: 13px;">Date_range</span> รายเดือน';
         }
       }
 
-      // Set department: default to yesterday's / latest evaluation department, or currentDept
       var defaultDept = currentDevice.currentDept;
       var devEvals = (window.PPCH_STORE && window.PPCH_STORE.getEvaluations) ? window.PPCH_STORE.getEvaluations() : [];
       var matchEvals = devEvals.filter(function (e) {
         return e.deviceId === currentDevice.id || e.deviceAsset === currentDevice.assetCode;
       });
       if (matchEvals.length > 0) {
-        matchEvals.sort(function (a, b) {
-          return (b.evaluatedAt || '').localeCompare(a.evaluatedAt || '');
-        });
-        if (matchEvals[0].department) {
-          defaultDept = matchEvals[0].department;
-        }
+        matchEvals.sort(function (a, b) { return (b.evaluatedAt || '').localeCompare(a.evaluatedAt || ''); });
+        if (matchEvals[0].department) defaultDept = matchEvals[0].department;
       }
 
       var deptSelect = document.getElementById('evalDeptSelect');
-      if (deptSelect) {
-        deptSelect.value = defaultDept;
-      }
+      if (deptSelect) deptSelect.value = defaultDept;
 
-      // Check repair lock status: ONLY lock if device is actually currently defective or in repair without waiver
       var underRepair = (currentDevice.status === 'abnormal' || currentDevice.status === 'in_progress' || currentDevice.repairStatus === 'reported' || currentDevice.repairStatus === 'in_progress');
       if (currentDevice.status === 'ready' || currentDevice.status === 'conditional_ready' || currentDevice.allowUse) {
         underRepair = false;
       }
       applyRepairLock(underRepair);
-
-      // Check low-risk period lock: Low-risk devices strictly evaluated between Day 1-5 of month
       checkLowRiskPeriodLock();
 
-      // Handle conditional use banner
       var condBanner = document.getElementById('conditionalUseBanner');
       if (condBanner) {
         if (currentDevice.status === 'conditional_ready' || currentDevice.allowUse) {
-          condBanner.style.display = 'block';
+          condBanner.style.display = 'flex';
           var defReasonEl = document.getElementById('conditionalUseDefectReason');
           var reasonEl = document.getElementById('conditionalUseReasonText');
-          var byEl = document.getElementById('conditionalUseBy');
-          var atEl = document.getElementById('conditionalUseAt');
-          if (defReasonEl) defReasonEl.innerText = 'ข้อบกพร่องเดิม: ' + (currentDevice.abnormalReason || 'ตรวจพบความผิดปกติ');
+          if (defReasonEl) defReasonEl.innerText = 'อาการรอซ่อม: ' + (currentDevice.abnormalReason || 'พบข้อบกพร่องบางส่วน');
           if (reasonEl) {
             if (currentDevice.allowUseReason && currentDevice.allowUseReason.trim()) {
-              reasonEl.innerText = 'เหตุผล/เงื่อนไข: ' + currentDevice.allowUseReason;
+              reasonEl.innerText = 'เงื่อนไข: ' + currentDevice.allowUseReason;
               reasonEl.style.display = 'block';
             } else {
               reasonEl.style.display = 'none';
             }
           }
-          if (byEl) byEl.innerText = 'ผู้อนุญาต: ' + (currentDevice.allowUseBy || 'เจ้าหน้าที่');
-          if (atEl) atEl.innerText = 'วันที่อนุญาต: ' + (currentDevice.allowUseAt || '-');
         } else {
           condBanner.style.display = 'none';
         }
       }
 
       checkExistingEvaluationOnDate();
-
       renderChecklist(currentForm.items || []);
     }
 
     function checkLowRiskPeriodLock() {
       if (!currentDevice) return;
       var eqRisk = currentDevice.riskLevel || (currentDevice.frequency === 'monthly' ? 'low' : 'high');
-      var banner = document.getElementById('lowRiskPeriodLockBanner');
       var periodOverlay = document.getElementById('devicePeriodLockOverlay');
       if (eqRisk !== 'low') {
-        if (banner) banner.style.display = 'none';
         if (periodOverlay) periodOverlay.style.display = 'none';
         return;
       }
-
       var now = new Date();
       var day = now.getDate();
       var isPeriodOpen = (day >= 1 && day <= 5);
       var btnSubmit = document.getElementById('btnSubmitEval');
 
-      // Check if already evaluated in this month
-      var currentMonthStr = now.toISOString().slice(0, 7);
-      var devEvals = (window.PPCH_STORE && window.PPCH_STORE.getEvaluations) ? window.PPCH_STORE.getEvaluations() : [];
-      var monthlyEval = devEvals.find(function(e) {
-        var matchDev = (e.deviceId === currentDevice.id || e.deviceAsset === currentDevice.assetCode);
-        return matchDev && e.evaluatedAt && e.evaluatedAt.indexOf(currentMonthStr) === 0;
-      });
-
-      if (!banner) {
-        banner = document.createElement('div');
-        banner.id = 'lowRiskPeriodLockBanner';
-        banner.className = 'repair-lock-banner';
-        var mainCard = document.querySelector('.eval-card');
-        if (mainCard && mainCard.parentNode) {
-          mainCard.parentNode.insertBefore(banner, mainCard);
-        }
-      }
-
       if (!isPeriodOpen) {
-        // Outside period (days 6-31)
         isDeviceLockedForRepair = true;
-        banner.style.display = 'flex';
-        banner.style.background = '#eff6ff';
-        banner.style.borderColor = '#93c5fd';
-        banner.style.color = '#1e3a8a';
-
-        var nextMonthDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-        var nextMonthThai = nextMonthDate.toLocaleDateString('th-TH', { month: 'long', year: 'numeric' });
-
-        var extraInfo = '';
-        if (monthlyEval) {
-          extraInfo = '<div style="margin-top: 6px; font-size: 12px; color: #059669; font-weight: 600;">✓ เครื่องนี้ได้รับการประเมินประจำเดือนนี้แล้ว เมื่อ ' + (monthlyEval.evaluatedAt || '') + ' โดย ' + (monthlyEval.evaluatedBy || '-') + '</div>';
-        }
-
-        banner.innerHTML = '<span class="material-icons-round" style="font-size: 28px; color: #2563eb; flex-shrink: 0;">lock_clock</span>' +
-          '<div style="flex: 1;">' +
-            '<div style="font-weight: 700; font-size: 13.5px; color: #1e40af;">ปิดรับการประเมินตามนโยบาย: เครื่องมือแพทย์ความเสี่ยงต่ำ</div>' +
-            '<div style="font-size: 12px; margin-top: 2px; color: #3b82f6;">กำหนดรอบการประเมินเฉพาะวันที่ 1 - 5 ของทุกเดือนเท่านั้น (ขณะนี้นอกรอบการประเมิน)</div>' +
-            '<div style="font-size: 11.5px; margin-top: 4px; color: #64748b;">รอบการประเมินถัดไป: <strong>1 - 5 ' + nextMonthThai + '</strong></div>' +
-            extraInfo +
-          '</div>';
-
         if (periodOverlay) periodOverlay.style.display = 'flex';
         if (btnSubmit) {
           btnSubmit.disabled = true;
           btnSubmit.style.opacity = '0.5';
-          btnSubmit.innerText = 'ปิดรับการประเมิน (เปิดรอบวันที่ 1-5)';
+          btnSubmit.innerText = 'เปิดรับประเมินวันที่ 1–5 ของเดือน';
         }
       } else {
-        // Within period (days 1-5)
         if (periodOverlay) periodOverlay.style.display = 'none';
-        banner.style.display = 'flex';
-        banner.style.background = '#ecfdf5';
-        banner.style.borderColor = '#a7f3d0';
-        banner.style.color = '#065f46';
-        banner.innerHTML = '<span class="material-icons-round" style="font-size: 24px; color: #059669; flex-shrink: 0;">event_available</span>' +
-          '<div style="flex: 1;">' +
-            '<div style="font-weight: 700; font-size: 13px; color: #065f46;">อยู่ในรอบการประเมินประจำเดือน (วันที่ 1 - 5)</div>' +
-            '<div style="font-size: 11.5px; color: #047857;">เปิดรับผลการตรวจเช็คเครื่องมือแพทย์ความเสี่ยงต่ำประจำเดือนนี้</div>' +
-          '</div>';
       }
     }
 
@@ -1876,47 +1721,23 @@
       var btnSubmit = document.getElementById('btnSubmitEval');
 
       if (locked && currentDevice) {
-        var isUnderFix = (currentDevice.status === 'in_progress' || currentDevice.repairStatus === 'in_progress');
-        
         if (banner) {
           banner.style.display = 'flex';
-          var pill = document.getElementById('repairStatusBadgePill');
-          if (pill) {
-            pill.innerText = isUnderFix ? 'กำลังดำเนินการแก้ไข' : 'พบข้อบกพร่อง (รอรับทราบ)';
-            pill.className = isUnderFix ? 'repair-pill-status in-progress' : 'repair-pill-status';
-          }
           var reasonEl = document.getElementById('repairLockReason');
-          if (reasonEl) {
-            reasonEl.innerText = 'อาการข้อบกพร่องที่พบ: ' + (currentDevice.abnormalReason || 'ตรวจพบความผิดปกติจากรอบก่อนหน้า');
-          }
-          var byEl = document.getElementById('repairLockReportedBy');
-          if (byEl) {
-            byEl.innerText = 'ผู้รายงาน: ' + (currentDevice.repairReportedBy || currentDevice.lastEvaluatedBy || 'เจ้าหน้าที่ประจำแผนก');
-          }
-          var atEl = document.getElementById('repairLockReportedAt');
-          if (atEl) {
-            atEl.innerText = 'วันที่ตรวจพบ: ' + (currentDevice.repairReportedAt || currentDevice.lastEvaluatedAt || '-');
-          }
+          if (reasonEl) reasonEl.innerText = currentDevice.abnormalReason || 'อยู่ระหว่างรอช่างแก้ไข';
         }
-
         if (overlay) overlay.style.display = 'flex';
-
         if (btnSubmit) {
           btnSubmit.disabled = true;
           btnSubmit.style.opacity = '0.55';
-          btnSubmit.style.cursor = 'not-allowed';
-          btnSubmit.style.background = '#94a3b8';
-          btnSubmit.innerHTML = '<span class="material-icons-round">lock</span><span>เครื่องมืออยู่ระหว่างซ่อมบำรุง (ไม่สามารถบันทึกได้)</span>';
+          btnSubmit.innerHTML = '<span class="material-icons-round">lock</span><span>อยู่ระหว่างซ่อมบำรุง</span>';
         }
       } else {
         if (banner) banner.style.display = 'none';
         if (overlay) overlay.style.display = 'none';
-
         if (btnSubmit) {
           btnSubmit.disabled = false;
           btnSubmit.style.opacity = '1';
-          btnSubmit.style.cursor = 'pointer';
-          btnSubmit.style.background = '';
           btnSubmit.innerHTML = '<span class="material-icons-round">check_circle</span><span>บันทึกผลการตรวจเช็ค</span>';
         }
       }
@@ -1924,40 +1745,26 @@
 
     function toggleSimulateUpsCycle() {
       if (isRealUpsDay) {
-        showToast('วันนี้เป็นรอบตรวจจริง (วันที่ 1 หรือ 16 ของเดือน) ระบบเปิดการตรวจ UPS อัตโนมัติอยู่แล้ว');
+        showToast('วันนี้เป็นรอบตรวจ UPS จริง (วันที่ 1 หรือ 16)');
         return;
       }
       isSimulateActive = !isSimulateActive;
       updateUpsMode();
-
-      if (isSimulateActive) {
-        var card = document.getElementById('cardUpsBattery');
-        if (card) {
-          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }
     }
 
     function updateUpsMode() {
       isUpsEnforced = isRealUpsDay || isSimulateActive;
       var cardUps = document.getElementById('cardUpsBattery');
       var btnDev = document.getElementById('btnDevSimUps');
-      var btnDevText = document.getElementById('btnDevSimUpsText');
       var lockOverlay = document.getElementById('checklistLockOverlay');
 
       if (isUpsEnforced) {
-        if (cardUps) cardUps.style.display = 'block';
+        if (cardUps) cardUps.style.display = 'flex';
         if (btnDev) btnDev.classList.add('active');
-        if (btnDevText) {
-          btnDevText.innerText = isRealUpsDay ? 'วันตรวจ UPS (1 & 16)' : 'จำลอง UPS: เปิดอยู่ (1 & 16)';
-        }
         validateUpsRuntime();
       } else {
         if (cardUps) cardUps.style.display = 'none';
         if (btnDev) btnDev.classList.remove('active');
-        if (btnDevText) {
-          btnDevText.innerText = 'จำลองรอบ UPS (Dev)';
-        }
         if (lockOverlay) lockOverlay.style.display = 'none';
         isUpsRuntimeValid = true;
       }
@@ -1985,7 +1792,6 @@
         if (lockOverlay) lockOverlay.style.display = 'none';
         return;
       }
-
       var hVal = document.getElementById('upsHours').value.trim();
       var mVal = document.getElementById('upsMinutes').value.trim();
       var feedback = document.getElementById('upsStatusFeedback');
@@ -1995,20 +1801,15 @@
         var h = parseInt(hVal, 10) || 0;
         var m = parseInt(mVal, 10) || 0;
         var totalMinutes = (h * 60) + m;
-
         isUpsRuntimeValid = true;
         if (lockOverlay) lockOverlay.style.display = 'none';
-
-        if (totalMinutes >= 60) {
-          feedback.innerHTML = '<span style="color: var(--green-ready);">✓ สำรองไฟ ' + h + ' ชม. ' + m + ' นาที (พร้อมใช้งาน ≥ 1 ชม.) - ปลดล็อกแล้ว</span>';
-        } else {
-          feedback.innerHTML = '<span style="color: var(--red-abnormal);">⚠ สำรองไฟ ' + h + ' ชม. ' + m + ' นาที (ต่ำกว่าเกณฑ์ 1 ชม.) - ปลดล็อกแล้ว</span>';
-        }
+        feedback.innerHTML = totalMinutes >= 60
+          ? '<span style="color: var(--emerald);">✓ สำรองไฟ ' + h + ' ชม. ' + m + ' นาที (ผ่านเกณฑ์)</span>'
+          : '<span style="color: var(--crimson);">⚠ สำรองไฟ ' + h + ' ชม. ' + m + ' นาที (< 1 ชม.)</span>';
       } else {
         isUpsRuntimeValid = false;
         if (lockOverlay) lockOverlay.style.display = 'flex';
-        feedback.innerText = 'กรุณากรอกระยะเวลาสำรองไฟ _ _ : _ _ ให้ครบถ้วนเพื่อปลดล็อก';
-        feedback.style.color = 'var(--amber-pending)';
+        feedback.innerText = 'กรอกชั่วโมง : นาที เพื่อปลดล็อก';
       }
     }
 
@@ -2025,31 +1826,40 @@
 
       items.forEach(function (text, idx) {
         var isCondLockedItem = isConditionalDevice && lockedDefectIndices.indexOf(idx) !== -1;
-
         var div = document.createElement('div');
         div.id = 'checkItemRow_' + idx;
+        var numStr = String(idx + 1).padStart(2, '0');
 
         if (isCondLockedItem) {
           checklistState[idx] = 'conditional';
           div.className = 'checklist-item row-conditional';
-          div.innerHTML = '<div class="item-text"><span class="item-num-badge">' + (idx + 1) + '</span>' + text +
-            '<div style="font-size: 11px; color: #b45309; font-weight: 600; margin-top: 3px;">↳ ข้อบกพร่องเดิมที่รับทราบและผ่อนผันให้ใช้งานชั่วคราว (รอซ่อม)</div></div>' +
+          div.innerHTML =
+            '<div class="item-left">' +
+              '<span class="item-num-badge"><span class="material-icons-round" style="font-size: 16px;">build</span></span>' +
+              '<div class="item-text">' + text + '</div>' +
+            '</div>' +
             '<div class="item-btn-group">' +
-              '<span class="badge-conditional-locked" title="หัวข้อนี้ชำรุดและได้รับอนุญาตให้ใช้งานชั่วคราวแล้ว ไม่ต้องประเมินซ้ำ">' +
-                '<span class="material-icons-round" style="font-size: 15px;">build_circle</span>' +
-                '<span>ผ่อนผันรอซ่อม (รับทราบแล้ว)</span>' +
+              '<span class="badge-conditional-locked" title="ผ่อนผันรอซ่อม (รับทราบแล้ว)">' +
+                '<span class="material-icons-round" style="font-size: 16px;">build_circle</span>' +
+                '<span>ผ่อนผันรอซ่อม</span>' +
               '</span>' +
             '</div>';
         } else {
-          checklistState[idx] = null; // Default to UNCHECKED (พนักงานต้องกดประเมินเองทีละข้อ)
+          checklistState[idx] = null;
           div.className = 'checklist-item';
-          div.innerHTML = '<div class="item-text"><span class="item-num-badge">' + (idx + 1) + '</span>' + text + '</div>' +
+          div.innerHTML =
+            '<div class="item-left">' +
+              '<span class="item-num-badge" id="itemBadge_' + idx + '">' + numStr + '</span>' +
+              '<div class="item-text">' + text + '</div>' +
+            '</div>' +
             '<div class="item-btn-group">' +
               '<button type="button" class="btn-check-choice" id="btnPass_' + idx + '" onclick="setChoice(' + idx + ', \'pass\')" ' + (isDeviceLockedForRepair ? 'disabled' : '') + '>' +
-                '<span class="material-icons-round" style="font-size: 14px;">check</span> ผ่าน' +
+                '<span class="material-icons-round" style="font-size: 18px;">check</span>' +
+                '<span>ผ่าน</span>' +
               '</button>' +
               '<button type="button" class="btn-check-choice" id="btnFail_' + idx + '" onclick="setChoice(' + idx + ', \'fail\')" ' + (isDeviceLockedForRepair ? 'disabled' : '') + '>' +
-                '<span class="material-icons-round" style="font-size: 14px;">close</span> ไม่ผ่าน' +
+                '<span class="material-icons-round" style="font-size: 18px;">close</span>' +
+                '<span>ไม่ผ่าน</span>' +
               '</button>' +
             '</div>';
         }
@@ -2064,14 +1874,19 @@
       checklistState[idx] = choice;
 
       var row = document.getElementById('checkItemRow_' + idx);
+      var badge = document.getElementById('itemBadge_' + idx);
       if (row) {
         row.classList.remove('item-unanswered-highlight', 'row-pass', 'row-fail');
         row.classList.add(choice === 'pass' ? 'row-pass' : 'row-fail');
       }
+      if (badge) {
+        badge.innerHTML = choice === 'pass'
+          ? '<span class="material-icons-round" style="font-size: 17px;">check</span>'
+          : '<span class="material-icons-round" style="font-size: 17px;">priority_high</span>';
+      }
 
       var btnPass = document.getElementById('btnPass_' + idx);
       var btnFail = document.getElementById('btnFail_' + idx);
-
       if (choice === 'pass') {
         btnPass.className = 'btn-check-choice active-pass';
         btnFail.className = 'btn-check-choice';
@@ -2087,8 +1902,6 @@
       var s1 = document.getElementById('step1_device');
       var s2 = document.getElementById('step2_check');
       var s3 = document.getElementById('step3_submit');
-      var l1 = document.getElementById('stepperLine1');
-      var l2 = document.getElementById('stepperLine2');
       if (!s1 || !s2 || !s3) return;
 
       var total = (currentForm && currentForm.items) ? currentForm.items.length : 0;
@@ -2096,26 +1909,20 @@
       for (var k in checklistState) {
         if (checklistState[k] !== null && checklistState[k] !== undefined) answered++;
       }
-      var isAllChecklistDone = total > 0 && answered === total;
+      var isAllDone = total > 0 && answered === total;
 
       if (!currentDevice) {
         s1.className = 'stepper-step active';
         s2.className = 'stepper-step';
         s3.className = 'stepper-step';
-        if (l1) l1.className = 'stepper-line';
-        if (l2) l2.className = 'stepper-line';
-      } else if (!isAllChecklistDone) {
+      } else if (!isAllDone) {
         s1.className = 'stepper-step done';
         s2.className = 'stepper-step active';
         s3.className = 'stepper-step';
-        if (l1) l1.className = 'stepper-line done';
-        if (l2) l2.className = 'stepper-line';
       } else {
         s1.className = 'stepper-step done';
         s2.className = 'stepper-step done';
         s3.className = 'stepper-step active';
-        if (l1) l1.className = 'stepper-line done';
-        if (l2) l2.className = 'stepper-line done';
       }
     }
 
@@ -2130,24 +1937,21 @@
       if (!badge) return;
 
       if (total === 0) {
-        badge.innerText = 'ไม่มีรายการประเมิน';
-        badge.style.color = 'var(--text-muted)';
-        badge.style.background = '#f1f5f9';
-        badge.style.borderColor = 'var(--border-main)';
+        badge.innerText = '0 / 0';
         updateStepperState();
         return;
       }
 
       if (answered === total) {
-        badge.innerHTML = '<span class="material-icons-round" style="font-size: 13px; vertical-align: -2px;">check_circle</span> ประเมินครบ ' + answered + '/' + total + ' ข้อ';
-        badge.style.color = '#059669';
-        badge.style.background = '#ecfdf5';
-        badge.style.borderColor = '#a7f3d0';
+        badge.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">check_circle</span> ครบ ' + answered + '/' + total;
+        badge.style.color = 'var(--emerald)';
+        badge.style.background = 'var(--emerald-bg)';
+        badge.style.borderColor = 'var(--emerald-border)';
       } else {
-        badge.innerText = 'ประเมินแล้ว ' + answered + '/' + total + ' ข้อ (ยังไม่ครบ)';
-        badge.style.color = '#d97706';
-        badge.style.background = '#fffbeb';
-        badge.style.borderColor = '#fde68a';
+        badge.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">pie_chart</span> ' + answered + ' / ' + total + ' ข้อ';
+        badge.style.color = 'var(--amber)';
+        badge.style.background = 'var(--amber-bg)';
+        badge.style.borderColor = 'var(--amber-border)';
       }
 
       updateStepperState();
@@ -2155,17 +1959,15 @@
 
     function submitEvaluation() {
       if (!currentDevice) {
-        showToast('กรุณาเลือกเครื่องมือแพทย์ก่อนทำการประเมิน');
+        showToast('กรุณาเลือกเครื่องมือแพทย์');
         return;
       }
-
       if (isDeviceLockedForRepair) {
-        showToast('เครื่องมือแพทย์นี้อยู่ระหว่างแจ้งชำรุด/ซ่อมบำรุง ไม่สามารถตรวจเช็คได้');
+        showToast('เครื่องมืออยู่ระหว่างซ่อมบำรุง');
         return;
       }
-
       if (isUpsEnforced && !isUpsRuntimeValid) {
-        showToast('เนื่องจากอยู่ในรอบบังคับตรวจ UPS กรุณากรอกระยะเวลาสำรองไฟให้ครบถ้วนก่อน');
+        showToast('กรุณากรอกเวลาสำรองไฟ UPS ให้ครบก่อน');
         document.getElementById('upsHours').focus();
         return;
       }
@@ -2173,13 +1975,11 @@
       var totalItems = (currentForm && currentForm.items) ? currentForm.items.length : 0;
       var unanswered = [];
       for (var i = 0; i < totalItems; i++) {
-        if (!checklistState[i]) {
-          unanswered.push(i + 1);
-        }
+        if (!checklistState[i]) unanswered.push(i + 1);
       }
 
       if (unanswered.length > 0) {
-        showToast('กรุณาประเมินรายการตรวจเช็คให้ครบถ้วนทุกข้อ (ยังขาดข้อ ' + unanswered.join(', ') + ')');
+        showToast('กรุณากดตรวจเช็คให้ครบทุกข้อ (ขาดข้อ ' + unanswered.join(', ') + ')');
         var firstMissingRow = document.getElementById('checkItemRow_' + (unanswered[0] - 1));
         if (firstMissingRow) {
           firstMissingRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -2192,20 +1992,15 @@
       var evaluatorEmpId = (document.getElementById('evaluatorEmpId') ? document.getElementById('evaluatorEmpId').value : '').trim();
       if (!evaluator) {
         var sInput = document.getElementById('evaluatorSearchInput');
-        if (sInput && sInput.value.trim()) {
-          evaluator = sInput.value.trim();
-        }
+        if (sInput && sInput.value.trim()) evaluator = sInput.value.trim();
       }
       if (!evaluator) {
-        showToast('กรุณาเลือกรหัสหรือชื่อผู้ตรวจเช็คจากรายการ');
-        if (document.getElementById('evaluatorSearchInput')) {
-          document.getElementById('evaluatorSearchInput').focus();
-          handleEvaluatorFocus();
-        }
+        showToast('กรุณาระบุรหัสหรือชื่อผู้ตรวจเช็ค');
+        var sIn = document.getElementById('evaluatorSearchInput');
+        if (sIn) { sIn.focus(); handleEvaluatorFocus(); }
         return;
       }
 
-      // Determine result
       var hasNewFail = Object.values(checklistState).some(function (v) { return v === 'fail'; });
       var hasConditional = Object.values(checklistState).some(function (v) { return v === 'conditional'; }) ||
         !!(currentDevice && (currentDevice.status === 'conditional_ready' || currentDevice.allowUse));
@@ -2229,6 +2024,10 @@
       }
 
       var evalDtInput = document.getElementById('evalDateTimeInput');
+      if (!enforceTodayMidnightCutoff(true)) {
+        checkExistingEvaluationOnDate();
+        return;
+      }
       var evalTimeStr = '';
       var evalDateObj = new Date();
       if (evalDtInput && evalDtInput.value) {
@@ -2240,17 +2039,14 @@
         evalDateObj = now;
       }
 
-      // UPS Battery data
       var hVal = document.getElementById('upsHours').value.trim();
       var mVal = document.getElementById('upsMinutes').value.trim();
       var upsObj = null;
-
       if (hVal !== '' || mVal !== '') {
         var h = parseInt(hVal, 10) || 0;
         var m = parseInt(mVal, 10) || 0;
         var formatted = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
         var cycleDate = evalDateObj.getFullYear() + '-' + ('0' + (evalDateObj.getMonth() + 1)).slice(-2) + '-' + (evalDateObj.getDate() <= 15 ? '01' : '16');
-
         upsObj = {
           tested: true,
           runtimeFormatted: formatted,
@@ -2299,7 +2095,7 @@
       var btnSubmit = document.getElementById('btnSubmitEval');
       if (btnSubmit) {
         btnSubmit.disabled = true;
-        btnSubmit.innerHTML = '<span class="material-icons-round">sync</span><span>กำลังบันทึกข้อมูล...</span>';
+        btnSubmit.innerHTML = '<span class="material-icons-round">sync</span><span>กำลังบันทึก...</span>';
       }
 
       function onSavedSuccess() {
@@ -2309,16 +2105,14 @@
         }
         window.PPCH_STORE.recordEvaluation(record);
         var statusMsgText = record.result === 'abnormal'
-          ? 'พบข้อบกพร่องใหม่ (ส่งแจ้งซ่อม)'
-          : (record.keepConditional ? 'ตรวจเช็คประจำวันผ่าน (คงสถานะผ่อนผันรอซ่อม)' : 'พร้อมใช้งานปกติ');
-        document.getElementById('successModalSub').innerText = 'บันทึก ' + currentDevice.name + ' (' + currentDevice.assetCode + ') ลงฐานข้อมูล Supabase สำเร็จ!\n(ระบบกำลังซิงค์สำรองข้อมูลลง Google Sheets ในเบื้องหลัง)\nสถานะ: ' + statusMsgText;
+          ? '🔴 พบข้อบกพร่องใหม่ (แจ้งซ่อมทันที)'
+          : (record.keepConditional ? '🟢 ตรวจผ่าน (คงสถานะผ่อนผันรอซ่อม)' : '🟢 พร้อมใช้งานปกติ');
+        document.getElementById('successModalSub').innerText = currentDevice.name + ' (' + currentDevice.assetCode + ')\n' + statusMsgText;
         document.getElementById('successModal').classList.remove('hidden');
       }
 
       if (window.PPCH_API && window.PPCH_API.submitEvaluation) {
-        window.PPCH_API.submitEvaluation(record, function (res) {
-          onSavedSuccess();
-        });
+        window.PPCH_API.submitEvaluation(record, function () { onSavedSuccess(); });
       } else {
         onSavedSuccess();
       }
@@ -2329,9 +2123,7 @@
       document.getElementById('evalAbnormalNote').value = '';
       document.getElementById('upsHours').value = '';
       document.getElementById('upsMinutes').value = '';
-      if (currentForm && currentForm.items) {
-        renderChecklist(currentForm.items);
-      }
+      if (currentForm && currentForm.items) renderChecklist(currentForm.items);
       updateUpsMode();
       if (currentDevice) {
         currentDevice = window.PPCH_STORE.getEquipmentById(currentDevice.id);
