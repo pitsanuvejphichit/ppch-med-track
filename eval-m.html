@@ -1013,97 +1013,127 @@
         return;
       }
 
-      var users = (window.PPCH_CONFIG && window.PPCH_CONFIG.USERS) ? window.PPCH_CONFIG.USERS : [];
-      var matches = users.filter(function (u) {
-        var empId = (u.empId || '').toLowerCase();
-        var name = (u.name || '').toLowerCase();
-        return empId.indexOf(q) !== -1 || name.indexOf(q) !== -1;
-      });
-
-      currentEvaluatorList = matches;
-      activeEvaluatorIndex = -1;
-
-      if (matches.length === 0) {
-        tray.innerHTML = '<div style="padding: 12px; font-size: 12px; color: var(--text-muted); text-align: center;">ไม่พบรายชื่อในระบบ (สามารถใช้ชื่อนี้ได้)</div>';
-        tray.style.display = 'block';
-        return;
+      var allEmps = (window.PPCH_STORE && window.PPCH_STORE.getActiveEmployees) ? window.PPCH_STORE.getActiveEmployees() : [];
+      if (allEmps.length === 0) {
+        allEmps = (window.PPCH_STORE && window.PPCH_STORE.getEmployees) ? window.PPCH_STORE.getEmployees() : [];
       }
 
-      var html = '';
-      matches.forEach(function (u, idx) {
-        var deptName = (window.PPCH_STORE && window.PPCH_STORE.getDepartmentName) ? window.PPCH_STORE.getDepartmentName(u.department) : u.department;
-        html += '<div class="evaluator-item" data-idx="' + idx + '" onclick="selectEvaluator(' + idx + ')">' +
-          '<div>' +
-            '<div style="font-weight: 700; font-size: 13.5px; color: var(--text-main);">' + escapeHtml(u.name) + '</div>' +
-            '<div style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">' + (u.empId ? u.empId.padStart(6, '0') : '-') + ' • ' + escapeHtml(deptName) + '</div>' +
-          '</div>' +
-          '<span class="material-icons-round" style="font-size: 18px; color: var(--brand-sky);">add_circle_outline</span>' +
+      var filtered = allEmps.filter(function (emp) {
+        var idMatch = emp.empId && emp.empId.toLowerCase().indexOf(q) !== -1;
+        var nameMatch = emp.fullName && emp.fullName.toLowerCase().indexOf(q) !== -1;
+        var firstMatch = emp.firstName && emp.firstName.toLowerCase().indexOf(q) !== -1;
+        var lastMatch = emp.lastName && emp.lastName.toLowerCase().indexOf(q) !== -1;
+        return idMatch || nameMatch || firstMatch || lastMatch;
+      }).slice(0, 30);
+
+      currentEvaluatorList = filtered;
+      activeEvaluatorIndex = -1;
+
+      if (filtered.length === 0) {
+        tray.innerHTML = '<div style="padding: 18px; text-align: center; color: var(--text-muted); font-size: 13px;">ไม่พบรหัสหรือชื่อ "' + escapeHtml(query) + '"</div>';
+      } else {
+        var headerHtml = '<div class="eval-tray-header">' +
+          '<span class="material-icons-round" style="font-size: 15px; color: #0284c7;">badge</span>' +
+          '<span>พนักงานที่ตรงกัน</span>' +
+          '<span class="eval-tray-header-count">' + filtered.length + '</span>' +
         '</div>';
-      });
-      tray.innerHTML = html;
-      tray.style.display = 'block';
+
+        var listHtml = '<div class="eval-tray-list">';
+        filtered.forEach(function (emp, idx) {
+          listHtml += '<div class="eval-emp-option" data-index="' + idx + '" onclick="selectEvaluator(\'' + emp.empId + '\')">' +
+            '<div class="eval-emp-info">' +
+              '<span class="eval-emp-id-badge">' + escapeHtml(emp.empId) + '</span>' +
+              '<span class="eval-emp-name">' + escapeHtml(emp.fullName) + '</span>' +
+            '</div>' +
+            '<div class="eval-emp-select-pill"><span class="material-icons-round" style="font-size: 13px;">check</span></div>' +
+          '</div>';
+        });
+        listHtml += '</div>';
+        tray.innerHTML = headerHtml + listHtml;
+      }
+      tray.style.display = 'flex';
     }
 
-    function selectEvaluator(idx) {
-      var u = currentEvaluatorList[idx];
-      if (!u) return;
-      var empIdClean = (u.empId || '').padStart(6, '0');
-      document.getElementById('evaluatorSearchInput').value = u.name + ' (' + empIdClean + ')';
-      document.getElementById('evaluatorName').value = u.name;
-      document.getElementById('evaluatorEmpId').value = empIdClean;
+    function selectEvaluator(empId) {
+      var emp = window.PPCH_STORE ? window.PPCH_STORE.getEmployeeById(empId) : null;
+      if (!emp && currentEvaluatorList) {
+        emp = currentEvaluatorList.find(function (e) { return e.empId === empId; });
+      }
+      if (!emp) return;
 
-      var verified = document.getElementById('evaluatorVerifiedBadge');
-      if (verified) verified.style.display = 'inline-flex';
-
-      var tray = document.getElementById('evaluatorDropdownTray');
-      if (tray) tray.style.display = 'none';
-
+      var sInput = document.getElementById('evaluatorSearchInput');
+      var hName = document.getElementById('evaluatorName');
+      var hId = document.getElementById('evaluatorEmpId');
+      var vBadge = document.getElementById('evaluatorVerifiedBadge');
       var clearBtn = document.getElementById('btnClearEvaluator');
+      var tray = document.getElementById('evaluatorDropdownTray');
+
+      if (sInput) sInput.value = emp.fullName;
+      if (hName) hName.value = emp.fullName;
+      if (hId) hId.value = emp.empId;
+      if (vBadge) vBadge.style.display = 'inline-flex';
       if (clearBtn) clearBtn.style.display = 'inline-flex';
+      if (tray) tray.style.display = 'none';
     }
 
     function clearEvaluatorSelection() {
-      document.getElementById('evaluatorSearchInput').value = '';
-      document.getElementById('evaluatorName').value = '';
-      document.getElementById('evaluatorEmpId').value = '';
-      var verified = document.getElementById('evaluatorVerifiedBadge');
-      if (verified) verified.style.display = 'none';
+      var sInput = document.getElementById('evaluatorSearchInput');
+      var hName = document.getElementById('evaluatorName');
+      var hId = document.getElementById('evaluatorEmpId');
+      var vBadge = document.getElementById('evaluatorVerifiedBadge');
       var clearBtn = document.getElementById('btnClearEvaluator');
-      if (clearBtn) clearBtn.style.display = 'none';
       var tray = document.getElementById('evaluatorDropdownTray');
-      if (tray) tray.style.display = 'none';
+
+      if (sInput) { sInput.value = ''; sInput.focus(); }
+      if (hName) hName.value = '';
+      if (hId) hId.value = '';
+      if (vBadge) vBadge.style.display = 'none';
+      if (clearBtn) clearBtn.style.display = 'none';
+      if (tray) { tray.style.display = 'none'; tray.innerHTML = ''; }
+      currentEvaluatorList = [];
+      activeEvaluatorIndex = -1;
     }
 
     function handleEvaluatorKeyDown(e) {
       var tray = document.getElementById('evaluatorDropdownTray');
-      if (!tray || tray.style.display === 'none' || currentEvaluatorList.length === 0) return;
+      var input = document.getElementById('evaluatorSearchInput');
+      if (!tray || tray.style.display === 'none') {
+        if (e.key === 'ArrowDown' && input && input.value.trim().length > 0) {
+          handleEvaluatorSearch(input.value.trim());
+          e.preventDefault();
+        }
+        return;
+      }
+      var items = tray.querySelectorAll('.eval-emp-option');
+      if (!items || items.length === 0) return;
 
-      var items = tray.querySelectorAll('.evaluator-item');
       if (e.key === 'ArrowDown') {
         e.preventDefault();
         activeEvaluatorIndex = (activeEvaluatorIndex + 1) % items.length;
-        updateTrayHighlight(items);
+        updateActiveEvaluatorItem(items);
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
         activeEvaluatorIndex = (activeEvaluatorIndex - 1 + items.length) % items.length;
-        updateTrayHighlight(items);
+        updateActiveEvaluatorItem(items);
       } else if (e.key === 'Enter') {
         e.preventDefault();
-        if (activeEvaluatorIndex >= 0 && activeEvaluatorIndex < items.length) {
-          selectEvaluator(activeEvaluatorIndex);
+        if (activeEvaluatorIndex >= 0 && activeEvaluatorIndex < currentEvaluatorList.length) {
+          selectEvaluator(currentEvaluatorList[activeEvaluatorIndex].empId);
+        } else if (currentEvaluatorList.length > 0) {
+          selectEvaluator(currentEvaluatorList[0].empId);
         }
       } else if (e.key === 'Escape') {
         tray.style.display = 'none';
       }
     }
 
-    function updateTrayHighlight(items) {
-      items.forEach(function (el, i) {
-        if (i === activeEvaluatorIndex) {
-          el.classList.add('highlighted');
+    function updateActiveEvaluatorItem(items) {
+      items.forEach(function (el, idx) {
+        if (idx === activeEvaluatorIndex) {
+          el.classList.add('active-item');
           el.scrollIntoView({ block: 'nearest' });
         } else {
-          el.classList.remove('highlighted');
+          el.classList.remove('active-item');
         }
       });
     }
@@ -1111,335 +1141,406 @@
     document.addEventListener('click', function (e) {
       var container = document.getElementById('evaluatorFieldContainer');
       var tray = document.getElementById('evaluatorDropdownTray');
-      if (container && !container.contains(e.target) && tray) {
+      if (container && tray && !container.contains(e.target)) {
         tray.style.display = 'none';
       }
     });
 
-    // ==================== APP INITIALIZATION ====================
-    window.addEventListener('DOMContentLoaded', function () {
-      initDateTimeInput();
-      populateDeptDropdown();
-
-      PPCH_API.fetchOverview(function (cloudData) {
-        if (window.PPCH_STORE && cloudData) {
-          window.PPCH_STORE.syncFromCloud(cloudData);
-        }
-        setupDeviceTypeDropdown();
-        hideLoader();
-        handleUrlParams();
-      });
-
-      // Realtime cross-tab synchronization
-      if (window.PPCH_API && window.PPCH_API.initRealtime) {
-        window.PPCH_API.initRealtime(function () {
-          PPCH_API.fetchOverview(function (latest) {
-            if (window.PPCH_STORE && latest) {
-              window.PPCH_STORE.syncFromCloud(latest);
-            }
-          });
-        });
-      }
+    document.addEventListener('DOMContentLoaded', function () {
+      try { initEvalPage(); } catch (err) { hidePageLoader(); }
     });
+    setTimeout(hidePageLoader, 6000);
 
-    function hideLoader() {
+    function hidePageLoader() {
       var loader = document.getElementById('pageLoader');
-      if (loader) {
-        loader.style.opacity = '0';
-        setTimeout(function () { loader.style.display = 'none'; }, 260);
-      }
+      if (loader && !loader.classList.contains('hidden')) loader.classList.add('hidden');
     }
 
-    function initDateTimeInput() {
-      var input = document.getElementById('evalDateTimeInput');
-      if (!input) return;
+    var lastKnownDatePrefix = '';
+
+    function getLocalTodayDatePrefix() {
       var now = new Date();
-      var localIso = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
-      input.value = localIso;
+      return now.getFullYear() + '-' + ('0' + (now.getMonth() + 1)).slice(-2) + '-' + ('0' + now.getDate()).slice(-2);
+    }
+
+    function getLocalNowDateTimeValue() {
+      var now = new Date();
+      return now.getFullYear() + '-' + ('0' + (now.getMonth() + 1)).slice(-2) + '-' + ('0' + now.getDate()).slice(-2) + 'T' + ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+    }
+
+    // Strict Midnight (00:00) Cutoff: Do not allow backdating to previous days
+    function enforceTodayMidnightCutoff(notifyUser) {
+      var dtInput = document.getElementById('evalDateTimeInput');
+      if (!dtInput) return true;
+      var todayPrefix = getLocalTodayDatePrefix();
+      dtInput.min = todayPrefix + 'T00:00';
+      dtInput.max = todayPrefix + 'T23:59';
+
+      var val = dtInput.value || '';
+      var selectedPrefix = val.slice(0, 10);
+      if (!val || selectedPrefix !== todayPrefix) {
+        dtInput.value = getLocalNowDateTimeValue();
+        if (notifyUser && selectedPrefix) {
+          if (selectedPrefix < todayPrefix) {
+            showToast('ตัดรอบทุกเที่ยงคืน (00:00 น.) ไม่อนุญาตให้ประเมินเครื่องของวันก่อนหน้า');
+          } else {
+            showToast('อนุญาตให้ประเมินเฉพาะวันปัจจุบันเท่านั้น');
+          }
+        }
+        return false;
+      }
+      return true;
+    }
+
+    function initEvalPage() {
+      var now = new Date();
+      lastKnownDatePrefix = getLocalTodayDatePrefix();
+      enforceTodayMidnightCutoff(false);
+
+      // Watch for 00:00 midnight rollover automatically
+      setInterval(function () {
+        var currentPrefix = getLocalTodayDatePrefix();
+        if (lastKnownDatePrefix && currentPrefix !== lastKnownDatePrefix) {
+          lastKnownDatePrefix = currentPrefix;
+          enforceTodayMidnightCutoff(false);
+          checkLowRiskPeriodLock();
+          checkExistingEvaluationOnDate();
+          showToast('ตัดรอบเที่ยงคืน (00:00 น.) เข้าสู่วันใหม่เรียบร้อยแล้ว');
+        }
+      }, 15000);
+
+      var urlParams = new URLSearchParams(window.location.search);
+      var preselectedDeviceId = urlParams.get('deviceId');
+      var preselectedFormId = urlParams.get('formId');
+
+      function setupDropdownAndDevice(keepDeviceId) {
+        var typeSelect = document.getElementById('evalDeviceTypeSelect');
+        var deptSelect = document.getElementById('evalDeptSelect');
+        var allEq = (window.PPCH_STORE && window.PPCH_STORE.getEquipment ? window.PPCH_STORE.getEquipment() : []) || [];
+
+        if (deptSelect && window.PPCH_CONFIG && window.PPCH_CONFIG.departments) {
+          deptSelect.innerHTML = '<option value="">เลือกตำแหน่งปัจจุบันของเครื่องมือ</option>';
+          window.PPCH_CONFIG.departments.forEach(function (dp) {
+            var opt = document.createElement('option');
+            opt.value = dp.id;
+            opt.innerText = dp.name;
+            deptSelect.appendChild(opt);
+          });
+        }
+
+        var distinctNames = [];
+        var nameMap = {};
+        allEq.forEach(function (eq) {
+          if (eq.name && !nameMap[eq.name]) {
+            nameMap[eq.name] = true;
+            distinctNames.push(eq.name);
+          }
+        });
+        distinctNames.sort(function (a, b) { return a.localeCompare(b, 'th'); });
+
+        if (typeSelect) {
+          typeSelect.innerHTML = '<option value="">-- เลือกเครื่องมือแพทย์ --</option>';
+          distinctNames.forEach(function (name) {
+            var opt = document.createElement('option');
+            opt.value = name;
+            opt.innerText = name;
+            typeSelect.appendChild(opt);
+          });
+        }
+
+        var targetEq = null;
+        if (keepDeviceId) {
+          targetEq = allEq.find(function (eq) { return eq.id === keepDeviceId; });
+        }
+        if (!targetEq && preselectedDeviceId) {
+          targetEq = allEq.find(function (eq) { return eq.id === preselectedDeviceId || eq.assetCode === preselectedDeviceId; });
+        } else if (!targetEq && preselectedFormId) {
+          targetEq = allEq.find(function (eq) { return eq.formId === preselectedFormId; });
+        }
+        if (!targetEq && allEq.length > 0) targetEq = allEq[0];
+
+        if (targetEq && typeSelect) {
+          typeSelect.value = targetEq.name;
+          onDeviceTypeChanged(targetEq.id);
+        } else {
+          onDeviceTypeChanged();
+        }
+      }
+
+      if (window.PPCH_API && window.PPCH_API.isConfigured()) {
+        window.PPCH_API.fetchOverview(function (res) {
+          if (res && res.success && res.data) window.PPCH_STORE.initFromCloud(res.data);
+          setupDropdownAndDevice();
+          hidePageLoader();
+        });
+        if (window.PPCH_API.initRealtime) {
+          window.PPCH_API.initRealtime(function () {
+            window.PPCH_API.fetchOverview(function (res2) {
+              if (res2 && res2.success && res2.data) {
+                window.PPCH_STORE.initFromCloud(res2.data);
+                // Do NOT rebuild the form while the user is mid-check (avoids jank & losing answers)
+                var hasAnswers = false;
+                for (var k in checklistState) {
+                  if (checklistState[k] === 'pass' || checklistState[k] === 'fail') { hasAnswers = true; break; }
+                }
+                if (hasAnswers && currentDevice) {
+                  var fresh = window.PPCH_STORE.getEquipmentById(currentDevice.id);
+                  if (fresh) currentDevice = fresh;
+                  checkExistingEvaluationOnDate();
+                } else {
+                  setupDropdownAndDevice(currentDevice ? currentDevice.id : null);
+                }
+              }
+            });
+          });
+        }
+      } else {
+        setupDropdownAndDevice();
+        hidePageLoader();
+      }
     }
 
     function onDateTimeChanged() {
-      if (currentDevice) {
-        refreshBannersAndLocks(currentDevice);
+      var dtInput = document.getElementById('evalDateTimeInput');
+      if (!dtInput) return;
+      enforceTodayMidnightCutoff(true);
+      checkExistingEvaluationOnDate();
+    }
+
+    function checkExistingEvaluationOnDate() {
+      var banner = document.getElementById('reCheckNoticeBanner');
+      if (!banner || !currentDevice) {
+        if (banner) banner.style.display = 'none';
+        return;
+      }
+      var dtInput = document.getElementById('evalDateTimeInput');
+      if (!dtInput || !dtInput.value) {
+        banner.style.display = 'none';
+        return;
+      }
+      var selectedDateStr = dtInput.value.slice(0, 10);
+      var evals = (window.PPCH_STORE && window.PPCH_STORE.getEvaluations) ? window.PPCH_STORE.getEvaluations() : [];
+      var evalsOnDate = evals.filter(function (ev) {
+        if (window.PPCH_STORE && window.PPCH_STORE.isRepairResolutionLog && window.PPCH_STORE.isRepairResolutionLog(ev)) return false;
+        return ev.deviceId === currentDevice.id && ev.evaluatedAt && ev.evaluatedAt.indexOf(selectedDateStr) === 0;
+      });
+
+      if (evalsOnDate.length > 0) {
+        evalsOnDate.sort(function (a, b) { return (b.evaluatedAt || '').localeCompare(a.evaluatedAt || ''); });
+        var latestEv = evalsOnDate[0];
+        var isNormal = (currentDevice.status === 'ready' || latestEv.result === 'normal');
+        var timeOnly = (latestEv.evaluatedAt || '').slice(11, 16);
+
+        var titleEl = document.getElementById('reCheckTitle');
+        var badgeEl = document.getElementById('reCheckPrevStatusBadge');
+        var descEl = document.getElementById('reCheckDesc');
+
+        if (titleEl) titleEl.innerText = 'ตรวจวันนี้แล้ว (' + evalsOnDate.length + ' ครั้ง)';
+        if (badgeEl) {
+          badgeEl.innerText = isNormal ? ('✓ ' + timeOnly + ' น.') : ('✕ ' + timeOnly + ' น.');
+          badgeEl.style.background = isNormal ? '#ecfdf5' : '#fef2f2';
+          badgeEl.style.color = isNormal ? '#059669' : '#dc2626';
+          badgeEl.style.borderColor = isNormal ? '#a7f3d0' : '#fecaca';
+        }
+        if (descEl) descEl.innerText = 'โดย ' + (latestEv.evaluatedBy || '-');
+        banner.style.display = 'flex';
+      } else {
+        banner.style.display = 'none';
       }
     }
 
-    function populateDeptDropdown() {
-      var sel = document.getElementById('evalDeptSelect');
-      if (!sel) return;
-      sel.innerHTML = '<option value="">เลือกตำแหน่งปัจจุบันของเครื่องมือ</option>';
-      var depts = (window.PPCH_CONFIG && window.PPCH_CONFIG.DEPARTMENTS) ? window.PPCH_CONFIG.DEPARTMENTS : [];
-      depts.forEach(function (d) {
-        var opt = document.createElement('option');
-        opt.value = d.id;
-        opt.innerText = d.name;
-        sel.appendChild(opt);
-      });
-    }
+    function onDeviceTypeChanged(preferredDeviceId) {
+      var typeSelect = document.getElementById('evalDeviceTypeSelect');
+      var select = document.getElementById('evalDeviceSelect');
+      if (!select) return;
 
-    function setupDeviceTypeDropdown() {
-      var typeSel = document.getElementById('evalDeviceTypeSelect');
-      if (!typeSel) return;
-      var equips = (window.PPCH_STORE && window.PPCH_STORE.getAllEquipment) ? window.PPCH_STORE.getAllEquipment() : [];
+      var selectedName = typeSelect ? typeSelect.value : '';
+      var allEq = (window.PPCH_STORE && window.PPCH_STORE.getEquipment ? window.PPCH_STORE.getEquipment() : []) || [];
+      var filteredEq = selectedName ? allEq.filter(function (eq) { return eq.name === selectedName; }) : [];
 
-      var namesMap = {};
-      equips.forEach(function (eq) {
-        var n = (eq.name || 'ไม่ระบุชื่อ').trim();
-        if (n) namesMap[n] = true;
-      });
-
-      var uniqueNames = Object.keys(namesMap).sort(function (a, b) {
-        return a.localeCompare(b, 'th');
-      });
-
-      typeSel.innerHTML = '<option value="">-- เลือกชื่อเครื่องมือแพทย์ --</option>';
-      uniqueNames.forEach(function (name) {
-        var count = equips.filter(function (e) { return (e.name || 'ไม่ระบุชื่อ').trim() === name; }).length;
-        var opt = document.createElement('option');
-        opt.value = name;
-        opt.innerText = name + (count > 1 ? ' (' + count + ' เครื่อง)' : '');
-        typeSel.appendChild(opt);
-      });
-    }
-
-    function onDeviceTypeChanged() {
-      var typeSel = document.getElementById('evalDeviceTypeSelect');
-      var codeSel = document.getElementById('evalDeviceSelect');
-      if (!typeSel || !codeSel) return;
-
-      var selectedName = typeSel.value;
-      codeSel.innerHTML = '<option value="">-- เลือกรหัสเครื่องมือแพทย์ --</option>';
-
-      if (!selectedName) {
-        resetDeviceSelection();
+      select.innerHTML = '';
+      if (filteredEq.length === 0) {
+        select.innerHTML = '<option value="">-- เลือกเครื่องมือก่อน --</option>';
+        onDeviceSelected();
         return;
       }
 
-      var equips = window.PPCH_STORE.getAllEquipment().filter(function (e) {
-        return (e.name || 'ไม่ระบุชื่อ').trim() === selectedName;
-      });
-
-      equips.forEach(function (eq) {
+      filteredEq.forEach(function (eq) {
         var opt = document.createElement('option');
         opt.value = eq.id;
-        opt.innerText = eq.assetCode;
-        codeSel.appendChild(opt);
+        var statusTag = '';
+        if (eq.status === 'conditional_ready' || eq.allowUse) statusTag = ' • 🔧 ผ่อนผัน';
+        else if (eq.status === 'abnormal' || eq.status === 'in_progress') statusTag = ' • ⛔ รอซ่อม';
+        opt.innerText = eq.assetCode + statusTag;
+        if (preferredDeviceId && (eq.id === preferredDeviceId || eq.assetCode === preferredDeviceId)) {
+          opt.selected = true;
+        }
+        select.appendChild(opt);
       });
 
-      if (equips.length === 1) {
-        codeSel.value = equips[0].id;
-        onDeviceSelected();
-      } else {
-        resetDeviceSelection();
-      }
+      if (!select.value && filteredEq.length > 0) select.value = filteredEq[0].id;
+      onDeviceSelected();
     }
 
     function onDeviceSelected() {
-      var codeSel = document.getElementById('evalDeviceSelect');
-      var typeSel = document.getElementById('evalDeviceTypeSelect');
-      if (!codeSel || !codeSel.value) {
-        resetDeviceSelection();
+      var devId = document.getElementById('evalDeviceSelect').value;
+      var riskPill = document.getElementById('badgeRiskPill');
+      if (!devId) {
+        currentDevice = null;
+        if (riskPill) riskPill.style.display = 'none';
+        applyRepairLock(false);
+        checkExistingEvaluationOnDate();
         return;
       }
 
-      var devId = codeSel.value;
-      var eq = window.PPCH_STORE.getEquipmentById(devId);
-      if (!eq) return;
+      currentDevice = window.PPCH_STORE.getEquipmentById(devId);
+      if (!currentDevice) return;
 
-      currentDevice = eq;
-
-      if (typeSel && typeSel.value !== (eq.name || 'ไม่ระบุชื่อ').trim()) {
-        typeSel.value = (eq.name || 'ไม่ระบุชื่อ').trim();
+      var typeSel = document.getElementById('evalDeviceTypeSelect');
+      if (typeSel && currentDevice.name && typeSel.value !== currentDevice.name) {
+        typeSel.value = currentDevice.name;
       }
 
-      var deptSel = document.getElementById('evalDeptSelect');
-      if (deptSel) {
-        deptSel.value = eq.currentDept || eq.homeDept || 'er';
-      }
+      currentForm = window.PPCH_STORE.getFormById(currentDevice.formId);
+      if (!currentForm) currentForm = (window.PPCH_CONFIG.forms || [])[0];
 
-      var form = window.PPCH_STORE.getFormById(eq.formId);
-      currentForm = form;
+      document.getElementById('formNameHeading').innerText = currentDevice.name || currentForm.name;
+      document.getElementById('badgeCategoryPill').innerText = currentDevice.assetCode || currentForm.category;
 
-      var heading = document.getElementById('formNameHeading');
-      if (heading) heading.innerText = (eq.name || 'เครื่องมือแพทย์') + ' (' + eq.assetCode + ')';
-
-      var catPill = document.getElementById('badgeCategoryPill');
-      if (catPill) {
-        catPill.style.display = 'inline-flex';
-        catPill.innerText = form ? (form.shortName || form.name) : eq.formId;
-      }
-
-      var riskPill = document.getElementById('badgeRiskPill');
-      var isLowRisk = (eq.riskLevel === 'low' || eq.frequency === 'monthly');
       if (riskPill) {
+        var eqRisk = currentDevice.riskLevel || (currentDevice.frequency === 'monthly' ? 'low' : 'high');
         riskPill.style.display = 'inline-flex';
-        if (isLowRisk) {
-          riskPill.innerText = 'เสี่ยงต่ำ (รายเดือน 1–5)';
-          riskPill.style.background = '#e0f2fe';
-          riskPill.style.color = '#0284c7';
-          riskPill.style.borderColor = '#7dd3fc';
-        } else {
-          riskPill.innerText = 'เสี่ยงสูง (รายวัน)';
+        if (eqRisk === 'high') {
           riskPill.style.background = '#fef2f2';
           riskPill.style.color = '#dc2626';
-          riskPill.style.borderColor = '#fca5a5';
-        }
-      }
-
-      refreshBannersAndLocks(eq);
-      renderChecklistItems(form);
-      updateStepperState();
-    }
-
-    function resetDeviceSelection() {
-      currentDevice = null;
-      currentForm = null;
-      checklistState = {};
-      isDeviceLockedForRepair = false;
-
-      var heading = document.getElementById('formNameHeading');
-      if (heading) heading.innerText = 'เลือกเครื่องมือแพทย์';
-
-      var catPill = document.getElementById('badgeCategoryPill');
-      if (catPill) catPill.style.display = 'none';
-      var riskPill = document.getElementById('badgeRiskPill');
-      if (riskPill) riskPill.style.display = 'none';
-
-      document.getElementById('reCheckNoticeBanner').style.display = 'none';
-      document.getElementById('conditionalUseBanner').style.display = 'none';
-      document.getElementById('repairLockBanner').style.display = 'none';
-      document.getElementById('deviceRepairLockOverlay').style.display = 'none';
-      document.getElementById('devicePeriodLockOverlay').style.display = 'none';
-
-      document.getElementById('checklistItemsList').innerHTML =
-        '<div style="text-align: center; color: var(--text-muted); padding: 36px 16px; font-size: 13px;">' +
-        '<span class="material-icons-round" style="font-size: 40px; color: #cbd5e1; display: block; margin-bottom: 8px;">touch_app</span>' +
-        'กรุณาเลือกเครื่องมือแพทย์จากขั้นตอนด้านบน</div>';
-
-      updateChecklistProgress();
-      updateStepperState();
-    }
-
-    function refreshBannersAndLocks(eq) {
-      var isAbnormal = (eq.status === 'abnormal' || eq.repairStatus === 'reported');
-      var isInProgress = (eq.status === 'in_progress' || eq.repairStatus === 'in_progress');
-      var isConditional = (eq.status === 'conditional_ready' || eq.allowUse === true);
-
-      var repairBanner = document.getElementById('repairLockBanner');
-      var repairOverlay = document.getElementById('deviceRepairLockOverlay');
-      var condBanner = document.getElementById('conditionalUseBanner');
-      var recheckBanner = document.getElementById('reCheckNoticeBanner');
-
-      if ((isAbnormal || isInProgress) && !isConditional) {
-        isDeviceLockedForRepair = true;
-        if (repairBanner) {
-          repairBanner.style.display = 'flex';
-          var pill = document.getElementById('repairStatusBadgePill');
-          if (pill) {
-            pill.innerText = isInProgress ? 'กำลังซ่อม' : 'รอรับทราบ';
-            pill.style.background = isInProgress ? '#f59e0b' : '#dc2626';
-          }
-          var reasonEl = document.getElementById('repairLockReason');
-          if (reasonEl) reasonEl.innerText = eq.abnormalReason ? ('อาการ: ' + eq.abnormalReason) : 'เครื่องถูกแจ้งชำรุด';
-        }
-        if (repairOverlay) repairOverlay.style.display = 'flex';
-      } else {
-        isDeviceLockedForRepair = false;
-        if (repairBanner) repairBanner.style.display = 'none';
-        if (repairOverlay) repairOverlay.style.display = 'none';
-      }
-
-      if (isConditional) {
-        if (condBanner) {
-          condBanner.style.display = 'flex';
-          var condDefect = document.getElementById('conditionalUseDefectReason');
-          if (condDefect) condDefect.innerText = eq.abnormalReason ? ('ปัญหา: ' + eq.abnormalReason) : '';
-          var condText = document.getElementById('conditionalUseReasonText');
-          if (condText) condText.innerText = eq.allowUseReason ? ('เหตุผลผ่อนผัน: ' + eq.allowUseReason) : '';
-        }
-      } else {
-        if (condBanner) condBanner.style.display = 'none';
-      }
-
-      // Check Period Lock for Low Risk (Days 1–5 only)
-      var isLowRisk = (eq.riskLevel === 'low' || eq.frequency === 'monthly');
-      var periodOverlay = document.getElementById('devicePeriodLockOverlay');
-      if (isLowRisk) {
-        var dtInput = document.getElementById('evalDateTimeInput');
-        var evalDate = dtInput && dtInput.value ? new Date(dtInput.value) : new Date();
-        var dayOfMonth = evalDate.getDate();
-        if (dayOfMonth > 5) {
-          if (periodOverlay) periodOverlay.style.display = 'flex';
+          riskPill.style.borderColor = '#fecaca';
+          riskPill.innerHTML = '<span class="material-icons-round" style="font-size: 13px;">bolt</span> รายวัน';
         } else {
-          if (periodOverlay) periodOverlay.style.display = 'none';
+          riskPill.style.background = '#eff6ff';
+          riskPill.style.color = '#2563eb';
+          riskPill.style.borderColor = '#bfdbfe';
+          riskPill.innerHTML = '<span class="material-icons-round" style="font-size: 13px;">Date_range</span> รายเดือน';
+        }
+      }
+
+      var deptSelect = document.getElementById('evalDeptSelect');
+      if (deptSelect) deptSelect.value = '';
+
+      var underRepair = (currentDevice.status === 'abnormal' || currentDevice.status === 'in_progress' || currentDevice.repairStatus === 'reported' || currentDevice.repairStatus === 'in_progress');
+      if (currentDevice.status === 'ready' || currentDevice.status === 'conditional_ready' || currentDevice.allowUse) {
+        underRepair = false;
+      }
+      applyRepairLock(underRepair);
+      checkLowRiskPeriodLock();
+
+      var condBanner = document.getElementById('conditionalUseBanner');
+      if (condBanner) {
+        if (currentDevice.status === 'conditional_ready' || currentDevice.allowUse) {
+          condBanner.style.display = 'flex';
+          var defReasonEl = document.getElementById('conditionalUseDefectReason');
+          var reasonEl = document.getElementById('conditionalUseReasonText');
+          if (defReasonEl) defReasonEl.innerText = 'อาการรอซ่อม: ' + (currentDevice.abnormalReason || 'พบข้อบกพร่องบางส่วน');
+          if (reasonEl) {
+            if (currentDevice.allowUseReason && currentDevice.allowUseReason.trim()) {
+              reasonEl.innerText = 'เงื่อนไข: ' + currentDevice.allowUseReason;
+              reasonEl.style.display = 'block';
+            } else {
+              reasonEl.style.display = 'none';
+            }
+          }
+        } else {
+          condBanner.style.display = 'none';
+        }
+      }
+
+      checkExistingEvaluationOnDate();
+      renderChecklist(currentForm.items || []);
+    }
+
+    function checkLowRiskPeriodLock() {
+      if (!currentDevice) return;
+      var eqRisk = currentDevice.riskLevel || (currentDevice.frequency === 'monthly' ? 'low' : 'high');
+      var periodOverlay = document.getElementById('devicePeriodLockOverlay');
+      if (eqRisk !== 'low') {
+        if (periodOverlay) periodOverlay.style.display = 'none';
+        return;
+      }
+      var now = new Date();
+      var day = now.getDate();
+      var isPeriodOpen = (day >= 1 && day <= 5);
+      var btnSubmit = document.getElementById('btnSubmitEval');
+
+      if (!isPeriodOpen) {
+        isDeviceLockedForRepair = true;
+        if (periodOverlay) periodOverlay.style.display = 'flex';
+        if (btnSubmit) {
+          btnSubmit.disabled = true;
+          btnSubmit.style.opacity = '0.5';
+          btnSubmit.innerText = 'เปิดรับประเมินวันที่ 1–5 ของเดือน';
         }
       } else {
         if (periodOverlay) periodOverlay.style.display = 'none';
       }
+    }
 
-      // Re-check detection
-      var evals = (window.PPCH_STORE && window.PPCH_STORE.getAllEvaluations) ? window.PPCH_STORE.getAllEvaluations() : [];
-      var dtInputVal = document.getElementById('evalDateTimeInput') ? document.getElementById('evalDateTimeInput').value : '';
-      var dateKey = dtInputVal ? dtInputVal.slice(0, 10) : new Date().toISOString().slice(0, 10);
+    function applyRepairLock(locked) {
+      isDeviceLockedForRepair = locked;
+      var banner = document.getElementById('repairLockBanner');
+      var overlay = document.getElementById('deviceRepairLockOverlay');
+      var btnSubmit = document.getElementById('btnSubmitEval');
 
-      var matchingToday = evals.filter(function (ev) {
-        return (ev.deviceId === eq.id || ev.deviceAsset === eq.assetCode) &&
-               ev.evaluatedAt && ev.evaluatedAt.indexOf(dateKey) === 0;
-      });
-
-      if (matchingToday.length > 0 && recheckBanner) {
-        matchingToday.sort(function (a, b) { return (b.evaluatedAt || '').localeCompare(a.evaluatedAt || ''); });
-        var latest = matchingToday[0];
-        recheckBanner.style.display = 'flex';
-        var desc = document.getElementById('reCheckDesc');
-        if (desc) desc.innerText = 'รอบ ' + (latest.evaluatedAt.slice(11, 16) || '') + ' น. โดย ' + (latest.evaluatedBy || 'ไม่ระบุ');
-        var badge = document.getElementById('reCheckPrevStatusBadge');
-        if (badge) {
-          badge.innerText = latest.result === 'normal' ? 'พร้อมใช้' : 'พบปัญหา';
-          badge.style.background = latest.result === 'normal' ? '#ecfdf5' : '#fef2f2';
-          badge.style.color = latest.result === 'normal' ? '#059669' : '#dc2626';
-          badge.style.borderColor = latest.result === 'normal' ? '#a7f3d0' : '#fecaca';
+      if (locked && currentDevice) {
+        if (banner) {
+          banner.style.display = 'flex';
+          var reasonEl = document.getElementById('repairLockReason');
+          if (reasonEl) reasonEl.innerText = currentDevice.abnormalReason || 'อยู่ระหว่างรอช่างแก้ไข';
         }
-      } else if (recheckBanner) {
-        recheckBanner.style.display = 'none';
+        if (overlay) overlay.style.display = 'flex';
+        if (btnSubmit) {
+          btnSubmit.disabled = true;
+          btnSubmit.style.opacity = '0.55';
+          btnSubmit.innerHTML = '<span class="material-icons-round">lock</span><span>อยู่ระหว่างซ่อมบำรุง</span>';
+        }
+      } else {
+        if (banner) banner.style.display = 'none';
+        if (overlay) overlay.style.display = 'none';
+        if (btnSubmit) {
+          btnSubmit.disabled = false;
+          btnSubmit.style.opacity = '1';
+          btnSubmit.innerHTML = '<span class="material-icons-round">check_circle</span><span>บันทึกผลการตรวจเช็ค</span>';
+        }
       }
     }
 
-    function renderChecklistItems(form) {
+    function renderChecklist(items) {
       var container = document.getElementById('checklistItemsList');
-      if (!container) return;
       container.innerHTML = '';
-
-      if (!form || !form.items || form.items.length === 0) {
-        container.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 24px;">ไม่พบรายการตรวจเช็คสำหรับฟอร์มนี้</div>';
-        return;
-      }
-
       checklistState = {};
-      var isConditional = (currentDevice && (currentDevice.status === 'conditional_ready' || currentDevice.allowUse === true));
 
-      form.items.forEach(function (text, idx) {
-        var numStr = (idx + 1);
+      var isConditionalDevice = !!(currentDevice && (currentDevice.status === 'conditional_ready' || currentDevice.allowUse));
+      var defectInfo = (isConditionalDevice && window.PPCH_STORE && window.PPCH_STORE.getActiveDefectInfo)
+        ? window.PPCH_STORE.getActiveDefectInfo(currentDevice.id)
+        : null;
+      var lockedDefectIndices = (defectInfo && Array.isArray(defectInfo.failedIndices)) ? defectInfo.failedIndices : [];
+
+      items.forEach(function (text, idx) {
+        var isCondLockedItem = isConditionalDevice && lockedDefectIndices.indexOf(idx) !== -1;
         var div = document.createElement('div');
         div.id = 'checkItemRow_' + idx;
+        var numStr = String(idx + 1).padStart(2, '0');
 
-        var isThisItemConditional = isConditional && (
-          (currentDevice.abnormalReason && text.indexOf(currentDevice.abnormalReason) !== -1) ||
-          (idx === 0)
-        );
-
-        if (isThisItemConditional) {
+        if (isCondLockedItem) {
           checklistState[idx] = 'conditional';
           div.className = 'checklist-item row-conditional';
           div.innerHTML =
             '<div class="item-left">' +
               '<span class="item-num-badge"><span class="material-icons-round" style="font-size: 16px;">build</span></span>' +
-              '<div class="item-text">' + escapeHtml(text) + '</div>' +
+              '<div class="item-text">' + text + '</div>' +
             '</div>' +
             '<div class="item-btn-group">' +
               '<span class="badge-conditional-locked" title="ผ่อนผันรอซ่อม (รับทราบแล้ว)">' +
                 '<span class="material-icons-round" style="font-size: 16px;">build_circle</span>' +
-                '<span>ผ่อนผันรอซ่อม (ล็อกอัตโนมัติ)</span>' +
+                '<span>ผ่อนผันรอซ่อม</span>' +
               '</span>' +
             '</div>';
         } else {
@@ -1448,16 +1549,16 @@
           div.innerHTML =
             '<div class="item-left">' +
               '<span class="item-num-badge" id="itemBadge_' + idx + '">' + numStr + '</span>' +
-              '<div class="item-text">' + escapeHtml(text) + '</div>' +
+              '<div class="item-text">' + text + '</div>' +
             '</div>' +
             '<div class="item-btn-group">' +
               '<button type="button" class="btn-check-choice" id="btnPass_' + idx + '" onclick="setChoice(' + idx + ', \'pass\')" ' + (isDeviceLockedForRepair ? 'disabled' : '') + '>' +
                 '<span class="material-icons-round" style="font-size: 18px;">check</span>' +
-                '<span>ปกติ (ผ่าน)</span>' +
+                '<span>ผ่าน</span>' +
               '</button>' +
               '<button type="button" class="btn-check-choice" id="btnFail_' + idx + '" onclick="setChoice(' + idx + ', \'fail\')" ' + (isDeviceLockedForRepair ? 'disabled' : '') + '>' +
                 '<span class="material-icons-round" style="font-size: 18px;">close</span>' +
-                '<span>พบปัญหา</span>' +
+                '<span>ไม่ผ่าน</span>' +
               '</button>' +
             '</div>';
         }
@@ -1525,224 +1626,217 @@
     }
 
     function updateChecklistProgress() {
-      var badge = document.getElementById('checklistProgressBadge');
-      if (!badge) return;
-
       var total = (currentForm && currentForm.items) ? currentForm.items.length : 0;
       var answered = 0;
       for (var k in checklistState) {
         if (checklistState[k] !== null && checklistState[k] !== undefined) answered++;
       }
 
-      badge.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">pie_chart</span> ' + answered + ' / ' + total + ' ข้อ';
-      if (total > 0 && answered === total) {
-        badge.classList.add('all-done');
-      } else {
-        badge.classList.remove('all-done');
+      var badge = document.getElementById('checklistProgressBadge');
+      if (!badge) return;
+
+      if (total === 0) {
+        badge.innerText = '0 / 0';
+        updateStepperState();
+        return;
       }
+
+      if (answered === total) {
+        badge.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">check_circle</span> ครบ ' + answered + '/' + total;
+        badge.style.color = 'var(--emerald)';
+        badge.style.background = 'var(--emerald-bg)';
+        badge.style.borderColor = 'var(--emerald-border)';
+      } else {
+        badge.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">pie_chart</span> ' + answered + ' / ' + total + ' ข้อ';
+        badge.style.color = 'var(--amber)';
+        badge.style.background = 'var(--amber-bg)';
+        badge.style.borderColor = 'var(--amber-border)';
+      }
+
       updateStepperState();
     }
 
-    // ==================== SUBMIT EVALUATION ====================
     function submitEvaluation() {
-      if (isDeviceLockedForRepair) {
-        showToast('เครื่องมืออยู่ระหว่างซ่อมบำรุง ไม่สามารถบันทึกผลได้');
-        return;
-      }
       if (!currentDevice) {
-        showToast('กรุณาเลือกเครื่องมือแพทย์ก่อน');
+        showToast('กรุณาเลือกเครื่องมือแพทย์');
         return;
       }
-      if (!currentForm || !currentForm.items || currentForm.items.length === 0) {
-        showToast('ไม่พบรายการตรวจเช็ค');
+      if (isDeviceLockedForRepair) {
+        showToast('เครื่องมืออยู่ระหว่างซ่อมบำรุง');
         return;
       }
 
-      // Check unanswered items
-      var total = currentForm.items.length;
+      var totalItems = (currentForm && currentForm.items) ? currentForm.items.length : 0;
       var unanswered = [];
-      for (var i = 0; i < total; i++) {
-        if (checklistState[i] === null || checklistState[i] === undefined) {
-          unanswered.push(i);
-        }
+      for (var i = 0; i < totalItems; i++) {
+        if (!checklistState[i]) unanswered.push(i + 1);
       }
+
       if (unanswered.length > 0) {
-        unanswered.forEach(function (idx) {
-          var row = document.getElementById('checkItemRow_' + idx);
-          if (row) row.classList.add('item-unanswered-highlight');
-        });
-        var firstRow = document.getElementById('checkItemRow_' + unanswered[0]);
-        if (firstRow) firstRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        showToast('กรุณาตอบคำถามให้ครบทุกข้อ (เหลือ ' + unanswered.length + ' ข้อ)');
-        return;
-      }
-
-      var evaluatorInput = document.getElementById('evaluatorSearchInput');
-      var evalVal = evaluatorInput ? evaluatorInput.value.trim() : '';
-      if (!evalVal) {
-        if (evaluatorInput) evaluatorInput.focus();
-        showToast('กรุณาระบุผู้ตรวจเช็ค');
-        return;
-      }
-
-      // Midnight Cutoff Check
-      var dtInput = document.getElementById('evalDateTimeInput');
-      var chosenDateStr = dtInput && dtInput.value ? dtInput.value.slice(0, 10) : '';
-      var todayStr = new Date().toISOString().slice(0, 10);
-      if (chosenDateStr && chosenDateStr < todayStr) {
-        showToast('ระบบตัดรอบเที่ยงคืนแล้ว ไม่อนุญาตให้ประเมินย้อนหลัง');
-        return;
-      }
-
-      var note = document.getElementById('evalAbnormalNote') ? document.getElementById('evalAbnormalNote').value.trim() : '';
-      var deptSel = document.getElementById('evalDeptSelect');
-      var department = deptSel && deptSel.value ? deptSel.value : (currentDevice.currentDept || 'er');
-
-      // Determine result: abnormal if any fail
-      var hasFail = false;
-      var failIndices = [];
-      for (var k in checklistState) {
-        if (checklistState[k] === 'fail') {
-          hasFail = true;
-          failIndices.push(parseInt(k, 10));
+        showToast('กรุณากดตรวจเช็คให้ครบทุกข้อ (ขาดข้อ ' + unanswered.join(', ') + ')');
+        var firstMissingRow = document.getElementById('checkItemRow_' + (unanswered[0] - 1));
+        if (firstMissingRow) {
+          firstMissingRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          firstMissingRow.classList.add('item-unanswered-highlight');
         }
+        return;
       }
 
-      var result = hasFail ? 'abnormal' : 'normal';
-      var answers = [];
-      currentForm.items.forEach(function (txt, idx) {
-        answers.push({
-          item: txt,
-          result: checklistState[idx] || 'pass'
+      var evaluator = (document.getElementById('evaluatorName') ? document.getElementById('evaluatorName').value : '').trim();
+      var evaluatorEmpId = (document.getElementById('evaluatorEmpId') ? document.getElementById('evaluatorEmpId').value : '').trim();
+      if (!evaluator) {
+        var sInput = document.getElementById('evaluatorSearchInput');
+        if (sInput && sInput.value.trim()) evaluator = sInput.value.trim();
+      }
+      if (!evaluator) {
+        showToast('กรุณาระบุรหัสหรือชื่อผู้ตรวจเช็ค');
+        var sIn = document.getElementById('evaluatorSearchInput');
+        if (sIn) { sIn.focus(); handleEvaluatorFocus(); }
+        return;
+      }
+
+      var hasNewFail = Object.values(checklistState).some(function (v) { return v === 'fail'; });
+      var hasConditional = Object.values(checklistState).some(function (v) { return v === 'conditional'; }) ||
+        !!(currentDevice && (currentDevice.status === 'conditional_ready' || currentDevice.allowUse));
+      var isKeepConditional = (!hasNewFail && hasConditional);
+      var note = document.getElementById('evalAbnormalNote').value.trim();
+
+      if (hasNewFail && !note && currentForm && currentForm.items) {
+        var failedNames = [];
+        currentForm.items.forEach(function (it, idx) {
+          if (checklistState[idx] === 'fail') {
+            var t = (typeof it === 'string') ? it.trim() : (it.text || ('ข้อ ' + (idx + 1)));
+            failedNames.push('ข้อ ' + (idx + 1) + ': ' + t);
+          }
         });
-      });
-
-      var evaluatorName = document.getElementById('evaluatorName').value.trim();
-      var evaluatorEmpId = document.getElementById('evaluatorEmpId').value.trim();
-      if (!evaluatorName) {
-        var cleanInput = evalVal.replace(/\(.*?\)/g, '').trim();
-        evaluatorName = cleanInput || evalVal;
-      }
-      if (evaluatorEmpId) {
-        evaluatorEmpId = evaluatorEmpId.padStart(6, '0');
+        note = failedNames.join(', ');
+      } else if (isKeepConditional) {
+        var baseReason = currentDevice.abnormalReason || 'รอซ่อมตามเงื่อนไขผ่อนผัน';
+        note = note
+          ? ('[ตรวจเช็คประจำวันผ่าน - คงสถานะผ่อนผันรอซ่อม] ' + note + ' (อาการเดิม: ' + baseReason + ')')
+          : ('[ตรวจเช็คประจำวันผ่าน - คงสถานะผ่อนผันรอซ่อม] ' + baseReason);
       }
 
-      var evalRecord = {
-        id: 'EVAL_' + Date.now(),
+      var evalDtInput = document.getElementById('evalDateTimeInput');
+      if (!enforceTodayMidnightCutoff(true)) {
+        checkExistingEvaluationOnDate();
+        return;
+      }
+      var evalTimeStr = '';
+      var evalDateObj = new Date();
+      if (evalDtInput && evalDtInput.value) {
+        evalTimeStr = evalDtInput.value.replace('T', ' ');
+        evalDateObj = new Date(evalDtInput.value);
+      } else {
+        var now = new Date();
+        evalTimeStr = now.getFullYear() + '-' + ('0' + (now.getMonth() + 1)).slice(-2) + '-' + ('0' + now.getDate()).slice(-2) + ' ' + ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+        evalDateObj = now;
+      }
+
+      var chosenDept = (document.getElementById('evalDeptSelect') && document.getElementById('evalDeptSelect').value) ? document.getElementById('evalDeptSelect').value : currentDevice.currentDept;
+
+      var checklistDetails = [];
+      if (currentForm && currentForm.items) {
+        checklistDetails = currentForm.items.map(function (it, idx) {
+          var res = checklistState[idx] || 'unanswered';
+          var itemText = (typeof it === 'string') ? it.trim() : (it.text || it.title || it.label || ('หัวข้อที่ ' + (idx + 1)));
+          return {
+            no: idx + 1,
+            text: itemText,
+            status: (res === 'pass' ? 'pass' : (res === 'fail' ? 'fail' : res))
+          };
+        });
+      }
+
+      var record = {
+        id: 'EV-' + Date.now(),
         deviceId: currentDevice.id,
         deviceAsset: currentDevice.assetCode,
         deviceName: currentDevice.name,
-        formId: currentForm.id,
-        department: department,
-        evaluatedAt: dtInput && dtInput.value ? dtInput.value : new Date().toISOString(),
-        evaluatedBy: evaluatorName,
+        formId: currentDevice.formId,
+        department: chosenDept,
+        evaluatedBy: evaluator,
         evaluatorEmpId: evaluatorEmpId,
-        result: result,
-        answers: answers,
-        abnormalNote: note || (hasFail ? 'พบข้อบกพร่องข้อที่ ' + failIndices.map(function (n) { return n + 1; }).join(', ') : '')
+        evaluatedAt: evalTimeStr,
+        result: hasNewFail ? 'abnormal' : 'normal',
+        keepConditional: isKeepConditional,
+        abnormalNote: note,
+        checklist: checklistState,
+        checklistDetails: checklistDetails
       };
+
+      currentDevice.currentDept = chosenDept;
+
+      // 1. Optimistic Local Store Update (< 1ms instant state change)
+      if (window.PPCH_STORE && window.PPCH_STORE.recordEvaluation) {
+        window.PPCH_STORE.recordEvaluation(record);
+      }
+
+      // 2. Cross-Tab Instant Broadcast (< 5ms sync to admin.html and all open tabs)
+      if (typeof BroadcastChannel !== 'undefined') {
+        try {
+          var syncBc = new BroadcastChannel('ppch_medtrack_sync');
+          syncBc.postMessage({ type: 'EVALUATION_SAVED', record: record });
+        } catch (bcErr) {
+          console.warn('BroadcastChannel error:', bcErr);
+        }
+      }
 
       var btnSubmit = document.getElementById('btnSubmitEval');
       if (btnSubmit) {
         btnSubmit.disabled = true;
-        btnSubmit.innerHTML = '<span class="material-icons-round" style="animation: spin 0.8s linear infinite;">sync</span> <span>กำลังบันทึก...</span>';
+        btnSubmit.innerHTML = '<span class="material-icons-round spin">sync</span><span>กำลังบันทึก...</span>';
       }
 
-      // 1. Instant local store update (< 1ms)
-      if (window.PPCH_STORE && window.PPCH_STORE.addEvaluation) {
-        window.PPCH_STORE.addEvaluation(evalRecord);
-      }
-
-      // 2. Cross-Tab Instant Broadcast (< 5ms sync to admin.html and all open tabs)
-      try {
-        if (typeof BroadcastChannel !== 'undefined') {
-          var bc = new BroadcastChannel('ppch_medtrack_sync');
-          bc.postMessage({
-            type: 'EVALUATION_SUBMITTED',
-            deviceId: evalRecord.deviceId,
-            result: evalRecord.result,
-            evaluatedAt: evalRecord.evaluatedAt,
-            data: evalRecord
-          });
-          bc.close();
-        }
-      } catch (e) {
-        console.warn('BroadcastChannel error:', e);
-      }
-
-      // 3. Save to Supabase Cloud & Mirror to Sheets in background
-      PPCH_API.saveEvaluation(evalRecord, function (res) {
+      function onSavedSuccess() {
         if (btnSubmit) {
           btnSubmit.disabled = false;
-          btnSubmit.innerHTML = '<span class="material-icons-round">check_circle</span> <span>บันทึกผลการตรวจ</span>';
+          btnSubmit.innerHTML = '<span class="material-icons-round">check_circle</span><span>บันทึกผลการตรวจเช็ค</span>';
         }
-        if (res && res.success) {
-          openSuccessModal(evalRecord);
-        } else {
-          showToast('บันทึกสำเร็จในระบบ แต่การเชื่อมต่อคลาวด์ขัดข้อง: ' + (res ? res.message : ''));
-          openSuccessModal(evalRecord);
-        }
-      });
-    }
-
-    function openSuccessModal(record) {
-      var modal = document.getElementById('successModal');
-      var sub = document.getElementById('successModalSub');
-      if (sub && record) {
-        var statusTxt = record.result === 'normal' ? '✅ พร้อมใช้งาน 100%' : '⚠️ พบข้อบกพร่อง (แจ้งเตือนแล้ว)';
-        sub.innerText = (record.deviceName || '') + ' (' + (record.deviceAsset || '') + ')\n' + statusTxt;
+        var statusMsgText = record.result === 'abnormal'
+          ? '🔴 พบข้อบกพร่องใหม่ (แจ้งซ่อมทันที)'
+          : (record.keepConditional ? '🟢 ตรวจผ่าน (คงสถานะผ่อนผันรอซ่อม)' : '🟢 พร้อมใช้งานปกติ');
+        document.getElementById('successModalSub').innerText = currentDevice.name + ' (' + currentDevice.assetCode + ')\n' + statusMsgText;
+        document.getElementById('successModal').classList.remove('hidden');
       }
-      if (modal) modal.classList.remove('hidden');
-    }
 
-    function closeSuccessModal() {
-      var modal = document.getElementById('successModal');
-      if (modal) modal.classList.add('hidden');
+      if (window.PPCH_API && window.PPCH_API.submitEvaluation) {
+        window.PPCH_API.submitEvaluation(record, function () { onSavedSuccess(); });
+      } else {
+        onSavedSuccess();
+      }
     }
 
     function resetFormForNext() {
-      closeSuccessModal();
-      var codeSel = document.getElementById('evalDeviceSelect');
-      if (codeSel) codeSel.value = '';
-      resetDeviceSelection();
-      var typeSel = document.getElementById('evalDeviceTypeSelect');
-      if (typeSel) typeSel.value = '';
+      document.getElementById('successModal').classList.add('hidden');
+      document.getElementById('evalAbnormalNote').value = '';
+      if (currentForm && currentForm.items) renderChecklist(currentForm.items);
+      if (currentDevice) {
+        currentDevice = window.PPCH_STORE.getEquipmentById(currentDevice.id);
+        var underRepair = currentDevice && (currentDevice.status === 'abnormal' || currentDevice.status === 'in_progress');
+        applyRepairLock(underRepair);
+        checkExistingEvaluationOnDate();
+      }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function showToast(msg) {
-      var toast = document.getElementById('toastNotice');
-      var txt = document.getElementById('toastMsg');
-      if (!toast || !txt) return;
-      txt.innerText = msg;
-      toast.classList.add('show');
-      setTimeout(function () {
-        toast.classList.remove('show');
-      }, 3000);
+    function closeSuccessModal() {
+      document.getElementById('successModal').classList.add('hidden');
+      if (currentDevice) {
+        currentDevice = window.PPCH_STORE.getEquipmentById(currentDevice.id);
+        var underRepair = currentDevice && (currentDevice.status === 'abnormal' || currentDevice.status === 'in_progress');
+        applyRepairLock(underRepair);
+        checkExistingEvaluationOnDate();
+      }
     }
 
-    function handleUrlParams() {
-      try {
-        var params = new URLSearchParams(window.location.search);
-        var devId = params.get('deviceId') || params.get('id');
-        var formId = params.get('formId');
-        if (devId) {
-          var eq = window.PPCH_STORE.getEquipmentById(devId);
-          if (eq) {
-            var typeSel = document.getElementById('evalDeviceTypeSelect');
-            if (typeSel) {
-              typeSel.value = (eq.name || 'ไม่ระบุชื่อ').trim();
-              onDeviceTypeChanged();
-            }
-            var codeSel = document.getElementById('evalDeviceSelect');
-            if (codeSel) {
-              codeSel.value = eq.id;
-              onDeviceSelected();
-            }
-          }
-        }
-      } catch (e) {
-        console.warn('URL params parsing error:', e);
+    function showToast(msg) {
+      var t = document.getElementById('toastNotice');
+      var m = document.getElementById('toastMsg');
+      if (t && m) {
+        m.innerText = msg;
+        t.classList.add('show');
+        setTimeout(function () { t.classList.remove('show'); }, 3500);
       }
     }
   </script>
