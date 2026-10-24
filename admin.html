@@ -4127,6 +4127,53 @@
       padding: 5px 10px !important;
       box-shadow: 0 14px 32px -4px rgba(24, 54, 82, 0.45) !important;
     }
+
+    /* ==================== PERFORMANCE LAYER (Smooth 60fps • same theme & functions) ==================== */
+    /* 1. Fixed backgrounds force full-viewport repaint on every scroll frame */
+    body {
+      background-attachment: scroll !important;
+    }
+    /* 2. Live backdrop blur on large panels / sticky bars is the #1 scroll-jank source.
+          Replace with near-opaque surfaces (visually identical on the porcelain canvas). */
+    .content-panel,
+    .dash-panel {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      background: rgba(255, 255, 255, 0.96) !important;
+    }
+    .report-toolbar-card,
+    .dash-live-badge,
+    .sidebar-backdrop {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+    .report-toolbar-card {
+      background: #ffffff !important;
+    }
+    /* 3. Only animate GPU-friendly properties (no layout-thrashing width/height/padding transitions) */
+    *, *::before, *::after {
+      transition-property: color, background-color, border-color, box-shadow, opacity, transform, visibility !important;
+    }
+    /* 4. Avoid moving entire table rows on hover (forces repaint of whole row + shadow) */
+    @media (min-width: 992px) {
+      .device-table tbody tr:hover {
+        transform: none !important;
+      }
+    }
+    /* 5. Isolate the sticky dock into its own compositor layer (desktop only) */
+    @media (min-width: 993px) {
+      .app-sidebar {
+        will-change: transform;
+      }
+    }
+    /* 6. Respect reduced-motion preference */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -4563,7 +4610,7 @@
                 <!-- Quick Search -->
                 <div class="search-input-box" style="margin: 0; width: 175px;">
                   <span class="material-icons-round">search</span>
-                  <input type="text" id="filterSearch" placeholder="ค้นหาเครื่อง, รหัส..." oninput="applyFilters()">
+                  <input type="text" id="filterSearch" placeholder="ค้นหาเครื่อง, รหัส..." oninput="debounceCall('applyFilters', 180)">
                 </div>
 
                 <!-- Toggle Filter Drawer Button (Option 3) -->
@@ -4962,7 +5009,7 @@
               <div class="panel-title">รายการเครื่องมือแพทย์รวมลิงก์แบบตรวจเช็ค & QR Code ประจำเครื่อง</div>
               <div class="search-input-box" style="min-width: 200px;">
                 <span class="material-icons-round">search</span>
-                <input type="text" id="directorySearch" placeholder="ค้นหาเครื่อง..." oninput="renderDirectoryView()">
+                <input type="text" id="directorySearch" placeholder="ค้นหาเครื่อง..." oninput="debounceCall('renderDirectoryView', 180)">
               </div>
             </div>
             <div class="equip-grid-3" id="directoryGrid">
@@ -6141,9 +6188,28 @@
         hidePageLoader();
       }
       window.addEventListener('ppch:data-updated', function () {
-        loadData();
+        scheduleLoadData();
       });
     });
+
+    // Coalesce bursts of data-updated events into a single render pass
+    var pendingLoadTimer = null;
+    function scheduleLoadData() {
+      if (pendingLoadTimer) return;
+      pendingLoadTimer = setTimeout(function () {
+        pendingLoadTimer = null;
+        loadData();
+      }, 80);
+    }
+
+    // Debounce helper for keystroke-driven re-renders (search boxes)
+    var debounceTimers = {};
+    function debounceCall(fnName, ms) {
+      clearTimeout(debounceTimers[fnName]);
+      debounceTimers[fnName] = setTimeout(function () {
+        if (typeof window[fnName] === 'function') window[fnName]();
+      }, ms || 180);
+    }
 
     // Safety fallback: Ensure loader is always dismissed even if network times out
     setTimeout(hidePageLoader, 6000);
@@ -6196,6 +6262,11 @@
     }
 
     function loadData() {
+      // A direct render supersedes any queued (debounced) render
+      if (pendingLoadTimer) {
+        clearTimeout(pendingLoadTimer);
+        pendingLoadTimer = null;
+      }
       if (window.PPCH_STORE) {
         allEquipment = (window.PPCH_STORE.getEquipment ? window.PPCH_STORE.getEquipment() : []) || [];
         allEvaluations = (window.PPCH_STORE.getEvaluations ? window.PPCH_STORE.getEvaluations() : []) || [];
@@ -6227,8 +6298,9 @@
         }
       }
 
-      applyFilters();
-      renderDirectoryView();
+      // Render only the visible list views (hidden views are rendered on switchView)
+      if (currentView === 'summary') applyFilters();
+      if (currentView === 'directory') renderDirectoryView();
 
       // Direct deep-link navigation from LINE Flex Message
       if (!window.__ppchHandledDeepLink) {
@@ -6329,7 +6401,11 @@
         if (sec) sec.style.display = (k === viewKey) ? 'block' : 'none';
       });
 
-      if (viewKey === 'dashboard') {
+      if (viewKey === 'summary') {
+        applyFilters();
+      } else if (viewKey === 'directory') {
+        renderDirectoryView();
+      } else if (viewKey === 'dashboard') {
         renderDashboardView();
       } else if (viewKey === 'defective') {
         closeRepairHistoryPage();

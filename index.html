@@ -347,7 +347,7 @@
 </head>
 <body>
 
-  <iframe id="adminFrame" src="admin.html" title="PPCH MedTrack Studio"></iframe>
+  <iframe id="adminFrame" data-src="admin.html" title="PPCH MedTrack Studio"></iframe>
 
   <div id="gateStage">
     <div class="orbital-ring ring-1"></div>
@@ -409,10 +409,25 @@
 
   <script>
     var isTransitioning = false;
+
+    // Preload the admin studio only after the portal has painted & the browser is idle
+    function ensureAdminFrameLoaded() {
+      var f = document.getElementById('adminFrame');
+      if (f && !f.getAttribute('src')) f.setAttribute('src', f.getAttribute('data-src') || 'admin.html');
+    }
+    window.addEventListener('load', function () {
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(ensureAdminFrameLoaded, { timeout: 1500 });
+      } else {
+        setTimeout(ensureAdminFrameLoaded, 800);
+      }
+    });
+
     function handleEnter(e) {
       if (e) e.preventDefault();
       if (isTransitioning) return;
       isTransitioning = true;
+      ensureAdminFrameLoaded();
 
       var gateStage = document.getElementById('gateStage');
       var adminFrame = document.getElementById('adminFrame');

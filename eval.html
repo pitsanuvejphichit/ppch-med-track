@@ -70,7 +70,7 @@
       background-image:
         radial-gradient(at 10% 8%, rgba(86, 168, 220, 0.16) 0px, transparent 48%),
         radial-gradient(at 90% 12%, rgba(38, 84, 124, 0.10) 0px, transparent 48%);
-      background-attachment: fixed;
+      background-repeat: no-repeat;
       color: var(--text-main);
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
@@ -905,6 +905,18 @@
         justify-content: center;
       }
     }
+
+    /* ==================== PERFORMANCE LAYER (Smooth 60fps • same theme) ==================== */
+    *, *::before, *::after {
+      transition-property: color, background-color, border-color, box-shadow, opacity, transform, visibility !important;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1440,7 +1452,7 @@
       isRealUpsDay = (now.getDate() === 1 || now.getDate() === 16);
       if (urlParams.get('batteryCheck') === '1') isSimulateActive = true;
 
-      function setupDropdownAndDevice() {
+      function setupDropdownAndDevice(keepDeviceId) {
         var typeSelect = document.getElementById('evalDeviceTypeSelect');
         var deptSelect = document.getElementById('evalDeptSelect');
         var allEq = (window.PPCH_STORE && window.PPCH_STORE.getEquipment ? window.PPCH_STORE.getEquipment() : []) || [];
@@ -1476,9 +1488,12 @@
         }
 
         var targetEq = null;
-        if (preselectedDeviceId) {
+        if (keepDeviceId) {
+          targetEq = allEq.find(function (eq) { return eq.id === keepDeviceId; });
+        }
+        if (!targetEq && preselectedDeviceId) {
           targetEq = allEq.find(function (eq) { return eq.id === preselectedDeviceId || eq.assetCode === preselectedDeviceId; });
-        } else if (preselectedFormId) {
+        } else if (!targetEq && preselectedFormId) {
           targetEq = allEq.find(function (eq) { return eq.formId === preselectedFormId; });
         }
         if (!targetEq && allEq.length > 0) targetEq = allEq[0];
@@ -1503,7 +1518,18 @@
             window.PPCH_API.fetchOverview(function (res2) {
               if (res2 && res2.success && res2.data) {
                 window.PPCH_STORE.initFromCloud(res2.data);
-                setupDropdownAndDevice();
+                // Do NOT rebuild the form while the user is mid-check (avoids jank & losing answers)
+                var hasAnswers = false;
+                for (var k in checklistState) {
+                  if (checklistState[k] === 'pass' || checklistState[k] === 'fail') { hasAnswers = true; break; }
+                }
+                if (hasAnswers && currentDevice) {
+                  var fresh = window.PPCH_STORE.getEquipmentById(currentDevice.id);
+                  if (fresh) currentDevice = fresh;
+                  checkExistingEvaluationOnDate();
+                } else {
+                  setupDropdownAndDevice(currentDevice ? currentDevice.id : null);
+                }
               }
             });
           });

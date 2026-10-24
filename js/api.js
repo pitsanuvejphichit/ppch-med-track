@@ -220,11 +220,30 @@
     },
 
     // 1. Fetch Full Overview (Parallel PostgREST requests - sub-100ms)
+    //    Coalesced: if a fetch is already in flight, queue callbacks and run ONE follow-up fetch afterwards
     fetchOverview: function (callback) {
       var self = this;
       if (!this.isConfigured()) {
         if (callback) callback({ success: false, message: 'Supabase credentials not configured', data: null });
         return;
+      }
+
+      if (this._ovInFlight) {
+        this._ovQueue = this._ovQueue || [];
+        this._ovQueue.push(callback || null);
+        return;
+      }
+      this._ovInFlight = true;
+
+      function finishOverview() {
+        self._ovInFlight = false;
+        var queued = self._ovQueue || [];
+        self._ovQueue = [];
+        if (queued.length > 0) {
+          self.fetchOverview(function (res) {
+            queued.forEach(function (cb) { if (cb) cb(res); });
+          });
+        }
       }
 
       var pEquipment = supabaseFetch('equipment?select=*&order=asset_code.asc');
@@ -256,15 +275,23 @@
           };
 
           if (callback) {
-            callback({
-              success: true,
-              data: responseData,
-              serverTime: new Date().toISOString() }); } self.checkDailySummarySchedule(); if (false) { callback({
-            });
+            try {
+              callback({
+                success: true,
+                data: responseData,
+                serverTime: new Date().toISOString()
+              });
+            } catch (cbErr) {
+              console.error('fetchOverview callback error:', cbErr);
+            }
           }
+          self.checkDailySummarySchedule();
+          finishOverview();
         })
         .catch(function (err) {
           console.warn('Supabase fetchOverview failed, attempting GAS fallback:', err);
+          self._ovInFlight = false;
+          self._ovQueue = [];
           self.fetchOverviewFromGasFallback(callback);
         });
     },
@@ -820,27 +847,49 @@
     },
 
     // 6. Supabase Real-time Subscription
+    //    Debounced: one save touches several tables (evaluations + equipment + repairs) -> fire ONE refresh.
+    //    Paused while the tab is hidden, then refreshed once when the user returns.
     initRealtime: function (onChangeCallback) {
       var client = getSupabaseClient();
       if (!client) return null;
+
+      var debounceTimer = null;
+      var missedWhileHidden = false;
+      function fireChange(table) {
+        if (!onChangeCallback) return;
+        if (document.hidden) {
+          missedWhileHidden = true;
+          return;
+        }
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function () {
+          onChangeCallback(table);
+        }, 700);
+      }
+      document.addEventListener('visibilitychange', function () {
+        if (!document.hidden && missedWhileHidden) {
+          missedWhileHidden = false;
+          fireChange('resume');
+        }
+      });
 
       try {
         var channel = client
           .channel('public-db-changes')
           .on('postgres_changes', { event: '*', schema: 'public', table: 'equipment' }, function () {
-            if (onChangeCallback) onChangeCallback('equipment');
+            fireChange('equipment');
           })
           .on('postgres_changes', { event: '*', schema: 'public', table: 'departments' }, function () {
-            if (onChangeCallback) onChangeCallback('departments');
+            fireChange('departments');
           })
           .on('postgres_changes', { event: '*', schema: 'public', table: 'evaluations' }, function () {
-            if (onChangeCallback) onChangeCallback('evaluations');
+            fireChange('evaluations');
           })
           .on('postgres_changes', { event: '*', schema: 'public', table: 'repairs' }, function () {
-            if (onChangeCallback) onChangeCallback('repairs');
+            fireChange('repairs');
           })
           .on('postgres_changes', { event: '*', schema: 'public', table: 'transfers' }, function () {
-            if (onChangeCallback) onChangeCallback('transfers');
+            fireChange('transfers');
           })
           .subscribe();
 
