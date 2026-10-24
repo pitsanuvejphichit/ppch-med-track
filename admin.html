@@ -6063,7 +6063,8 @@
           var actionParam = urlParams.get('action');
           var deviceIdParam = urlParams.get('id');
 
-          if (viewParam && typeof switchView === 'function') {
+          var validViews = ['summary', 'defective', 'relocate', 'directory', 'report', 'settings'];
+          if (viewParam && validViews.indexOf(viewParam) !== -1 && typeof switchView === 'function') {
             switchView(viewParam);
           }
           if (actionParam === 'ack' && deviceIdParam) {
@@ -6117,7 +6118,8 @@
     function switchView(viewKey) {
       closeMobileSidebar();
       if (typeof closeAllFloatingMenus === 'function') closeAllFloatingMenus();
-      if (viewKey === 'dashboard' || viewKey === 'device_summary' || !viewKey) {
+      var validViews = ['summary', 'defective', 'relocate', 'directory', 'report', 'settings'];
+      if (!viewKey || validViews.indexOf(viewKey) === -1) {
         viewKey = 'summary';
       }
       currentView = viewKey;
@@ -6130,7 +6132,7 @@
         report: 'รายงานประจำเดือน (A4 แนวนอน)',
         settings: 'ตั้งค่าระบบ'
       };
-      if (bread) bread.innerText = breadMap[viewKey] || viewKey;
+      if (bread) bread.innerText = breadMap[viewKey] || 'สรุปข้อมูล';
 
       var viewIds = {
         summary: 'viewSummary',
@@ -6992,6 +6994,23 @@
           }
         });
         wrapper.classList.add('open');
+
+        // Prevent tray from overflowing screen edges
+        var tray = wrapper.querySelector('.floating-action-tray');
+        if (tray) {
+          tray.style.transform = '';
+          requestAnimationFrame(function () {
+            var rect = tray.getBoundingClientRect();
+            var vw = window.innerWidth || document.documentElement.clientWidth;
+            if (rect.left < 8) {
+              var shiftX = 8 - rect.left;
+              tray.style.transform = 'translateY(-50%) translateX(' + shiftX + 'px)';
+            } else if (rect.right > vw - 8) {
+              var shiftX = (vw - 8) - rect.right;
+              tray.style.transform = 'translateY(-50%) translateX(' + shiftX + 'px)';
+            }
+          });
+        }
       }
     }
 
@@ -7007,12 +7026,16 @@
         wrapper._closeTimer = null;
       }
       wrapper.classList.remove('open');
+      var tray = wrapper.querySelector('.floating-action-tray');
+      if (tray) tray.style.transform = '';
     }
 
     function closeAllFloatingMenus() {
       document.querySelectorAll('.floating-action-wrapper.open').forEach(function (w) {
         if (w._closeTimer) clearTimeout(w._closeTimer);
         w.classList.remove('open');
+        var tray = w.querySelector('.floating-action-tray');
+        if (tray) tray.style.transform = '';
       });
     }
 

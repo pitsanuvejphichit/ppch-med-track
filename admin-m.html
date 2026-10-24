@@ -1592,6 +1592,9 @@
         width: 100%;
         border-top: 1px solid var(--border-subtle);
         padding-top: 10px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
       }
       .equip-card-actions .btn-tool {
         flex: 1;
@@ -4191,8 +4194,8 @@
   }
 
   body {
-    padding-top: 0 !important;
-    padding-bottom: calc(var(--m-tab-height) + env(safe-area-inset-bottom) + 12px) !important;
+    padding-top: calc(54px + env(safe-area-inset-top)) !important;
+    padding-bottom: calc(var(--m-tab-height) + env(safe-area-inset-bottom) + 16px) !important;
     background-color: var(--bg-canvas) !important;
   }
 
@@ -4225,19 +4228,22 @@
 
   /* Mobile Topbar */
   .m-admin-topbar {
-    position: sticky;
-    top: 0;
-    z-index: 500;
-    background: rgba(255, 255, 255, 0.96);
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 500 !important;
+    background: rgba(255, 255, 255, 0.98) !important;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border-hairline, #e2e8f0);
-    padding: calc(6px + env(safe-area-inset-top)) 14px 8px 14px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: calc(54px + env(safe-area-inset-top));
-    box-sizing: border-box;
+    border-bottom: 1px solid var(--border-hairline, #e2e8f0) !important;
+    padding: calc(6px + env(safe-area-inset-top)) 14px 8px 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    height: calc(54px + env(safe-area-inset-top)) !important;
+    box-sizing: border-box !important;
+    box-shadow: 0 1px 4px rgba(0, 46, 110, 0.05) !important;
   }
   .m-topbar-left {
     display: flex;
@@ -4503,6 +4509,77 @@
     overflow-y: auto !important;
     padding: 18px 16px !important;
     border-radius: 16px !important;
+  }
+
+  /* Ensure header tools and filters are clean on mobile */
+  .panel-header {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+    padding: 10px 12px !important;
+  }
+  .summary-header-tools {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    width: 100% !important;
+    overflow: visible !important;
+  }
+  .summary-header-tools .search-input-box {
+    flex: 1 1 auto !important;
+    width: auto !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Universal Mobile Protection for Floating Action Tray */
+  .floating-action-wrapper {
+    position: relative !important;
+  }
+  .floating-action-tray {
+    max-width: calc(100vw - 32px) !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Equipment directory item cards on mobile */
+  .equip-item-card {
+    background: #ffffff !important;
+    border: 1px solid var(--border-main) !important;
+    border-radius: 12px !important;
+    padding: 12px 14px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+    box-shadow: 0 1px 3px rgba(0, 46, 110, 0.03) !important;
+    position: relative !important;
+    overflow: visible !important;
+  }
+  .equip-card-actions {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 8px !important;
+    width: 100% !important;
+    margin-left: auto !important;
+    border-top: 1px solid var(--border-subtle) !important;
+    padding-top: 8px !important;
+    position: relative !important;
+  }
+  .equip-card-actions .floating-action-wrapper {
+    position: relative !important;
+    display: inline-flex !important;
+    justify-content: flex-end !important;
+  }
+  .equip-card-actions .floating-action-tray {
+    position: absolute !important;
+    right: 0 !important;
+    left: auto !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    max-width: calc(100vw - 40px) !important;
+    box-sizing: border-box !important;
   }
 
   </style>
@@ -6370,8 +6447,11 @@
           var actionParam = urlParams.get('action');
           var deviceIdParam = urlParams.get('id');
 
-          if (viewParam && typeof switchView === 'function') {
+          var validViews = ['summary', 'defective', 'relocate', 'directory', 'report', 'settings'];
+          if (viewParam && validViews.indexOf(viewParam) !== -1 && typeof switchView === 'function') {
             switchView(viewParam);
+          } else if (typeof switchView === 'function') {
+            switchView('summary');
           }
           if (actionParam === 'ack' && deviceIdParam) {
             setTimeout(function () {
@@ -6445,7 +6525,8 @@
     function switchView(viewKey) {
       closeMobileSidebar();
       if (typeof closeAllFloatingMenus === 'function') closeAllFloatingMenus();
-      if (viewKey === 'dashboard' || viewKey === 'device_summary' || !viewKey) {
+      var validViews = ['summary', 'defective', 'relocate', 'directory', 'report', 'settings'];
+      if (!viewKey || validViews.indexOf(viewKey) === -1) {
         viewKey = 'summary';
       }
       currentView = viewKey;
@@ -6458,7 +6539,7 @@
         report: 'รายงานประจำเดือน (A4 แนวนอน)',
         settings: 'ตั้งค่าระบบ'
       };
-      if (bread) bread.innerText = breadMap[viewKey] || viewKey;
+      if (bread) bread.innerText = breadMap[viewKey] || 'สรุปข้อมูล';
 
       var viewIds = {
         summary: 'viewSummary',
@@ -7230,7 +7311,7 @@
           if (dual.readinessState === 'in_progress' || dual.readinessState === 'abnormal') {
             dailyCheckBadge = '<div class="status-symbol-btn symbol-pending" title="ยังไม่ได้ตรวจเช็ควันนี้ (เครื่องอยู่ระหว่างแจ้งซ่อม/งดใช้งาน)" onclick="switchView(\'defective\')"><span class="material-icons-round">schedule</span></div>';
           } else {
-            dailyCheckBadge = '<div class="status-symbol-btn symbol-pending" title="ยังไม่ได้ตรวจเช็ควันนี้ • คลิกเพื่อเปิดหน้าตรวจเช็ค" onclick="location.href=\'eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '\'"><span class="material-icons-round">schedule</span></div>';
+            dailyCheckBadge = '<div class="status-symbol-btn symbol-pending" title="ยังไม่ได้ตรวจเช็ควันนี้ • คลิกเพื่อเปิดหน้าตรวจเช็ค" onclick="location.href=\'eval-m.html?formId=' + eq.formId + '&deviceId=' + eq.id + '\'"><span class="material-icons-round">schedule</span></div>';
           }
         }
 
@@ -7241,12 +7322,12 @@
 
         if (dual.readinessState === 'ready') {
           if (ev) {
-            actionBtns.push('<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-re-eval" title="เปิดหน้าตรวจเช็คซ้ำ"><span class="material-icons-round">refresh</span></a>');
+            actionBtns.push('<a href="eval-m.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-re-eval" title="เปิดหน้าตรวจเช็คซ้ำ"><span class="material-icons-round">refresh</span></a>');
           } else {
-            actionBtns.push('<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-eval" title="เปิดหน้าตรวจเช็คประจำวัน"><span class="material-icons-round">assignment</span></a>');
+            actionBtns.push('<a href="eval-m.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-eval" title="เปิดหน้าตรวจเช็คประจำวัน"><span class="material-icons-round">assignment</span></a>');
           }
         } else if (dual.readinessState === 'conditional_ready') {
-          actionBtns.push('<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-eval" title="เปิดหน้าตรวจเช็คประจำวัน (เครื่องผ่อนผัน)"><span class="material-icons-round">assignment</span></a>');
+          actionBtns.push('<a href="eval-m.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-eval" title="เปิดหน้าตรวจเช็คประจำวัน (เครื่องผ่อนผัน)"><span class="material-icons-round">assignment</span></a>');
           actionBtns.push('<button type="button" onclick="openResolveModal(\'' + eq.id + '\')" class="btn-action-icon btn-icon-resolve" title="บันทึกการซ่อมเสร็จสิ้น (ปลดล็อกเป็นพร้อมใช้ปกติ)"><span class="material-icons-round">task_alt</span></button>');
           actionBtns.push('<button type="button" onclick="switchView(\'defective\')" class="btn-action-icon btn-icon-repair" title="ดูรายการแจ้งซ่อม"><span class="material-icons-round">build</span></button>');
         } else if (dual.readinessState === 'in_progress') {
@@ -7329,6 +7410,23 @@
           }
         });
         wrapper.classList.add('open');
+
+        // Prevent tray from overflowing screen edges
+        var tray = wrapper.querySelector('.floating-action-tray');
+        if (tray) {
+          tray.style.transform = '';
+          requestAnimationFrame(function () {
+            var rect = tray.getBoundingClientRect();
+            var vw = window.innerWidth || document.documentElement.clientWidth;
+            if (rect.left < 8) {
+              var shiftX = 8 - rect.left;
+              tray.style.transform = 'translateY(-50%) translateX(' + shiftX + 'px)';
+            } else if (rect.right > vw - 8) {
+              var shiftX = (vw - 8) - rect.right;
+              tray.style.transform = 'translateY(-50%) translateX(' + shiftX + 'px)';
+            }
+          });
+        }
       }
     }
 
@@ -7344,12 +7442,16 @@
         wrapper._closeTimer = null;
       }
       wrapper.classList.remove('open');
+      var tray = wrapper.querySelector('.floating-action-tray');
+      if (tray) tray.style.transform = '';
     }
 
     function closeAllFloatingMenus() {
       document.querySelectorAll('.floating-action-wrapper.open').forEach(function (w) {
         if (w._closeTimer) clearTimeout(w._closeTimer);
         w.classList.remove('open');
+        var tray = w.querySelector('.floating-action-tray');
+        if (tray) tray.style.transform = '';
       });
     }
 
@@ -7538,7 +7640,7 @@
                 '<span class="floating-badge-count">2</span>' +
               '</button>' +
               '<div class="floating-action-tray">' +
-                '<a href="eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-eval" title="เปิดแบบตรวจเช็ค">' +
+                '<a href="eval-m.html?formId=' + eq.formId + '&deviceId=' + eq.id + '" class="btn-action-icon btn-icon-eval" title="เปิดแบบตรวจเช็ค">' +
                   '<span class="material-icons-round">assignment</span>' +
                 '</a>' +
                 '<button type="button" onclick="openQrModal(\'' + eq.id + '\')" class="btn-action-icon" style="background: #eff6ff; color: var(--royal-blue); border-color: #bfdbfe;" title="ดู / พิมพ์ QR Code ประจำเครื่อง">' +
