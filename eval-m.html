@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <script src="js/device-router.js"></script>
+  <title>ตรวจเช็คเครื่องมือแพทย์ (Mobile) | PPCH MedTrack</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Prompt:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+  <style>
+    :root {
+      color-scheme: light;
+      accent-color: #26547c;
+
+      --bg-canvas: #f0f5fa;
+      --surface-solid: #ffffff;
+      --surface-subtle: #f8fafc;
+
+      --brand-navy: #183652;
+      --brand-primary: #26547c;
+      --brand-sky: #56a8dc;
+      --brand-glow: rgba(86, 168, 220, 0.20);
+
+      --text-main: #162a3d;
+      --text-body: #334e68;
+      --text-muted: #64748b;
+
+      --border-hairline: rgba(38, 84, 124, 0.12);
+
+      --emerald: #059669;
+      --emerald-bg: #ecfdf5;
+      --emerald-border: #6ee7b7;
+
+      --amber: #d97706;
+      --amber-bg: #fffbeb;
+      --amber-border: #fcd34d;
+
+      --crimson: #dc2626;
+      --crimson-bg: #fef2f2;
+      --crimson-border: #fca5a5;
+
+      --font-sans: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Plus Jakarta Sans', 'Prompt', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-canvas);
+      font-family: var(--font-sans);
+      color: var(--text-body);
+      overflow-x: hidden;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: calc(84px + env(safe-area-inset-bottom));
+    }
+
+    button, input, select, textarea, a {
+      touch-action: manipulation;
+    }
+
+    /* ==================== 1. MOBILE TOPBAR ==================== */
+    .m-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-hairline);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+    .m-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      min-width: 0;
+    }
+    .m-brand-logo {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+      border-radius: 8px;
+      background: #fff;
+      padding: 2px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      flex-shrink: 0;
+    }
+    .m-brand-text {
+      min-width: 0;
+    }
+    .m-brand-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--brand-navy);
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .m-brand-sub {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .m-top-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .m-btn-admin-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 10px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 999px;
+      color: var(--brand-primary);
+      text-decoration: none;
+      font-size: 11.5px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    /* ==================== 2. MAIN CONTAINER ==================== */
+    .m-container {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 12px 14px 20px 14px;
+    }
+
+    /* Stepper Bar */
+    .m-stepper {
+      display: flex;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 12px;
+      border: 1px solid var(--border-hairline);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .stepper-step {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 7px 4px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .stepper-step .step-num {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #e2e8f0;
+      color: #64748b;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .stepper-step.active {
+      background: var(--brand-primary);
+      color: #ffffff;
+    }
+    .stepper-step.active .step-num {
+      background: #ffffff;
+      color: var(--brand-primary);
+    }
+    .stepper-step.done {
+      color: var(--emerald);
+      background: #ecfdf5;
+    }
+    .stepper-step.done .step-num {
+      background: var(--emerald);
+      color: #ffffff;
+    }
+
+    /* Mobile Cards */
+    .m-card {
+      background: #ffffff;
+      border-radius: 14px;
+      border: 1px solid var(--border-hairline);
+      box-shadow: 0 2px 8px rgba(0, 46, 110, 0.05);
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+
+    /* Hero Header */
+    .device-hero-header {
+      padding: 14px 16px;
+      background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+      border-bottom: 1px solid var(--border-hairline);
+    }
+    .device-hero-title-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .device-hero-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--brand-primary), var(--brand-sky));
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .device-hero-name {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--brand-navy);
+      line-height: 1.25;
+      word-break: break-word;
+    }
+    .device-hero-chips {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .symbol-chip {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    /* Form Fields */
+    .device-grid-body {
+      padding: 14px 16px;
+    }
+    .selector-grid-2x2 {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .field-pod {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .field-pod-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--brand-navy);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .field-pod-label .material-icons-round {
+      font-size: 16px;
+      color: var(--brand-sky);
+    }
+    .field-pod select,
+    .field-pod input {
+      width: 100% !important;
+      height: 48px !important;
+      padding: 0 12px !important;
+      font-size: 16px !important; /* Prevents iOS auto-zoom */
+      font-family: var(--font-sans) !important;
+      font-weight: 600 !important;
+      color: var(--text-main) !important;
+      background-color: var(--surface-subtle) !important;
+      border: 1.5px solid #cbd5e1 !important;
+      border-radius: 10px !important;
+      outline: none !important;
+      box-sizing: border-box !important;
+    }
+    .field-pod select:focus,
+    .field-pod input:focus {
+      border-color: var(--brand-primary) !important;
+      background-color: #ffffff !important;
+      box-shadow: 0 0 0 3px rgba(38, 84, 124, 0.12) !important;
+    }
+
+    /* Status Strip Banners */
+    .status-strip-banner {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .status-strip-banner.info {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e40af;
+    }
+    .status-strip-banner.amber {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #92400e;
+    }
+    .status-strip-banner.danger {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+    }
+
+    /* Checklist Header */
+    .checklist-header-bar {
+      padding: 12px 16px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border-hairline);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .checklist-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--brand-navy);
+    }
+    .progress-pill {
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--amber-border);
+      background: var(--amber-bg);
+      color: var(--amber);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: var(--font-mono);
+    }
+    .progress-pill.all-done {
+      border-color: var(--emerald-border);
+      background: var(--emerald-bg);
+      color: var(--emerald);
+    }
+
+    /* Checklist Items (Cards on Mobile) */
+    #checklistItemsList {
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .checklist-item {
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+    .checklist-item.row-pass {
+      border-color: #34d399;
+      background: #f0fdf4;
+    }
+    .checklist-item.row-fail {
+      border-color: #f87171;
+      background: #fef2f2;
+    }
+    .checklist-item.row-conditional {
+      border-color: #fcd34d;
+      background: #fffbeb;
+    }
+    .checklist-item.item-unanswered-highlight {
+      border-color: #f59e0b;
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+    }
+
+    .item-left {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      width: 100%;
+    }
+    .item-num-badge {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      background: #f1f5f9;
+      color: var(--brand-navy);
+      font-size: 12px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .checklist-item.row-pass .item-num-badge {
+      background: #10b981;
+      color: #ffffff;
+    }
+    .checklist-item.row-fail .item-num-badge {
+      background: #ef4444;
+      color: #ffffff;
+    }
+    .checklist-item.row-conditional .item-num-badge {
+      background: #f59e0b;
+      color: #ffffff;
+    }
+    .item-text {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-main);
+      line-height: 1.35;
+      flex: 1;
+    }
+
+    /* Choice Buttons: 48px height, 50/50 split */
+    .item-btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      width: 100%;
+    }
+    .btn-check-choice {
+      height: 48px;
+      border-radius: 10px;
+      border: 1.5px solid #cbd5e1;
+      background: #ffffff;
+      color: #475569;
+      font-family: var(--font-sans);
+      font-size: 14.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: none; /* Instant feedback */
+      user-select: none;
+    }
+    .btn-check-choice:active {
+      transform: scale(0.98);
+    }
+    .btn-check-choice.active-pass {
+      background: #10b981;
+      border-color: #059669;
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+    }
+    .btn-check-choice.active-fail {
+      background: #ef4444;
+      border-color: #dc2626;
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
+    }
+
+    .badge-conditional-locked {
+      grid-column: span 2;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: #fef3c7;
+      border: 1px solid #fde68a;
+      color: #92400e;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    /* Sign-off Section */
+    .signoff-section {
+      padding: 14px 16px;
+      background: #f8fafc;
+      border-top: 1px solid var(--border-hairline);
+    }
+    .signoff-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .input-clean {
+      width: 100% !important;
+      height: 48px !important;
+      padding: 0 12px !important;
+      font-size: 16px !important;
+      font-family: var(--font-sans) !important;
+      font-weight: 600 !important;
+      color: var(--text-main) !important;
+      background: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+      border-radius: 10px !important;
+      outline: none !important;
+      box-sizing: border-box !important;
+    }
+    .input-clean:focus {
+      border-color: var(--brand-primary) !important;
+      box-shadow: 0 0 0 3px rgba(38, 84, 124, 0.12) !important;
+    }
+
+    /* Evaluator Autocomplete Tray */
+    .evaluator-dropdown-tray {
+      position: absolute;
+      bottom: 100%;
+      left: 0;
+      right: 0;
+      margin-bottom: 6px;
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 12px;
+      box-shadow: 0 -8px 24px rgba(0,0,0,0.12);
+      max-height: 220px;
+      overflow-y: auto;
+      z-index: 200;
+    }
+    .evaluator-item {
+      padding: 10px 14px;
+      border-bottom: 1px solid #f1f5f9;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .evaluator-item:last-child { border-bottom: none; }
+    .evaluator-item:active, .evaluator-item.highlighted {
+      background: #eff6ff;
+    }
+
+    /* ==================== 3. FIXED BOTTOM ACTION BAR ==================== */
+    .m-bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border-hairline);
+      padding: 10px 14px calc(10px + env(safe-area-inset-bottom)) 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 -4px 16px rgba(0,0,0,0.06);
+    }
+    .btn-submit-main {
+      flex: 1;
+      height: 50px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: #ffffff;
+      font-family: var(--font-sans);
+      font-size: 15.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+      user-select: none;
+    }
+    .btn-submit-main:active {
+      transform: scale(0.98);
+    }
+    .btn-submit-main:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* Lock Overlays */
+    .checklist-locked-wrapper {
+      position: relative;
+    }
+    .checklist-lock-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(6px);
+      z-index: 50;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 20px;
+      text-align: center;
+    }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.hidden { display: none !important; }
+    .modal-box {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 24px 20px;
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+
+    /* Toast */
+    #toastNotice {
+      position: fixed;
+      top: 66px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: #1e293b;
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      z-index: 2000;
+      max-width: 90%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #toastNotice.show {
+      display: flex;
+      transform: translateX(-50%) translateY(0);
+      animation: toastFade 0.25s ease;
+    }
+    @keyframes toastFade {
+      from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    /* Page Loader */
+    #pageLoader {
+      position: fixed;
+      inset: 0;
+      background: #ffffff;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.25s ease;
+    }
+    .loader-orb {
+      text-align: center;
+    }
+    .loader-ring {
+      width: 44px;
+      height: 44px;
+      border: 3.5px solid #e2e8f0;
+      border-top-color: var(--brand-primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 12px auto;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading Screen -->
+  <div id="pageLoader">
+    <div class="loader-orb">
+      <div class="loader-ring"></div>
+      <div style="font-size: 14.5px; font-weight: 700; color: var(--brand-navy);">กำลังเตรียมแบบตรวจเช็ค...</div>
+    </div>
+  </div>
+
+  <!-- Mobile Topbar -->
+  <header class="m-topbar">
+    <a href="index.html" class="m-brand" title="หน้าหลัก">
+      <img src="logo.png" alt="PPCH" class="m-brand-logo">
+      <div class="m-brand-text">
+        <div class="m-brand-title">
+          <span>ตรวจเช็คเครื่องมือแพทย์</span>
+        </div>
+        <div class="m-brand-sub">MedTrack V2 • รพ.พิษณุเวช พิจิตร</div>
+      </div>
+    </a>
+    <div class="m-top-actions">
+      <a href="admin-m.html" class="m-btn-admin-link" title="เปิดหน้า Admin">
+        <span class="material-icons-round" style="font-size: 15px;">manage_accounts</span>
+        <span>Admin</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="m-container">
+
+    <!-- 3-Step Visual Indicator -->
+    <div class="m-stepper" id="evalStepper">
+      <div class="stepper-step active" id="step1_device">
+        <span class="step-num">1</span>
+        <span>เลือกเครื่อง</span>
+      </div>
+      <div class="stepper-step" id="step2_check">
+        <span class="step-num">2</span>
+        <span>ตรวจเช็ค</span>
+      </div>
+      <div class="stepper-step" id="step3_submit">
+        <span class="step-num">3</span>
+        <span>บันทึกผล</span>
+      </div>
+    </div>
+
+    <!-- Card 1: Equipment Selector -->
+    <section class="m-card">
+      <div class="device-hero-header">
+        <div class="device-hero-title-group">
+          <div class="device-hero-icon">
+            <span class="material-icons-round" style="font-size: 20px;">medical_services</span>
+          </div>
+          <div style="min-width: 0;">
+            <div class="device-hero-name" id="formNameHeading">เลือกเครื่องมือแพทย์</div>
+          </div>
+        </div>
+        <div class="device-hero-chips">
+          <span id="badgeRiskPill" class="symbol-chip" style="display: none;">-</span>
+          <span id="badgeCategoryPill" class="symbol-chip" style="background: #eff6ff; color: var(--brand-primary); border-color: #bfdbfe;">-</span>
+        </div>
+      </div>
+
+      <div class="device-grid-body">
+        <div class="selector-grid-2x2">
+          <!-- 1. Equipment Name -->
+          <div class="field-pod">
+            <div class="field-pod-label">
+              <span class="material-icons-round">category</span>
+              <span>1. ชื่อเครื่องมือแพทย์</span>
+            </div>
+            <select id="evalDeviceTypeSelect" onchange="onDeviceTypeChanged()">
+              <option value="">-- เลือกเครื่องมือ --</option>
+            </select>
+          </div>
+
+          <!-- 2. Equipment Code -->
+          <div class="field-pod">
+            <div class="field-pod-label">
+              <span class="material-icons-round">qr_code_2</span>
+              <span>2. รหัสเครื่องมือแพทย์</span>
+            </div>
+            <select id="evalDeviceSelect" onchange="onDeviceSelected()">
+              <option value="">-- เลือกรหัส --</option>
+            </select>
+          </div>
+
+          <!-- 3. Current Department -->
+          <div class="field-pod">
+            <div class="field-pod-label">
+              <span class="material-icons-round">meeting_room</span>
+              <span>แผนกที่ใช้งาน</span>
+            </div>
+            <select id="evalDeptSelect">
+              <option value="">เลือกตำแหน่งปัจจุบันของเครื่องมือ</option>
+            </select>
+          </div>
+
+          <!-- 4. Date & Time -->
+          <div class="field-pod">
+            <div class="field-pod-label">
+              <span class="material-icons-round">schedule</span>
+              <span>วัน-เวลาตรวจ</span>
+            </div>
+            <input type="datetime-local" id="evalDateTimeInput" onchange="onDateTimeChanged()">
+          </div>
+        </div>
+
+        <!-- Re-check Banner -->
+        <div id="reCheckNoticeBanner" class="status-strip-banner info" style="display: none;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="material-icons-round" style="font-size: 18px;">verified</span>
+            <span id="reCheckTitle">ตรวจวันนี้แล้ว</span>
+            <span id="reCheckDesc" style="font-weight: 500; opacity: 0.85; font-size: 11.5px;"></span>
+          </div>
+          <span id="reCheckPrevStatusBadge" style="font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 999px; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;">พร้อมใช้</span>
+        </div>
+
+        <!-- Conditional Use Banner -->
+        <div id="conditionalUseBanner" class="status-strip-banner amber" style="display: none;">
+          <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
+            <span class="material-icons-round" style="font-size: 20px; color: #d97706;">build_circle</span>
+            <div>
+              <div style="font-weight: 700;">🔧 ผ่อนผันให้ใช้งานชั่วคราว</div>
+              <div id="conditionalUseDefectReason" style="font-size: 11.5px; color: #b91c1c; margin-top: 1px;"></div>
+              <div id="conditionalUseReasonText" style="font-size: 11.5px; color: #78350f;"></div>
+              <div style="display: none;"><span id="conditionalUseBy"></span><span id="conditionalUseAt"></span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Repair Lock Banner -->
+        <div id="repairLockBanner" class="status-strip-banner danger" style="display: none;">
+          <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
+            <span class="material-icons-round" style="font-size: 20px;">lock</span>
+            <div>
+              <div id="repairLockTitle" style="font-weight: 700;">งดใช้งานชั่วคราว (อยู่ระหว่างซ่อมบำรุง)</div>
+              <div id="repairLockReason" style="font-size: 11.5px; opacity: 0.9;"></div>
+              <div style="display: none;"><span id="repairLockReportedBy"></span><span id="repairLockReportedAt"></span></div>
+            </div>
+          </div>
+          <span id="repairStatusBadgePill" style="font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: #dc2626; color: #fff;">รอซ่อม</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Card 2: Checklist & Sign-Off -->
+    <div class="checklist-locked-wrapper" id="checklistWrapper">
+      <!-- Lock Overlay: Under Repair -->
+      <div class="checklist-lock-overlay" id="deviceRepairLockOverlay" style="display: none;">
+        <span class="material-icons-round" style="font-size: 46px; color: #dc2626; margin-bottom: 8px;">build_circle</span>
+        <div style="font-size: 16px; font-weight: 700; color: #991b1b;">เครื่องมืออยู่ระหว่างแจ้งซ่อม</div>
+        <div style="font-size: 12.5px; color: #64748b; margin-top: 4px;" id="deviceRepairLockMsg">รอช่างบันทึกซ่อมเสร็จสิ้น หรือกดอนุญาตให้ใช้ชั่วคราวในหน้า Admin</div>
+      </div>
+
+      <!-- Lock Overlay: Outside Monthly Period -->
+      <div class="checklist-lock-overlay" id="devicePeriodLockOverlay" style="display: none;">
+        <span class="material-icons-round" style="font-size: 46px; color: #0284c7; margin-bottom: 8px;">event_busy</span>
+        <div style="font-size: 16px; font-weight: 700; color: #0369a1;">นอกรอบตรวจรายเดือน (เปิดวันที่ 1–5)</div>
+        <div style="font-size: 12.5px; color: #64748b; margin-top: 4px;" id="devicePeriodLockMsg">เครื่องความเสี่ยงต่ำประเมินเฉพาะวันที่ 1–5 ของเดือน</div>
+      </div>
+
+      <section class="m-card">
+        <div class="checklist-header-bar">
+          <div class="checklist-title-wrap">
+            <span class="material-icons-round" style="color: var(--brand-primary); font-size: 20px;">fact_check</span>
+            <span>หัวข้อตรวจเช็ค</span>
+          </div>
+        </div>
+
+        <div id="checklistItemsList"></div>
+
+        <!-- Sign-off inputs inside card -->
+        <div class="signoff-section">
+          <div class="signoff-grid">
+            <!-- Optional Note -->
+            <div>
+              <label for="evalAbnormalNote" style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 4px; margin-bottom: 6px;">
+                <span class="material-icons-round" style="font-size: 16px; color: var(--text-muted);">edit_note</span>
+                <span>หมายเหตุ / อาการ (ถ้ามี)</span>
+              </label>
+              <input type="text" id="evalAbnormalNote" class="input-clean" placeholder="ระบุเพิ่มเติม (ไม่บังคับ)...">
+            </div>
+
+            <!-- Evaluator Autocomplete -->
+            <div style="position: relative;" id="evaluatorFieldContainer">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                <label for="evaluatorSearchInput" style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
+                  <span class="material-icons-round" style="font-size: 16px; color: var(--brand-sky);">badge</span>
+                  <span>ผู้ตรวจเช็ค</span>
+                </label>
+                <span id="evaluatorVerifiedBadge" style="display: none; font-size: 11px; color: var(--emerald); font-weight: 700; align-items: center; gap: 3px;">
+                  <span class="material-icons-round" style="font-size: 14px;">verified</span> ยืนยันแล้ว
+                </span>
+              </div>
+
+              <div style="position: relative;" id="evaluatorInputWrapper">
+                <input type="text" id="evaluatorSearchInput" class="input-clean"
+                       style="padding-right: 36px; font-weight: 600;"
+                       placeholder="พิมพ์รหัสพนักงาน 6 หลัก หรือ ชื่อ..."
+                       autocomplete="off"
+                       oninput="handleEvaluatorSearch(this.value)"
+                       onfocus="handleEvaluatorFocus()"
+                       onkeydown="handleEvaluatorKeyDown(event)" required>
+                <button type="button" id="btnClearEvaluator" onclick="clearEvaluatorSelection()"
+                        style="display: none; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: #f1f5f9; border: none; color: #64748b; cursor: pointer; border-radius: 50%; width: 28px; height: 28px; align-items: center; justify-content: center;">
+                  <span class="material-icons-round" style="font-size: 16px;">close</span>
+                </button>
+                <div id="evaluatorDropdownTray" class="evaluator-dropdown-tray" style="display: none;"></div>
+              </div>
+              <input type="hidden" id="evaluatorName" value="">
+              <input type="hidden" id="evaluatorEmpId" value="">
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+  </main>
+
+  <!-- Fixed Bottom Action Bar -->
+  <div class="m-bottom-bar">
+    <div id="checklistProgressBadge" class="progress-pill">0 / 0</div>
+    <button type="button" onclick="submitEvaluation()" id="btnSubmitEval" class="btn-submit-main">
+      <span class="material-icons-round">check_circle</span>
+      <span>บันทึกผลการตรวจ</span>
+    </button>
+  </div>
+
+  <!-- Success Modal -->
+  <div id="successModal" class="modal-overlay hidden" onclick="if(event.target === this) closeSuccessModal()">
+    <div class="modal-box">
+      <div style="width: 58px; height: 58px; border-radius: 50%; background: var(--emerald-bg); color: var(--emerald); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto;">
+        <span class="material-icons-round" style="font-size: 34px;">check_circle</span>
+      </div>
+      <div style="font-size: 18px; font-weight: 800; color: var(--text-main); margin-bottom: 6px;">บันทึกผลสำเร็จ</div>
+      <div style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 20px; white-space: pre-line;" id="successModalSub">ซิงค์ข้อมูลเรียบร้อยแล้ว</div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <button type="button" onclick="resetFormForNext()" class="btn-submit-main" style="width: 100%; height: 46px; font-size: 14.5px;">
+          <span class="material-icons-round" style="font-size: 18px;">arrow_forward</span>
+          <span>ตรวจเครื่องถัดไป</span>
+        </button>
+        <button type="button" onclick="closeSuccessModal()" class="btn-check-choice" style="width: 100%; height: 42px;">ปิด</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toastNotice">
+    <span class="material-icons-round" style="color: #38bdf8; font-size: 19px;">info</span>
+    <span id="toastMsg">แจ้งเตือน</span>
+  </div>
+
+  <!-- Shared Core Data & Cloud Sync Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/api.js"></script>
+
+  <!-- Complete Javascript Logic matching eval.html -->
+  <script>
+    var currentDevice = null;
+    var currentForm = null;
+    var checklistState = {};
+    var isDeviceLockedForRepair = false;
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // ==================== EVALUATOR AUTOCOMPLETE ====================
+    var activeEvaluatorIndex = -1;
+    var currentEvaluatorList = [];
+
+    function handleEvaluatorFocus() {
+      var input = document.getElementById('evaluatorSearchInput');
+      var val = input ? input.value.trim() : '';
+      if (val.length > 0) handleEvaluatorSearch(val);
+    }
+
+    function handleEvaluatorSearch(query) {
+      var tray = document.getElementById('evaluatorDropdownTray');
+      var clearBtn = document.getElementById('btnClearEvaluator');
+      if (!tray) return;
+
+      var q = (query || '').toLowerCase().trim();
+      if (clearBtn) clearBtn.style.display = q ? 'inline-flex' : 'none';
+
+      if (!q) {
+        tray.style.display = 'none';
+        tray.innerHTML = '';
+        currentEvaluatorList = [];
+        activeEvaluatorIndex = -1;
+        return;
+      }
+
+      var users = (window.PPCH_CONFIG && window.PPCH_CONFIG.USERS) ? window.PPCH_CONFIG.USERS : [];
+      var matches = users.filter(function (u) {
+        var empId = (u.empId || '').toLowerCase();
+        var name = (u.name || '').toLowerCase();
+        return empId.indexOf(q) !== -1 || name.indexOf(q) !== -1;
+      });
+
+      currentEvaluatorList = matches;
+      activeEvaluatorIndex = -1;
+
+      if (matches.length === 0) {
+        tray.innerHTML = '<div style="padding: 12px; font-size: 12px; color: var(--text-muted); text-align: center;">ไม่พบรายชื่อในระบบ (สามารถใช้ชื่อนี้ได้)</div>';
+        tray.style.display = 'block';
+        return;
+      }
+
+      var html = '';
+      matches.forEach(function (u, idx) {
+        var deptName = (window.PPCH_STORE && window.PPCH_STORE.getDepartmentName) ? window.PPCH_STORE.getDepartmentName(u.department) : u.department;
+        html += '<div class="evaluator-item" data-idx="' + idx + '" onclick="selectEvaluator(' + idx + ')">' +
+          '<div>' +
+            '<div style="font-weight: 700; font-size: 13.5px; color: var(--text-main);">' + escapeHtml(u.name) + '</div>' +
+            '<div style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">' + (u.empId ? u.empId.padStart(6, '0') : '-') + ' • ' + escapeHtml(deptName) + '</div>' +
+          '</div>' +
+          '<span class="material-icons-round" style="font-size: 18px; color: var(--brand-sky);">add_circle_outline</span>' +
+        '</div>';
+      });
+      tray.innerHTML = html;
+      tray.style.display = 'block';
+    }
+
+    function selectEvaluator(idx) {
+      var u = currentEvaluatorList[idx];
+      if (!u) return;
+      var empIdClean = (u.empId || '').padStart(6, '0');
+      document.getElementById('evaluatorSearchInput').value = u.name + ' (' + empIdClean + ')';
+      document.getElementById('evaluatorName').value = u.name;
+      document.getElementById('evaluatorEmpId').value = empIdClean;
+
+      var verified = document.getElementById('evaluatorVerifiedBadge');
+      if (verified) verified.style.display = 'inline-flex';
+
+      var tray = document.getElementById('evaluatorDropdownTray');
+      if (tray) tray.style.display = 'none';
+
+      var clearBtn = document.getElementById('btnClearEvaluator');
+      if (clearBtn) clearBtn.style.display = 'inline-flex';
+    }
+
+    function clearEvaluatorSelection() {
+      document.getElementById('evaluatorSearchInput').value = '';
+      document.getElementById('evaluatorName').value = '';
+      document.getElementById('evaluatorEmpId').value = '';
+      var verified = document.getElementById('evaluatorVerifiedBadge');
+      if (verified) verified.style.display = 'none';
+      var clearBtn = document.getElementById('btnClearEvaluator');
+      if (clearBtn) clearBtn.style.display = 'none';
+      var tray = document.getElementById('evaluatorDropdownTray');
+      if (tray) tray.style.display = 'none';
+    }
+
+    function handleEvaluatorKeyDown(e) {
+      var tray = document.getElementById('evaluatorDropdownTray');
+      if (!tray || tray.style.display === 'none' || currentEvaluatorList.length === 0) return;
+
+      var items = tray.querySelectorAll('.evaluator-item');
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        activeEvaluatorIndex = (activeEvaluatorIndex + 1) % items.length;
+        updateTrayHighlight(items);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        activeEvaluatorIndex = (activeEvaluatorIndex - 1 + items.length) % items.length;
+        updateTrayHighlight(items);
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (activeEvaluatorIndex >= 0 && activeEvaluatorIndex < items.length) {
+          selectEvaluator(activeEvaluatorIndex);
+        }
+      } else if (e.key === 'Escape') {
+        tray.style.display = 'none';
+      }
+    }
+
+    function updateTrayHighlight(items) {
+      items.forEach(function (el, i) {
+        if (i === activeEvaluatorIndex) {
+          el.classList.add('highlighted');
+          el.scrollIntoView({ block: 'nearest' });
+        } else {
+          el.classList.remove('highlighted');
+        }
+      });
+    }
+
+    document.addEventListener('click', function (e) {
+      var container = document.getElementById('evaluatorFieldContainer');
+      var tray = document.getElementById('evaluatorDropdownTray');
+      if (container && !container.contains(e.target) && tray) {
+        tray.style.display = 'none';
+      }
+    });
+
+    // ==================== APP INITIALIZATION ====================
+    window.addEventListener('DOMContentLoaded', function () {
+      initDateTimeInput();
+      populateDeptDropdown();
+
+      PPCH_API.fetchOverview(function (cloudData) {
+        if (window.PPCH_STORE && cloudData) {
+          window.PPCH_STORE.syncFromCloud(cloudData);
+        }
+        setupDeviceTypeDropdown();
+        hideLoader();
+        handleUrlParams();
+      });
+
+      // Realtime cross-tab synchronization
+      if (window.PPCH_API && window.PPCH_API.initRealtime) {
+        window.PPCH_API.initRealtime(function () {
+          PPCH_API.fetchOverview(function (latest) {
+            if (window.PPCH_STORE && latest) {
+              window.PPCH_STORE.syncFromCloud(latest);
+            }
+          });
+        });
+      }
+    });
+
+    function hideLoader() {
+      var loader = document.getElementById('pageLoader');
+      if (loader) {
+        loader.style.opacity = '0';
+        setTimeout(function () { loader.style.display = 'none'; }, 260);
+      }
+    }
+
+    function initDateTimeInput() {
+      var input = document.getElementById('evalDateTimeInput');
+      if (!input) return;
+      var now = new Date();
+      var localIso = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+      input.value = localIso;
+    }
+
+    function onDateTimeChanged() {
+      if (currentDevice) {
+        refreshBannersAndLocks(currentDevice);
+      }
+    }
+
+    function populateDeptDropdown() {
+      var sel = document.getElementById('evalDeptSelect');
+      if (!sel) return;
+      sel.innerHTML = '<option value="">เลือกตำแหน่งปัจจุบันของเครื่องมือ</option>';
+      var depts = (window.PPCH_CONFIG && window.PPCH_CONFIG.DEPARTMENTS) ? window.PPCH_CONFIG.DEPARTMENTS : [];
+      depts.forEach(function (d) {
+        var opt = document.createElement('option');
+        opt.value = d.id;
+        opt.innerText = d.name;
+        sel.appendChild(opt);
+      });
+    }
+
+    function setupDeviceTypeDropdown() {
+      var typeSel = document.getElementById('evalDeviceTypeSelect');
+      if (!typeSel) return;
+      var equips = (window.PPCH_STORE && window.PPCH_STORE.getAllEquipment) ? window.PPCH_STORE.getAllEquipment() : [];
+
+      var namesMap = {};
+      equips.forEach(function (eq) {
+        var n = (eq.name || 'ไม่ระบุชื่อ').trim();
+        if (n) namesMap[n] = true;
+      });
+
+      var uniqueNames = Object.keys(namesMap).sort(function (a, b) {
+        return a.localeCompare(b, 'th');
+      });
+
+      typeSel.innerHTML = '<option value="">-- เลือกชื่อเครื่องมือแพทย์ --</option>';
+      uniqueNames.forEach(function (name) {
+        var count = equips.filter(function (e) { return (e.name || 'ไม่ระบุชื่อ').trim() === name; }).length;
+        var opt = document.createElement('option');
+        opt.value = name;
+        opt.innerText = name + (count > 1 ? ' (' + count + ' เครื่อง)' : '');
+        typeSel.appendChild(opt);
+      });
+    }
+
+    function onDeviceTypeChanged() {
+      var typeSel = document.getElementById('evalDeviceTypeSelect');
+      var codeSel = document.getElementById('evalDeviceSelect');
+      if (!typeSel || !codeSel) return;
+
+      var selectedName = typeSel.value;
+      codeSel.innerHTML = '<option value="">-- เลือกรหัสเครื่องมือแพทย์ --</option>';
+
+      if (!selectedName) {
+        resetDeviceSelection();
+        return;
+      }
+
+      var equips = window.PPCH_STORE.getAllEquipment().filter(function (e) {
+        return (e.name || 'ไม่ระบุชื่อ').trim() === selectedName;
+      });
+
+      equips.forEach(function (eq) {
+        var opt = document.createElement('option');
+        opt.value = eq.id;
+        opt.innerText = eq.assetCode;
+        codeSel.appendChild(opt);
+      });
+
+      if (equips.length === 1) {
+        codeSel.value = equips[0].id;
+        onDeviceSelected();
+      } else {
+        resetDeviceSelection();
+      }
+    }
+
+    function onDeviceSelected() {
+      var codeSel = document.getElementById('evalDeviceSelect');
+      var typeSel = document.getElementById('evalDeviceTypeSelect');
+      if (!codeSel || !codeSel.value) {
+        resetDeviceSelection();
+        return;
+      }
+
+      var devId = codeSel.value;
+      var eq = window.PPCH_STORE.getEquipmentById(devId);
+      if (!eq) return;
+
+      currentDevice = eq;
+
+      if (typeSel && typeSel.value !== (eq.name || 'ไม่ระบุชื่อ').trim()) {
+        typeSel.value = (eq.name || 'ไม่ระบุชื่อ').trim();
+      }
+
+      var deptSel = document.getElementById('evalDeptSelect');
+      if (deptSel) {
+        deptSel.value = eq.currentDept || eq.homeDept || 'er';
+      }
+
+      var form = window.PPCH_STORE.getFormById(eq.formId);
+      currentForm = form;
+
+      var heading = document.getElementById('formNameHeading');
+      if (heading) heading.innerText = (eq.name || 'เครื่องมือแพทย์') + ' (' + eq.assetCode + ')';
+
+      var catPill = document.getElementById('badgeCategoryPill');
+      if (catPill) {
+        catPill.style.display = 'inline-flex';
+        catPill.innerText = form ? (form.shortName || form.name) : eq.formId;
+      }
+
+      var riskPill = document.getElementById('badgeRiskPill');
+      var isLowRisk = (eq.riskLevel === 'low' || eq.frequency === 'monthly');
+      if (riskPill) {
+        riskPill.style.display = 'inline-flex';
+        if (isLowRisk) {
+          riskPill.innerText = 'เสี่ยงต่ำ (รายเดือน 1–5)';
+          riskPill.style.background = '#e0f2fe';
+          riskPill.style.color = '#0284c7';
+          riskPill.style.borderColor = '#7dd3fc';
+        } else {
+          riskPill.innerText = 'เสี่ยงสูง (รายวัน)';
+          riskPill.style.background = '#fef2f2';
+          riskPill.style.color = '#dc2626';
+          riskPill.style.borderColor = '#fca5a5';
+        }
+      }
+
+      refreshBannersAndLocks(eq);
+      renderChecklistItems(form);
+      updateStepperState();
+    }
+
+    function resetDeviceSelection() {
+      currentDevice = null;
+      currentForm = null;
+      checklistState = {};
+      isDeviceLockedForRepair = false;
+
+      var heading = document.getElementById('formNameHeading');
+      if (heading) heading.innerText = 'เลือกเครื่องมือแพทย์';
+
+      var catPill = document.getElementById('badgeCategoryPill');
+      if (catPill) catPill.style.display = 'none';
+      var riskPill = document.getElementById('badgeRiskPill');
+      if (riskPill) riskPill.style.display = 'none';
+
+      document.getElementById('reCheckNoticeBanner').style.display = 'none';
+      document.getElementById('conditionalUseBanner').style.display = 'none';
+      document.getElementById('repairLockBanner').style.display = 'none';
+      document.getElementById('deviceRepairLockOverlay').style.display = 'none';
+      document.getElementById('devicePeriodLockOverlay').style.display = 'none';
+
+      document.getElementById('checklistItemsList').innerHTML =
+        '<div style="text-align: center; color: var(--text-muted); padding: 36px 16px; font-size: 13px;">' +
+        '<span class="material-icons-round" style="font-size: 40px; color: #cbd5e1; display: block; margin-bottom: 8px;">touch_app</span>' +
+        'กรุณาเลือกเครื่องมือแพทย์จากขั้นตอนด้านบน</div>';
+
+      updateChecklistProgress();
+      updateStepperState();
+    }
+
+    function refreshBannersAndLocks(eq) {
+      var isAbnormal = (eq.status === 'abnormal' || eq.repairStatus === 'reported');
+      var isInProgress = (eq.status === 'in_progress' || eq.repairStatus === 'in_progress');
+      var isConditional = (eq.status === 'conditional_ready' || eq.allowUse === true);
+
+      var repairBanner = document.getElementById('repairLockBanner');
+      var repairOverlay = document.getElementById('deviceRepairLockOverlay');
+      var condBanner = document.getElementById('conditionalUseBanner');
+      var recheckBanner = document.getElementById('reCheckNoticeBanner');
+
+      if ((isAbnormal || isInProgress) && !isConditional) {
+        isDeviceLockedForRepair = true;
+        if (repairBanner) {
+          repairBanner.style.display = 'flex';
+          var pill = document.getElementById('repairStatusBadgePill');
+          if (pill) {
+            pill.innerText = isInProgress ? 'กำลังซ่อม' : 'รอรับทราบ';
+            pill.style.background = isInProgress ? '#f59e0b' : '#dc2626';
+          }
+          var reasonEl = document.getElementById('repairLockReason');
+          if (reasonEl) reasonEl.innerText = eq.abnormalReason ? ('อาการ: ' + eq.abnormalReason) : 'เครื่องถูกแจ้งชำรุด';
+        }
+        if (repairOverlay) repairOverlay.style.display = 'flex';
+      } else {
+        isDeviceLockedForRepair = false;
+        if (repairBanner) repairBanner.style.display = 'none';
+        if (repairOverlay) repairOverlay.style.display = 'none';
+      }
+
+      if (isConditional) {
+        if (condBanner) {
+          condBanner.style.display = 'flex';
+          var condDefect = document.getElementById('conditionalUseDefectReason');
+          if (condDefect) condDefect.innerText = eq.abnormalReason ? ('ปัญหา: ' + eq.abnormalReason) : '';
+          var condText = document.getElementById('conditionalUseReasonText');
+          if (condText) condText.innerText = eq.allowUseReason ? ('เหตุผลผ่อนผัน: ' + eq.allowUseReason) : '';
+        }
+      } else {
+        if (condBanner) condBanner.style.display = 'none';
+      }
+
+      // Check Period Lock for Low Risk (Days 1–5 only)
+      var isLowRisk = (eq.riskLevel === 'low' || eq.frequency === 'monthly');
+      var periodOverlay = document.getElementById('devicePeriodLockOverlay');
+      if (isLowRisk) {
+        var dtInput = document.getElementById('evalDateTimeInput');
+        var evalDate = dtInput && dtInput.value ? new Date(dtInput.value) : new Date();
+        var dayOfMonth = evalDate.getDate();
+        if (dayOfMonth > 5) {
+          if (periodOverlay) periodOverlay.style.display = 'flex';
+        } else {
+          if (periodOverlay) periodOverlay.style.display = 'none';
+        }
+      } else {
+        if (periodOverlay) periodOverlay.style.display = 'none';
+      }
+
+      // Re-check detection
+      var evals = (window.PPCH_STORE && window.PPCH_STORE.getAllEvaluations) ? window.PPCH_STORE.getAllEvaluations() : [];
+      var dtInputVal = document.getElementById('evalDateTimeInput') ? document.getElementById('evalDateTimeInput').value : '';
+      var dateKey = dtInputVal ? dtInputVal.slice(0, 10) : new Date().toISOString().slice(0, 10);
+
+      var matchingToday = evals.filter(function (ev) {
+        return (ev.deviceId === eq.id || ev.deviceAsset === eq.assetCode) &&
+               ev.evaluatedAt && ev.evaluatedAt.indexOf(dateKey) === 0;
+      });
+
+      if (matchingToday.length > 0 && recheckBanner) {
+        matchingToday.sort(function (a, b) { return (b.evaluatedAt || '').localeCompare(a.evaluatedAt || ''); });
+        var latest = matchingToday[0];
+        recheckBanner.style.display = 'flex';
+        var desc = document.getElementById('reCheckDesc');
+        if (desc) desc.innerText = 'รอบ ' + (latest.evaluatedAt.slice(11, 16) || '') + ' น. โดย ' + (latest.evaluatedBy || 'ไม่ระบุ');
+        var badge = document.getElementById('reCheckPrevStatusBadge');
+        if (badge) {
+          badge.innerText = latest.result === 'normal' ? 'พร้อมใช้' : 'พบปัญหา';
+          badge.style.background = latest.result === 'normal' ? '#ecfdf5' : '#fef2f2';
+          badge.style.color = latest.result === 'normal' ? '#059669' : '#dc2626';
+          badge.style.borderColor = latest.result === 'normal' ? '#a7f3d0' : '#fecaca';
+        }
+      } else if (recheckBanner) {
+        recheckBanner.style.display = 'none';
+      }
+    }
+
+    function renderChecklistItems(form) {
+      var container = document.getElementById('checklistItemsList');
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (!form || !form.items || form.items.length === 0) {
+        container.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 24px;">ไม่พบรายการตรวจเช็คสำหรับฟอร์มนี้</div>';
+        return;
+      }
+
+      checklistState = {};
+      var isConditional = (currentDevice && (currentDevice.status === 'conditional_ready' || currentDevice.allowUse === true));
+
+      form.items.forEach(function (text, idx) {
+        var numStr = (idx + 1);
+        var div = document.createElement('div');
+        div.id = 'checkItemRow_' + idx;
+
+        var isThisItemConditional = isConditional && (
+          (currentDevice.abnormalReason && text.indexOf(currentDevice.abnormalReason) !== -1) ||
+          (idx === 0)
+        );
+
+        if (isThisItemConditional) {
+          checklistState[idx] = 'conditional';
+          div.className = 'checklist-item row-conditional';
+          div.innerHTML =
+            '<div class="item-left">' +
+              '<span class="item-num-badge"><span class="material-icons-round" style="font-size: 16px;">build</span></span>' +
+              '<div class="item-text">' + escapeHtml(text) + '</div>' +
+            '</div>' +
+            '<div class="item-btn-group">' +
+              '<span class="badge-conditional-locked" title="ผ่อนผันรอซ่อม (รับทราบแล้ว)">' +
+                '<span class="material-icons-round" style="font-size: 16px;">build_circle</span>' +
+                '<span>ผ่อนผันรอซ่อม (ล็อกอัตโนมัติ)</span>' +
+              '</span>' +
+            '</div>';
+        } else {
+          checklistState[idx] = null;
+          div.className = 'checklist-item';
+          div.innerHTML =
+            '<div class="item-left">' +
+              '<span class="item-num-badge" id="itemBadge_' + idx + '">' + numStr + '</span>' +
+              '<div class="item-text">' + escapeHtml(text) + '</div>' +
+            '</div>' +
+            '<div class="item-btn-group">' +
+              '<button type="button" class="btn-check-choice" id="btnPass_' + idx + '" onclick="setChoice(' + idx + ', \'pass\')" ' + (isDeviceLockedForRepair ? 'disabled' : '') + '>' +
+                '<span class="material-icons-round" style="font-size: 18px;">check</span>' +
+                '<span>ปกติ (ผ่าน)</span>' +
+              '</button>' +
+              '<button type="button" class="btn-check-choice" id="btnFail_' + idx + '" onclick="setChoice(' + idx + ', \'fail\')" ' + (isDeviceLockedForRepair ? 'disabled' : '') + '>' +
+                '<span class="material-icons-round" style="font-size: 18px;">close</span>' +
+                '<span>พบปัญหา</span>' +
+              '</button>' +
+            '</div>';
+        }
+        container.appendChild(div);
+      });
+
+      updateChecklistProgress();
+    }
+
+    function setChoice(idx, choice) {
+      if (isDeviceLockedForRepair) return;
+      checklistState[idx] = choice;
+
+      var row = document.getElementById('checkItemRow_' + idx);
+      var badge = document.getElementById('itemBadge_' + idx);
+      if (row) {
+        row.classList.remove('item-unanswered-highlight', 'row-pass', 'row-fail');
+        row.classList.add(choice === 'pass' ? 'row-pass' : 'row-fail');
+      }
+      if (badge) {
+        badge.innerHTML = choice === 'pass'
+          ? '<span class="material-icons-round" style="font-size: 17px;">check</span>'
+          : '<span class="material-icons-round" style="font-size: 17px;">priority_high</span>';
+      }
+
+      var btnPass = document.getElementById('btnPass_' + idx);
+      var btnFail = document.getElementById('btnFail_' + idx);
+      if (choice === 'pass') {
+        btnPass.className = 'btn-check-choice active-pass';
+        btnFail.className = 'btn-check-choice';
+      } else {
+        btnPass.className = 'btn-check-choice';
+        btnFail.className = 'btn-check-choice active-fail';
+      }
+
+      updateChecklistProgress();
+    }
+
+    function updateStepperState() {
+      var s1 = document.getElementById('step1_device');
+      var s2 = document.getElementById('step2_check');
+      var s3 = document.getElementById('step3_submit');
+      if (!s1 || !s2 || !s3) return;
+
+      var total = (currentForm && currentForm.items) ? currentForm.items.length : 0;
+      var answered = 0;
+      for (var k in checklistState) {
+        if (checklistState[k] !== null && checklistState[k] !== undefined) answered++;
+      }
+      var isAllDone = total > 0 && answered === total;
+
+      if (!currentDevice) {
+        s1.className = 'stepper-step active';
+        s2.className = 'stepper-step';
+        s3.className = 'stepper-step';
+      } else if (!isAllDone) {
+        s1.className = 'stepper-step done';
+        s2.className = 'stepper-step active';
+        s3.className = 'stepper-step';
+      } else {
+        s1.className = 'stepper-step done';
+        s2.className = 'stepper-step done';
+        s3.className = 'stepper-step active';
+      }
+    }
+
+    function updateChecklistProgress() {
+      var badge = document.getElementById('checklistProgressBadge');
+      if (!badge) return;
+
+      var total = (currentForm && currentForm.items) ? currentForm.items.length : 0;
+      var answered = 0;
+      for (var k in checklistState) {
+        if (checklistState[k] !== null && checklistState[k] !== undefined) answered++;
+      }
+
+      badge.innerHTML = '<span class="material-icons-round" style="font-size: 15px;">pie_chart</span> ' + answered + ' / ' + total + ' ข้อ';
+      if (total > 0 && answered === total) {
+        badge.classList.add('all-done');
+      } else {
+        badge.classList.remove('all-done');
+      }
+      updateStepperState();
+    }
+
+    // ==================== SUBMIT EVALUATION ====================
+    function submitEvaluation() {
+      if (isDeviceLockedForRepair) {
+        showToast('เครื่องมืออยู่ระหว่างซ่อมบำรุง ไม่สามารถบันทึกผลได้');
+        return;
+      }
+      if (!currentDevice) {
+        showToast('กรุณาเลือกเครื่องมือแพทย์ก่อน');
+        return;
+      }
+      if (!currentForm || !currentForm.items || currentForm.items.length === 0) {
+        showToast('ไม่พบรายการตรวจเช็ค');
+        return;
+      }
+
+      // Check unanswered items
+      var total = currentForm.items.length;
+      var unanswered = [];
+      for (var i = 0; i < total; i++) {
+        if (checklistState[i] === null || checklistState[i] === undefined) {
+          unanswered.push(i);
+        }
+      }
+      if (unanswered.length > 0) {
+        unanswered.forEach(function (idx) {
+          var row = document.getElementById('checkItemRow_' + idx);
+          if (row) row.classList.add('item-unanswered-highlight');
+        });
+        var firstRow = document.getElementById('checkItemRow_' + unanswered[0]);
+        if (firstRow) firstRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        showToast('กรุณาตอบคำถามให้ครบทุกข้อ (เหลือ ' + unanswered.length + ' ข้อ)');
+        return;
+      }
+
+      var evaluatorInput = document.getElementById('evaluatorSearchInput');
+      var evalVal = evaluatorInput ? evaluatorInput.value.trim() : '';
+      if (!evalVal) {
+        if (evaluatorInput) evaluatorInput.focus();
+        showToast('กรุณาระบุผู้ตรวจเช็ค');
+        return;
+      }
+
+      // Midnight Cutoff Check
+      var dtInput = document.getElementById('evalDateTimeInput');
+      var chosenDateStr = dtInput && dtInput.value ? dtInput.value.slice(0, 10) : '';
+      var todayStr = new Date().toISOString().slice(0, 10);
+      if (chosenDateStr && chosenDateStr < todayStr) {
+        showToast('ระบบตัดรอบเที่ยงคืนแล้ว ไม่อนุญาตให้ประเมินย้อนหลัง');
+        return;
+      }
+
+      var note = document.getElementById('evalAbnormalNote') ? document.getElementById('evalAbnormalNote').value.trim() : '';
+      var deptSel = document.getElementById('evalDeptSelect');
+      var department = deptSel && deptSel.value ? deptSel.value : (currentDevice.currentDept || 'er');
+
+      // Determine result: abnormal if any fail
+      var hasFail = false;
+      var failIndices = [];
+      for (var k in checklistState) {
+        if (checklistState[k] === 'fail') {
+          hasFail = true;
+          failIndices.push(parseInt(k, 10));
+        }
+      }
+
+      var result = hasFail ? 'abnormal' : 'normal';
+      var answers = [];
+      currentForm.items.forEach(function (txt, idx) {
+        answers.push({
+          item: txt,
+          result: checklistState[idx] || 'pass'
+        });
+      });
+
+      var evaluatorName = document.getElementById('evaluatorName').value.trim();
+      var evaluatorEmpId = document.getElementById('evaluatorEmpId').value.trim();
+      if (!evaluatorName) {
+        var cleanInput = evalVal.replace(/\(.*?\)/g, '').trim();
+        evaluatorName = cleanInput || evalVal;
+      }
+      if (evaluatorEmpId) {
+        evaluatorEmpId = evaluatorEmpId.padStart(6, '0');
+      }
+
+      var evalRecord = {
+        id: 'EVAL_' + Date.now(),
+        deviceId: currentDevice.id,
+        deviceAsset: currentDevice.assetCode,
+        deviceName: currentDevice.name,
+        formId: currentForm.id,
+        department: department,
+        evaluatedAt: dtInput && dtInput.value ? dtInput.value : new Date().toISOString(),
+        evaluatedBy: evaluatorName,
+        evaluatorEmpId: evaluatorEmpId,
+        result: result,
+        answers: answers,
+        abnormalNote: note || (hasFail ? 'พบข้อบกพร่องข้อที่ ' + failIndices.map(function (n) { return n + 1; }).join(', ') : '')
+      };
+
+      var btnSubmit = document.getElementById('btnSubmitEval');
+      if (btnSubmit) {
+        btnSubmit.disabled = true;
+        btnSubmit.innerHTML = '<span class="material-icons-round" style="animation: spin 0.8s linear infinite;">sync</span> <span>กำลังบันทึก...</span>';
+      }
+
+      // 1. Instant local store update (< 1ms)
+      if (window.PPCH_STORE && window.PPCH_STORE.addEvaluation) {
+        window.PPCH_STORE.addEvaluation(evalRecord);
+      }
+
+      // 2. Cross-Tab Instant Broadcast (< 5ms sync to admin.html and all open tabs)
+      try {
+        if (typeof BroadcastChannel !== 'undefined') {
+          var bc = new BroadcastChannel('ppch_medtrack_sync');
+          bc.postMessage({
+            type: 'EVALUATION_SUBMITTED',
+            deviceId: evalRecord.deviceId,
+            result: evalRecord.result,
+            evaluatedAt: evalRecord.evaluatedAt,
+            data: evalRecord
+          });
+          bc.close();
+        }
+      } catch (e) {
+        console.warn('BroadcastChannel error:', e);
+      }
+
+      // 3. Save to Supabase Cloud & Mirror to Sheets in background
+      PPCH_API.saveEvaluation(evalRecord, function (res) {
+        if (btnSubmit) {
+          btnSubmit.disabled = false;
+          btnSubmit.innerHTML = '<span class="material-icons-round">check_circle</span> <span>บันทึกผลการตรวจ</span>';
+        }
+        if (res && res.success) {
+          openSuccessModal(evalRecord);
+        } else {
+          showToast('บันทึกสำเร็จในระบบ แต่การเชื่อมต่อคลาวด์ขัดข้อง: ' + (res ? res.message : ''));
+          openSuccessModal(evalRecord);
+        }
+      });
+    }
+
+    function openSuccessModal(record) {
+      var modal = document.getElementById('successModal');
+      var sub = document.getElementById('successModalSub');
+      if (sub && record) {
+        var statusTxt = record.result === 'normal' ? '✅ พร้อมใช้งาน 100%' : '⚠️ พบข้อบกพร่อง (แจ้งเตือนแล้ว)';
+        sub.innerText = (record.deviceName || '') + ' (' + (record.deviceAsset || '') + ')\n' + statusTxt;
+      }
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeSuccessModal() {
+      var modal = document.getElementById('successModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function resetFormForNext() {
+      closeSuccessModal();
+      var codeSel = document.getElementById('evalDeviceSelect');
+      if (codeSel) codeSel.value = '';
+      resetDeviceSelection();
+      var typeSel = document.getElementById('evalDeviceTypeSelect');
+      if (typeSel) typeSel.value = '';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showToast(msg) {
+      var toast = document.getElementById('toastNotice');
+      var txt = document.getElementById('toastMsg');
+      if (!toast || !txt) return;
+      txt.innerText = msg;
+      toast.classList.add('show');
+      setTimeout(function () {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    function handleUrlParams() {
+      try {
+        var params = new URLSearchParams(window.location.search);
+        var devId = params.get('deviceId') || params.get('id');
+        var formId = params.get('formId');
+        if (devId) {
+          var eq = window.PPCH_STORE.getEquipmentById(devId);
+          if (eq) {
+            var typeSel = document.getElementById('evalDeviceTypeSelect');
+            if (typeSel) {
+              typeSel.value = (eq.name || 'ไม่ระบุชื่อ').trim();
+              onDeviceTypeChanged();
+            }
+            var codeSel = document.getElementById('evalDeviceSelect');
+            if (codeSel) {
+              codeSel.value = eq.id;
+              onDeviceSelected();
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('URL params parsing error:', e);
+      }
+    }
+  </script>
+</body>
+</html>
