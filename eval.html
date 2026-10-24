@@ -580,33 +580,6 @@
       flex-shrink: 0;
     }
 
-    .btn-quick-pass-all {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 5px 12px;
-      border-radius: 999px;
-      font-family: var(--font-sans);
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      border: 1px solid var(--emerald-border);
-      background: var(--emerald-bg);
-      color: var(--emerald);
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-      transition: background-color 0.1s ease, border-color 0.1s ease;
-    }
-    .btn-quick-pass-all:hover {
-      background: #d1fae5;
-      border-color: #34d399;
-      color: #047857;
-    }
-    .btn-quick-pass-all:active {
-      transform: scale(0.97);
-    }
-
     .btn-check-choice {
       display: inline-flex;
       align-items: center;
@@ -904,7 +877,7 @@
     }
 
     /* ==================== PERFORMANCE LAYER (Smooth 60fps • zero click lag) ==================== */
-    button, input, select, textarea, a, .btn-check-choice, .btn-quick-pass-all {
+    button, input, select, textarea, a, .btn-check-choice {
       touch-action: manipulation;
     }
     @media (prefers-reduced-motion: reduce) {
@@ -1076,13 +1049,7 @@
             <span class="material-icons-round" style="color: var(--brand-primary); font-size: 20px;">fact_check</span>
             <span>หัวข้อตรวจเช็ค</span>
           </div>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <button type="button" id="btnQuickPassAll" onclick="quickPassAll()" class="btn-quick-pass-all" title="เลือก 'ผ่าน' ทุกข้อที่ไม่ได้ผ่อนผัน">
-              <span class="material-icons-round" style="font-size: 16px;">done_all</span>
-              <span>ผ่านทั้งหมด</span>
-            </button>
-            <div id="checklistProgressBadge" class="progress-pill">0 / 0</div>
-          </div>
+          <div id="checklistProgressBadge" class="progress-pill">0 / 0</div>
         </div>
 
         <div id="checklistItemsList"></div>
@@ -1793,30 +1760,6 @@
         btnFail.className = 'btn-check-choice active-fail';
       }
 
-      updateChecklistProgress();
-    }
-
-    function quickPassAll() {
-      if (isDeviceLockedForRepair) return;
-      if (!currentForm || !currentForm.items) return;
-      currentForm.items.forEach(function (text, idx) {
-        if (checklistState[idx] !== 'conditional') {
-          checklistState[idx] = 'pass';
-          var row = document.getElementById('checkItemRow_' + idx);
-          var badge = document.getElementById('itemBadge_' + idx);
-          if (row) {
-            row.classList.remove('item-unanswered-highlight', 'row-fail');
-            row.classList.add('row-pass');
-          }
-          if (badge) {
-            badge.innerHTML = '<span class="material-icons-round" style="font-size: 17px;">check</span>';
-          }
-          var btnPass = document.getElementById('btnPass_' + idx);
-          var btnFail = document.getElementById('btnFail_' + idx);
-          if (btnPass) btnPass.className = 'btn-check-choice active-pass';
-          if (btnFail) btnFail.className = 'btn-check-choice';
-        }
-      });
       updateChecklistProgress();
     }
 
