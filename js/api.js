@@ -847,8 +847,8 @@
     },
 
     // 6. Supabase Real-time Subscription
-    //    Debounced: one save touches several tables (evaluations + equipment + repairs) -> fire ONE refresh.
-    //    Paused while the tab is hidden, then refreshed once when the user returns.
+    //    Debounced (60ms): coalesces simultaneous table updates into a single immediate refresh.
+    //    Keeps in-memory state updated across tabs with zero lag.
     initRealtime: function (onChangeCallback) {
       var client = getSupabaseClient();
       if (!client) return null;
@@ -857,19 +857,15 @@
       var missedWhileHidden = false;
       function fireChange(table) {
         if (!onChangeCallback) return;
-        if (document.hidden) {
-          missedWhileHidden = true;
-          return;
-        }
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(function () {
           onChangeCallback(table);
-        }, 700);
+        }, 60);
       }
       document.addEventListener('visibilitychange', function () {
         if (!document.hidden && missedWhileHidden) {
           missedWhileHidden = false;
-          fireChange('resume');
+          if (onChangeCallback) onChangeCallback('resume');
         }
       });
 

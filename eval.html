@@ -616,6 +616,33 @@
       flex-shrink: 0;
     }
 
+    .btn-quick-pass-all {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--emerald-border);
+      background: var(--emerald-bg);
+      color: var(--emerald);
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      transition: background-color 0.1s ease, border-color 0.1s ease;
+    }
+    .btn-quick-pass-all:hover {
+      background: #d1fae5;
+      border-color: #34d399;
+      color: #047857;
+    }
+    .btn-quick-pass-all:active {
+      transform: scale(0.97);
+    }
+
     .btn-check-choice {
       display: inline-flex;
       align-items: center;
@@ -632,28 +659,34 @@
       border: 1.5px solid #e2e8f0;
       background: #f8fafc;
       color: var(--text-muted);
-      transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
       user-select: none;
+      transition: border-color 0.1s ease, color 0.1s ease;
     }
     .btn-check-choice:hover:not(:disabled) {
       background: #ffffff;
       border-color: #94a3b8;
       color: var(--text-main);
-      transform: translateY(-1px);
+    }
+    .btn-check-choice:active:not(:disabled) {
+      transform: scale(0.97);
     }
     .btn-check-choice.active-pass {
-      background: var(--emerald);
-      border-color: var(--emerald);
-      color: #ffffff;
-      box-shadow: 0 6px 16px -3px rgba(5, 150, 105, 0.42);
-      transform: scale(1.02);
+      background: var(--emerald) !important;
+      border-color: var(--emerald) !important;
+      color: #ffffff !important;
+      box-shadow: 0 4px 14px -2px rgba(5, 150, 105, 0.45) !important;
+      transform: none !important;
+      transition: none !important;
     }
     .btn-check-choice.active-fail {
-      background: var(--crimson);
-      border-color: var(--crimson);
-      color: #ffffff;
-      box-shadow: 0 6px 16px -3px rgba(220, 38, 38, 0.42);
-      transform: scale(1.02);
+      background: var(--crimson) !important;
+      border-color: var(--crimson) !important;
+      color: #ffffff !important;
+      box-shadow: 0 4px 14px -2px rgba(220, 38, 38, 0.45) !important;
+      transform: none !important;
+      transition: none !important;
     }
 
     .badge-conditional-locked {
@@ -906,9 +939,9 @@
       }
     }
 
-    /* ==================== PERFORMANCE LAYER (Smooth 60fps • same theme) ==================== */
-    *, *::before, *::after {
-      transition-property: color, background-color, border-color, box-shadow, opacity, transform, visibility !important;
+    /* ==================== PERFORMANCE LAYER (Smooth 60fps • zero click lag) ==================== */
+    button, input, select, textarea, a, .btn-check-choice, .btn-quick-pass-all {
+      touch-action: manipulation;
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
@@ -1112,7 +1145,13 @@
             <span class="material-icons-round" style="color: var(--brand-primary); font-size: 20px;">fact_check</span>
             <span>หัวข้อตรวจเช็ค</span>
           </div>
-          <div id="checklistProgressBadge" class="progress-pill">0 / 0</div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button type="button" id="btnQuickPassAll" onclick="quickPassAll()" class="btn-quick-pass-all" title="เลือก 'ผ่าน' ทุกข้อที่ไม่ได้ผ่อนผัน">
+              <span class="material-icons-round" style="font-size: 16px;">done_all</span>
+              <span>ผ่านทั้งหมด</span>
+            </button>
+            <div id="checklistProgressBadge" class="progress-pill">0 / 0</div>
+          </div>
         </div>
 
         <div id="checklistItemsList"></div>
@@ -1924,6 +1963,30 @@
       updateChecklistProgress();
     }
 
+    function quickPassAll() {
+      if (isDeviceLockedForRepair) return;
+      if (!currentForm || !currentForm.items) return;
+      currentForm.items.forEach(function (text, idx) {
+        if (checklistState[idx] !== 'conditional') {
+          checklistState[idx] = 'pass';
+          var row = document.getElementById('checkItemRow_' + idx);
+          var badge = document.getElementById('itemBadge_' + idx);
+          if (row) {
+            row.classList.remove('item-unanswered-highlight', 'row-fail');
+            row.classList.add('row-pass');
+          }
+          if (badge) {
+            badge.innerHTML = '<span class="material-icons-round" style="font-size: 17px;">check</span>';
+          }
+          var btnPass = document.getElementById('btnPass_' + idx);
+          var btnFail = document.getElementById('btnFail_' + idx);
+          if (btnPass) btnPass.className = 'btn-check-choice active-pass';
+          if (btnFail) btnFail.className = 'btn-check-choice';
+        }
+      });
+      updateChecklistProgress();
+    }
+
     function updateStepperState() {
       var s1 = document.getElementById('step1_device');
       var s2 = document.getElementById('step2_check');
@@ -2118,10 +2181,25 @@
 
       currentDevice.currentDept = chosenDept;
 
+      // 1. Optimistic Local Store Update (< 1ms instant state change)
+      if (window.PPCH_STORE && window.PPCH_STORE.recordEvaluation) {
+        window.PPCH_STORE.recordEvaluation(record);
+      }
+
+      // 2. Cross-Tab Instant Broadcast (< 5ms sync to admin.html and all open tabs)
+      if (typeof BroadcastChannel !== 'undefined') {
+        try {
+          var syncBc = new BroadcastChannel('ppch_medtrack_sync');
+          syncBc.postMessage({ type: 'EVALUATION_SAVED', record: record });
+        } catch (bcErr) {
+          console.warn('BroadcastChannel error:', bcErr);
+        }
+      }
+
       var btnSubmit = document.getElementById('btnSubmitEval');
       if (btnSubmit) {
         btnSubmit.disabled = true;
-        btnSubmit.innerHTML = '<span class="material-icons-round">sync</span><span>กำลังบันทึก...</span>';
+        btnSubmit.innerHTML = '<span class="material-icons-round spin">sync</span><span>กำลังบันทึก...</span>';
       }
 
       function onSavedSuccess() {
@@ -2129,7 +2207,6 @@
           btnSubmit.disabled = false;
           btnSubmit.innerHTML = '<span class="material-icons-round">check_circle</span><span>บันทึกผลการตรวจเช็ค</span>';
         }
-        window.PPCH_STORE.recordEvaluation(record);
         var statusMsgText = record.result === 'abnormal'
           ? '🔴 พบข้อบกพร่องใหม่ (แจ้งซ่อมทันที)'
           : (record.keepConditional ? '🟢 ตรวจผ่าน (คงสถานะผ่อนผันรอซ่อม)' : '🟢 พร้อมใช้งานปกติ');
