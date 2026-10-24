@@ -438,42 +438,6 @@
       color: #991b1b;
     }
 
-    /* ==================== UPS BATTERY POD ==================== */
-    .ups-pod {
-      padding: 18px 22px;
-      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
-      border: 1.5px solid #fcd34d;
-      border-radius: 22px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-    .runtime-box {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .runtime-digit-input {
-      width: 58px;
-      height: 46px;
-      text-align: center;
-      font-family: var(--font-mono);
-      font-size: 22px;
-      font-weight: 800;
-      color: var(--brand-navy);
-      background: #ffffff;
-      border: 2px solid #f59e0b;
-      border-radius: 12px;
-      outline: none;
-    }
-    .runtime-colon {
-      font-size: 22px;
-      font-weight: 800;
-      color: #b45309;
-    }
-
     /* ==================== CHECKLIST SECTION ==================== */
     .checklist-locked-wrapper {
       position: relative;
@@ -725,8 +689,8 @@
     }
 
     .signoff-grid {
-      display: grid;
-      grid-template-columns: 1.2fr 1fr;
+      display: flex;
+      flex-direction: column;
       gap: 12px;
     }
 
@@ -973,17 +937,6 @@
         </div>
       </div>
     </a>
-
-    <div class="topbar-actions">
-      <button type="button" id="btnDevSimUps" onclick="toggleSimulateUpsCycle()" class="btn-icon-pill" title="จำลองรอบตรวจแบตเตอรี่ UPS (วันที่ 1 & 16)">
-        <span class="material-icons-round" style="font-size: 17px; color: #d97706;">bolt</span>
-        <span id="btnDevSimUpsText">UPS</span>
-      </button>
-      <a href="admin.html" class="btn-icon-pill primary-nav" title="เปิดหน้าแดชบอร์ดบริหารจัดการ">
-        <span class="material-icons-round" style="font-size: 17px;">space_dashboard</span>
-        <span>แดชบอร์ด</span>
-      </a>
-    </div>
   </header>
 
   <main class="eval-container">
@@ -1037,7 +990,7 @@
           <div class="field-pod">
             <div class="field-pod-label">
               <span class="material-icons-round">qr_code_2</span>
-              <span>2. รหัสครุภัณฑ์</span>
+              <span>2. รหัสเครื่องมือแพทย์</span>
             </div>
             <select id="evalDeviceSelect" onchange="onDeviceSelected()">
               <option value="">-- เลือกรหัส --</option>
@@ -1050,7 +1003,7 @@
               <span>แผนกที่ใช้งาน</span>
             </div>
             <select id="evalDeptSelect">
-              <option value="">-- โหลดแผนก --</option>
+              <option value="">เลือกตำแหน่งปัจจุบันของเครื่องมือ</option>
             </select>
           </div>
 
@@ -1101,23 +1054,7 @@
       </div>
     </section>
 
-    <!-- Card 2: UPS Battery Check (Shown only on 1st & 16th or Sim) -->
-    <section id="cardUpsBattery" class="ups-pod" style="display: none;">
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <span class="material-icons-round" style="font-size: 28px; color: #d97706;">battery_charging_full</span>
-        <div>
-          <div style="font-size: 14px; font-weight: 700; color: #92400e;" id="upsNoticeTitle">ทดสอบสำรองไฟ UPS (รอบวันที่ 1 & 16)</div>
-          <div id="upsStatusFeedback" style="font-size: 12px; color: #b45309; font-weight: 600;">กรอกชั่วโมง : นาที เพื่อปลดล็อก</div>
-        </div>
-      </div>
-      <div class="runtime-box">
-        <input type="text" id="upsHours" class="runtime-digit-input" maxlength="2" placeholder="00" oninput="formatUpsDigit(this); validateUpsRuntime();" onkeydown="handleUpsDigitKey(event, 'upsMinutes')">
-        <span class="runtime-colon">:</span>
-        <input type="text" id="upsMinutes" class="runtime-digit-input" maxlength="2" placeholder="00" oninput="formatUpsDigit(this); validateUpsRuntime();" onkeydown="handleUpsDigitKey(event, null)">
-      </div>
-    </section>
-
-    <!-- Card 3: Tactile Checklist & Sign-Off -->
+    <!-- Card 2: Tactile Checklist & Sign-Off -->
     <div class="checklist-locked-wrapper" id="checklistWrapper">
       <!-- Lock Overlay: Under Repair -->
       <div class="checklist-lock-overlay" id="deviceRepairLockOverlay" style="display: none;">
@@ -1131,12 +1068,6 @@
         <span class="material-icons-round" style="font-size: 46px; color: #0284c7; margin-bottom: 8px;">event_busy</span>
         <div style="font-size: 16px; font-weight: 700; color: #0369a1;">นอกรอบตรวจรายเดือน (เปิดวันที่ 1–5)</div>
         <div style="font-size: 12.5px; color: #64748b; margin-top: 4px;" id="devicePeriodLockMsg">เครื่องความเสี่ยงต่ำประเมินเฉพาะวันที่ 1–5 ของเดือน</div>
-      </div>
-
-      <!-- Lock Overlay: UPS Required -->
-      <div class="checklist-lock-overlay" id="checklistLockOverlay" style="display: none;">
-        <span class="material-icons-round" style="font-size: 42px; color: #d97706; margin-bottom: 8px;">bolt</span>
-        <div style="font-size: 15px; font-weight: 700; color: #92400e;">กรุณากรอกเวลาสำรองไฟ UPS ด้านบนก่อน</div>
       </div>
 
       <section class="glass-card" style="overflow: visible;">
@@ -1159,12 +1090,21 @@
         <!-- Sign-off & Submit -->
         <div class="signoff-section">
           <div class="signoff-grid">
-            <!-- Evaluator Search -->
+            <!-- Optional Note (Moved to Top) -->
+            <div>
+              <label for="evalAbnormalNote" style="font-size: 11.5px; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 4px; margin-bottom: 5px;">
+                <span class="material-icons-round" style="font-size: 15px; color: var(--text-muted);">edit_note</span>
+                <span>หมายเหตุ / อาการ (ถ้ามี)</span>
+              </label>
+              <input type="text" id="evalAbnormalNote" class="input-clean" placeholder="ระบุเพิ่มเติม (ไม่บังคับ)...">
+            </div>
+
+            <!-- Evaluator Search (Moved below Note with clean label) -->
             <div style="position: relative;" id="evaluatorFieldContainer">
               <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px;">
                 <label for="evaluatorSearchInput" style="font-size: 11.5px; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
                   <span class="material-icons-round" style="font-size: 15px; color: var(--brand-sky);">badge</span>
-                  <span>ผู้ตรวจเช็ค (รหัส 6 หลัก / ชื่อ) *</span>
+                  <span>ผู้ตรวจเช็ค</span>
                 </label>
                 <span id="evaluatorVerifiedBadge" style="display: none; font-size: 11px; color: var(--emerald); font-weight: 700; align-items: center; gap: 3px;">
                   <span class="material-icons-round" style="font-size: 14px;">verified</span> ยืนยันแล้ว
@@ -1187,15 +1127,6 @@
               </div>
               <input type="hidden" id="evaluatorName" value="">
               <input type="hidden" id="evaluatorEmpId" value="">
-            </div>
-
-            <!-- Optional Note -->
-            <div>
-              <label for="evalAbnormalNote" style="font-size: 11.5px; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 4px; margin-bottom: 5px;">
-                <span class="material-icons-round" style="font-size: 15px; color: var(--text-muted);">edit_note</span>
-                <span>หมายเหตุ / อาการ (ถ้ามี)</span>
-              </label>
-              <input type="text" id="evalAbnormalNote" class="input-clean" placeholder="ระบุเพิ่มเติม (ไม่บังคับ)...">
             </div>
           </div>
 
@@ -1243,10 +1174,6 @@
     var currentDevice = null;
     var currentForm = null;
     var checklistState = {};
-    var isSimulateActive = false;
-    var isRealUpsDay = false;
-    var isUpsEnforced = false;
-    var isUpsRuntimeValid = false;
     var isDeviceLockedForRepair = false;
 
     function escapeHtml(str) {
@@ -1475,9 +1402,6 @@
         if (lastKnownDatePrefix && currentPrefix !== lastKnownDatePrefix) {
           lastKnownDatePrefix = currentPrefix;
           enforceTodayMidnightCutoff(false);
-          var d = new Date();
-          isRealUpsDay = (d.getDate() === 1 || d.getDate() === 16);
-          updateUpsMode();
           checkLowRiskPeriodLock();
           checkExistingEvaluationOnDate();
           showToast('ตัดรอบเที่ยงคืน (00:00 น.) เข้าสู่วันใหม่เรียบร้อยแล้ว');
@@ -1488,16 +1412,13 @@
       var preselectedDeviceId = urlParams.get('deviceId');
       var preselectedFormId = urlParams.get('formId');
 
-      isRealUpsDay = (now.getDate() === 1 || now.getDate() === 16);
-      if (urlParams.get('batteryCheck') === '1') isSimulateActive = true;
-
       function setupDropdownAndDevice(keepDeviceId) {
         var typeSelect = document.getElementById('evalDeviceTypeSelect');
         var deptSelect = document.getElementById('evalDeptSelect');
         var allEq = (window.PPCH_STORE && window.PPCH_STORE.getEquipment ? window.PPCH_STORE.getEquipment() : []) || [];
 
         if (deptSelect && window.PPCH_CONFIG && window.PPCH_CONFIG.departments) {
-          deptSelect.innerHTML = '';
+          deptSelect.innerHTML = '<option value="">เลือกตำแหน่งปัจจุบันของเครื่องมือ</option>';
           window.PPCH_CONFIG.departments.forEach(function (dp) {
             var opt = document.createElement('option');
             opt.value = dp.id;
@@ -1543,7 +1464,6 @@
         } else {
           onDeviceTypeChanged();
         }
-        updateUpsMode();
       }
 
       if (window.PPCH_API && window.PPCH_API.isConfigured()) {
@@ -1583,12 +1503,6 @@
       var dtInput = document.getElementById('evalDateTimeInput');
       if (!dtInput) return;
       enforceTodayMidnightCutoff(true);
-      var selectedDate = new Date(dtInput.value);
-      if (!isNaN(selectedDate.getTime())) {
-        var d = selectedDate.getDate();
-        isRealUpsDay = (d === 1 || d === 16);
-        updateUpsMode();
-      }
       checkExistingEvaluationOnDate();
     }
 
@@ -1651,13 +1565,12 @@
       }
 
       filteredEq.forEach(function (eq) {
-        var deptName = window.PPCH_STORE ? window.PPCH_STORE.getDepartmentName(eq.currentDept) : eq.currentDept;
         var opt = document.createElement('option');
         opt.value = eq.id;
         var statusTag = '';
         if (eq.status === 'conditional_ready' || eq.allowUse) statusTag = ' • 🔧 ผ่อนผัน';
         else if (eq.status === 'abnormal' || eq.status === 'in_progress') statusTag = ' • ⛔ รอซ่อม';
-        opt.innerText = eq.assetCode + ' (' + deptName + ')' + statusTag;
+        opt.innerText = eq.assetCode + statusTag;
         if (preferredDeviceId && (eq.id === preferredDeviceId || eq.assetCode === preferredDeviceId)) {
           opt.selected = true;
         }
@@ -1709,18 +1622,8 @@
         }
       }
 
-      var defaultDept = currentDevice.currentDept;
-      var devEvals = (window.PPCH_STORE && window.PPCH_STORE.getEvaluations) ? window.PPCH_STORE.getEvaluations() : [];
-      var matchEvals = devEvals.filter(function (e) {
-        return e.deviceId === currentDevice.id || e.deviceAsset === currentDevice.assetCode;
-      });
-      if (matchEvals.length > 0) {
-        matchEvals.sort(function (a, b) { return (b.evaluatedAt || '').localeCompare(a.evaluatedAt || ''); });
-        if (matchEvals[0].department) defaultDept = matchEvals[0].department;
-      }
-
       var deptSelect = document.getElementById('evalDeptSelect');
-      if (deptSelect) deptSelect.value = defaultDept;
+      if (deptSelect) deptSelect.value = '';
 
       var underRepair = (currentDevice.status === 'abnormal' || currentDevice.status === 'in_progress' || currentDevice.repairStatus === 'reported' || currentDevice.repairStatus === 'in_progress');
       if (currentDevice.status === 'ready' || currentDevice.status === 'conditional_ready' || currentDevice.allowUse) {
@@ -1805,76 +1708,6 @@
           btnSubmit.style.opacity = '1';
           btnSubmit.innerHTML = '<span class="material-icons-round">check_circle</span><span>บันทึกผลการตรวจเช็ค</span>';
         }
-      }
-    }
-
-    function toggleSimulateUpsCycle() {
-      if (isRealUpsDay) {
-        showToast('วันนี้เป็นรอบตรวจ UPS จริง (วันที่ 1 หรือ 16)');
-        return;
-      }
-      isSimulateActive = !isSimulateActive;
-      updateUpsMode();
-    }
-
-    function updateUpsMode() {
-      isUpsEnforced = isRealUpsDay || isSimulateActive;
-      var cardUps = document.getElementById('cardUpsBattery');
-      var btnDev = document.getElementById('btnDevSimUps');
-      var lockOverlay = document.getElementById('checklistLockOverlay');
-
-      if (isUpsEnforced) {
-        if (cardUps) cardUps.style.display = 'flex';
-        if (btnDev) btnDev.classList.add('active');
-        validateUpsRuntime();
-      } else {
-        if (cardUps) cardUps.style.display = 'none';
-        if (btnDev) btnDev.classList.remove('active');
-        if (lockOverlay) lockOverlay.style.display = 'none';
-        isUpsRuntimeValid = true;
-      }
-    }
-
-    function formatUpsDigit(input) {
-      input.value = input.value.replace(/[^0-9]/g, '');
-    }
-
-    function handleUpsDigitKey(e, nextId) {
-      if (e.key === 'Enter' || (e.target.value.length >= 2 && e.key >= '0' && e.key <= '9')) {
-        if (nextId) {
-          setTimeout(function () {
-            var n = document.getElementById(nextId);
-            if (n) n.focus();
-          }, 10);
-        }
-      }
-    }
-
-    function validateUpsRuntime() {
-      if (!isUpsEnforced) {
-        isUpsRuntimeValid = true;
-        var lockOverlay = document.getElementById('checklistLockOverlay');
-        if (lockOverlay) lockOverlay.style.display = 'none';
-        return;
-      }
-      var hVal = document.getElementById('upsHours').value.trim();
-      var mVal = document.getElementById('upsMinutes').value.trim();
-      var feedback = document.getElementById('upsStatusFeedback');
-      var lockOverlay = document.getElementById('checklistLockOverlay');
-
-      if (hVal !== '' && mVal !== '') {
-        var h = parseInt(hVal, 10) || 0;
-        var m = parseInt(mVal, 10) || 0;
-        var totalMinutes = (h * 60) + m;
-        isUpsRuntimeValid = true;
-        if (lockOverlay) lockOverlay.style.display = 'none';
-        feedback.innerHTML = totalMinutes >= 60
-          ? '<span style="color: var(--emerald);">✓ สำรองไฟ ' + h + ' ชม. ' + m + ' นาที (ผ่านเกณฑ์)</span>'
-          : '<span style="color: var(--crimson);">⚠ สำรองไฟ ' + h + ' ชม. ' + m + ' นาที (< 1 ชม.)</span>';
-      } else {
-        isUpsRuntimeValid = false;
-        if (lockOverlay) lockOverlay.style.display = 'flex';
-        feedback.innerText = 'กรอกชั่วโมง : นาที เพื่อปลดล็อก';
       }
     }
 
@@ -2055,11 +1888,6 @@
         showToast('เครื่องมืออยู่ระหว่างซ่อมบำรุง');
         return;
       }
-      if (isUpsEnforced && !isUpsRuntimeValid) {
-        showToast('กรุณากรอกเวลาสำรองไฟ UPS ให้ครบก่อน');
-        document.getElementById('upsHours').focus();
-        return;
-      }
 
       var totalItems = (currentForm && currentForm.items) ? currentForm.items.length : 0;
       var unanswered = [];
@@ -2128,24 +1956,6 @@
         evalDateObj = now;
       }
 
-      var hVal = document.getElementById('upsHours').value.trim();
-      var mVal = document.getElementById('upsMinutes').value.trim();
-      var upsObj = null;
-      if (hVal !== '' || mVal !== '') {
-        var h = parseInt(hVal, 10) || 0;
-        var m = parseInt(mVal, 10) || 0;
-        var formatted = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
-        var cycleDate = evalDateObj.getFullYear() + '-' + ('0' + (evalDateObj.getMonth() + 1)).slice(-2) + '-' + (evalDateObj.getDate() <= 15 ? '01' : '16');
-        upsObj = {
-          tested: true,
-          runtimeFormatted: formatted,
-          runtimeHours: h,
-          runtimeMinutes: m,
-          cycleDate: cycleDate,
-          status: (h * 60 + m >= 60) ? 'normal' : 'warning'
-        };
-      }
-
       var chosenDept = (document.getElementById('evalDeptSelect') && document.getElementById('evalDeptSelect').value) ? document.getElementById('evalDeptSelect').value : currentDevice.currentDept;
 
       var checklistDetails = [];
@@ -2175,8 +1985,7 @@
         keepConditional: isKeepConditional,
         abnormalNote: note,
         checklist: checklistState,
-        checklistDetails: checklistDetails,
-        upsBattery: upsObj
+        checklistDetails: checklistDetails
       };
 
       currentDevice.currentDept = chosenDept;
@@ -2224,10 +2033,7 @@
     function resetFormForNext() {
       document.getElementById('successModal').classList.add('hidden');
       document.getElementById('evalAbnormalNote').value = '';
-      document.getElementById('upsHours').value = '';
-      document.getElementById('upsMinutes').value = '';
       if (currentForm && currentForm.items) renderChecklist(currentForm.items);
-      updateUpsMode();
       if (currentDevice) {
         currentDevice = window.PPCH_STORE.getEquipmentById(currentDevice.id);
         var underRepair = currentDevice && (currentDevice.status === 'abnormal' || currentDevice.status === 'in_progress');

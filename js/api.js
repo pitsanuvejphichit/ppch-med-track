@@ -334,8 +334,6 @@
         result: record.result,
         abnormal_note: record.abnormalNote || '',
         answers: record.checklist || {},
-        ups_tested: record.upsBattery ? !!record.upsBattery.tested : false,
-        ups_duration: record.upsBattery ? (record.upsBattery.runtimeFormatted || '') : '',
         sheet_synced: false
       };
 
@@ -386,10 +384,7 @@
             keepConditional: isKeepConditional,
             abnormalNote: record.abnormalNote || '',
             checklist: record.checklist || {},
-            checklistDetails: record.checklistDetails || [],
-            upsBatteryRuntime: record.upsBattery ? record.upsBattery.runtimeFormatted : '',
-            upsBatteryTested: record.upsBattery ? record.upsBattery.tested : false,
-            upsBatteryCycle: record.upsBattery ? record.upsBattery.cycleDate : ''
+            checklistDetails: record.checklistDetails || []
           };
 
           PPCH_API.postToGas(gasPayload, function (gasRes) {

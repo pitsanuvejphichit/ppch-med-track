@@ -586,12 +586,6 @@
           eq.allowUse = false;
         }
 
-        if (evalPayload.upsBattery && evalPayload.upsBattery.tested) {
-          eq.lastBatteryTestedAt = nowStr;
-          eq.lastBatteryRuntime = evalPayload.upsBattery.runtimeFormatted;
-          eq.lastBatteryStatus = evalPayload.upsBattery.status || 'normal';
-        }
-
         inMemoryData.equipment[eqIndex] = eq;
       }
 
@@ -607,8 +601,7 @@
         result: evalPayload.result,
         abnormalNote: evalPayload.abnormalNote || '',
         checklist: evalPayload.checklist || {},
-        keepConditional: isKeepConditional,
-        upsBattery: evalPayload.upsBattery || null
+        keepConditional: isKeepConditional
       };
 
       inMemoryData.evaluations.unshift(evalRecord);
