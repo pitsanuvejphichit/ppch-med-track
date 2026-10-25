@@ -2420,17 +2420,25 @@
         padding: 12px 10px !important;
       }
 
-      /* KPI Strip 2 Columns on mobile */
-      .kpi-strip-5 {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        gap: 8px !important;
-      }
-      .kpi-strip-5 .kpi-card:last-child {
-        grid-column: span 2 !important;
-      }
+      /* KPI Strip 1-Row Compact on mobile */
+      .kpi-strip-5,
       .kpi-strip-4 {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        gap: 8px !important;
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: 4px !important;
+      }
+      .kpi-strip-5 .kpi-card,
+      .kpi-strip-4 .kpi-card {
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
+        width: 0 !important;
+        grid-column: auto !important;
+      }
+      .kpi-strip-5 .kpi-card:last-child,
+      .kpi-strip-4 .kpi-card:last-child {
+        grid-column: auto !important;
+        width: 0 !important;
       }
       .kpi-card {
         padding: 8px 10px !important;
@@ -2528,8 +2536,8 @@
         width: 100% !important;
       }
 
-      .device-table tbody tr,
-      .data-table-modern tbody tr {
+      .device-table tbody:not(#summaryTableBody):not(#defectiveTableBody) tr,
+      .data-table-modern tbody:not(#summaryTableBody):not(#defectiveTableBody) tr {
         display: flex !important;
         flex-direction: column !important;
         background: #ffffff !important;
@@ -2542,8 +2550,8 @@
         box-sizing: border-box !important;
       }
 
-      .device-table tbody tr td,
-      .data-table-modern tbody tr td {
+      .device-table tbody:not(#summaryTableBody):not(#defectiveTableBody) tr td,
+      .data-table-modern tbody:not(#summaryTableBody):not(#defectiveTableBody) tr td {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
@@ -2555,16 +2563,16 @@
         box-sizing: border-box !important;
       }
 
-      .device-table tbody tr td:last-child,
-      .data-table-modern tbody tr td:last-child {
+      .device-table tbody:not(#summaryTableBody):not(#defectiveTableBody) tr td:last-child,
+      .data-table-modern tbody:not(#summaryTableBody):not(#defectiveTableBody) tr td:last-child {
         border-bottom: none !important;
         padding-top: 8px !important;
         margin-top: 4px !important;
         justify-content: stretch !important;
       }
 
-      .device-table tbody tr td::before,
-      .data-table-modern tbody tr td::before {
+      .device-table tbody:not(#summaryTableBody):not(#defectiveTableBody) tr td::before,
+      .data-table-modern tbody:not(#summaryTableBody):not(#defectiveTableBody) tr td::before {
         content: attr(data-label);
         font-size: 11.5px !important;
         font-weight: 600 !important;
@@ -2701,211 +2709,48 @@
 
       /* ==================== HIGH-DENSITY COMPACT CARD PROPORTIONS (MOBILE) ==================== */
       #summaryTableBody tr,
-      .device-table tbody tr:has(.summary-device-title) {
-        display: grid !important;
-        grid-template-columns: auto 1fr auto !important;
-        grid-template-rows: auto auto !important;
-        grid-template-areas:
-          "title title status"
-          "code dept action" !important;
-        align-items: center !important;
-        gap: 6px 8px !important;
-        background: #ffffff !important;
-        border: 1px solid var(--border-main) !important;
-        border-radius: 12px !important;
-        padding: 10px 12px !important;
-        box-shadow: 0 1px 4px rgba(0, 46, 110, 0.04) !important;
+      #summaryTableBody tr.m-summary-card-row,
+      .device-table tbody tr:has(.m-summary-card-cell),
+      #defectiveTableBody tr,
+      #defectiveTableBody tr.m-defect-card-row,
+      .device-table tbody tr:has(.m-defect-card-cell) {
+        display: block !important;
+        background: transparent !important;
+        border: none !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
         width: 100% !important;
         box-sizing: border-box !important;
         position: relative !important;
       }
       #summaryTableBody tr:hover,
-      .device-table tbody tr:has(.summary-device-title):hover {
-        border-color: var(--border-blue-soft) !important;
-        box-shadow: 0 3px 10px rgba(0, 46, 110, 0.08) !important;
+      #defectiveTableBody tr:hover {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
       }
 
-      /* 1. Equipment Title (Top-Left) */
-      #summaryTableBody tr td.summary-device-title,
-      .device-table tbody tr td.summary-device-title {
-        grid-area: title !important;
-        display: flex !important;
-        align-items: center !important;
-        text-align: left !important;
-        border: none !important;
-        border-bottom: none !important;
+      #summaryTableBody tr td,
+      #summaryTableBody tr.m-summary-card-row td,
+      #defectiveTableBody tr td,
+      #defectiveTableBody tr.m-defect-card-row td {
+        display: block !important;
         padding: 0 !important;
-        margin: 0 !important;
-        min-width: 0 !important;
+        border: none !important;
         width: 100% !important;
-      }
-      #summaryTableBody tr td.summary-device-title::before,
-      .device-table tbody tr td.summary-device-title::before {
-        display: none !important;
-      }
-      #summaryTableBody tr td.summary-device-title div,
-      .device-table tbody tr td.summary-device-title div {
-        font-size: 13.5px !important;
-        font-weight: 700 !important;
-        color: var(--royal-blue) !important;
-        line-height: 1.35 !important;
-        display: -webkit-box !important;
-        -webkit-line-clamp: 2 !important;
-        -webkit-box-orient: vertical !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        box-sizing: border-box !important;
       }
 
-      /* 2. Status Symbol Button (Top-Right) */
-      #summaryTableBody tr td[data-label="สถานะวันนี้"],
-      .device-table tbody tr:has(.summary-device-title) td[data-label="สถานะวันนี้"] {
-        grid-area: status !important;
-        display: flex !important;
-        justify-content: flex-end !important;
-        align-items: center !important;
-        border: none !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        width: auto !important;
-      }
-      #summaryTableBody tr td[data-label="สถานะวันนี้"]::before,
-      .device-table tbody tr:has(.summary-device-title) td[data-label="สถานะวันนี้"]::before {
+      #summaryTableBody tr td::before,
+      #summaryTableBody tr.m-summary-card-row td::before,
+      #defectiveTableBody tr td::before,
+      #defectiveTableBody tr.m-defect-card-row td::before {
         display: none !important;
-      }
-      #summaryTableBody tr td[data-label="สถานะวันนี้"] .status-symbol-btn,
-      .device-table tbody tr:has(.summary-device-title) td[data-label="สถานะวันนี้"] .status-symbol-btn {
-        width: 30px !important;
-        height: 30px !important;
-        min-width: 30px !important;
-      }
-      #summaryTableBody tr td[data-label="สถานะวันนี้"] .status-symbol-btn .material-icons-round,
-      .device-table tbody tr:has(.summary-device-title) td[data-label="สถานะวันนี้"] .status-symbol-btn .material-icons-round {
-        font-size: 19px !important;
-      }
-
-      /* 3. Asset Code Badge (Bottom-Left 1) */
-      #summaryTableBody tr td[data-label="รหัสเครื่อง"],
-      .device-table tbody tr:has(.summary-device-title) td[data-label="รหัสเครื่อง"] {
-        grid-area: code !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: flex-start !important;
-        border: none !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        width: auto !important;
-      }
-      #summaryTableBody tr td[data-label="รหัสเครื่อง"]::before,
-      .device-table tbody tr:has(.summary-device-title) td[data-label="รหัสเครื่อง"]::before {
-        display: none !important;
-      }
-      #summaryTableBody tr td[data-label="รหัสเครื่อง"] .asset-code-clean,
-      .device-table tbody tr:has(.summary-device-title) td[data-label="รหัสเครื่อง"] .asset-code-clean {
-        font-size: 11px !important;
-        font-weight: 600 !important;
-        padding: 2px 6px !important;
-        border-radius: 4px !important;
-        background: #f1f5f9 !important;
-        color: var(--text-body) !important;
-        border: 1px solid var(--border-main) !important;
-      }
-
-      /* 4. Responsible Department (Bottom-Left 2) */
-      #summaryTableBody tr td[data-label="แผนกรับผิดชอบ"],
-      .device-table tbody tr:has(.summary-device-title) td[data-label="แผนกรับผิดชอบ"] {
-        grid-area: dept !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: flex-start !important;
-        border: none !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        color: var(--text-muted) !important;
-        font-size: 11.5px !important;
-        min-width: 0 !important;
-        gap: 3px !important;
-      }
-      #summaryTableBody tr td[data-label="แผนกรับผิดชอบ"]::before,
-      .device-table tbody tr:has(.summary-device-title) td[data-label="แผนกรับผิดชอบ"]::before {
-        content: "🏥 " !important;
-        font-size: 12px !important;
-        margin-right: 0 !important;
-      }
-      #summaryTableBody tr td[data-label="แผนกรับผิดชอบ"] span,
-      .device-table tbody tr:has(.summary-device-title) td[data-label="แผนกรับผิดชอบ"] span {
-        white-space: nowrap !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-        font-weight: 500 !important;
-      }
-
-      /* 5. Action Button (Bottom-Right) */
-      #summaryTableBody tr td[data-label="จัดการ"],
-      .device-table tbody tr:has(.summary-device-title) td[data-label="จัดการ"] {
-        grid-area: action !important;
-        display: flex !important;
-        justify-content: flex-end !important;
-        align-items: center !important;
-        border: none !important;
-        border-top: none !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        width: auto !important;
-      }
-      #summaryTableBody tr td[data-label="จัดการ"]::before,
-      .device-table tbody tr:has(.summary-device-title) td[data-label="จัดการ"]::before {
-        display: none !important;
-      }
-      #summaryTableBody tr td[data-label="จัดการ"] .floating-action-wrapper,
-      .device-table tbody tr:has(.summary-device-title) td[data-label="จัดการ"] .floating-action-wrapper {
-        position: relative !important;
-        width: auto !important;
-        display: inline-flex !important;
-        justify-content: flex-end !important;
-      }
-      #summaryTableBody tr td[data-label="จัดการ"] .btn-floating-trigger,
-      .device-table tbody tr:has(.summary-device-title) td[data-label="จัดการ"] .btn-floating-trigger {
-        width: 30px !important;
-        height: 30px !important;
-        min-width: 30px !important;
-      }
-      #summaryTableBody tr td[data-label="จัดการ"] .btn-floating-trigger .trigger-icon,
-      .device-table tbody tr:has(.summary-device-title) td[data-label="จัดการ"] .btn-floating-trigger .trigger-icon {
-        font-size: 16px !important;
-      }
-      #summaryTableBody tr td[data-label="จัดการ"] .floating-action-tray,
-      .device-table tbody tr:has(.summary-device-title) td[data-label="จัดการ"] .floating-action-tray {
-        position: absolute !important;
-        right: 0 !important;
-        bottom: -4px !important;
-        top: auto !important;
-        transform: none !important;
-        width: auto !important;
-        white-space: nowrap !important;
-        display: none;
-        align-items: center !important;
-        gap: 6px !important;
-        padding: 4px 8px !important;
-        border-radius: 12px !important;
-        background: #ffffff !important;
-        border: 1px solid var(--border-main) !important;
-        box-shadow: 0 4px 18px rgba(0, 30, 80, 0.22) !important;
-        z-index: 100 !important;
-      }
-      #summaryTableBody tr td[data-label="จัดการ"] .floating-action-wrapper.open .floating-action-tray,
-      .device-table tbody tr:has(.summary-device-title) td[data-label="จัดการ"] .floating-action-wrapper.open .floating-action-tray {
-        display: flex !important;
-      }
-      #summaryTableBody tr td[data-label="จัดการ"] .btn-action-icon,
-      .device-table tbody tr:has(.summary-device-title) td[data-label="จัดการ"] .btn-action-icon {
-        width: 30px !important;
-        height: 30px !important;
-        min-width: 30px !important;
-        border-radius: 6px !important;
-      }
-      #summaryTableBody tr td[data-label="จัดการ"] .btn-action-icon .material-icons-round,
-      .device-table tbody tr:has(.summary-device-title) td[data-label="จัดการ"] .btn-action-icon .material-icons-round {
-        font-size: 16px !important;
+        content: none !important;
       }
 
       /* ==================== HIGH-DENSITY COMPACT HORIZONTAL STRIP: DEPARTMENTS (MOBILE) ==================== */
@@ -4466,22 +4311,25 @@
     font-size: 16px !important; /* Prevents iOS auto zoom */
     height: 40px !important;
   }
-  /* Compact Single-Row Mobile KPI Metric Strips */
-  .kpi-strip-5 {
-    display: grid !important;
-    grid-template-columns: repeat(5, 1fr) !important;
+  /* Compact Single-Row Mobile KPI Metric Strips (Strict 1-Row Non-Wrapping) */
+  .kpi-strip-5,
+  .kpi-strip-4 {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
     gap: 4px !important;
     margin-bottom: 8px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
-  .kpi-strip-4 {
-    display: grid !important;
-    grid-template-columns: repeat(4, 1fr) !important;
-    gap: 5px !important;
-    margin-bottom: 8px !important;
-  }
-  .kpi-card {
-    padding: 6px 2px !important;
-    min-height: 44px !important;
+  .kpi-strip-5 .kpi-card,
+  .kpi-strip-4 .kpi-card {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    width: 0 !important;
+    padding: 5px 1px !important;
+    min-height: 42px !important;
+    display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
@@ -4492,21 +4340,32 @@
     box-shadow: 0 1px 2px rgba(0, 46, 110, 0.03) !important;
     cursor: pointer !important;
     text-align: center !important;
+    box-sizing: border-box !important;
+    grid-column: auto !important;
+  }
+  .kpi-strip-5 .kpi-card:last-child,
+  .kpi-strip-4 .kpi-card:last-child {
+    grid-column: auto !important;
+    width: 0 !important;
+    flex: 1 1 0 !important;
   }
   .kpi-card .kpi-icon-box {
     display: none !important; /* Hide bulky icons on mobile */
   }
   .kpi-card .kpi-val {
-    font-size: 15px !important;
+    font-size: 14px !important;
     font-weight: 800 !important;
     line-height: 1.1 !important;
   }
   .kpi-card .kpi-label {
-    font-size: 9.5px !important;
+    font-size: 9px !important;
     font-weight: 600 !important;
     color: var(--text-muted) !important;
     line-height: 1.1 !important;
     white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 100% !important;
   }
   .kpi-card.active-kpi {
     border-color: var(--royal-blue) !important;
@@ -4518,11 +4377,13 @@
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
     gap: 6px !important;
+    margin-bottom: 8px !important;
   }
   .risk-switch-tab {
-    padding: 8px 6px !important;
-    font-size: 12px !important;
+    padding: 7px 6px !important;
+    font-size: 11.5px !important;
     justify-content: center !important;
+    border-radius: 8px !important;
   }
 
   /* Relocation view on mobile */
@@ -4550,18 +4411,88 @@
     border-radius: 16px !important;
   }
 
-  /* Ensure header tools and filters are clean on mobile */
+  /* Eliminate Outer Double-Borders on Mobile Panels */
+  #viewSummary .content-panel,
+  #viewDefective .content-panel {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+  }
+  #viewSummary .device-table,
+  #viewDefective .device-table {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+  #summaryTableBody,
+  #defectiveTableBody {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    width: 100% !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+  #summaryTableBody tr,
+  #defectiveTableBody tr,
+  .m-summary-card-row,
+  .m-defect-card-row {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    box-shadow: none !important;
+  }
+  #summaryTableBody tr td,
+  #defectiveTableBody tr td,
+  .m-summary-card-cell,
+  .m-defect-card-cell {
+    display: block !important;
+    padding: 0 !important;
+    border: none !important;
+    width: 100% !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+  #summaryTableBody tr td::before,
+  #defectiveTableBody tr td::before,
+  .m-summary-card-cell::before,
+  .m-defect-card-cell::before {
+    display: none !important;
+    content: none !important;
+  }
+
+  /* Compact Main Panel Header on Mobile */
   .panel-header {
     display: flex !important;
     flex-direction: column !important;
     align-items: stretch !important;
-    gap: 8px !important;
-    padding: 10px 12px !important;
+    gap: 6px !important;
+    padding: 4px 2px 8px 2px !important;
+    background: transparent !important;
+    border: none !important;
+  }
+  .panel-title {
+    font-size: 13.5px !important;
+    font-weight: 700 !important;
+    color: var(--text-main) !important;
+  }
+  .panel-badge {
+    font-size: 10.5px !important;
+    padding: 2px 8px !important;
   }
   .summary-header-tools {
     display: flex !important;
     align-items: center !important;
-    gap: 6px !important;
+    gap: 5px !important;
     width: 100% !important;
     overflow: visible !important;
   }
@@ -4569,7 +4500,19 @@
     flex: 1 1 auto !important;
     width: auto !important;
     min-width: 0 !important;
+    height: 32px !important;
     margin: 0 !important;
+  }
+  .summary-header-tools .btn-tool {
+    height: 32px !important;
+    padding: 0 8px !important;
+    font-size: 12px !important;
+    flex-shrink: 0 !important;
+  }
+  .summary-header-tools .btn-floating-trigger {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
   }
 
   /* Universal Mobile Protection for Floating Action Tray */
@@ -4622,133 +4565,119 @@
   }
 
   /* ==================== HIGH-DENSITY COMPACT MOBILE CARDS (SUMMARY & DEFECTIVE) ==================== */
-  .m-summary-card-row,
-  .m-defect-card-row {
-    background: transparent !important;
-    border: none !important;
-    padding: 0 !important;
-    margin: 0 0 8px 0 !important;
-    display: block !important;
-    width: 100% !important;
-    box-shadow: none !important;
-  }
-  .m-summary-card-cell,
-  .m-defect-card-cell {
-    display: block !important;
-    padding: 0 !important;
-    border: none !important;
-    width: 100% !important;
-    box-shadow: none !important;
-  }
-  .m-summary-card-cell::before,
-  .m-defect-card-cell::before {
-    display: none !important;
-    content: none !important;
-  }
-
-  /* Summary Card */
+  /* Summary Equipment Card */
   .m-summary-card-inner {
-    background: #ffffff;
-    border: 1px solid var(--border-main);
-    border-radius: 12px;
-    padding: 8px 12px;
-    box-shadow: 0 1px 3px rgba(0, 46, 110, 0.03);
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    box-sizing: border-box;
-    width: 100%;
-    position: relative;
-    transition: all 0.15s ease;
+    background: #ffffff !important;
+    border: 1px solid var(--border-main) !important;
+    border-radius: 10px !important;
+    padding: 7px 10px !important;
+    box-shadow: 0 1px 3px rgba(0, 46, 110, 0.03) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    position: relative !important;
+    transition: border-color 0.15s ease;
   }
   .m-summary-card-inner:active {
-    border-color: var(--royal-blue);
-    background: #fbfdff;
+    border-color: var(--royal-blue) !important;
+    background: #fbfdff !important;
   }
   .m-card-top-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 8px;
-    width: 100%;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    gap: 6px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
   .m-card-device-name {
-    font-size: 13.5px;
-    font-weight: 700;
-    color: var(--text-main);
-    line-height: 1.3;
-    flex: 1;
-    min-width: 0;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: var(--text-main) !important;
+    line-height: 1.35 !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
+    word-wrap: break-word !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
   }
   .m-card-status-cluster {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    flex-shrink: 0;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    flex-shrink: 0 !important;
+    margin-left: 6px !important;
   }
   .m-card-status-cluster .status-symbol-btn {
-    width: 28px !important;
-    height: 28px !important;
-    min-width: 28px !important;
-    box-shadow: 0 1px 3px rgba(0, 46, 110, 0.1) !important;
+    width: 26px !important;
+    height: 26px !important;
+    min-width: 26px !important;
+    max-width: 26px !important;
+    border-radius: 50% !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 1px 2px rgba(0, 46, 110, 0.08) !important;
   }
   .m-card-status-cluster .status-symbol-btn .material-icons-round {
-    font-size: 17px !important;
+    font-size: 15px !important;
   }
 
   .m-card-bottom-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
-    width: 100%;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 6px !important;
+    width: 100% !important;
   }
   .m-card-meta-chips {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    min-width: 0;
-    flex: 1;
-    overflow: hidden;
-    white-space: nowrap;
+    display: flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
   }
   .m-card-meta-chips .asset-code-clean {
-    font-size: 11px;
-    font-weight: 600;
-    padding: 1px 6px;
-    border-radius: 4px;
-    background: #f1f5f9;
-    color: var(--text-body);
-    border: 1px solid var(--border-main);
-    flex-shrink: 0;
+    font-size: 10.5px !important;
+    font-weight: 700 !important;
+    padding: 1px 5px !important;
+    border-radius: 4px !important;
+    background: #f1f5f9 !important;
+    color: var(--text-body) !important;
+    border: 1px solid var(--border-main) !important;
+    flex-shrink: 0 !important;
   }
   .m-card-dept-chip {
-    font-size: 11.5px;
-    color: var(--text-muted);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    display: inline-flex;
-    align-items: center;
-    gap: 2px;
+    font-size: 11px !important;
+    color: var(--text-muted) !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 2px !important;
   }
   .m-card-actions-wrapper {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    flex-shrink: 0;
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    flex-shrink: 0 !important;
   }
   .m-card-actions-wrapper .btn-floating-trigger {
-    width: 28px !important;
-    height: 28px !important;
-    min-width: 28px !important;
+    width: 26px !important;
+    height: 26px !important;
+    min-width: 26px !important;
   }
   .m-card-actions-wrapper .btn-floating-trigger .trigger-icon {
-    font-size: 16px !important;
+    font-size: 15px !important;
   }
   .m-card-actions-wrapper .floating-action-tray {
     position: absolute !important;
@@ -4760,76 +4689,79 @@
 
   /* Defective Maintenance Card */
   .m-defect-card-inner {
-    background: #ffffff;
-    border: 1px solid var(--border-main);
-    border-radius: 12px;
-    padding: 10px 12px;
-    box-shadow: 0 1px 3px rgba(0, 46, 110, 0.03);
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    box-sizing: border-box;
-    width: 100%;
-    position: relative;
+    background: #ffffff !important;
+    border: 1px solid var(--border-main) !important;
+    border-radius: 10px !important;
+    padding: 8px 10px !important;
+    box-shadow: 0 1px 3px rgba(0, 46, 110, 0.04) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 5px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    position: relative !important;
   }
   .m-defect-card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 8px;
-    width: 100%;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    gap: 6px !important;
+    width: 100% !important;
   }
   .m-defect-card-left {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
   }
   .m-defect-card-right {
-    flex-shrink: 0;
+    flex-shrink: 0 !important;
+    margin-left: 6px !important;
   }
   .m-defect-symptom-box {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: #fef2f2;
-    color: #b91c1c;
-    border: 1px solid #fecaca;
-    border-radius: 6px;
-    padding: 4px 8px;
-    font-size: 12px;
-    font-weight: 500;
+    display: flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    background: #fef2f2 !important;
+    color: #b91c1c !important;
+    border: 1px solid #fecaca !important;
+    border-radius: 6px !important;
+    padding: 3px 6px !important;
+    font-size: 11.5px !important;
+    font-weight: 500 !important;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
   }
   .m-defect-card-bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
-    padding-top: 4px;
-    border-top: 1px dashed var(--border-subtle);
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding-top: 4px !important;
+    border-top: 1px dashed var(--border-subtle) !important;
   }
   .m-defect-reporter-txt {
-    font-size: 11px;
-    color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    flex: 1;
-    min-width: 0;
+    font-size: 10.5px !important;
+    color: var(--text-muted) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 3px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
   }
   .m-defect-action-box {
-    flex-shrink: 0;
-    display: flex;
-    justify-content: flex-end;
+    flex-shrink: 0 !important;
+    display: flex !important;
+    justify-content: flex-end !important;
   }
   .m-defect-action-box .btn-floating-trigger {
-    width: 28px !important;
-    height: 28px !important;
-    min-width: 28px !important;
+    width: 26px !important;
+    height: 26px !important;
+    min-width: 26px !important;
   }
   .m-defect-action-box .floating-action-tray {
     position: absolute !important;
@@ -4837,6 +4769,77 @@
     bottom: -4px !important;
     top: auto !important;
     transform: none !important;
+  }
+
+  /* Monthly Report Screen on Mobile */
+  .report-toolbar-card {
+    background: #ffffff !important;
+    border: 1px solid var(--border-main) !important;
+    border-radius: 12px !important;
+    padding: 10px 12px !important;
+    margin-bottom: 8px !important;
+  }
+  .m-report-actions-row {
+    display: flex !important;
+    gap: 6px !important;
+    margin-top: 8px !important;
+    width: 100% !important;
+  }
+  .m-report-act-btn {
+    flex: 1 1 0 !important;
+    height: 36px !important;
+    font-size: 12px !important;
+    padding: 0 6px !important;
+    border-radius: 8px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+  }
+  .m-report-act-btn .material-icons-round {
+    font-size: 16px !important;
+  }
+  .btn-report-pdf {
+    background: #f0fdf4 !important;
+    color: #15803d !important;
+    border: 1px solid #bbf7d0 !important;
+  }
+  .btn-report-zip {
+    background: #eff6ff !important;
+    color: #1d4ed8 !important;
+    border: 1px solid #bfdbfe !important;
+  }
+  .m-report-swipe-hint {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    font-size: 11px !important;
+    color: var(--text-muted) !important;
+    background: #f1f5f9 !important;
+    border-radius: 6px !important;
+    padding: 5px 10px !important;
+    margin-bottom: 8px !important;
+    font-weight: 600 !important;
+  }
+  .m-report-swipe-hint .material-icons-round {
+    font-size: 15px !important;
+    color: var(--royal-blue) !important;
+  }
+  .report-paper-wrapper {
+    padding: 10px 4px !important;
+    background: #f1f5f9 !important;
+    border: 1px solid var(--border-main) !important;
+    border-radius: 10px !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .report-paper-sheet {
+    min-width: 900px !important;
+    padding: 14px 16px !important;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.06) !important;
   }
 
   /* Relocation Screen Refinements */
@@ -5408,6 +5411,28 @@
                 </div>
               </div>
             </div>
+
+            <!-- Mobile Direct 1-Tap Action Bar -->
+            <div class="m-report-actions-row no-print">
+              <button type="button" onclick="printMonthlyReport()" class="btn-tool btn-tool-primary m-report-act-btn" title="พิมพ์ A4 หรือ บันทึกเป็น PDF">
+                <span class="material-icons-round">print</span>
+                <span>พิมพ์ A4 / PDF</span>
+              </button>
+              <button type="button" onclick="downloadCurrentReportPdf()" class="btn-tool m-report-act-btn btn-report-pdf" title="ดาวน์โหลด PDF เครื่องนี้">
+                <span class="material-icons-round">picture_as_pdf</span>
+                <span>โหลด PDF</span>
+              </button>
+              <button type="button" onclick="downloadAllReportsZip()" class="btn-tool m-report-act-btn btn-report-zip" title="ดาวน์โหลดทุกเครื่อง ZIP">
+                <span class="material-icons-round">folder_zip</span>
+                <span>โหลด ZIP</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Mobile Swipe Hint -->
+          <div class="m-report-swipe-hint no-print">
+            <span class="material-icons-round">swipe</span>
+            <span>เลื่อนตารางแนวนอนเพื่อดูตารางตรวจเช็ค 31 วันเต็ม</span>
           </div>
 
           <!-- A4 Landscape Paper Preview Container -->
