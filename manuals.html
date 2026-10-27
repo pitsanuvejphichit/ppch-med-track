@@ -750,7 +750,7 @@
         background: transparent !important;
       }
 
-      /* MULTI-ITEM STICKER GRID (Fit all 29 stickers neatly on A4) */
+      /* MULTI-ITEM STICKER GRID (Fit all 30 stickers neatly on A4) */
       .print-grid {
         display: grid !important;
         grid-template-columns: repeat(4, 1fr) !important;
@@ -938,11 +938,11 @@
       <a class="nav-item active" onclick="filterCategory('all')">
         <span class="material-symbols-outlined">menu_book</span>
         <span>คู่มือทั้งหมด</span>
-        <span class="nav-badge" id="sideBadgeTotal">29</span>
+        <span class="nav-badge" id="sideBadgeTotal">30</span>
       </a>
       <a class="nav-item" onclick="openPrintAllStickersModal()">
         <span class="material-symbols-outlined">print</span>
-        <span>พิมพ์สติกเกอร์ QR (29)</span>
+        <span>พิมพ์สติกเกอร์ QR (30)</span>
       </a>
     </nav>
 
@@ -961,7 +961,7 @@
         <img src="https://raw.githubusercontent.com/pitsanuvejphichit/ppch-med-track/main/src/logo.png" alt="PPCH Logo" onerror="this.src='https://placehold.co/32x32/001f44/ffffff?text=P'">
         <div>
           <h2 style="font-size: 15px; font-weight:700; color:var(--navy);">คู่มือ LAB</h2>
-          <p style="font-size: 11px; color:var(--text-muted);">29 เครื่องมือแพทย์</p>
+          <p style="font-size: 11px; color:var(--text-muted);">30 เครื่องมือแพทย์</p>
         </div>
       </div>
 
@@ -973,7 +973,7 @@
       <div class="top-actions">
         <button class="btn btn-primary" onclick="openPrintAllStickersModal()">
           <span class="material-symbols-outlined">print</span>
-          <span>พิมพ์สติกเกอร์ (29)</span>
+          <span>พิมพ์สติกเกอร์ (30)</span>
         </button>
       </div>
     </header>
@@ -992,9 +992,9 @@
         </div>
 
         <div class="filter-pills">
-          <div class="pill active" onclick="filterType('all', this)">ทั้งหมด (29)</div>
+          <div class="pill active" onclick="filterType('all', this)">ทั้งหมด (30)</div>
           <div class="pill" onclick="filterType('pdf', this)">PDF (23)</div>
-          <div class="pill" onclick="filterType('doc', this)">Word (6)</div>
+          <div class="pill" onclick="filterType('doc', this)">Word (7)</div>
         </div>
       </div>
 
@@ -1074,14 +1074,14 @@
     </div>
   </div>
 
-  <!-- MODAL: PRINT ALL 29 STICKERS (Multi-Item Grid - Zero Clutter) -->
+  <!-- MODAL: PRINT ALL 30 STICKERS (Multi-Item Grid - Zero Clutter) -->
   <div id="printAllModal" class="modal-overlay">
     <div class="modal-card" style="max-width: 980px; height: 92vh;">
       <div class="modal-header">
         <div>
           <h3>
             <span class="material-symbols-outlined" style="color:var(--primary);">print</span>
-            <span>สติกเกอร์ QR Code ติดเครื่องมือ (ครบ 29 เครื่อง)</span>
+            <span>สติกเกอร์ QR Code ติดเครื่องมือ (ครบ 30 เครื่อง)</span>
           </h3>
           <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 2px;">
             จัดวางหลายอันต่อ 1 หน้า A4 (ประมาณ 20 ดวง/หน้า) เน้นความชัดเจนและตัดติดเครื่องได้ทันที
@@ -1146,10 +1146,11 @@
       "SD-E-PPCH-LAB-129": "เครื่องตรวจน้ำตาลในเลือด",
       "SD-E-PPCH-LAB-134": "Auto Blood Culture System",
       "SD-E-PPCH-LAB-135": "เครื่องปั่น DM1224",
-      "SD-E-PPCH-LAB-136": "เครื่องตรวจ Flowflex FIA"
+      "SD-E-PPCH-LAB-136": "เครื่องตรวจ Flowflex FIA",
+      "SD-E-PPCH-LAB-137": "Matrix Gel System"
     };
 
-    // COMPLETE 29 MEDICAL EQUIPMENT MANUALS CATALOG
+    // COMPLETE 30 MEDICAL EQUIPMENT MANUALS CATALOG
     var ALL_MANUALS = [
       {"code":"SD-E-PPCH-LAB-024","title":"คู่มือการใช้งาน ชุดทดสอบ MultiSure GK Blood Ketone Test Strip","shortName":"ชุดทดสอบ MultiSure GK Ketone","ext":"doc","fileName":"SD-E-PPCH-LAB-024 คู่มือการใช้งาน ชุดทดสอบ MultiSure GK Blood Ketone Test Strip.doc","sizeKB":1943.5,"category":"ชุดทดสอบ / Point of Care","id":"11ke96R6o9e4BwVM2TNxjqaHSmOoyKCB7","url":"https:\\x2f\\x2fdrive.google.com/file/d/11ke96R6o9e4BwVM2TNxjqaHSmOoyKCB7/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/11ke96R6o9e4BwVM2TNxjqaHSmOoyKCB7/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=11ke96R6o9e4BwVM2TNxjqaHSmOoyKCB7&export=download"},
       {"code":"SD-E-PPCH-LAB-025","title":"คู่มือการใช้งาน Fume Hood FH1000(X)","shortName":"Fume Hood FH1000(X)","ext":"pdf","fileName":"SD-E-PPCH-LAB-025 คู่มือการใช้งาน Fume Hood FH1000(X).pdf","sizeKB":2383.9,"category":"ตู้ปลอดเชื้อ / ดูดควัน","id":"1s8BXStG-cDR3EjHIJ8O9l1pkdMIkb25o","url":"https:\\x2f\\x2fdrive.google.com/file/d/1s8BXStG-cDR3EjHIJ8O9l1pkdMIkb25o/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/1s8BXStG-cDR3EjHIJ8O9l1pkdMIkb25o/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=1s8BXStG-cDR3EjHIJ8O9l1pkdMIkb25o&export=download"},
@@ -1180,6 +1181,8 @@
       {"code":"SD-E-PPCH-LAB-134","title":"คู่มือการใช้งาน เครื่องเพาะเชื้อแบบอัตโนมัติ Auto Blood Culture System","shortName":"Auto Blood Culture System","ext":"pdf","fileName":"SD-E-PPCH-LAB-134 คู่มือการใช้งาน เครื่องเพาะเชื้อแบบอัตโนมัติ Auto Blood Culture System.pdf","sizeKB":12338.5,"category":"เครื่องเพาะเชื้ออัตโนมัติ (Microbiology)","id":"1eFUUgWj6BNxM7LWmLiisy5R3n48gdzdW","url":"https:\\x2f\\x2fdrive.google.com/file/d/1eFUUgWj6BNxM7LWmLiisy5R3n48gdzdW/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/1eFUUgWj6BNxM7LWmLiisy5R3n48gdzdW/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=1eFUUgWj6BNxM7LWmLiisy5R3n48gdzdW&export=download"},
       {"code":"SD-E-PPCH-LAB-135","title":"คู่มือการใช้งาน DM1224 Economical Hematocrit Centrifuge","shortName":"เครื่องปั่น DM1224","ext":"pdf","fileName":"SD-E-PPCH-LAB-135 คู่มือการใช้งาน DM1224 Economical Hematocrit Centrifuge.pdf","sizeKB":355.7,"category":"เครื่องปั่นตกตะกอน (Centrifuge)","id":"1KgosYiN9GnsD50lXC1yE044VzjXaD1Gl","url":"https:\\x2f\\x2fdrive.google.com/file/d/1KgosYiN9GnsD50lXC1yE044VzjXaD1Gl/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/1KgosYiN9GnsD50lXC1yE044VzjXaD1Gl/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=1KgosYiN9GnsD50lXC1yE044VzjXaD1Gl&export=download"},
       {"code":"SD-E-PPCH-LAB-136","title":"มาตรฐานวิธีปฏิบัติงาน เครื่องตรวจวิเคราะห์ Flowflex Fluorescent Immunoassay Analyzer","shortName":"เครื่องตรวจ Flowflex FIA","ext":"doc","fileName":"SD-E-PPCH-LAB-136 มาตรฐานวิธีปฏิบัติงาน เครื่องตรวจวิเคราะห์ Flowflex Fluorescent Immunoassay Analyzer.doc","sizeKB":306.5,"category":"เครื่องตรวจวิเคราะห์อัตโนมัติ","id":"17HMtcRxqAVaItkG8m6LEVlNCcBBwbiGS","url":"https:\\x2f\\x2fdrive.google.com/file/d/17HMtcRxqAVaItkG8m6LEVlNCcBBwbiGS/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/17HMtcRxqAVaItkG8m6LEVlNCcBBwbiGS/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=17HMtcRxqAVaItkG8m6LEVlNCcBBwbiGS&export=download"}
+    ,
+      {"code":"SD-E-PPCH-LAB-137","title":"คู่มือการใช้งาน Matrix Blood Bank Gel System","shortName":"Matrix Gel System","ext":"doc","fileName":"SD-E-PPCH-LAB-137 คู่มือการใช้งาน Matrix Blood Bank Gel System.doc","sizeKB":9939.5,"category":"เครื่องตรวจวิเคราะห์อัตโนมัติ","id":"1oAy5VJvYhHml55VoFnBd56r20JjazzPU","url":"https:\\x2f\\x2fdrive.google.com/file/d/1oAy5VJvYhHml55VoFnBd56r20JjazzPU/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/1oAy5VJvYhHml55VoFnBd56r20JjazzPU/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=1oAy5VJvYhHml55VoFnBd56r20JjazzPU&export=download"}
     ];
 
     var INITIAL_CODE = "";

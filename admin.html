@@ -3339,17 +3339,28 @@
       margin-bottom: 16px;
       box-shadow: 0 4px 16px rgba(0, 46, 110, 0.06);
       position: sticky;
-      top: 62px;
+      top: 68px;
       z-index: 60;
       backdrop-filter: blur(8px);
+      overflow: visible !important;
     }
     .report-filter-strip {
       display: flex;
       align-items: flex-end;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: nowrap;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
+      overflow: visible !important;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .report-filter-strip .form-group {
+      min-width: 0 !important;
+    }
+    .report-filter-strip select {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      max-width: 100%;
     }
     .report-paper-wrapper {
       background: #f1f5f9;
@@ -3687,16 +3698,26 @@
       color: #162a3d !important;
     }
 
-    /* 1. Floating Slate-Steel Navy Pill Command Bar */
+    /* 1. Slate-Steel Navy Command Bar (Sticky Pinned at Top - 100% Rock-Solid Zero Shift) */
     .app-topbar {
+      position: sticky !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      width: 100% !important;
+      height: 56px !important;
+      margin: 0 !important;
+      border-radius: 0 !important;
+      z-index: 500 !important;
       background: linear-gradient(135deg, #183652 0%, #26547c 100%) !important;
       color: #ffffff !important;
-      border: 1px solid rgba(124, 196, 240, 0.25) !important;
-      border-radius: 999px !important;
-      margin: 12px 20px 0 20px !important;
-      height: 56px !important;
-      padding: 0 18px !important;
-      box-shadow: 0 18px 38px -10px rgba(24, 54, 82, 0.28) !important;
+      border-bottom: 1px solid rgba(124, 196, 240, 0.28) !important;
+      border-top: none !important;
+      border-left: none !important;
+      border-right: none !important;
+      padding: 0 24px !important;
+      box-shadow: 0 4px 20px rgba(24, 54, 82, 0.16) !important;
+      box-sizing: border-box !important;
     }
     .brand-logo-img {
       background: #ffffff !important;
@@ -3765,8 +3786,8 @@
         border: 1px solid rgba(124, 196, 240, 0.24) !important;
         border-radius: 26px !important;
         margin: 14px 0 16px 20px !important;
-        top: 82px !important;
-        height: calc(100vh - 98px) !important;
+        top: 70px !important;
+        height: calc(100vh - 86px) !important;
         box-shadow: 0 24px 50px -12px rgba(24, 54, 82, 0.32) !important;
         overflow: visible !important;
         z-index: 400 !important;
@@ -4761,32 +4782,32 @@
               </div>
             </div>
 
-            <!-- Single-Row Streamlined Filter Toolbar -->
+            <!-- Single-Row Streamlined Filter Toolbar (Zero Horizontal Scrollbar) -->
             <div class="report-filter-strip">
               <!-- 1. Month Picker -->
-              <div class="form-group" style="margin: 0; min-width: 155px;">
+              <div class="form-group" style="margin: 0; flex: 0 0 145px; width: 145px; min-width: 0;">
                 <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 2px; display: block;">ประจำเดือน</label>
-                <input type="month" id="reportMonthPicker" class="form-input" style="height: 36px; padding: 4px 10px; font-size: 13px;" onchange="renderMonthlyReportView()">
+                <input type="month" id="reportMonthPicker" class="form-input" style="height: 36px; padding: 4px 8px; font-size: 12.5px; width: 100%; box-sizing: border-box;" onchange="renderMonthlyReportView()">
               </div>
 
               <!-- 2. Department Filter -->
-              <div class="form-group" style="margin: 0; min-width: 175px;">
+              <div class="form-group" style="margin: 0; flex: 0 1 180px; min-width: 120px;">
                 <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 2px; display: block;">แผนกรับผิดชอบ</label>
-                <select id="reportDeptFilter" class="form-input" style="height: 36px; padding: 4px 10px; font-size: 13px;" onchange="handleReportDeptChange()"></select>
+                <select id="reportDeptFilter" class="form-input" style="height: 36px; padding: 4px 8px; font-size: 12.5px; width: 100%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; box-sizing: border-box;" onchange="handleReportDeptChange()"></select>
               </div>
 
               <!-- 3. Equipment Stepper & Filter -->
-              <div class="form-group" style="margin: 0; flex: 1; min-width: 280px;">
+              <div class="form-group" style="margin: 0; flex: 1 1 auto; min-width: 0;">
                 <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 2px; display: block;">เครื่องมือแพทย์ & รหัสครุภัณฑ์</label>
-                <div style="display: flex; gap: 4px; align-items: center;">
-                  <button type="button" onclick="stepReportDevice(-1)" class="btn-tool" style="padding: 4px 8px; height: 36px;" title="เครื่องก่อนหน้า"><span class="material-icons-round" style="font-size: 18px;">chevron_left</span></button>
-                  <select id="reportDeviceFilter" class="form-input" style="height: 36px; padding: 4px 8px; font-size: 13px; font-weight: 600; flex: 1;" onchange="renderMonthlyReportView()"></select>
-                  <button type="button" onclick="stepReportDevice(1)" class="btn-tool" style="padding: 4px 8px; height: 36px;" title="เครื่องถัดไป"><span class="material-icons-round" style="font-size: 18px;">chevron_right</span></button>
+                <div style="display: flex; gap: 4px; align-items: center; min-width: 0; width: 100%;">
+                  <button type="button" onclick="stepReportDevice(-1)" class="btn-tool" style="padding: 4px 8px; height: 36px; flex-shrink: 0;" title="เครื่องก่อนหน้า"><span class="material-icons-round" style="font-size: 18px;">chevron_left</span></button>
+                  <select id="reportDeviceFilter" class="form-input" style="height: 36px; padding: 4px 8px; font-size: 12.5px; font-weight: 600; flex: 1; min-width: 0; width: 100%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; box-sizing: border-box;" onchange="renderMonthlyReportView()"></select>
+                  <button type="button" onclick="stepReportDevice(1)" class="btn-tool" style="padding: 4px 8px; height: 36px; flex-shrink: 0;" title="เครื่องถัดไป"><span class="material-icons-round" style="font-size: 18px;">chevron_right</span></button>
                 </div>
               </div>
 
               <!-- 4. Consolidated Floating Export & Print Speed Dial (Khun Nick's Signature Rule) -->
-              <div class="floating-action-wrapper" onmouseenter="handleFloatingEnter(this)" onmouseleave="handleFloatingLeave(this)" style="margin-left: auto; align-self: flex-end;">
+              <div class="floating-action-wrapper" onmouseenter="handleFloatingEnter(this)" onmouseleave="handleFloatingLeave(this)" style="margin-left: auto; align-self: flex-end; flex-shrink: 0;">
                 <button type="button" class="btn-floating-trigger" onclick="toggleFloatingMenu(this, event)" title="เมนูดาวน์โหลดและพิมพ์รายงาน (คลิกหรือชี้เพื่อเปิด 3 รายการ)" style="width: 36px; height: 36px; min-width: 36px;">
                   <span class="material-icons-round trigger-icon" style="font-size: 18px;">file_download</span>
                   <span class="floating-badge-count">3</span>
