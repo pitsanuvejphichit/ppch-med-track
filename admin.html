@@ -4619,12 +4619,12 @@
                 <thead>
                   <tr>
                     <th style="width: 125px;">รหัสครุภัณฑ์</th>
-                    <th>เครื่องมือแพทย์</th>
-                    <th style="width: 130px;">แผนกปัจจุบัน</th>
-                    <th>อาการข้อบกพร่องที่พบ</th>
-                    <th style="width: 140px;">ผู้แจ้ง / วันที่ตรวจพบ</th>
-                    <th style="width: 150px;">สถานะงานซ่อม</th>
-                    <th class="btn-action-col no-print" style="width: 170px; text-align: center;">ดำเนินการ</th>
+                    <th style="min-width: 180px;">เครื่องมือแพทย์</th>
+                    <th style="width: 180px; min-width: 170px;">แผนกรับผิดชอบ</th>
+                    <th style="min-width: 170px;">อาการข้อบกพร่องที่พบ</th>
+                    <th style="width: 150px;">ผู้แจ้ง / วันที่ตรวจพบ</th>
+                    <th style="width: 100px; text-align: center;">สถานะงานซ่อม</th>
+                    <th class="btn-action-col no-print" style="width: 90px; text-align: center;">ดำเนินการ</th>
                   </tr>
                 </thead>
                 <tbody id="defectiveTableBody">
@@ -4649,14 +4649,52 @@
               </div>
               <span class="panel-badge" id="repairHistoryCountBadge" style="background: #ecfdf5; color: var(--green-ready); border-color: #a7f3d0; font-weight: 700;">0 รายการ</span>
             </div>
+
+            <!-- Single-Row Streamlined Filter Toolbar for Repair History -->
+            <div class="page-filter-bar no-print" style="margin-bottom: 14px; padding: 8px 14px; gap: 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: nowrap; overflow-x: auto;">
+              <div class="filter-left-controls" style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0;">
+                <!-- Search Input -->
+                <div class="search-input-box" style="flex: 1 1 240px; min-width: 160px; max-width: 320px;">
+                  <span class="material-icons-round" style="font-size: 18px; color: var(--text-muted);">search</span>
+                  <input type="text" id="repairHistorySearch" placeholder="ค้นหารหัส, ชื่อเครื่อง, อาการ, ผู้ซ่อม..." oninput="debounceCall('renderRepairHistoryTable', 180)" style="width: 100%; font-size: 12.5px;">
+                </div>
+
+                <!-- Department Filter -->
+                <div style="min-width: 140px; max-width: 220px; flex: 1 1 170px;">
+                  <select id="repairHistoryDeptFilter" class="form-input" style="height: 34px; padding: 4px 8px; font-size: 12.5px; width: 100%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;" onchange="renderRepairHistoryTable()">
+                    <option value="">ทุกแผนก</option>
+                  </select>
+                </div>
+
+                <!-- Month Filter -->
+                <div style="width: 140px; flex-shrink: 0;">
+                  <input type="month" id="repairHistoryMonthFilter" class="form-input" style="height: 34px; padding: 4px 8px; font-size: 12.5px; width: 100%;" onchange="renderRepairHistoryTable()" title="กรองตามเดือนที่ซ่อมเสร็จ">
+                </div>
+
+                <!-- Reset Button -->
+                <button type="button" onclick="resetRepairHistoryFilters()" class="btn-reset-ghost" title="ล้างตัวกรองทั้งหมด">
+                  <span class="material-icons-round" style="font-size: 15px;">refresh</span>
+                  <span style="font-size: 11.5px; margin-left: 2px;">รีเซ็ต</span>
+                </button>
+              </div>
+
+              <!-- Export CSV Button -->
+              <div class="filter-right-actions" style="flex-shrink: 0;">
+                <button type="button" onclick="exportRepairHistoryCsv()" class="btn-tool" style="background: #f0fdf4; color: #15803d; border-color: #bbf7d0; height: 34px; font-size: 12px; padding: 0 12px; border-radius: 8px; display: inline-flex; align-items: center; gap: 5px; font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,0.05);" title="ส่งออกประวัติการแก้ไขและส่งคืนความพร้อมใช้งานเป็นไฟล์ Excel (CSV UTF-8 BOM)">
+                  <span class="material-icons-round" style="font-size: 17px; color: #16a34a;">file_download</span>
+                  <span>ส่งออก Excel</span>
+                </button>
+              </div>
+            </div>
+
             <div style="overflow-x: auto;">
               <table class="device-table">
                 <thead>
                   <tr>
                     <th style="width: 140px;">วัน-เวลาที่แก้ไขเสร็จ</th>
                     <th style="width: 130px;">รหัสครุภัณฑ์</th>
-                    <th>เครื่องมือแพทย์</th>
-                    <th>รายละเอียดการแก้ไข (สิ่งที่ดำเนินการไป)</th>
+                    <th style="min-width: 180px;">เครื่องมือแพทย์</th>
+                    <th style="min-width: 220px;">รายละเอียดการแก้ไข (สิ่งที่ดำเนินการไป)</th>
                     <th style="width: 160px;">ผู้ดำเนินการแก้ไข</th>
                   </tr>
                 </thead>
@@ -6280,11 +6318,11 @@
 
             html += '<tr>' +
               '<td data-label="รหัสครุภัณฑ์"><span class="asset-code-clean">' + eq.assetCode + '</span></td>' +
-              '<td data-label="เครื่องมือแพทย์"><div style="font-weight: 700; color: var(--text-main);">' + eq.name + '</div></td>' +
-              '<td data-label="แผนกปัจจุบัน"><span style="font-weight: 500;">' + deptName + '</span></td>' +
-              '<td data-label="อาการข้อบกพร่องที่พบ"><div style="color: #b91c1c; font-weight: 500; font-size: 12px; background: #fff5f5; padding: 5px 9px; border-radius: 6px; border: 1px solid #fed7d7;">' + (eq.abnormalReason || 'ตรวจพบความผิดปกติ') + '</div></td>' +
+              '<td data-label="เครื่องมือแพทย์"><div style="font-weight: 700; color: var(--text-main); font-size: 13px;">' + eq.name + '</div></td>' +
+              '<td data-label="แผนกรับผิดชอบ"><div style="font-weight: 600; color: #1e3a5f; font-size: 12.5px; line-height: 1.45;">' + deptName + '</div></td>' +
+              '<td data-label="อาการข้อบกพร่องที่พบ"><div style="color: #b91c1c; font-weight: 600; font-size: 12px; background: #fff5f5; padding: 6px 10px; border-radius: 6px; border: 1px solid #fed7d7; line-height: 1.4;">' + (eq.abnormalReason || 'ตรวจพบความผิดปกติ') + '</div></td>' +
               '<td data-label="ผู้แจ้ง / วันที่ตรวจพบ"><div style="font-size: 12px; font-weight: 600; color: var(--text-main);">' + reporterText + '</div><div style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">' + reportedTime + '</div></td>' +
-              '<td data-label="สถานะงานซ่อม">' + statusBadge + '</td>' +
+              '<td data-label="สถานะงานซ่อม" style="text-align: center;">' + statusBadge + '</td>' +
               '<td data-label="ดำเนินการ" class="btn-action-col no-print" style="text-align: center; white-space: nowrap;">' + actionBtn + '</td>' +
             '</tr>';
           });
@@ -6292,37 +6330,197 @@
         }
       }
 
-      // Render Resolved Repairs History
+      // Render Resolved Repairs History with Full Filter Engine
       var resolvedRepairs = repairs.filter(function (r) {
         return !!(r.resolvedAt || r.resolved_at);
       });
       if (kResolved) kResolved.innerText = resolvedRepairs.length;
-
-      var hBody = document.getElementById('repairHistoryTableBody');
-      var hBadge = document.getElementById('repairHistoryCountBadge');
-      if (hBadge) hBadge.innerText = resolvedRepairs.length + ' รายการ';
       var hBtnBadge = document.getElementById('repairHistoryBtnBadge');
       if (hBtnBadge) hBtnBadge.innerText = resolvedRepairs.length;
 
-      if (hBody) {
-        if (resolvedRepairs.length === 0) {
-          hBody.innerHTML = '<tr class="table-empty-row"><td colspan="5" style="text-align: center; padding: 24px; color: var(--text-light);">ยังไม่มีประวัติการซ่อมบำรุงที่บันทึกเสร็จสิ้น</td></tr>';
+      populateRepairHistoryDeptFilter(resolvedRepairs);
+      renderRepairHistoryTable();
+    }
+
+    function populateRepairHistoryDeptFilter(resolvedRepairs) {
+      var deptSelect = document.getElementById('repairHistoryDeptFilter');
+      if (!deptSelect) return;
+      var curVal = deptSelect.value;
+
+      var deptSet = {};
+      (resolvedRepairs || []).forEach(function (r) {
+        if (r.department) deptSet[r.department] = true;
+      });
+
+      var depts = (window.PPCH_STORE && window.PPCH_STORE.getDepartments) ? window.PPCH_STORE.getDepartments() : [];
+      var html = '<option value="">ทุกแผนก</option>';
+      depts.forEach(function (d) {
+        if (deptSet[d.id] || deptSet[d.name]) {
+          html += '<option value="' + d.id + '"' + (curVal === d.id ? ' selected' : '') + '>' + d.name + '</option>';
+        }
+      });
+      deptSelect.innerHTML = html;
+    }
+
+    function renderRepairHistoryTable() {
+      var repairs = (window.PPCH_STORE && window.PPCH_STORE.getRepairs) ? window.PPCH_STORE.getRepairs() : [];
+      var resolvedRepairs = repairs.filter(function (r) {
+        return !!(r.resolvedAt || r.resolved_at);
+      });
+
+      var searchInput = document.getElementById('repairHistorySearch');
+      var q = searchInput ? searchInput.value.trim().toLowerCase() : '';
+      var deptFilter = document.getElementById('repairHistoryDeptFilter');
+      var deptVal = deptFilter ? deptFilter.value : '';
+      var monthFilter = document.getElementById('repairHistoryMonthFilter');
+      var monthVal = monthFilter ? monthFilter.value : '';
+
+      var filtered = resolvedRepairs.filter(function (r) {
+        if (deptVal && r.department !== deptVal) {
+          var dName = window.PPCH_STORE.getDepartmentName(r.department);
+          if (dName !== deptVal) return false;
+        }
+
+        var timeStr = r.resolvedAt || r.resolved_at || '';
+        if (monthVal && !timeStr.startsWith(monthVal)) {
+          return false;
+        }
+
+        if (q) {
+          var asset = (r.deviceAsset || r.device_asset || '').toLowerCase();
+          var name = (r.deviceName || r.device_name || '').toLowerCase();
+          var action = (r.actionTaken || r.action_taken || '').toLowerCase();
+          var defect = (r.defectReason || r.defect_reason || '').toLowerCase();
+          var resolvedBy = (r.resolvedBy || r.resolved_by || '').toLowerCase();
+          var deptName = (window.PPCH_STORE.getDepartmentName(r.department) || '').toLowerCase();
+          if (
+            !asset.includes(q) &&
+            !name.includes(q) &&
+            !action.includes(q) &&
+            !defect.includes(q) &&
+            !resolvedBy.includes(q) &&
+            !deptName.includes(q)
+          ) {
+            return false;
+          }
+        }
+        return true;
+      });
+
+      var hBadge = document.getElementById('repairHistoryCountBadge');
+      if (hBadge) {
+        if (filtered.length === resolvedRepairs.length) {
+          hBadge.innerText = resolvedRepairs.length + ' รายการ';
         } else {
-          var hHtml = '';
-          resolvedRepairs.slice(0, 50).forEach(function (r) {
-            hHtml += '<tr>' +
-              '<td data-label="วัน-เวลาที่แก้ไขเสร็จ" style="font-size: 11.5px; color: var(--text-muted); font-family: var(--font-mono);">' + (r.resolvedAt || r.resolved_at || '-') + '</td>' +
-              '<td data-label="รหัสครุภัณฑ์"><span class="asset-code-clean">' + (r.deviceAsset || r.device_asset || '-') + '</span></td>' +
-              '<td data-label="เครื่องมือแพทย์"><div style="font-weight: 600;">' + (r.deviceName || r.device_name || '-') + '</div><div style="font-size: 11px; color: var(--text-muted);">' + window.PPCH_STORE.getDepartmentName(r.department) + '</div></td>' +
-              '<td data-label="รายละเอียดการแก้ไข (สิ่งที่ดำเนินการไป)"><div style="font-size: 12px; color: var(--text-main); font-weight: 600;">' + (r.actionTaken || r.action_taken || '-') + '</div>' +
-                (r.defectReason ? '<div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">อาการเดิม: ' + (r.defectReason || r.defect_reason) + '</div>' : '') +
-              '</td>' +
-              '<td data-label="ผู้ดำเนินการแก้ไข"><span style="font-size: 12px; font-weight: 600; color: var(--green-ready);"><span class="material-icons-round" style="font-size: 13px; vertical-align: -2px;">person</span> ' + (r.resolvedBy || r.resolved_by || '-') + '</span></td>' +
-            '</tr>';
-          });
-          hBody.innerHTML = hHtml;
+          hBadge.innerText = filtered.length + ' / ' + resolvedRepairs.length + ' รายการ';
         }
       }
+
+      var hBody = document.getElementById('repairHistoryTableBody');
+      if (!hBody) return;
+
+      if (filtered.length === 0) {
+        hBody.innerHTML = '<tr class="table-empty-row"><td colspan="5" style="text-align: center; padding: 32px; color: var(--text-light);"><span class="material-icons-round" style="font-size: 24px; vertical-align: middle; margin-right: 6px;">search_off</span>ไม่พบรายการประวัติการซ่อมที่ตรงกับเงื่อนไขการค้นหา</td></tr>';
+      } else {
+        var hHtml = '';
+        filtered.forEach(function (r) {
+          hHtml += '<tr>' +
+            '<td data-label="วัน-เวลาที่แก้ไขเสร็จ" style="font-size: 11.5px; color: var(--text-muted); font-family: var(--font-mono);">' + (r.resolvedAt || r.resolved_at || '-') + '</td>' +
+            '<td data-label="รหัสครุภัณฑ์"><span class="asset-code-clean">' + (r.deviceAsset || r.device_asset || '-') + '</span></td>' +
+            '<td data-label="เครื่องมือแพทย์"><div style="font-weight: 600; color: var(--text-main); font-size: 13px;">' + (r.deviceName || r.device_name || '-') + '</div><div style="font-size: 11.5px; color: var(--text-muted);">' + window.PPCH_STORE.getDepartmentName(r.department) + '</div></td>' +
+            '<td data-label="รายละเอียดการแก้ไข (สิ่งที่ดำเนินการไป)"><div style="font-size: 12.5px; color: var(--text-main); font-weight: 600; line-height: 1.4;">' + (r.actionTaken || r.action_taken || '-') + '</div>' +
+              (r.defectReason ? '<div style="font-size: 11px; color: #b91c1c; margin-top: 3px; background: #fff5f5; padding: 2px 6px; border-radius: 4px; display: inline-block;">อาการเดิม: ' + (r.defectReason || r.defect_reason) + '</div>' : '') +
+            '</td>' +
+            '<td data-label="ผู้ดำเนินการแก้ไข"><span style="font-size: 12px; font-weight: 600; color: var(--green-ready); display: inline-flex; align-items: center; gap: 4px;"><span class="material-icons-round" style="font-size: 14px;">person</span> ' + (r.resolvedBy || r.resolved_by || '-') + '</span></td>' +
+          '</tr>';
+        });
+        hBody.innerHTML = hHtml;
+      }
+    }
+
+    function resetRepairHistoryFilters() {
+      var s = document.getElementById('repairHistorySearch');
+      if (s) s.value = '';
+      var d = document.getElementById('repairHistoryDeptFilter');
+      if (d) d.value = '';
+      var m = document.getElementById('repairHistoryMonthFilter');
+      if (m) m.value = '';
+      renderRepairHistoryTable();
+    }
+
+    function exportRepairHistoryCsv() {
+      var repairs = (window.PPCH_STORE && window.PPCH_STORE.getRepairs) ? window.PPCH_STORE.getRepairs() : [];
+      var resolvedRepairs = repairs.filter(function (r) {
+        return !!(r.resolvedAt || r.resolved_at);
+      });
+
+      var searchInput = document.getElementById('repairHistorySearch');
+      var q = searchInput ? searchInput.value.trim().toLowerCase() : '';
+      var deptFilter = document.getElementById('repairHistoryDeptFilter');
+      var deptVal = deptFilter ? deptFilter.value : '';
+      var monthFilter = document.getElementById('repairHistoryMonthFilter');
+      var monthVal = monthFilter ? monthFilter.value : '';
+
+      var filtered = resolvedRepairs.filter(function (r) {
+        if (deptVal && r.department !== deptVal) {
+          var dName = window.PPCH_STORE.getDepartmentName(r.department);
+          if (dName !== deptVal) return false;
+        }
+        var timeStr = r.resolvedAt || r.resolved_at || '';
+        if (monthVal && !timeStr.startsWith(monthVal)) return false;
+        if (q) {
+          var asset = (r.deviceAsset || r.device_asset || '').toLowerCase();
+          var name = (r.deviceName || r.device_name || '').toLowerCase();
+          var action = (r.actionTaken || r.action_taken || '').toLowerCase();
+          var defect = (r.defectReason || r.defect_reason || '').toLowerCase();
+          var resolvedBy = (r.resolvedBy || r.resolved_by || '').toLowerCase();
+          var deptName = (window.PPCH_STORE.getDepartmentName(r.department) || '').toLowerCase();
+          if (!asset.includes(q) && !name.includes(q) && !action.includes(q) && !defect.includes(q) && !resolvedBy.includes(q) && !deptName.includes(q)) return false;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        showToast('ไม่มีข้อมูลประวัติงานซ่อมสำหรับส่งออก', 'warning');
+        return;
+      }
+
+      var csvRows = [
+        ['วัน-เวลาที่แก้ไขเสร็จ', 'รหัสครุภัณฑ์', 'เครื่องมือแพทย์', 'แผนก', 'รายละเอียดการแก้ไข', 'อาการข้อบกพร่องเดิม', 'ผู้ดำเนินการแก้ไข']
+      ];
+
+      filtered.forEach(function (r) {
+        csvRows.push([
+          r.resolvedAt || r.resolved_at || '',
+          r.deviceAsset || r.device_asset || '',
+          r.deviceName || r.device_name || '',
+          window.PPCH_STORE.getDepartmentName(r.department) || '',
+          r.actionTaken || r.action_taken || '',
+          r.defectReason || r.defect_reason || '',
+          r.resolvedBy || r.resolved_by || ''
+        ]);
+      });
+
+      var csvContent = '\uFEFF' + csvRows.map(function (row) {
+        return row.map(function (cell) {
+          var cellStr = (cell === null || cell === undefined) ? '' : String(cell);
+          if (cellStr.includes(',') || cellStr.includes('"') || cellStr.includes('\n')) {
+            cellStr = '"' + cellStr.replace(/"/g, '""') + '"';
+          }
+          return cellStr;
+        }).join(',');
+      }).join('\r\n');
+
+      var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      var url = URL.createObjectURL(blob);
+      var link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'PPCH_Repair_History_' + new Date().toISOString().slice(0, 10) + '.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      showToast('ส่งออกประวัติการซ่อมบำรุงเรียบร้อยแล้ว (' + filtered.length + ' รายการ)', 'success');
     }
 
     function openRepairHistoryPage() {
@@ -6330,6 +6528,8 @@
       var historyPanel = document.getElementById('defectiveHistoryPanel');
       if (activePanel) activePanel.style.display = 'none';
       if (historyPanel) historyPanel.style.display = 'block';
+
+      renderRepairHistoryTable();
 
       var bread = document.getElementById('breadCurrent');
       if (bread) bread.innerText = 'ประวัติการแก้ไขและส่งคืนความพร้อมใช้งาน';
