@@ -13,9 +13,8 @@
   <!-- Material Symbols Outlined -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   
-  <!-- QR Code Generator & Scanner CDN -->
+  <!-- QR Code Generator CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 
   <style>
     :root {
@@ -54,7 +53,7 @@
       display: flex;
     }
 
-    /* LEFT STICKY SIDEBAR */
+    /* LEFT STICKY SIDEBAR (Khun Nick's UX/UI Signature) */
     .sidebar {
       width: 280px;
       background: var(--navy);
@@ -248,16 +247,7 @@
       border-color: #cbd5e1;
     }
 
-    .btn-scan {
-      background: linear-gradient(135deg, #0284c7, #0d9488);
-      color: #ffffff;
-      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
-    }
 
-    .btn-scan:hover {
-      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4);
-      transform: translateY(-1px);
-    }
 
     /* CONTAINER & STREAMLINED FILTER TOOLBAR */
     .content-area {
@@ -600,14 +590,7 @@
       overflow-y: auto;
     }
 
-    /* QR SCANNER */
-    #reader {
-      width: 100%;
-      max-width: 480px;
-      margin: 0 auto;
-      border-radius: 12px;
-      overflow: hidden;
-    }
+
 
     /* COMPACT QR STICKER (Zero Clutter - Khun Nick's Request) */
     .print-grid {
@@ -644,10 +627,21 @@
 
     .sticker-qrcode {
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       margin-bottom: 6px;
       background: #ffffff;
+      width: 100%;
+    }
+
+    .sticker-qrcode canvas {
+      display: none !important;
+    }
+
+    .sticker-qrcode img {
+      display: block;
+      margin: 0 auto;
     }
 
     .sticker-name {
@@ -696,69 +690,175 @@
       font-size: 11px;
     }
 
-    /* PRINT STYLES (A4 Optimized, Multi-Item Grid, Zero Fluff) */
+    /* PRINT STYLES (A4 Optimized, Multi-Item Grid, Zero Fluff - Khun Nick's Request) */
     @media print {
       @page {
         size: A4 portrait;
-        margin: 8mm 8mm 8mm 8mm;
+        margin: 5mm 5mm 5mm 5mm;
       }
-      body {
+      html, body {
         background: #ffffff !important;
         color: #000000 !important;
         margin: 0 !important;
         padding: 0 !important;
-        display: block !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: auto !important;
+        overflow: visible !important;
       }
-      .sidebar, .topbar, .toolbar-row, .modal-header, .btn-group, .modal-close, .content-area, .no-print {
+      
+      /* Hide all regular UI, navigation, search, toolbar, and buttons */
+      .sidebar, .topbar, .toolbar-row, .content-area,
+      .modal-header, .btn-group, .modal-close, .no-print,
+      button, .btn, .action-btn, a.btn, input, .search-container {
         display: none !important;
       }
+
+      /* STRICT MODAL ISOLATION: Only show the currently active modal */
       .modal-overlay {
+        display: none !important;
+      }
+      .modal-overlay.active {
+        display: block !important;
         position: static !important;
         background: transparent !important;
         padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        height: auto !important;
         opacity: 1 !important;
         visibility: visible !important;
-        display: block !important;
+        box-shadow: none !important;
       }
-      .modal-card {
+      .modal-overlay.active .modal-card {
         box-shadow: none !important;
         border: none !important;
         max-width: 100% !important;
+        width: 100% !important;
+        height: auto !important;
         max-height: none !important;
         overflow: visible !important;
         display: block !important;
-      }
-      .modal-body {
         padding: 0 !important;
-        overflow: visible !important;
+        margin: 0 !important;
+        background: transparent !important;
       }
+      .modal-overlay.active .modal-body {
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: visible !important;
+        background: transparent !important;
+      }
+
+      /* MULTI-ITEM STICKER GRID (Fit all 29 stickers neatly on A4) */
       .print-grid {
         display: grid !important;
         grid-template-columns: repeat(4, 1fr) !important;
-        gap: 4mm !important;
+        gap: 1.5mm !important;
         padding: 0 !important;
+        margin: 0 auto !important;
         width: 100% !important;
       }
       .print-grid.grid-3col {
         grid-template-columns: repeat(3, 1fr) !important;
-        gap: 6mm !important;
+        gap: 3mm !important;
       }
       .qr-sticker {
-        border: 1px dashed #475569 !important;
-        border-radius: 6px !important;
-        padding: 6px 4px !important;
+        border: 1px dashed #64748b !important;
+        border-radius: 5px !important;
+        padding: 1.8mm 1mm !important;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
         box-shadow: none !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        background: #ffffff !important;
+        box-sizing: border-box !important;
+      }
+      .sticker-qrcode {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        margin: 0 auto !important;
+        width: 100% !important;
+      }
+      .sticker-qrcode canvas {
+        display: none !important;
+      }
+      .sticker-qrcode img {
+        display: block !important;
+        margin: 0 auto !important;
+        width: 70px !important;
+        height: 70px !important;
       }
       .sticker-name {
         color: #000000 !important;
-        font-size: 9.5pt !important;
+        font-size: 8pt !important;
         font-weight: 700 !important;
+        margin-top: 1.5mm !important;
+        margin-bottom: 0.5mm !important;
+        line-height: 1.15 !important;
+        max-height: 2.3em !important;
+        overflow: hidden !important;
+        text-align: center !important;
       }
       .sticker-code {
         color: #1e293b !important;
+        font-size: 7pt !important;
+        font-family: monospace !important;
+        font-weight: 600 !important;
+        line-height: 1 !important;
+        text-align: center !important;
+      }
+
+      .print-grid.grid-3col .sticker-qrcode canvas {
+        display: none !important;
+      }
+      .print-grid.grid-3col .sticker-qrcode img {
+        width: 92px !important;
+        height: 92px !important;
+        display: block !important;
+        margin: 0 auto !important;
+      }
+      .print-grid.grid-3col .sticker-name {
+        font-size: 9pt !important;
+      }
+      .print-grid.grid-3col .sticker-code {
         font-size: 8pt !important;
+      }
+
+      /* SINGLE STICKER MODAL PRINT */
+      .single-sticker-box {
+        margin: 15mm auto !important;
+        border: 1.5px dashed #0284c7 !important;
+        border-radius: 10px !important;
+        padding: 8mm 6mm !important;
+        width: 60mm !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        text-align: center !important;
+      }
+      .single-sticker-box .sticker-qrcode canvas {
+        display: none !important;
+      }
+      .single-sticker-box .sticker-qrcode img {
+        width: 120px !important;
+        height: 120px !important;
+        margin: 0 auto !important;
+        display: block !important;
+      }
+      .single-sticker-box .sticker-name {
+        font-size: 11pt !important;
+        margin-top: 3mm !important;
+        font-weight: 700 !important;
+      }
+      .single-sticker-box .sticker-code {
+        font-size: 9pt !important;
+        font-family: monospace !important;
       }
     }
 
@@ -827,7 +927,7 @@
   <!-- LEFT STICKY SIDEBAR -->
   <aside class="sidebar">
     <div class="brand">
-      <img src="logo.png" alt="PPCH Logo" onerror="this.src='https://raw.githubusercontent.com/pitsanuvejphichit/ppch-med-track/main/src/logo.png'">
+      <img src="https://raw.githubusercontent.com/pitsanuvejphichit/ppch-med-track/main/src/logo.png" alt="PPCH Logo" onerror="this.src='https://placehold.co/44x44/001f44/ffffff?text=PPCH'">
       <div class="brand-text">
         <h2>PPCH MedOps</h2>
         <p>คู่มือเครื่องมือแพทย์ (LAB)</p>
@@ -838,19 +938,11 @@
       <a class="nav-item active" onclick="filterCategory('all')">
         <span class="material-symbols-outlined">menu_book</span>
         <span>คู่มือทั้งหมด</span>
-        <span class="nav-badge" id="sideBadgeTotal">27</span>
-      </a>
-      <a class="nav-item" onclick="openScannerModal()">
-        <span class="material-symbols-outlined">qr_code_scanner</span>
-        <span>สแกน QR Code</span>
+        <span class="nav-badge" id="sideBadgeTotal">29</span>
       </a>
       <a class="nav-item" onclick="openPrintAllStickersModal()">
         <span class="material-symbols-outlined">print</span>
-        <span>พิมพ์สติกเกอร์ QR (27)</span>
-      </a>
-      <a class="nav-item" href="desktop.html">
-        <span class="material-symbols-outlined">dashboard</span>
-        <span>ระบบหลัก MedOps</span>
+        <span>พิมพ์สติกเกอร์ QR (29)</span>
       </a>
     </nav>
 
@@ -866,26 +958,22 @@
     <!-- TOPBAR -->
     <header class="topbar">
       <div class="mobile-header">
-        <img src="logo.png" alt="PPCH Logo" onerror="this.src='https://raw.githubusercontent.com/pitsanuvejphichit/ppch-med-track/main/src/logo.png'">
+        <img src="https://raw.githubusercontent.com/pitsanuvejphichit/ppch-med-track/main/src/logo.png" alt="PPCH Logo" onerror="this.src='https://placehold.co/32x32/001f44/ffffff?text=P'">
         <div>
           <h2 style="font-size: 15px; font-weight:700; color:var(--navy);">คู่มือ LAB</h2>
-          <p style="font-size: 11px; color:var(--text-muted);">27 เครื่องมือแพทย์</p>
+          <p style="font-size: 11px; color:var(--text-muted);">29 เครื่องมือแพทย์</p>
         </div>
       </div>
 
       <div class="page-title">
         <h1>สารบัญคู่มือการใช้งานเครื่องมือแพทย์ (Laboratory Manuals)</h1>
-        <p>เปิดอ่านคู่มือทันที หรือสแกน QR Code จากตัวเครื่องเพื่อเปิดเอกสาร</p>
+        <p>เปิดอ่านคู่มือการใช้งานเครื่องมือแพทย์ประจำแผนก Laboratory</p>
       </div>
 
       <div class="top-actions">
-        <button class="btn btn-scan" onclick="openScannerModal()">
-          <span class="material-symbols-outlined">qr_code_scanner</span>
-          <span>สแกน QR Code</span>
-        </button>
-        <button class="btn btn-outline" onclick="openPrintAllStickersModal()">
+        <button class="btn btn-primary" onclick="openPrintAllStickersModal()">
           <span class="material-symbols-outlined">print</span>
-          <span>พิมพ์สติกเกอร์ (27)</span>
+          <span>พิมพ์สติกเกอร์ (29)</span>
         </button>
       </div>
     </header>
@@ -904,9 +992,9 @@
         </div>
 
         <div class="filter-pills">
-          <div class="pill active" onclick="filterType('all', this)">ทั้งหมด (27)</div>
-          <div class="pill" onclick="filterType('pdf', this)">PDF (22)</div>
-          <div class="pill" onclick="filterType('doc', this)">Word (5)</div>
+          <div class="pill active" onclick="filterType('all', this)">ทั้งหมด (29)</div>
+          <div class="pill" onclick="filterType('pdf', this)">PDF (23)</div>
+          <div class="pill" onclick="filterType('doc', this)">Word (6)</div>
         </div>
       </div>
 
@@ -922,29 +1010,6 @@
     </main>
   </div>
 
-  <!-- MODAL: QR CODE SCANNER -->
-  <div id="scannerModal" class="modal-overlay">
-    <div class="modal-card" style="max-width: 480px;">
-      <div class="modal-header">
-        <h3>
-          <span class="material-symbols-outlined" style="color:var(--primary);">qr_code_scanner</span>
-          <span>สแกน QR Code ติดตัวเครื่อง</span>
-        </h3>
-        <button class="modal-close" onclick="closeScannerModal()">
-          <span class="material-symbols-outlined">close</span>
-        </button>
-      </div>
-      <div class="modal-body" style="text-align: center;">
-        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px;">
-          นำกล้องมือถือหรือเว็บแคมมาส่องที่ QR Code ประจำเครื่องมือเพื่อเปิดคู่มือทันที
-        </p>
-        <div id="reader"></div>
-        <div id="scannerStatus" style="font-size: 12px; color: var(--primary); margin-top: 10px; font-weight: 500;">
-          กำลังเปิดกล้อง...
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- MODAL: DOCUMENT VIEWER -->
   <div id="viewerModal" class="modal-overlay">
@@ -957,6 +1022,10 @@
           <span id="viewerCode" class="code-tag" style="margin-top: 2px;"></span>
         </div>
         <div style="display: flex; gap: 8px; align-items: center;">
+          <a id="viewerDriveBtn" href="#" target="_blank" class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;">
+            <span class="material-symbols-outlined" style="font-size: 16px;">open_in_new</span>
+            <span>เปิดบน Google Drive</span>
+          </a>
           <a id="viewerDownloadBtn" href="#" target="_blank" class="btn btn-outline" style="padding: 6px 12px; font-size: 12px;">
             <span class="material-symbols-outlined" style="font-size: 16px;">download</span>
             <span>ดาวน์โหลด</span>
@@ -972,7 +1041,7 @@
     </div>
   </div>
 
-  <!-- MODAL: SINGLE QR STICKER (Compact) -->
+  <!-- MODAL: SINGLE QR STICKER (Compact - Just Equipment Name & Code) -->
   <div id="stickerModal" class="modal-overlay">
     <div class="modal-card" style="max-width: 360px;">
       <div class="modal-header">
@@ -991,22 +1060,28 @@
           <div id="stickerCodeText" class="sticker-code">SD-E-PPCH-LAB-000</div>
         </div>
 
-        <button class="btn btn-primary" onclick="window.print()" style="width: 100%;">
-          <span class="material-symbols-outlined">print</span>
-          <span>พิมพ์สติกเกอร์นี้</span>
-        </button>
+        <div class="no-print" style="display: flex; flex-direction: column; gap: 8px; margin-top: 14px;">
+          <button class="btn btn-primary" onclick="window.print()" style="width: 100%; justify-content: center;">
+            <span class="material-symbols-outlined">print</span>
+            <span>พิมพ์สติกเกอร์นี้</span>
+          </button>
+          <a id="singleStickerDriveBtn" href="#" target="_blank" class="btn btn-outline" style="width: 100%; justify-content: center;">
+            <span class="material-symbols-outlined">open_in_new</span>
+            <span>เปิดทดสอบไฟล์บน Google Drive</span>
+          </a>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: PRINT ALL 27 STICKERS (Multi-Item Grid - Zero Clutter) -->
+  <!-- MODAL: PRINT ALL 29 STICKERS (Multi-Item Grid - Zero Clutter) -->
   <div id="printAllModal" class="modal-overlay">
     <div class="modal-card" style="max-width: 980px; height: 92vh;">
       <div class="modal-header">
         <div>
           <h3>
             <span class="material-symbols-outlined" style="color:var(--primary);">print</span>
-            <span>สติกเกอร์ QR Code ติดเครื่องมือ (ครบ 27 เครื่อง)</span>
+            <span>สติกเกอร์ QR Code ติดเครื่องมือ (ครบ 29 เครื่อง)</span>
           </h3>
           <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 2px;">
             จัดวางหลายอันต่อ 1 หน้า A4 (ประมาณ 20 ดวง/หน้า) เน้นความชัดเจนและตัดติดเครื่องได้ทันที
@@ -1041,6 +1116,7 @@
   </div>
 
   <script>
+    // CLEAN CONCISE SHORT NAMES FOR EQUIPMENT (Khun Nick's Zero-Clutter Directive)
     var SHORT_TITLES = {
       "SD-E-PPCH-LAB-024": "ชุดทดสอบ MultiSure GK Ketone",
       "SD-E-PPCH-LAB-025": "Fume Hood FH1000(X)",
@@ -1068,43 +1144,48 @@
       "SD-E-PPCH-LAB-099": "กล้องจุลทรรศน์ OLYMPUS CX23",
       "SD-E-PPCH-LAB-128": "เครื่องเคมี Mindray BS600M",
       "SD-E-PPCH-LAB-129": "เครื่องตรวจน้ำตาลในเลือด",
-      "SD-E-PPCH-LAB-134": "Auto Blood Culture System"
+      "SD-E-PPCH-LAB-134": "Auto Blood Culture System",
+      "SD-E-PPCH-LAB-135": "เครื่องปั่น DM1224",
+      "SD-E-PPCH-LAB-136": "เครื่องตรวจ Flowflex FIA"
     };
 
+    // COMPLETE 29 MEDICAL EQUIPMENT MANUALS CATALOG
     var ALL_MANUALS = [
-      { code: "SD-E-PPCH-LAB-024", title: "คู่มือการใช้งาน ชุดทดสอบ MultiSure GK Blood Ketone Test Strip", ext: "doc", fileName: "SD-E-PPCH-LAB-024 คู่มือการใช้งาน ชุดทดสอบ MultiSure GK Blood Ketone Test Strip.doc", sizeKB: 1943.5, category: "ชุดทดสอบ / Point of Care" },
-      { code: "SD-E-PPCH-LAB-025", title: "คู่มือการใช้งาน Fume Hood FH1000(X)", ext: "pdf", fileName: "SD-E-PPCH-LAB-025 คู่มือการใช้งาน Fume Hood FH1000(X).pdf", sizeKB: 2383.9, category: "ตู้ปลอดเชื้อ / ดูดควัน" },
-      { code: "SD-E-PPCH-LAB-027", title: "คู่มือการใช้งานเครื่อง BIOTIME Model FLI600", ext: "pdf", fileName: "SD-E-PPCH-LAB-027 คู่มือการใช้งานเครื่อง BIOTIME Model FLI600.pdf", sizeKB: 984.1, category: "เครื่องตรวจวิเคราะห์อัตโนมัติ" },
-      { code: "SD-E-PPCH-LAB-029", title: "คู่มือการใช้งานเครื่อง Orbital Shaker Model SK-O180-S", ext: "pdf", fileName: "SD-E-PPCH-LAB-029 คู่มือการใช้งานเครื่อง Orbital Shaker Model SK-O180-S.pdf", sizeKB: 100.6, category: "เครื่องเขย่า / เครื่องผสม" },
-      { code: "SD-E-PPCH-LAB-030", title: "คู่มือการใช้งานเครื่อง Stat Strip Lactate Hospital Meter", ext: "pdf", fileName: "SD-E-PPCH-LAB-030 คู่มือการใช้งานเครื่อง Stat Strip Lactate Hospital Meter.pdf", sizeKB: 907.6, category: "เครื่องตรวจวัดเฉพาะทาง" },
-      { code: "SD-E-PPCH-LAB-031", title: "คู่มือการใช้งานเครื่อง Water Bath", ext: "pdf", fileName: "SD-E-PPCH-LAB-031 คู่มือการใช้งานเครื่อง Water Bath.pdf", sizeKB: 781.2, category: "อ่างควบคุมอุณหภูมิ" },
-      { code: "SD-E-PPCH-LAB-032", title: "คู่มือการใช้งานเครื่องตรวจบิลลิลูบิน BR-5200", ext: "pdf", fileName: "SD-E-PPCH-LAB-032 คู่มือการใช้งานเครื่องตรวจบิลลิลูบิน BR-5200.pdf", sizeKB: 1673.9, category: "เครื่องตรวจวิเคราะห์อัตโนมัติ" },
-      { code: "SD-E-PPCH-LAB-034", title: "คู่มือการใช้งานเครื่อง epoc", ext: "pdf", fileName: "SD-E-PPCH-LAB-034 คู่มือการใช้งานเครื่อง epoc.pdf", sizeKB: 14156.8, category: "เครื่องตรวจวิเคราะห์ก๊าซในเลือด (Blood Gas)" },
-      { code: "SD-E-PPCH-LAB-035", title: "คู่มือการใช้งานเครื่อง XN-550", ext: "pdf", fileName: "SD-E-PPCH-LAB-035 คู่มือการใช้งานเครื่อง XN-550.pdf", sizeKB: 3587.9, category: "เครื่องตรวจวิเคราะห์ทางโลหิตวิทยา (Hematology)" },
-      { code: "SD-E-PPCH-LAB-038", title: "คู่มือการใช้งานตู้แช่แข็ง -40 องศาเซลเซียส", ext: "pdf", fileName: "SD-E-PPCH-LAB-038 คู่มือการใช้งานตู้แช่แข็ง -40 องศาเซลเซียส.pdf", sizeKB: 2260.0, category: "ตู้แช่ / ตู้เก็บรักษาอุณหภูมิต่ำ" },
-      { code: "SD-E-PPCH-LAB-039", title: "วิธีใช้งานเครื่อง Ketone", ext: "docx", fileName: "SD-E-PPCH-LAB-039 วิธีใช้งานเครื่อง Ketone.docx", sizeKB: 597.6, category: "ชุดทดสอบ / Point of Care" },
-      { code: "SD-E-PPCH-LAB-040", title: "คู่มือการใช้งานเครื่อง HC-12C", ext: "pdf", fileName: "SD-E-PPCH-LAB-040  คู่มือการใช้งานเครื่อง HC-12C.pdf", sizeKB: 223.6, category: "เครื่องปั่นตกตะกอน (Centrifuge)" },
-      { code: "SD-E-PPCH-LAB-047", title: "คู่มือการใช้งานและบำรุงรักษาเครื่องกดนับเเยกชนิดเม็ดเลือดขาว", ext: "pdf", fileName: "SD-E-PPCH-LAB-047 คู่มือการใช้งานและบำรุงรักษาเครื่องกดนับเเยกชนิดเม็ดเลือดขาว.pdf", sizeKB: 818.1, category: "เครื่องนับเซลล์เม็ดเลือด" },
-      { code: "SD-E-PPCH-LAB-049", title: "คู่มือการใช้งานเครื่องปั่นตกตะกอนชนิดความเร็ว Serofuge", ext: "pdf", fileName: "SD-E-PPCH-LAB-049 คู่มือการใช้งานเครื่องปั่นตกตะกอนชนิดความเร็ว Serofuge.pdf", sizeKB: 260.1, category: "เครื่องปั่นตกตะกอน (Centrifuge)" },
-      { code: "SD-E-PPCH-LAB-070", title: "คู่มือการใช้งานตู้ปลอดเชื้อ BIOSAFETY CABINET", ext: "pdf", fileName: "SD-E-PPCH-LAB-070 คู่มือการใช้งานตู้ปลอดเชื้อ BIOSAFETY CABINET.pdf", sizeKB: 3440.5, category: "ตู้ปลอดเชื้อ / ดูดควัน" },
-      { code: "SD-E-PPCH-LAB-080", title: "คู่มือการใช้งานเครื่อง Fume Hood FH1000(X)", ext: "pdf", fileName: "SD-E-PPCH-LAB-080 คู่มือการใช้งานเครื่อง Fume Hood FH1000(X).pdf", sizeKB: 2384.2, category: "ตู้ปลอดเชื้อ / ดูดควัน" },
-      { code: "SD-E-PPCH-LAB-081", title: "การใช้เครื่องวิเคราะห์อัตโนมัติทางภูมิคุ้มกันวิทยา MAGLUMI 800", ext: "pdf", fileName: "SD-E-PPCH-LAB-081 การใช้เครื่องวิเคราะห์อัตโนมัติทางภูมิคุ้มกันวิทยา MAGLUMI 800.pdf", sizeKB: 4217.1, category: "เครื่องตรวจวิเคราะห์อัตโนมัติ" },
-      { code: "SD-E-PPCH-LAB-082", title: "รายละเอียดคุณลักษณะเฉพาะเครื่องตรวจวัดปริมาณ Lactate ในเลือด Stat Strip Xpress", ext: "doc", fileName: "SD-E-PPCH-LAB-082 รายละเอียดคุณลักษณะเฉพาะเครื่องตรวจวัดปริมาณ  Lactate ในเลือด Stat Strip Xpress Lactate Hospital Meter.doc", sizeKB: 34.5, category: "เครื่องตรวจวัดเฉพาะทาง" },
-      { code: "SD-E-PPCH-LAB-089", title: "คู่มือการใช้งาน BBR-9D", ext: "pdf", fileName: "SD-E-PPCH-LAB-089 คู่มือการใช้งาน BBR-9D.pdf", sizeKB: 727.9, category: "เครื่องเขย่า / เครื่องผสม" },
-      { code: "SD-E-PPCH-LAB-090", title: "คู่มือการใช้งาน Automated Blood Coagulation Analyzer CA-500 Series", ext: "pdf", fileName: "SD-E-PPCH-LAB-090 คู่มือการใช้งาน Automated Blood Coagulation Analyzer CA-500 Series.pdf", sizeKB: 698.7, category: "เครื่องตรวจวิเคราะห์อัตโนมัติ" },
-      { code: "SD-E-PPCH-LAB-092", title: "คู่มือการใช้งานเครื่อง URiSCAN PRO", ext: "pdf", fileName: "SD-E-PPCH-LAB-092 คู่มือการใช้งานเครื่อง URiSCAN PRO.pdf", sizeKB: 2304.4, category: "เครื่องตรวจวิเคราะห์ปัสสาวะ (Urinalysis)" },
-      { code: "SD-E-PPCH-LAB-097", title: "คู่มือการใช้งานเครื่อง DM0424", ext: "pdf", fileName: "SD-E-PPCH-LAB-097 คู่มือการใช้งานเครื่อง DM0424.pdf", sizeKB: 639.8, category: "เครื่องปั่นตกตะกอน (Centrifuge)" },
-      { code: "SD-E-PPCH-LAB-098", title: "คู่มือการใช้งานเครื่อง DM0412", ext: "pdf", fileName: "SD-E-PPCH-LAB-098 คู่มือการใช้งานเครื่อง DM0412.pdf", sizeKB: 2238.5, category: "เครื่องปั่นตกตะกอน (Centrifuge)" },
-      { code: "SD-E-PPCH-LAB-099", title: "คู่มือการใช้งานกล้องจุลทรรศน์ รุ่น CX23 ยี่ห้อ OLYMPUS", ext: "pdf", fileName: "SD-E-PPCH-LAB-099 คู่มือการใช้งานกล้องจุลทรรศน์ รุ่น CX23 ยี่ห้อ OLYMPUS.pdf", sizeKB: 2444.8, category: "กล้องจุลทรรศน์ (Microscope)" },
-      { code: "SD-E-PPCH-LAB-128", title: "การใช้เครื่องวิคราะห์อัตโนมัติทางเคมีคลินิคยี่ห้อ Mindray รุ่น BS600M", ext: "pdf", fileName: "SD-E-PPCH-LAB-128 การใช้เครื่องวิคราะห์อัตโนมัติทางเคมีคลินิคยี่ห้อ Mindray รุ่น BS600M.pdf", sizeKB: 18582.8, category: "เครื่องตรวจวิเคราะห์อัตโนมัติ" },
-      { code: "SD-E-PPCH-LAB-129", title: "การตรวจหาปริมาณน้ำตาลในเลือด ด้วยเคร", ext: "docx", fileName: "SD-E-PPCH-LAB-129 การตรวจหาปริมาณน้ำตาลในเลือด ด้วยเคร.docx", sizeKB: 165.2, category: "ชุดทดสอบ / Point of Care" },
-      { code: "SD-E-PPCH-LAB-134", title: "คู่มือการใช้งาน เครื่องเพาะเชื้อแบบอัตโนมัติ Auto Blood Culture System", ext: "pdf", fileName: "SD-E-PPCH-LAB-134 คู่มือการใช้งาน เครื่องเพาะเชื้อแบบอัตโนมัติ Auto Blood Culture System.pdf", sizeKB: 12338.5, category: "เครื่องเพาะเชื้ออัตโนมัติ (Microbiology)" }
+      {"code":"SD-E-PPCH-LAB-024","title":"คู่มือการใช้งาน ชุดทดสอบ MultiSure GK Blood Ketone Test Strip","shortName":"ชุดทดสอบ MultiSure GK Ketone","ext":"doc","fileName":"SD-E-PPCH-LAB-024 คู่มือการใช้งาน ชุดทดสอบ MultiSure GK Blood Ketone Test Strip.doc","sizeKB":1943.5,"category":"ชุดทดสอบ / Point of Care","id":"11ke96R6o9e4BwVM2TNxjqaHSmOoyKCB7","url":"https:\\x2f\\x2fdrive.google.com/file/d/11ke96R6o9e4BwVM2TNxjqaHSmOoyKCB7/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/11ke96R6o9e4BwVM2TNxjqaHSmOoyKCB7/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=11ke96R6o9e4BwVM2TNxjqaHSmOoyKCB7&export=download"},
+      {"code":"SD-E-PPCH-LAB-025","title":"คู่มือการใช้งาน Fume Hood FH1000(X)","shortName":"Fume Hood FH1000(X)","ext":"pdf","fileName":"SD-E-PPCH-LAB-025 คู่มือการใช้งาน Fume Hood FH1000(X).pdf","sizeKB":2383.9,"category":"ตู้ปลอดเชื้อ / ดูดควัน","id":"1s8BXStG-cDR3EjHIJ8O9l1pkdMIkb25o","url":"https:\\x2f\\x2fdrive.google.com/file/d/1s8BXStG-cDR3EjHIJ8O9l1pkdMIkb25o/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/1s8BXStG-cDR3EjHIJ8O9l1pkdMIkb25o/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=1s8BXStG-cDR3EjHIJ8O9l1pkdMIkb25o&export=download"},
+      {"code":"SD-E-PPCH-LAB-027","title":"คู่มือการใช้งานเครื่อง BIOTIME Model FLI600","shortName":"เครื่อง BIOTIME FLI600","ext":"pdf","fileName":"SD-E-PPCH-LAB-027 คู่มือการใช้งานเครื่อง BIOTIME Model FLI600.pdf","sizeKB":984.1,"category":"เครื่องตรวจวิเคราะห์อัตโนมัติ","id":"1PtDGt_AWvp_IxAWhPhqLiNioQoEO6caI","url":"https:\\x2f\\x2fdrive.google.com/file/d/1PtDGt_AWvp_IxAWhPhqLiNioQoEO6caI/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/1PtDGt_AWvp_IxAWhPhqLiNioQoEO6caI/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=1PtDGt_AWvp_IxAWhPhqLiNioQoEO6caI&export=download"},
+      {"code":"SD-E-PPCH-LAB-029","title":"คู่มือการใช้งานเครื่อง Orbital Shaker Model SK-O180-S","shortName":"Orbital Shaker SK-O180-S","ext":"pdf","fileName":"SD-E-PPCH-LAB-029 คู่มือการใช้งานเครื่อง Orbital Shaker Model SK-O180-S.pdf","sizeKB":100.6,"category":"เครื่องเขย่า / เครื่องผสม","id":"1qjdt14aRLO2-2QbU2AJgDHifTKUhHnxI","url":"https:\\x2f\\x2fdrive.google.com/file/d/1qjdt14aRLO2-2QbU2AJgDHifTKUhHnxI/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/1qjdt14aRLO2-2QbU2AJgDHifTKUhHnxI/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=1qjdt14aRLO2-2QbU2AJgDHifTKUhHnxI&export=download"},
+      {"code":"SD-E-PPCH-LAB-030","title":"คู่มือการใช้งานเครื่อง Stat Strip Lactate Hospital Meter","shortName":"Stat Strip Lactate Hospital Meter","ext":"pdf","fileName":"SD-E-PPCH-LAB-030 คู่มือการใช้งานเครื่อง Stat Strip Lactate Hospital Meter.pdf","sizeKB":907.6,"category":"เครื่องตรวจวัดเฉพาะทาง","id":"1gr0ZYFTXhEhcWiq5Dhc1buch0Ec6lFUY","url":"https:\\x2f\\x2fdrive.google.com/file/d/1gr0ZYFTXhEhcWiq5Dhc1buch0Ec6lFUY/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/1gr0ZYFTXhEhcWiq5Dhc1buch0Ec6lFUY/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=1gr0ZYFTXhEhcWiq5Dhc1buch0Ec6lFUY&export=download"},
+      {"code":"SD-E-PPCH-LAB-031","title":"คู่มือการใช้งานเครื่อง Water Bath","shortName":"เครื่อง Water Bath","ext":"pdf","fileName":"SD-E-PPCH-LAB-031 คู่มือการใช้งานเครื่อง Water Bath.pdf","sizeKB":781.2,"category":"อ่างควบคุมอุณหภูมิ","id":"1kWUoi1x8vlMbHwaa9jd2Ai3o_2eRcXBy","url":"https:\\x2f\\x2fdrive.google.com/file/d/1kWUoi1x8vlMbHwaa9jd2Ai3o_2eRcXBy/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/1kWUoi1x8vlMbHwaa9jd2Ai3o_2eRcXBy/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=1kWUoi1x8vlMbHwaa9jd2Ai3o_2eRcXBy&export=download"},
+      {"code":"SD-E-PPCH-LAB-032","title":"คู่มือการใช้งานเครื่องตรวจบิลลิลูบิน BR-5200","shortName":"เครื่องตรวจบิลลิรูบิน BR-5200","ext":"pdf","fileName":"SD-E-PPCH-LAB-032 คู่มือการใช้งานเครื่องตรวจบิลลิลูบิน BR-5200.pdf","sizeKB":1673.9,"category":"เครื่องตรวจวิเคราะห์อัตโนมัติ","id":"13OwCQKUXOuX3MAyMC-0PTQwiOQQZbqIM","url":"https:\\x2f\\x2fdrive.google.com/file/d/13OwCQKUXOuX3MAyMC-0PTQwiOQQZbqIM/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/13OwCQKUXOuX3MAyMC-0PTQwiOQQZbqIM/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=13OwCQKUXOuX3MAyMC-0PTQwiOQQZbqIM&export=download"},
+      {"code":"SD-E-PPCH-LAB-034","title":"คู่มือการใช้งานเครื่อง epoc","shortName":"เครื่องตรวจ epoc Blood Gas","ext":"pdf","fileName":"SD-E-PPCH-LAB-034 คู่มือการใช้งานเครื่อง epoc.pdf","sizeKB":14156.8,"category":"เครื่องตรวจวิเคราะห์ก๊าซในเลือด (Blood Gas)","id":"11w0Vwo0_0eoSTLOx2BlRsL9cQg7rF6LN","url":"https:\\x2f\\x2fdrive.google.com/file/d/11w0Vwo0_0eoSTLOx2BlRsL9cQg7rF6LN/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/11w0Vwo0_0eoSTLOx2BlRsL9cQg7rF6LN/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=11w0Vwo0_0eoSTLOx2BlRsL9cQg7rF6LN&export=download"},
+      {"code":"SD-E-PPCH-LAB-035","title":"คู่มือการใช้งานเครื่อง XN-550","shortName":"เครื่องตรวจโลหิตวิทยา XN-550","ext":"pdf","fileName":"SD-E-PPCH-LAB-035 คู่มือการใช้งานเครื่อง XN-550.pdf","sizeKB":3587.9,"category":"เครื่องตรวจวิเคราะห์ทางโลหิตวิทยา (Hematology)","id":"1GsnNeces1CHdJdUKXjjCpfCYjm_c5-UK","url":"https:\\x2f\\x2fdrive.google.com/file/d/1GsnNeces1CHdJdUKXjjCpfCYjm_c5-UK/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/1GsnNeces1CHdJdUKXjjCpfCYjm_c5-UK/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=1GsnNeces1CHdJdUKXjjCpfCYjm_c5-UK&export=download"},
+      {"code":"SD-E-PPCH-LAB-038","title":"คู่มือการใช้งานตู้แช่แข็ง -40 องศาเซลเซียส","shortName":"ตู้แช่แข็ง -40°C","ext":"pdf","fileName":"SD-E-PPCH-LAB-038 คู่มือการใช้งานตู้แช่แข็ง -40 องศาเซลเซียส.pdf","sizeKB":2260,"category":"ตู้แช่ / ตู้เก็บรักษาอุณหภูมิต่ำ","id":"1slagCAyCnoaXQ6HsjRCZX2e6HeFNv7TR","url":"https:\\x2f\\x2fdrive.google.com/file/d/1slagCAyCnoaXQ6HsjRCZX2e6HeFNv7TR/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/1slagCAyCnoaXQ6HsjRCZX2e6HeFNv7TR/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=1slagCAyCnoaXQ6HsjRCZX2e6HeFNv7TR&export=download"},
+      {"code":"SD-E-PPCH-LAB-039","title":"วิธีใช้งานเครื่อง Ketone","shortName":"เครื่องตรวจ Ketone","ext":"docx","fileName":"SD-E-PPCH-LAB-039 วิธีใช้งานเครื่อง Ketone.docx","sizeKB":597.6,"category":"ชุดทดสอบ / Point of Care","id":"1f0gt2lIRnmDQAPKld08kTq5jptmse9YB","url":"https:\\x2f\\x2fdrive.google.com/file/d/1f0gt2lIRnmDQAPKld08kTq5jptmse9YB/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/1f0gt2lIRnmDQAPKld08kTq5jptmse9YB/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=1f0gt2lIRnmDQAPKld08kTq5jptmse9YB&export=download"},
+      {"code":"SD-E-PPCH-LAB-040","title":"คู่มือการใช้งานเครื่อง HC-12C","shortName":"เครื่องปั่นเหวี่ยง HC-12C","ext":"pdf","fileName":"SD-E-PPCH-LAB-040  คู่มือการใช้งานเครื่อง HC-12C.pdf","sizeKB":223.6,"category":"เครื่องปั่นตกตะกอน (Centrifuge)","id":"15-odlHgVM2HimwTueVQ0JgWmlxDIyeqJ","url":"https:\\x2f\\x2fdrive.google.com/file/d/15-odlHgVM2HimwTueVQ0JgWmlxDIyeqJ/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/15-odlHgVM2HimwTueVQ0JgWmlxDIyeqJ/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=15-odlHgVM2HimwTueVQ0JgWmlxDIyeqJ&export=download"},
+      {"code":"SD-E-PPCH-LAB-047","title":"คู่มือการใช้งานและบำรุงรักษาเครื่องกดนับเเยกชนิดเม็ดเลือดขาว","shortName":"เครื่องนับแยกเม็ดเลือดขาว","ext":"pdf","fileName":"SD-E-PPCH-LAB-047 คู่มือการใช้งานและบำรุงรักษาเครื่องกดนับเเยกชนิดเม็ดเลือดขาว.pdf","sizeKB":818.1,"category":"เครื่องนับเซลล์เม็ดเลือด","id":"1GlfkyCkb0FhMuuvU2ItXgj3y6BAbtTDX","url":"https:\\x2f\\x2fdrive.google.com/file/d/1GlfkyCkb0FhMuuvU2ItXgj3y6BAbtTDX/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/1GlfkyCkb0FhMuuvU2ItXgj3y6BAbtTDX/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=1GlfkyCkb0FhMuuvU2ItXgj3y6BAbtTDX&export=download"},
+      {"code":"SD-E-PPCH-LAB-049","title":"คู่มือการใช้งานเครื่องปั่นตกตะกอนชนิดความเร็ว Serofuge","shortName":"เครื่องปั่น Serofuge","ext":"pdf","fileName":"SD-E-PPCH-LAB-049 คู่มือการใช้งานเครื่องปั่นตกตะกอนชนิดความเร็ว Serofuge.pdf","sizeKB":260.1,"category":"เครื่องปั่นตกตะกอน (Centrifuge)","id":"12gpemjkJyUvVBZgKHzzLmMQ-CknR2fMu","url":"https:\\x2f\\x2fdrive.google.com/file/d/12gpemjkJyUvVBZgKHzzLmMQ-CknR2fMu/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/12gpemjkJyUvVBZgKHzzLmMQ-CknR2fMu/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=12gpemjkJyUvVBZgKHzzLmMQ-CknR2fMu&export=download"},
+      {"code":"SD-E-PPCH-LAB-070","title":"คู่มือการใช้งานตู้ปลอดเชื้อ BIOSAFETY CABINET","shortName":"ตู้ปลอดเชื้อ Biosafety Cabinet","ext":"pdf","fileName":"SD-E-PPCH-LAB-070 คู่มือการใช้งานตู้ปลอดเชื้อ BIOSAFETY CABINET.pdf","sizeKB":3440.5,"category":"ตู้ปลอดเชื้อ / ดูดควัน","id":"1y7i4VVqt9wGOgIHeiYTLYbxMgvtI7zvm","url":"https:\\x2f\\x2fdrive.google.com/file/d/1y7i4VVqt9wGOgIHeiYTLYbxMgvtI7zvm/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/1y7i4VVqt9wGOgIHeiYTLYbxMgvtI7zvm/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=1y7i4VVqt9wGOgIHeiYTLYbxMgvtI7zvm&export=download"},
+      {"code":"SD-E-PPCH-LAB-080","title":"คู่มือการใช้งานเครื่อง Fume Hood FH1000(X)","shortName":"Fume Hood FH1000(X)","ext":"pdf","fileName":"SD-E-PPCH-LAB-080 คู่มือการใช้งานเครื่อง Fume Hood FH1000(X).pdf","sizeKB":2384.2,"category":"ตู้ปลอดเชื้อ / ดูดควัน","id":"1WxzpKA2TUBPyymcWfpLW6z6jzbNo8oDS","url":"https:\\x2f\\x2fdrive.google.com/file/d/1WxzpKA2TUBPyymcWfpLW6z6jzbNo8oDS/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/1WxzpKA2TUBPyymcWfpLW6z6jzbNo8oDS/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=1WxzpKA2TUBPyymcWfpLW6z6jzbNo8oDS&export=download"},
+      {"code":"SD-E-PPCH-LAB-081","title":"การใช้เครื่องวิเคราะห์อัตโนมัติทางภูมิคุ้มกันวิทยา MAGLUMI 800","shortName":"เครื่องวิเคราะห์ MAGLUMI 800","ext":"pdf","fileName":"SD-E-PPCH-LAB-081 การใช้เครื่องวิเคราะห์อัตโนมัติทางภูมิคุ้มกันวิทยา MAGLUMI 800.pdf","sizeKB":4217.1,"category":"เครื่องตรวจวิเคราะห์อัตโนมัติ","id":"11umcNuMyUGacO8dEdS3_09qyZ0tdk3tE","url":"https:\\x2f\\x2fdrive.google.com/file/d/11umcNuMyUGacO8dEdS3_09qyZ0tdk3tE/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/11umcNuMyUGacO8dEdS3_09qyZ0tdk3tE/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=11umcNuMyUGacO8dEdS3_09qyZ0tdk3tE&export=download"},
+      {"code":"SD-E-PPCH-LAB-082","title":"รายละเอียดคุณลักษณะเฉพาะเครื่องตรวจวัดปริมาณ  Lactate ในเลือด Stat Strip Xpress Lactate Hospital Meter","shortName":"Stat Strip Xpress Lactate","ext":"doc","fileName":"SD-E-PPCH-LAB-082 รายละเอียดคุณลักษณะเฉพาะเครื่องตรวจวัดปริมาณ  Lactate ในเลือด Stat Strip Xpress Lactate Hospital Meter.doc","sizeKB":34.5,"category":"เครื่องตรวจวัดเฉพาะทาง","id":"1eiDHwRY8zPDb_KyTet-IwFX4-tw8d2yq","url":"https:\\x2f\\x2fdrive.google.com/file/d/1eiDHwRY8zPDb_KyTet-IwFX4-tw8d2yq/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/1eiDHwRY8zPDb_KyTet-IwFX4-tw8d2yq/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=1eiDHwRY8zPDb_KyTet-IwFX4-tw8d2yq&export=download"},
+      {"code":"SD-E-PPCH-LAB-089","title":"คู่มือการใช้งาน BBR-9D","shortName":"เครื่องเขย่า BBR-9D","ext":"pdf","fileName":"SD-E-PPCH-LAB-089 คู่มือการใช้งาน BBR-9D.pdf","sizeKB":727.9,"category":"เครื่องเขย่า / เครื่องผสม","id":"1kbQQtMItwg3gcROW-cZY0bg8UAE1pyCk","url":"https:\\x2f\\x2fdrive.google.com/file/d/1kbQQtMItwg3gcROW-cZY0bg8UAE1pyCk/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/1kbQQtMItwg3gcROW-cZY0bg8UAE1pyCk/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=1kbQQtMItwg3gcROW-cZY0bg8UAE1pyCk&export=download"},
+      {"code":"SD-E-PPCH-LAB-090","title":"คู่มือการใช้งาน Automated Blood Coagulation Analyzer CA-500 Series","shortName":"CA-500 Coagulation Analyzer","ext":"pdf","fileName":"SD-E-PPCH-LAB-090 คู่มือการใช้งาน Automated Blood Coagulation Analyzer CA-500 Series.pdf","sizeKB":698.7,"category":"เครื่องตรวจวิเคราะห์อัตโนมัติ","id":"1dqHV8llGUWcPQpf4d3CQjJSADqC7c3Af","url":"https:\\x2f\\x2fdrive.google.com/file/d/1dqHV8llGUWcPQpf4d3CQjJSADqC7c3Af/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/1dqHV8llGUWcPQpf4d3CQjJSADqC7c3Af/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=1dqHV8llGUWcPQpf4d3CQjJSADqC7c3Af&export=download"},
+      {"code":"SD-E-PPCH-LAB-092","title":"คู่มือการใช้งานเครื่อง URiSCAN PRO","shortName":"เครื่องตรวจปัสสาวะ URiSCAN PRO","ext":"pdf","fileName":"SD-E-PPCH-LAB-092 คู่มือการใช้งานเครื่อง URiSCAN PRO.pdf","sizeKB":2304.4,"category":"เครื่องตรวจวิเคราะห์ปัสสาวะ (Urinalysis)","id":"1KtVOIAYMAi6VjOG7yjEYAJujTruqY8aN","url":"https:\\x2f\\x2fdrive.google.com/file/d/1KtVOIAYMAi6VjOG7yjEYAJujTruqY8aN/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/1KtVOIAYMAi6VjOG7yjEYAJujTruqY8aN/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=1KtVOIAYMAi6VjOG7yjEYAJujTruqY8aN&export=download"},
+      {"code":"SD-E-PPCH-LAB-097","title":"คู่มือการใช้งานเครื่อง DM0424","shortName":"เครื่องปั่น DM0424","ext":"pdf","fileName":"SD-E-PPCH-LAB-097 คู่มือการใช้งานเครื่อง DM0424.pdf","sizeKB":639.8,"category":"เครื่องปั่นตกตะกอน (Centrifuge)","id":"1-5tpJsMw3sU7Pch-tfNT6m50-i_CLQts","url":"https:\\x2f\\x2fdrive.google.com/file/d/1-5tpJsMw3sU7Pch-tfNT6m50-i_CLQts/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/1-5tpJsMw3sU7Pch-tfNT6m50-i_CLQts/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=1-5tpJsMw3sU7Pch-tfNT6m50-i_CLQts&export=download"},
+      {"code":"SD-E-PPCH-LAB-098","title":"คู่มือการใช้งานเครื่อง DM0412","shortName":"เครื่องปั่น DM0412","ext":"pdf","fileName":"SD-E-PPCH-LAB-098 คู่มือการใช้งานเครื่อง DM0412.pdf","sizeKB":2238.5,"category":"เครื่องปั่นตกตะกอน (Centrifuge)","id":"1cMlahWcBZouov5hXLiiOdhIPZLPZtNSZ","url":"https:\\x2f\\x2fdrive.google.com/file/d/1cMlahWcBZouov5hXLiiOdhIPZLPZtNSZ/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/1cMlahWcBZouov5hXLiiOdhIPZLPZtNSZ/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=1cMlahWcBZouov5hXLiiOdhIPZLPZtNSZ&export=download"},
+      {"code":"SD-E-PPCH-LAB-099","title":"คู่มือการใช้งานกล้องจุลทรรศน์ รุ่น CX23 ยี่ห้อ OLYMPUS","shortName":"กล้องจุลทรรศน์ OLYMPUS CX23","ext":"pdf","fileName":"SD-E-PPCH-LAB-099 คู่มือการใช้งานกล้องจุลทรรศน์ รุ่น CX23 ยี่ห้อ OLYMPUS.pdf","sizeKB":2444.8,"category":"กล้องจุลทรรศน์ (Microscope)","id":"1_v5bVmMgBmGFW3ArLAIDWUzVbm17TIpx","url":"https:\\x2f\\x2fdrive.google.com/file/d/1_v5bVmMgBmGFW3ArLAIDWUzVbm17TIpx/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/1_v5bVmMgBmGFW3ArLAIDWUzVbm17TIpx/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=1_v5bVmMgBmGFW3ArLAIDWUzVbm17TIpx&export=download"},
+      {"code":"SD-E-PPCH-LAB-128","title":"การใช้เครื่องวิคราะห์อัตโนมัติทางเคมีคลินิคยี่ห้อ Mindray รุ่น BS600M","shortName":"เครื่องเคมี Mindray BS600M","ext":"pdf","fileName":"SD-E-PPCH-LAB-128 การใช้เครื่องวิคราะห์อัตโนมัติทางเคมีคลินิคยี่ห้อ Mindray รุ่น BS600M.pdf","sizeKB":18582.8,"category":"เครื่องตรวจวิเคราะห์อัตโนมัติ","id":"1_oGtBEPG0ANuj13o1iebBs5sxxRLn6z4","url":"https:\\x2f\\x2fdrive.google.com/file/d/1_oGtBEPG0ANuj13o1iebBs5sxxRLn6z4/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/1_oGtBEPG0ANuj13o1iebBs5sxxRLn6z4/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=1_oGtBEPG0ANuj13o1iebBs5sxxRLn6z4&export=download"},
+      {"code":"SD-E-PPCH-LAB-129","title":"การตรวจหาปริมาณน้ำตาลในเลือด ด้วยเคร","shortName":"เครื่องตรวจน้ำตาลในเลือด","ext":"docx","fileName":"SD-E-PPCH-LAB-129 การตรวจหาปริมาณน้ำตาลในเลือด ด้วยเคร.docx","sizeKB":165.2,"category":"ชุดทดสอบ / Point of Care","id":"1N3mNU-CjY3v8Ry1zGeHEkm6NNAhFd238","url":"https:\\x2f\\x2fdrive.google.com/file/d/1N3mNU-CjY3v8Ry1zGeHEkm6NNAhFd238/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/1N3mNU-CjY3v8Ry1zGeHEkm6NNAhFd238/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=1N3mNU-CjY3v8Ry1zGeHEkm6NNAhFd238&export=download"},
+      {"code":"SD-E-PPCH-LAB-134","title":"คู่มือการใช้งาน เครื่องเพาะเชื้อแบบอัตโนมัติ Auto Blood Culture System","shortName":"Auto Blood Culture System","ext":"pdf","fileName":"SD-E-PPCH-LAB-134 คู่มือการใช้งาน เครื่องเพาะเชื้อแบบอัตโนมัติ Auto Blood Culture System.pdf","sizeKB":12338.5,"category":"เครื่องเพาะเชื้ออัตโนมัติ (Microbiology)","id":"1eFUUgWj6BNxM7LWmLiisy5R3n48gdzdW","url":"https:\\x2f\\x2fdrive.google.com/file/d/1eFUUgWj6BNxM7LWmLiisy5R3n48gdzdW/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/1eFUUgWj6BNxM7LWmLiisy5R3n48gdzdW/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=1eFUUgWj6BNxM7LWmLiisy5R3n48gdzdW&export=download"},
+      {"code":"SD-E-PPCH-LAB-135","title":"คู่มือการใช้งาน DM1224 Economical Hematocrit Centrifuge","shortName":"เครื่องปั่น DM1224","ext":"pdf","fileName":"SD-E-PPCH-LAB-135 คู่มือการใช้งาน DM1224 Economical Hematocrit Centrifuge.pdf","sizeKB":355.7,"category":"เครื่องปั่นตกตะกอน (Centrifuge)","id":"1KgosYiN9GnsD50lXC1yE044VzjXaD1Gl","url":"https:\\x2f\\x2fdrive.google.com/file/d/1KgosYiN9GnsD50lXC1yE044VzjXaD1Gl/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/1KgosYiN9GnsD50lXC1yE044VzjXaD1Gl/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=1KgosYiN9GnsD50lXC1yE044VzjXaD1Gl&export=download"},
+      {"code":"SD-E-PPCH-LAB-136","title":"มาตรฐานวิธีปฏิบัติงาน เครื่องตรวจวิเคราะห์ Flowflex Fluorescent Immunoassay Analyzer","shortName":"เครื่องตรวจ Flowflex FIA","ext":"doc","fileName":"SD-E-PPCH-LAB-136 มาตรฐานวิธีปฏิบัติงาน เครื่องตรวจวิเคราะห์ Flowflex Fluorescent Immunoassay Analyzer.doc","sizeKB":306.5,"category":"เครื่องตรวจวิเคราะห์อัตโนมัติ","id":"17HMtcRxqAVaItkG8m6LEVlNCcBBwbiGS","url":"https:\\x2f\\x2fdrive.google.com/file/d/17HMtcRxqAVaItkG8m6LEVlNCcBBwbiGS/view","previewUrl":"https:\\x2f\\x2fdrive.google.com/file/d/17HMtcRxqAVaItkG8m6LEVlNCcBBwbiGS/preview","downloadUrl":"https:\\x2f\\x2fdrive.google.com/uc?id=17HMtcRxqAVaItkG8m6LEVlNCcBBwbiGS&export=download"}
     ];
 
+    var INITIAL_CODE = "";
     var WEB_APP_URL = window.location.href.split('?')[0];
     var currentFilterType = 'all';
     var searchQuery = '';
-    var html5QrScanner = null;
     var currentGridCols = 4;
 
     function getShortName(item) {
@@ -1114,13 +1195,32 @@
     window.addEventListener('DOMContentLoaded', function() {
       renderManuals();
       
+      // Auto-open via INITIAL_CODE or URL query param: ?code=...
       var params = new URLSearchParams(window.location.search);
-      var code = params.get('code') || params.get('id');
+      var code = INITIAL_CODE || params.get('code') || params.get('id') || params.get('manual');
       if (code) {
         var found = ALL_MANUALS.find(function(m) {
           return m.code.toUpperCase().indexOf(code.toUpperCase()) !== -1;
         });
         if (found) openViewer(found);
+      }
+
+      // Sync Drive file IDs in background
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run.withSuccessHandler(function(liveList) {
+          if (liveList && liveList.length > 0) {
+            liveList.forEach(function(liveItem) {
+              var local = ALL_MANUALS.find(function(m) { return m.code === liveItem.code; });
+              if (local) {
+                local.id = liveItem.id;
+                local.url = liveItem.url;
+                local.downloadUrl = liveItem.downloadUrl;
+                local.previewUrl = liveItem.previewUrl;
+              }
+            });
+            renderManuals();
+          }
+        }).getLabManualsList(false);
       }
     });
 
@@ -1167,20 +1267,20 @@
                   <span class="code-tag">${item.code}</span>
                   <span class="category-tag">${item.category}</span>
                 </div>
-                <div class="card-title" title="${item.title}">${shortName}</div>
+                <div class="card-title" title="คลิกเพื่อดูตัวอย่างในหน้าเว็บ" onclick="openViewerByCode('${item.code}')" style="cursor: pointer;">${shortName}</div>
                 <div class="card-subtext">${item.fileName} &bull; ${sizeLabel}</div>
               </div>
             </div>
 
             <div class="card-actions">
-              <button class="action-btn btn-view-direct" onclick="openViewerByCode('${item.code}')">
-                <span class="material-symbols-outlined" style="font-size:17px;">visibility</span>
-                <span>เปิดดูคู่มือ</span>
-              </button>
+              <a href="${item.url || '#'}" target="_blank" class="action-btn btn-view-direct" title="เปิดไฟล์บน Google Drive">
+                <span class="material-symbols-outlined" style="font-size:17px;">open_in_new</span>
+                <span>เปิดดูคู่มือ (Drive)</span>
+              </a>
               <button class="action-btn" title="QR Code ประจำเครื่อง" onclick="openStickerModal('${item.code}')">
                 <span class="material-symbols-outlined">qr_code_2</span>
               </button>
-              <a href="../แผนก Laboratory/คู่มือการใช้งานเครื่องมือ (SD-LAB)/${encodeURIComponent(item.fileName)}" download class="action-btn" title="ดาวน์โหลดไฟล์">
+              <a href="${item.downloadUrl || item.url || '#'}" target="_blank" class="action-btn" title="ดาวน์โหลดไฟล์">
                 <span class="material-symbols-outlined">download</span>
               </a>
             </div>
@@ -1230,9 +1330,29 @@
       document.getElementById('viewerTitle').textContent = shortName;
       document.getElementById('viewerCode').textContent = item.code + ' (' + item.ext.toUpperCase() + ')';
       
-      var filePath = '../แผนก Laboratory/คู่มือการใช้งานเครื่องมือ (SD-LAB)/' + encodeURIComponent(item.fileName);
-      document.getElementById('viewerDownloadBtn').href = filePath;
-      document.getElementById('docIframe').src = filePath;
+      var downloadBtn = document.getElementById('viewerDownloadBtn');
+      downloadBtn.href = item.downloadUrl || item.url || '#';
+      
+      var driveBtn = document.getElementById('viewerDriveBtn');
+      if (driveBtn) driveBtn.href = item.url || '#';
+      
+      var iframe = document.getElementById('docIframe');
+      
+      if (item.previewUrl) {
+        iframe.src = item.previewUrl;
+      } else if (item.url) {
+        iframe.src = item.url;
+      } else if (typeof google !== 'undefined' && google.script && google.script.run) {
+        iframe.src = 'about:blank';
+        google.script.run.withSuccessHandler(function(previewUrl) {
+          if (previewUrl) {
+            item.previewUrl = previewUrl;
+            iframe.src = previewUrl;
+          }
+        }).getManualPreviewUrl(item.code);
+      } else {
+        iframe.src = 'https:\x2f\x2fdocs.google.com/viewer?embedded=true&url=' + encodeURIComponent(item.downloadUrl || item.url);
+      }
 
       document.getElementById('viewerModal').classList.add('active');
     }
@@ -1242,6 +1362,7 @@
       document.getElementById('docIframe').src = '';
     }
 
+    // SINGLE STICKER MODAL (Compact)
     function openStickerModal(code) {
       var item = ALL_MANUALS.find(function(m) { return m.code === code; });
       if (!item) return;
@@ -1253,7 +1374,11 @@
       var qrContainer = document.getElementById('singleQrBox');
       qrContainer.innerHTML = '';
 
-      var qrTargetUrl = WEB_APP_URL + (WEB_APP_URL.indexOf('?') === -1 ? '?' : '&') + 'code=' + encodeURIComponent(item.code);
+      // Direct Google Drive link: Scanning immediately opens Google Drive!
+      var qrTargetUrl = item.url || ('https:\x2f\x2fdrive.google.com/file/d/' + item.id + '/view');
+
+      var testDriveBtn = document.getElementById('singleStickerDriveBtn');
+      if (testDriveBtn) testDriveBtn.href = qrTargetUrl;
 
       new QRCode(qrContainer, {
         text: qrTargetUrl,
@@ -1263,6 +1388,8 @@
         colorLight: "#ffffff",
         correctLevel: QRCode.CorrectLevel.M
       });
+      var singleCvs = qrContainer.querySelector('canvas');
+      if (singleCvs) singleCvs.style.display = 'none';
 
       document.getElementById('stickerModal').classList.add('active');
     }
@@ -1271,6 +1398,7 @@
       document.getElementById('stickerModal').classList.remove('active');
     }
 
+    // PRINT ALL STICKERS (Multi-Item Grid - Zero Fluff)
     function setGridDensity(cols) {
       currentGridCols = cols;
       var grid = document.getElementById('allStickersGrid');
@@ -1295,7 +1423,8 @@
 
       ALL_MANUALS.forEach(function(item, idx) {
         var qrId = 'allQrBox_' + idx;
-        var qrTargetUrl = WEB_APP_URL + (WEB_APP_URL.indexOf('?') === -1 ? '?' : '&') + 'code=' + encodeURIComponent(item.code);
+        // Direct Google Drive link: Scanning immediately opens Google Drive!
+        var qrTargetUrl = item.url || ('https:\x2f\x2fdrive.google.com/file/d/' + item.id + '/view');
         var shortName = getShortName(item);
 
         var stickerHtml = `
@@ -1319,6 +1448,8 @@
               colorLight: "#ffffff",
               correctLevel: QRCode.CorrectLevel.M
             });
+            var cvs = targetElem.querySelector('canvas');
+            if (cvs) cvs.style.display = 'none';
           }
         }, 8 * idx);
       });
@@ -1330,72 +1461,11 @@
       document.getElementById('printAllModal').classList.remove('active');
     }
 
-    function openScannerModal() {
-      document.getElementById('scannerModal').classList.add('active');
-      document.getElementById('scannerStatus').textContent = 'กำลังเปิดกล้อง...';
-
-      if (!html5QrScanner) {
-        html5QrScanner = new Html5Qrcode("reader");
-      }
-
-      var config = { fps: 10, qrbox: { width: 250, height: 250 } };
-
-      html5QrScanner.start(
-        { facingMode: "environment" },
-        config,
-        onQrCodeSuccess,
-        function(err) {}
-      ).catch(function(err) {
-        document.getElementById('scannerStatus').textContent = 'ไม่สามารถเข้าถึงกล้องได้: ' + err;
-      });
-    }
-
-    function closeScannerModal() {
-      if (html5QrScanner) {
-        html5QrScanner.stop().then(function() {
-          document.getElementById('scannerModal').classList.remove('active');
-        }).catch(function(err) {
-          document.getElementById('scannerModal').classList.remove('active');
-        });
-      } else {
-        document.getElementById('scannerModal').classList.remove('active');
-      }
-    }
-
-    function onQrCodeSuccess(decodedText, decodedResult) {
-      if (navigator.vibrate) navigator.vibrate(100);
-      closeScannerModal();
-
-      var targetCode = '';
-      if (decodedText.indexOf('code=') !== -1) {
-        var match = decodedText.match(/code=([^&]+)/);
-        if (match) targetCode = decodeURIComponent(match[1]);
-      } else if (decodedText.indexOf('SD-E-PPCH-LAB-') !== -1) {
-        var match = decodedText.match(/SD-E-PPCH-LAB-\d{3}/i);
-        if (match) targetCode = match[0];
-      } else {
-        targetCode = decodedText.trim();
-      }
-
-      if (targetCode) {
-        var found = ALL_MANUALS.find(function(m) {
-          return m.code.toUpperCase().indexOf(targetCode.toUpperCase()) !== -1;
-        });
-
-        if (found) {
-          openViewer(found);
-        } else {
-          alert('สแกนสำเร็จ: ' + targetCode + ' (ไม่พบคู่มือที่ตรงกับรหัสนี้)');
-        }
-      }
-    }
-
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
         closeViewerModal();
         closeStickerModal();
         closePrintAllModal();
-        closeScannerModal();
       }
     });
   </script>
