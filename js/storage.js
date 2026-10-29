@@ -194,26 +194,34 @@
       var defectReason = latestRepair.defect_reason || latestRepair.defectReason || '';
       var testNote = latestRepair.test_note || latestRepair.testResultNote || '';
 
-      // Check if there has been an evaluation AFTER this repair
+      // Check if this repair has ALREADY been verified by an evaluation
+      // (Show ONLY ONCE: disappears immediately after staff submits the first post-repair evaluation)
+      if (latestRepair.isVerified || latestRepair.verifiedPostRepair || eq.lastRepairedVerified) {
+        return null;
+      }
+
+      // Check if there has been ANY evaluation AFTER this repair
+      var reportedAt = latestRepair.reported_at || latestRepair.reportedAt || '';
       var evalsAfterRepair = (inMemoryData.evaluations || []).filter(function (ev) {
         if (!ev || isRepairResolutionLog(ev)) return false;
         var matchDev = (ev.deviceId === eq.id || ev.deviceAsset === eq.assetCode);
-        return matchDev && String(ev.evaluatedAt || '') > String(resolvedAt);
+        if (!matchDev) return false;
+        if (ev.verifiedPostRepair) return true;
+        var evTime = String(ev.evaluatedAt || '').trim();
+        var resTime = String(resolvedAt || '').trim();
+        var repTime = String(reportedAt || '').trim();
+        if (evTime > resTime) return true;
+        if (evTime.slice(0, 16) >= resTime.slice(0, 16) && (!repTime || evTime.slice(0, 16) !== repTime.slice(0, 16))) {
+          return true;
+        }
+        return false;
       });
 
-      evalsAfterRepair.sort(function (a, b) {
-        return String(b.evaluatedAt || '').localeCompare(String(a.evaluatedAt || ''));
-      });
-
-      var isAwaitingPostRepairCheck = (evalsAfterRepair.length === 0);
-
-      var repairTimeMs = new Date(String(resolvedAt).replace(' ', 'T')).getTime();
-      var nowMs = Date.now();
-      var isWithin48Hours = !isNaN(repairTimeMs) && ((nowMs - repairTimeMs) < 48 * 3600 * 1000);
-
-      if (!isAwaitingPostRepairCheck && !isWithin48Hours) {
+      if (evalsAfterRepair.length > 0) {
         return null;
       }
+
+      var isAwaitingPostRepairCheck = true;
 
       var failedIndices = [];
       if (Array.isArray(latestRepair.repairedIndices) && latestRepair.repairedIndices.length > 0) {
@@ -691,6 +699,8 @@
         eq.lastEvaluatedAt = nowStr;
         eq.lastEvaluatedStatus = evalPayload.result;
         eq.lastEvaluatedBy = evalPayload.evaluatedBy;
+        eq.lastRepairedVerified = true;
+        eq.lastRepairedIndices = [];
         if (evalPayload.department) {
           eq.currentDept = evalPayload.department;
           eq.homeDept = evalPayload.department;
@@ -714,6 +724,19 @@
         }
 
         inMemoryData.equipment[eqIndex] = eq;
+      }
+
+      var targetDevId = eq ? eq.id : evalPayload.deviceId;
+      var targetDevAsset = eq ? eq.assetCode : evalPayload.deviceAsset;
+      if (Array.isArray(inMemoryData.repairs)) {
+        for (var rIdx = 0; rIdx < inMemoryData.repairs.length; rIdx++) {
+          var rItem = inMemoryData.repairs[rIdx];
+          if (rItem && (rItem.deviceId === targetDevId || rItem.device_id === targetDevId || rItem.deviceAsset === targetDevAsset || rItem.device_asset === targetDevAsset)) {
+            rItem.isVerified = true;
+            rItem.verifiedPostRepair = true;
+            break;
+          }
+        }
       }
 
       var evalRecord = {
@@ -868,7 +891,8 @@
         resolvedBy: techName || 'อาภากร บุญเกตกูล',
         actionTaken: actionTaken || 'ดำเนินการแก้ไขและทดสอบระบบเรียบร้อย',
         testResultNote: testNote || '',
-        repairedIndices: repairedIndices
+        repairedIndices: repairedIndices,
+        isVerified: false
       };
 
       // Unlock ONLY equipment readiness status — DO NOT create a fake daily evaluation or overwrite lastEvaluatedAt
@@ -882,6 +906,7 @@
       eq.lastRepairedAt = nowStr;
       eq.lastRepairedAction = actionTaken || 'ดำเนินการแก้ไขและทดสอบระบบเรียบร้อย';
       eq.lastRepairedIndices = repairedIndices;
+      eq.lastRepairedVerified = false;
 
       inMemoryData.repairs.unshift(defectLog);
       notifyUpdated();
