@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>คู่มือการใช้งานหน้าตรวจเช็คเครื่องมือแพทย์ (Point-of-Care Inspection Guide)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0a1120;
+      --bg-stage: #0f172a;
+      --card-bg: #ffffff;
+      --navy-deep: #001f44;
+      --blue-brand: #004b93;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --teal-repaired: #0d9488;
+      --teal-light: #ccfbf1;
+      --emerald-ready: #10b981;
+      --emerald-light: #ecfdf5;
+      --amber-warn: #f59e0b;
+      --amber-light: #fef3c7;
+      --crimson-fail: #ef4444;
+      --crimson-light: #fef2f2;
+      --slate-text: #1e293b;
+      --slate-muted: #64748b;
+      --border-subtle: #e2e8f0;
+      --shadow-presentation: 0 25px 60px -15px rgba(0, 0, 0, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Prompt', 'Sarabun', sans-serif;
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(2, 132, 199, 0.18) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.12) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(0, 31, 68, 0.6) 0px, transparent 100%);
+      color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    /* Top Navigation Toolbar */
+    .deck-toolbar {
+      width: 100%;
+      max-width: 1440px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 10px 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .toolbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .toolbar-logo {
+      height: 34px;
+      background: #ffffff;
+      padding: 3px 8px;
+      border-radius: 8px;
+    }
+
+    .toolbar-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.2px;
+    }
+
+    .toolbar-subtitle {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    .toolbar-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-tool {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #f1f5f9;
+      padding: 6px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .btn-tool:hover {
+      background: rgba(255, 255, 255, 0.18);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .btn-tool.primary {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      border-color: #38bdf8;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+    }
+
+    .slide-counter-badge {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+    }
+
+    /* 16:9 Presentation Stage */
+    .deck-stage {
+      width: 100%;
+      max-width: 1440px;
+      aspect-ratio: 16 / 9;
+      background: #ffffff;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: var(--shadow-presentation);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      position: relative;
+      display: flex;
+      color: var(--slate-text);
+    }
+
+    /* Individual Slide */
+    .slide {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .slide.active {
+      display: flex;
+      opacity: 1;
+      z-index: 10;
+    }
+
+    /* Split Slide Layout (16:9) */
+    .slide-split {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      background: #f8fafc;
+    }
+
+    /* Left Content Pane (42% width) */
+    .slide-left {
+      width: 44%;
+      height: 100%;
+      padding: 44px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: #ffffff;
+      border-right: 1.5px solid var(--border-subtle);
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Right Preview Pane (56% width) */
+    .slide-right {
+      width: 56%;
+      height: 100%;
+      padding: 32px 36px;
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide-step-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      background: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+      margin-bottom: 12px;
+      width: fit-content;
+    }
+
+    .slide-title {
+      font-size: 26px;
+      font-weight: 800;
+      line-height: 1.25;
+      color: var(--navy-deep);
+      margin-bottom: 10px;
+      letter-spacing: -0.5px;
+    }
+
+    .slide-subtitle {
+      font-size: 14.5px;
+      color: var(--slate-muted);
+      line-height: 1.55;
+      margin-bottom: 24px;
+    }
+
+    /* Step Callout List */
+    .step-callouts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      flex: 1;
+    }
+
+    .callout-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      transition: all 0.2s ease;
+    }
+
+    .callout-row:hover {
+      background: #ffffff;
+      border-color: #cbd5e1;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      transform: translateX(3px);
+    }
+
+    .callout-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0284c7 0%, #004b93 100%);
+      color: #ffffff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 10px rgba(2, 132, 199, 0.35);
+    }
+
+    .callout-num.red {
+      background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+      box-shadow: 0 4px 10px rgba(239, 68, 68, 0.35);
+    }
+
+    .callout-num.teal {
+      background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+      box-shadow: 0 4px 10px rgba(13, 148, 136, 0.35);
+    }
+
+    .callout-num.emerald {
+      background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+      box-shadow: 0 4px 10px rgba(16, 185, 129, 0.35);
+    }
+
+    .callout-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      margin-bottom: 3px;
+    }
+
+    .callout-desc {
+      font-size: 12.5px;
+      color: var(--slate-muted);
+      line-height: 1.45;
+    }
+
+    .slide-footer-tip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: #eff6ff;
+      border-radius: 12px;
+      border: 1px dashed #93c5fd;
+      font-size: 12px;
+      color: #1e40af;
+      margin-top: 16px;
+    }
+
+    /* Mockup Display Card inside Right Pane */
+    .mockup-window {
+      width: 100%;
+      background: #ffffff;
+      border-radius: 18px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow: 0 16px 36px -10px rgba(15, 23, 42, 0.15);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .mockup-window-header {
+      background: #001f44;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .window-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .window-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .window-title {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mockup-window-body {
+      padding: 20px 24px;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+    }
+
+    /* Visual Target Pins on Mockup */
+    .pin-anchor {
+      position: absolute;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      pointer-events: none;
+    }
+
+    .pin-badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #0284c7;
+      color: #ffffff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.25), 0 4px 10px rgba(0, 0, 0, 0.3);
+      animation: pulse-ring 2s infinite;
+    }
+
+    .pin-badge.red {
+      background: #ef4444;
+      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.25), 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .pin-badge.teal {
+      background: #0d9488;
+      box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.25), 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .pin-badge.emerald {
+      background: #10b981;
+      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.25), 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .pin-tag {
+      background: rgba(15, 23, 42, 0.9);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    @keyframes pulse-ring {
+      0% {
+        box-shadow: 0 0 0 0 rgba(2, 132, 199, 0.45), 0 4px 10px rgba(0, 0, 0, 0.3);
+      }
+      70% {
+        box-shadow: 0 0 0 10px rgba(2, 132, 199, 0), 0 4px 10px rgba(0, 0, 0, 0.3);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(2, 132, 199, 0), 0 4px 10px rgba(0, 0, 0, 0.3);
+      }
+    }
+
+    /* Mockup UI Elements */
+    .mock-field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .mock-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .mock-field-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .mock-input {
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .mock-input.highlighted {
+      border-color: #0284c7;
+      background: #f0f9ff;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+    }
+
+    .mock-input.error {
+      border-color: #ef4444;
+      background: #fef2f2;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+    }
+
+    .mock-item-row {
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .mock-item-row.repaired {
+      background: linear-gradient(90deg, rgba(240, 253, 250, 0.95) 0%, #ffffff 65%);
+      border-color: #99f6e4;
+      border-left: 4px solid #0d9488;
+    }
+
+    .mock-btn-group {
+      display: flex;
+      gap: 6px;
+    }
+
+    .mock-btn-choice {
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border: 1.5px solid #cbd5e1;
+      background: #ffffff;
+      color: #64748b;
+    }
+
+    .mock-btn-choice.pass-active {
+      background: #10b981;
+      border-color: #10b981;
+      color: #ffffff;
+      box-shadow: 0 3px 8px rgba(16, 185, 129, 0.3);
+    }
+
+    .mock-btn-choice.fail-active {
+      background: #ef4444;
+      border-color: #ef4444;
+      color: #ffffff;
+      box-shadow: 0 3px 8px rgba(239, 68, 68, 0.3);
+    }
+
+    .mock-submit-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+    }
+
+    /* Title Slide Specific Styling */
+    .title-slide {
+      background: linear-gradient(135deg, #001f44 0%, #001228 100%);
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 80px;
+      position: relative;
+    }
+
+    .title-slide::before {
+      content: '';
+      position: absolute;
+      top: -20%;
+      left: 20%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(2, 132, 199, 0.25) 0%, transparent 70%);
+      filter: blur(50px);
+    }
+
+    .title-badge-hospital {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 20px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(8px);
+      font-size: 14px;
+      font-weight: 700;
+      color: #e0f2fe;
+      margin-bottom: 24px;
+    }
+
+    .title-main-h1 {
+      font-size: 44px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      background: linear-gradient(180deg, #ffffff 30%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .title-sub-h2 {
+      font-size: 18px;
+      color: #94a3b8;
+      max-width: 800px;
+      line-height: 1.6;
+      margin-bottom: 40px;
+    }
+
+    /* 4 Roadmap Pillars */
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      width: 100%;
+      max-width: 1100px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .roadmap-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      padding: 22px 18px;
+      backdrop-filter: blur(10px);
+      text-align: left;
+      transition: all 0.25s ease;
+    }
+
+    .roadmap-card:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: #38bdf8;
+      transform: translateY(-4px);
+    }
+
+    .roadmap-num {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #0284c7 0%, #004b93 100%);
+      color: #ffffff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4);
+    }
+
+    .roadmap-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .roadmap-desc {
+      font-size: 12px;
+      color: #94a3b8;
+      line-height: 1.45;
+    }
+
+    /* Slide Navigation Footer */
+    .deck-nav-bar {
+      width: 100%;
+      max-width: 1440px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 16px;
+      padding: 0 10px;
+    }
+
+    .thumbnails-strip {
+      display: flex;
+      gap: 10px;
+    }
+
+    .thumb-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #94a3b8;
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .thumb-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+    }
+
+    .thumb-btn.active {
+      background: #0284c7;
+      border-color: #38bdf8;
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+    }
+
+    .nav-arrow-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .nav-arrow-btn:hover {
+      background: #0284c7;
+      border-color: #38bdf8;
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 1024px) {
+      .deck-stage {
+        aspect-ratio: auto;
+        min-height: 800px;
+      }
+      .slide-split {
+        flex-direction: column;
+      }
+      .slide-left, .slide-right {
+        width: 100%;
+        height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Toolbar -->
+  <header class="deck-toolbar no-print">
+    <div class="toolbar-brand">
+      <img src="logo.png" alt="PPCH Logo" class="toolbar-logo">
+      <div>
+        <div class="toolbar-title">คู่มือการใช้งาน: ระบบตรวจเช็คความพร้อมใช้เครื่องมือแพทย์</div>
+        <div class="toolbar-subtitle">Point-of-Care Operational Readiness Inspection • รพ.พิษณุเวช พิจิตร</div>
+      </div>
+    </div>
+
+    <div class="toolbar-controls">
+      <span class="slide-counter-badge" id="slideIndicator">สไลด์ 1 / 6</span>
+      <button type="button" class="btn-tool" onclick="prevSlide()" title="สไลด์ก่อนหน้า (ลูกศรซ้าย)">
+        <span class="material-icons-round">arrow_back</span>
+        <span>ก่อนหน้า</span>
+      </button>
+      <button type="button" class="btn-tool primary" onclick="nextSlide()" title="สไลด์ถัดไป (ลูกศรขวา)">
+        <span>ถัดไป</span>
+        <span class="material-icons-round">arrow_forward</span>
+      </button>
+      <button type="button" class="btn-tool" onclick="toggleFullScreen()" title="เปิดเต็มหน้าจอสำหรับพรีเซนต์ (F)">
+        <span class="material-icons-round">fullscreen</span>
+      </button>
+      <button type="button" class="btn-tool" onclick="window.print()" title="พิมพ์คู่มือออกเป็นเอกสาร">
+        <span class="material-icons-round">print</span>
+      </button>
+      <a href="eval.html" class="btn-tool" target="_blank" style="text-decoration: none;">
+        <span class="material-icons-round">open_in_new</span>
+        <span>เปิดหน้าตรวจจริง</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- 16:9 Presentation Stage -->
+  <main class="deck-stage" id="presentationStage">
+
+    <!-- ==================== SLIDE 1: Title & Overview ==================== -->
+    <section class="slide title-slide active" id="slide_1">
+      <div class="title-badge-hospital">
+        <span class="material-icons-round" style="color: #38bdf8;">verified_user</span>
+        <span>โรงพยาบาลพิษณุเวช พิจิตร • ศูนย์เครื่องมือแพทย์ (Biomedical Department)</span>
+      </div>
+      <h1 class="title-main-h1">คู่มือขั้นตอนการตรวจเช็คเครื่องมือแพทย์ประจำวัน</h1>
+      <p class="title-sub-h2">
+        แนวทางปฏิบัติสำหรับพยาบาลและเจ้าหน้าที่ประจำวอร์ด ตรวจเช็คความพร้อมใช้ของอุปกรณ์ช่วยชีวิตและเครื่องมือแพทย์วิกฤต บันทึกผลรวดเร็ว แม่นยำ และปลอดภัยสูงสุดตามมาตรฐานสากล
+      </p>
+
+      <div class="roadmap-grid">
+        <div class="roadmap-card">
+          <div class="roadmap-num">1</div>
+          <div class="roadmap-title">เลือกรุ่น & รหัสเครื่อง</div>
+          <div class="roadmap-desc">เลือกชนิดและรหัสครุภัณฑ์ หรือสแกน QR Code บนตัวเครื่องเพื่อเปิดทันที</div>
+        </div>
+        <div class="roadmap-card">
+          <div class="roadmap-num">2</div>
+          <div class="roadmap-title">ระบุแผนกที่ใช้งาน *</div>
+          <div class="roadmap-desc">บังคับเลือกตำแหน่งที่เครื่องประจำการอยู่จริง ป้องกันความผิดพลาดของสถานที่</div>
+        </div>
+        <div class="roadmap-card">
+          <div class="roadmap-num">3</div>
+          <div class="roadmap-title">ตรวจเช็คทีละข้อ</div>
+          <div class="roadmap-desc">กดผ่าน/ไม่ผ่านทีละข้อ พร้อมตรวจละเอียดในข้อที่เพิ่งผ่านการซ่อมแซมเสร็จสิ้น</div>
+        </div>
+        <div class="roadmap-card">
+          <div class="roadmap-num">4</div>
+          <div class="roadmap-title">ระบุผู้ตรวจ & บันทึก</div>
+          <div class="roadmap-desc">ระบุรหัสพนักงาน 6 หลัก แล้วกดบันทึก ข้อมูลซิงค์ทันทีใน < 100ms</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SLIDE 2: Step 1 & 2 - Device Selection ==================== -->
+    <section class="slide" id="slide_2">
+      <div class="slide-split">
+        <div class="slide-left">
+          <div>
+            <div class="slide-step-pill">
+              <span class="material-icons-round" style="font-size: 16px;">touch_app</span>
+              <span>ขั้นตอนที่ 1 และ 2 จาก 4</span>
+            </div>
+            <h2 class="slide-title">เลือกชนิดเครื่องมือ และรหัสครุภัณฑ์</h2>
+            <p class="slide-subtitle">
+              ระบบใช้การเลือกแบบ 2 ลำดับขั้น (2-Step Cascade Selection) ช่วยลดความผิดพลาดและค้นหาเครื่องมือได้รวดเร็วที่สุด
+            </p>
+
+            <div class="step-callouts-list">
+              <div class="callout-row">
+                <div class="callout-num">1</div>
+                <div>
+                  <div class="callout-title">เลือกชนิดเครื่องมือแพทย์ (Equipment Category)</div>
+                  <div class="callout-desc">เลือกประเภทอุปกรณ์ที่ต้องการตรวจ เช่น <em>เครื่องให้ยาสลบพร้อมระบบช่วยหายใจ</em>, <em>เครื่อง Defibrillator</em>, <em>ICU Ventilator</em> หรือ <em>High Flow</em></div>
+                </div>
+              </div>
+
+              <div class="callout-row">
+                <div class="callout-num">2</div>
+                <div>
+                  <div class="callout-title">เลือกรหัสครุภัณฑ์ประจำตัวเครื่อง (Asset Code)</div>
+                  <div class="callout-desc">ระบบจะกรองเฉพาะรหัสครุภัณฑ์ของอุปกรณ์ชนิดนั้นๆ ให้เลือกทันที เช่น <code>EQ-66-ANES-001</code> ช่วยป้องกันการเลือกรหัสข้ามรุ่น</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="slide-footer-tip">
+            <span class="material-icons-round" style="color: #0284c7;">qr_code_scanner</span>
+            <span><strong>ทางลัดหน้างาน:</strong> สแกนสติกเกอร์ QR Code บนเครื่องด้วยมือถือ ระบบจะเปิดฟอร์มและเลือกรหัสเครื่องให้อัตโนมัติใน 1 วินาที!</span>
+          </div>
+        </div>
+
+        <div class="slide-right">
+          <div class="mockup-window">
+            <div class="mockup-window-header">
+              <div class="window-dots">
+                <div class="window-dot" style="background: #ef4444;"></div>
+                <div class="window-dot" style="background: #f59e0b;"></div>
+                <div class="window-dot" style="background: #10b981;"></div>
+              </div>
+              <div class="window-title">
+                <span class="material-icons-round" style="font-size: 14px;">assignment</span>
+                <span>Point-of-Care Evaluation Form</span>
+              </div>
+              <div style="width: 40px;"></div>
+            </div>
+
+            <div class="mockup-window-body">
+              <!-- Pin 1 -->
+              <div class="pin-anchor" style="top: 15px; left: 160px;">
+                <div class="pin-badge">1</div>
+                <div class="pin-tag">เลือกชนิดเครื่องมือก่อน</div>
+              </div>
+
+              <!-- Pin 2 -->
+              <div class="pin-anchor" style="top: 15px; right: 20px;">
+                <div class="pin-badge">2</div>
+                <div class="pin-tag">เลือกรหัสครุภัณฑ์</div>
+              </div>
+
+              <div class="mock-field-grid" style="margin-top: 18px;">
+                <div class="mock-field">
+                  <div class="mock-field-label">
+                    <span class="material-icons-round" style="color: #0284c7; font-size: 16px;">medical_services</span>
+                    <span>1. เลือกชนิดเครื่องมือ</span>
+                  </div>
+                  <div class="mock-input highlighted">
+                    <span>เครื่องให้ยาสลบพร้อมระบบช่วยหายใจ</span>
+                    <span class="material-icons-round" style="color: #64748b;">expand_more</span>
+                  </div>
+                </div>
+
+                <div class="mock-field">
+                  <div class="mock-field-label">
+                    <span class="material-icons-round" style="color: #0284c7; font-size: 16px;">qr_code_2</span>
+                    <span>2. รหัสครุภัณฑ์</span>
+                  </div>
+                  <div class="mock-input highlighted">
+                    <span>EQ-66-ANES-001</span>
+                    <span class="material-icons-round" style="color: #64748b;">expand_more</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 12px; padding: 14px; text-align: center; color: #64748b; font-size: 13px;">
+                <span class="material-icons-round" style="vertical-align: -3px; font-size: 16px; color: #0284c7;">sync</span>
+                ระบบจะโหลดเกณฑ์ตรวจเช็คมาตรฐานและสถานะล่าสุดของเครื่องมาแสดงผลทันที
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SLIDE 3: Step 3 - Mandatory Location ==================== -->
+    <section class="slide" id="slide_3">
+      <div class="slide-split">
+        <div class="slide-left">
+          <div>
+            <div class="slide-step-pill" style="background: #fef2f2; color: #b91c1c; border-color: #fecaca;">
+              <span class="material-icons-round" style="font-size: 16px;">room</span>
+              <span>ขั้นตอนที่ 3 จาก 4 (กฎเหล็กบังคับ)</span>
+            </div>
+            <h2 class="slide-title">บังคับเลือกตำแหน่ง/แผนกที่ใช้งานปัจจุบัน</h2>
+            <p class="slide-subtitle">
+              ป้องกันปัญหาเครื่องมือถูกเคลื่อนย้ายไปใช้นอกแผนกแล้วหาไม่พบ โดยระบบบังคับให้ผู้ตรวจต้องยืนยันตำแหน่งจริงทุกครั้ง
+            </p>
+
+            <div class="step-callouts-list">
+              <div class="callout-row">
+                <div class="callout-num red">3</div>
+                <div>
+                  <div class="callout-title">ช่อง "แผนกที่ใช้งาน *" (Mandatory Selection)</div>
+                  <div class="callout-desc">สังเกตเครื่องหมายดอกจันสีแดง <code>*</code> ผู้ตรวจต้องเลือกแผนกที่เครื่องตั้งอยู่ ณ เวลานั้น เช่น <em>แผนกฉุกเฉินและอุบัติเหตุ (ER)</em> หรือ <em>หอผู้ป่วยวิกฤต (ICU)</em></div>
+                </div>
+              </div>
+
+              <div class="callout-row">
+                <div class="callout-num red">!</div>
+                <div>
+                  <div class="callout-title">ระบบแจ้งเตือนเมื่อลืมเลือก (Zero-Bypass Validation)</div>
+                  <div class="callout-desc">หากลืมเลือกและกดบันทึก ระบบจะปฏิเสธการส่งฟอร์มทันที พร้อมขึ้นกรอบเตือนสีแดงและ Toast เตือน: <em>"⚠️ กรุณาเลือกตำแหน่งหรือแผนกปัจจุบันของเครื่องมือก่อนบันทึก"</em></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="slide-footer-tip" style="background: #fef2f2; border-color: #fca5a5; color: #991b1b;">
+            <span class="material-icons-round" style="color: #ef4444;">swap_horiz</span>
+            <span><strong>การย้ายแผนกถาวร:</strong> เมื่อเลือกแผนกใหม่แล้วบันทึก ระบบจะโอนความรับผิดชอบการตรวจเช็คในวันถัดไปให้แผนกใหม่โดยอัตโนมัติ</span>
+          </div>
+        </div>
+
+        <div class="slide-right">
+          <div class="mockup-window">
+            <div class="mockup-window-header">
+              <div class="window-dots">
+                <div class="window-dot" style="background: #ef4444;"></div>
+                <div class="window-dot" style="background: #f59e0b;"></div>
+                <div class="window-dot" style="background: #10b981;"></div>
+              </div>
+              <div class="window-title">
+                <span class="material-icons-round" style="font-size: 14px;">place</span>
+                <span>Location Verification & Enforcement</span>
+              </div>
+              <div style="width: 40px;"></div>
+            </div>
+
+            <div class="mockup-window-body">
+              <!-- Pin 3 -->
+              <div class="pin-anchor" style="top: 15px; left: 180px;">
+                <div class="pin-badge red">3</div>
+                <div class="pin-tag">ต้องเลือกแผนกเสมอ ห้ามเว้นว่าง!</div>
+              </div>
+
+              <div class="mock-field" style="margin-top: 18px;">
+                <div class="mock-field-label">
+                  <span class="material-icons-round" style="color: #ef4444; font-size: 16px;">meeting_room</span>
+                  <span>แผนกที่ใช้งาน <span style="color: #ef4444; font-weight: 800;">*</span></span>
+                </div>
+                <div class="mock-input error">
+                  <span style="color: #0f172a; font-weight: 700;">แผนกฉุกเฉินและอุบัติเหตุ (Emergency Room)</span>
+                  <span class="material-icons-round" style="color: #ef4444;">check_circle</span>
+                </div>
+              </div>
+
+              <!-- Toast Warning Simulation -->
+              <div style="background: #1e293b; color: #ffffff; border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); border-left: 4px solid #f59e0b;">
+                <span class="material-icons-round" style="color: #f59e0b;">warning</span>
+                <span style="font-size: 12.5px; font-weight: 600;">กรณีลืมเลือก: ⚠️ กรุณาเลือกตำแหน่งหรือแผนกปัจจุบันของเครื่องมือก่อนบันทึก</span>
+              </div>
+
+              <div class="mock-field">
+                <div class="mock-field-label">
+                  <span class="material-icons-round" style="color: #64748b; font-size: 16px;">schedule</span>
+                  <span>วัน-เวลาตรวจ</span>
+                </div>
+                <div class="mock-input">
+                  <span style="color: #475569;">29 ต.ค. 2026, 14:15 น. (บันทึกอัตโนมัติ)</span>
+                  <span class="material-icons-round" style="color: #64748b;">calendar_today</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SLIDE 4: Step 4 - Checklist & Zero Quick-Pass ==================== -->
+    <section class="slide" id="slide_4">
+      <div class="slide-split">
+        <div class="slide-left">
+          <div>
+            <div class="slide-step-pill">
+              <span class="material-icons-round" style="font-size: 16px;">checklist</span>
+              <span>ขั้นตอนที่ 4 จาก 4</span>
+            </div>
+            <h2 class="slide-title">ตรวจเช็คเกณฑ์ความพร้อมใช้ทีละข้ออย่างรอบคอบ</h2>
+            <p class="slide-subtitle">
+              ยกเลิกปุ่ม "ผ่านทั้งหมด" อย่างถาวร เพื่อให้ผู้ตรวจได้ทดสอบและประเมินระบบจริงทีละข้อตามมาตรฐานความปลอดภัยโรงพยาบาล HA / JCI
+            </p>
+
+            <div class="step-callouts-list">
+              <div class="callout-row">
+                <div class="callout-num">4A</div>
+                <div>
+                  <div class="callout-title">ปุ่ม "[✓ ผ่าน]" (พร้อมใช้งานปกติ)</div>
+                  <div class="callout-desc">เมื่ออุปกรณ์ผ่านเกณฑ์ ให้กดปุ่ม <code>[✓ ผ่าน]</code> แถบข้อจะเปลี่ยนเป็นสีเขียวทันทีแบบ Zero-Lag</div>
+                </div>
+              </div>
+
+              <div class="callout-row">
+                <div class="callout-num red">4B</div>
+                <div>
+                  <div class="callout-title">ปุ่ม "[✕ ไม่ผ่าน]" (พบข้อบกพร่อง/ชำรุด)</div>
+                  <div class="callout-desc">หากพบความผิดปกติ ให้กดปุ่ม <code>[✕ ไม่ผ่าน]</code> แถบจะเปลี่ยนเป็นสีแดง พร้อมเปิดกล่องระบุอาการข้อบกพร่อง และส่งแจ้งเตือนด่วนเข้า LINE ช่างทันที</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="slide-footer-tip" style="background: #f0fdf4; border-color: #86efac; color: #166534;">
+            <span class="material-icons-round" style="color: #10b981;">security</span>
+            <span><strong>ระบบความปลอดภัย:</strong> หากกดตรวจไม่ครบทุกข้อ ระบบจะชี้เป้าข้อที่ยังไม่ได้กด พร้อมเลื่อนหน้าจอพาไปข้อนั้นทันที</span>
+          </div>
+        </div>
+
+        <div class="slide-right">
+          <div class="mockup-window">
+            <div class="mockup-window-header">
+              <div class="window-dots">
+                <div class="window-dot" style="background: #ef4444;"></div>
+                <div class="window-dot" style="background: #f59e0b;"></div>
+                <div class="window-dot" style="background: #10b981;"></div>
+              </div>
+              <div class="window-title">
+                <span class="material-icons-round" style="font-size: 14px;">checklist</span>
+                <span>Inspection Items Verification</span>
+              </div>
+              <div style="width: 40px;"></div>
+            </div>
+
+            <div class="mockup-window-body">
+              <!-- Pin 4A -->
+              <div class="pin-anchor" style="top: 18px; right: 80px;">
+                <div class="pin-badge emerald">4A</div>
+                <div class="pin-tag">กดผ่าน (สีเขียว)</div>
+              </div>
+
+              <!-- Pin 4B -->
+              <div class="pin-anchor" style="top: 95px; right: 20px;">
+                <div class="pin-badge red">4B</div>
+                <div class="pin-tag">กดไม่ผ่าน (สีแดง)</div>
+              </div>
+
+              <!-- Item 1 (Passed) -->
+              <div class="mock-item-row" style="background: #ecfdf5; border-color: #6ee7b7; border-left: 4px solid #10b981;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span style="width: 26px; height: 26px; border-radius: 50%; background: #10b981; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800;">01</span>
+                  <span style="font-size: 13.5px; font-weight: 600; color: #0f172a;">ตรวจสอบสายไฟและสายกราวด์ ไม่ชำรุด ฉีกขาด</span>
+                </div>
+                <div class="mock-btn-group">
+                  <div class="mock-btn-choice pass-active"><span class="material-icons-round" style="font-size: 16px;">check</span> ผ่าน</div>
+                  <div class="mock-btn-choice"><span class="material-icons-round" style="font-size: 16px;">close</span> ไม่ผ่าน</div>
+                </div>
+              </div>
+
+              <!-- Item 2 (Failed Example) -->
+              <div class="mock-item-row" style="background: #fef2f2; border-color: #fca5a5; border-left: 4px solid #ef4444;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span style="width: 26px; height: 26px; border-radius: 50%; background: #ef4444; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800;">02</span>
+                  <span style="font-size: 13.5px; font-weight: 600; color: #0f172a;">ทดสอบสวิตช์เปิด-ปิด และจอแสดงผลความดันก๊าซ</span>
+                </div>
+                <div class="mock-btn-group">
+                  <div class="mock-btn-choice"><span class="material-icons-round" style="font-size: 16px;">check</span> ผ่าน</div>
+                  <div class="mock-btn-choice fail-active"><span class="material-icons-round" style="font-size: 16px;">close</span> ไม่ผ่าน</div>
+                </div>
+              </div>
+
+              <!-- Note input on fail -->
+              <div style="background: #fff1f2; border: 1px dashed #f43f5e; border-radius: 10px; padding: 10px 14px; font-size: 12px; color: #9f1239;">
+                <span class="material-icons-round" style="font-size: 14px; vertical-align: -2px;">edit_note</span>
+                <span><strong>ข้อบกพร่องที่พบ:</strong> ข้อ 2: เกจวัดแรงดันก๊าซออกซิเจนตก แจ้งช่างเปลี่ยนซีลยางด่วน</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SLIDE 5: Post-Repair Handover ==================== -->
+    <section class="slide" id="slide_5">
+      <div class="slide-split">
+        <div class="slide-left">
+          <div>
+            <div class="slide-step-pill" style="background: #ccfbf1; color: #0f766e; border-color: #99f6e4;">
+              <span class="material-icons-round" style="font-size: 16px;">healing</span>
+              <span>ฟังก์ชันส่งต่อเวร (Post-Repair Handover)</span>
+            </div>
+            <h2 class="slide-title">จุดสังเกตเครื่องที่เพิ่งซ่อมเสร็จสิ้น (ตรวจละเอียด)</h2>
+            <p class="slide-subtitle">
+              เมื่อช่างซ่อมเครื่องเสร็จแล้วส่งคืนวอร์ด ระบบจะส่งต่อเวรให้เจ้าหน้าที่ผู้ตรวจรอบถัดไปได้รับรู้ทันทีว่าเครื่องเคยเสียที่ข้อใด และได้รับการแก้ไขอย่างไร
+            </p>
+
+            <div class="step-callouts-list">
+              <div class="callout-row">
+                <div class="callout-num teal">4C</div>
+                <div>
+                  <div class="callout-title">ป้ายกำกับ "เคยเสีย • เพิ่งซ่อมเสร็จ (ตรวจละเอียด)"</div>
+                  <div class="callout-desc">แถบข้อที่เคยเสียจะถูกไฮไลท์ด้วยสีเขียวมินต์ ขอบหนาสีทีล พร้อมไอคอน <code>healing</code> และป้ายแจ้งเตือนให้ตรวจเช็คละเอียดเป็นพิเศษ</div>
+                </div>
+              </div>
+
+              <div class="callout-row">
+                <div class="callout-num teal">🛠️</div>
+                <div>
+                  <div class="callout-title">การ์ดแสดงสิ่งที่ช่างแก้ไข (Technician Action Hint)</div>
+                  <div class="callout-desc">ระบุชัดเจนว่าช่างแก้ไขอะไรไป และอาการเสียเดิมคืออะไร เช่น <em>"สิ่งที่ช่างแก้ไข: เปลี่ยนซีลแรงดันใหม่และทดสอบแรงดัน 30 นาทีผ่าน"</em></div>
+                </div>
+              </div>
+
+              <div class="callout-row">
+                <div class="callout-num teal">1X</div>
+                <div>
+                  <div class="callout-title">แสดงเพียง 1 ครั้งเท่านั้นหลังซ่อมเสร็จ!</div>
+                  <div class="callout-desc">ปุ่ม [ผ่าน] และ [ไม่ผ่าน] เปิดให้กดทดสอบจริง เมื่อผู้ตรวจเวรนี้กดผ่านและบันทึกแล้ว ในเวรถัดไปป้ายเตือนจะหายไปอัตโนมัติ</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-right">
+          <div class="mockup-window">
+            <div class="mockup-window-header">
+              <div class="window-dots">
+                <div class="window-dot" style="background: #ef4444;"></div>
+                <div class="window-dot" style="background: #f59e0b;"></div>
+                <div class="window-dot" style="background: #10b981;"></div>
+              </div>
+              <div class="window-title">
+                <span class="material-icons-round" style="font-size: 14px;">healing</span>
+                <span>Shift Handover: Recently Repaired Target</span>
+              </div>
+              <div style="width: 40px;"></div>
+            </div>
+
+            <div class="mockup-window-body">
+              <!-- Pin 4C -->
+              <div class="pin-anchor" style="top: 15px; left: 160px;">
+                <div class="pin-badge teal">4C</div>
+                <div class="pin-tag">ชี้เป้าข้อที่เคยเสีย ช่างซ่อมแล้ว</div>
+              </div>
+
+              <!-- Repaired Item Highlight Card -->
+              <div class="mock-item-row repaired" style="margin-top: 20px;">
+                <div style="display: flex; flex-direction: column; gap: 6px; flex: 1;">
+                  <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                    <span style="width: 26px; height: 26px; border-radius: 50%; background: #0d9488; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px;">
+                      <span class="material-icons-round" style="font-size: 16px;">healing</span>
+                    </span>
+                    <span style="font-size: 13.5px; font-weight: 700; color: #0f172a;">ทดสอบระบบควบคุมแรงดันและการรั่วซึม (Circuit Leak Test)</span>
+                    <span style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; background: #ccfbf1; color: #0f766e; border: 1px solid #99f6e4; border-radius: 6px; font-size: 11px; font-weight: 700;">
+                      <span class="material-icons-round" style="font-size: 12px;">build</span>
+                      เคยเสีย • เพิ่งซ่อมเสร็จ (ตรวจละเอียด)
+                    </span>
+                  </div>
+
+                  <!-- Action hint -->
+                  <div style="background: rgba(204, 251, 241, 0.5); border: 1px dashed #99f6e4; border-radius: 8px; padding: 6px 10px; font-size: 11.5px; color: #0f766e;">
+                    <span class="material-icons-round" style="font-size: 13px; vertical-align: -2px;">handyman</span>
+                    <span>สิ่งที่ช่างแก้ไข: <strong>เปลี่ยนท่อยางและชุดวาล์วควบคุมแรงดันใหม่ ทดสอบระบบรั่ว 0%</strong> (อาการเดิม: แรงดันรั่วซึม)</span>
+                  </div>
+                </div>
+
+                <div class="mock-btn-group">
+                  <div class="mock-btn-choice pass-active"><span class="material-icons-round" style="font-size: 16px;">check</span> ผ่าน</div>
+                  <div class="mock-btn-choice"><span class="material-icons-round" style="font-size: 16px;">close</span> ไม่ผ่าน</div>
+                </div>
+              </div>
+
+              <!-- Normal Item Below -->
+              <div class="mock-item-row" style="opacity: 0.8;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span style="width: 26px; height: 26px; border-radius: 50%; background: #cbd5e1; color: #475569; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800;">02</span>
+                  <span style="font-size: 13px; font-weight: 600; color: #475569;">Vaporizer ล็อคแน่นหนา และระดับน้ำยาอยู่ในเกณฑ์</span>
+                </div>
+                <div class="mock-btn-group">
+                  <div class="mock-btn-choice pass-active"><span class="material-icons-round" style="font-size: 16px;">check</span> ผ่าน</div>
+                  <div class="mock-btn-choice"><span class="material-icons-round" style="font-size: 16px;">close</span> ไม่ผ่าน</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SLIDE 6: Step 5 & 6 - Evaluator & Submission ==================== -->
+    <section class="slide" id="slide_6">
+      <div class="slide-split">
+        <div class="slide-left">
+          <div>
+            <div class="slide-step-pill" style="background: #ecfdf5; color: #047857; border-color: #a7f3d0;">
+              <span class="material-icons-round" style="font-size: 16px;">done_all</span>
+              <span>ขั้นตอนสุดท้าย: ระบุผู้ตรวจและบันทึก</span>
+            </div>
+            <h2 class="slide-title">ระบุตัวตนผู้ตรวจเช็ค & บันทึกผลสำเร็จ</h2>
+            <p class="slide-subtitle">
+              ระบุรหัสพนักงาน 6 หลัก เพื่อให้ได้ข้อมูลที่ถูกต้องตามมาตรฐานการรับรองคุณภาพโรงพยาบาล พร้อมซิงค์ผลแบบ Real-time
+            </p>
+
+            <div class="step-callouts-list">
+              <div class="callout-row">
+                <div class="callout-num">5</div>
+                <div>
+                  <div class="callout-title">ค้นหาผู้ตรวจเช็ค (รหัส 6 หลัก หรือพิมพ์ชื่อ)</div>
+                  <div class="callout-desc">พิมพ์รหัสพนักงาน เช่น <code>000023</code> หรือพิมพ์ชื่อ-นามสกุล ระบบจะแสดง Dropdown ค้นหาด่วนและระบุตำแหน่งให้อัตโนมัติ</div>
+                </div>
+              </div>
+
+              <div class="callout-row">
+                <div class="callout-num emerald">6</div>
+                <div>
+                  <div class="callout-title">กดปุ่ม "บันทึกผลการตรวจเช็ค"</div>
+                  <div class="callout-desc">ปุ่มสีเขียวขนาดใหญ่ด้านล่างสุด เมื่อกดแล้วข้อมูลจะถูกบันทึกลง Supabase Database และ Google Sheets ทันทีใน < 100ms</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="slide-footer-tip" style="background: #ecfdf5; border-color: #86efac; color: #065f46;">
+            <span class="material-icons-round" style="color: #10b981;">check_circle</span>
+            <span><strong>ผลลัพธ์ทันที:</strong> หน้าจอ Admin ของโรงพยาบาลจะเปลี่ยนสถานะ "ตรวจวันนี้" เป็นวงกลมสีเขียว (ตรวจแล้ว) ทันทีข้ามทุกอุปกรณ์!</span>
+          </div>
+        </div>
+
+        <div class="slide-right">
+          <div class="mockup-window">
+            <div class="mockup-window-header">
+              <div class="window-dots">
+                <div class="window-dot" style="background: #ef4444;"></div>
+                <div class="window-dot" style="background: #f59e0b;"></div>
+                <div class="window-dot" style="background: #10b981;"></div>
+              </div>
+              <div class="window-title">
+                <span class="material-icons-round" style="font-size: 14px;">badge</span>
+                <span>Staff Identification & Instant Submission</span>
+              </div>
+              <div style="width: 40px;"></div>
+            </div>
+
+            <div class="mockup-window-body">
+              <!-- Pin 5 -->
+              <div class="pin-anchor" style="top: 15px; left: 180px;">
+                <div class="pin-badge">5</div>
+                <div class="pin-tag">พิมพ์รหัสพนักงาน 6 หลัก</div>
+              </div>
+
+              <!-- Pin 6 -->
+              <div class="pin-anchor" style="bottom: 25px; right: 80px;">
+                <div class="pin-badge emerald">6</div>
+                <div class="pin-tag">กดบันทึกผลตรวจ</div>
+              </div>
+
+              <div class="mock-field" style="margin-top: 18px;">
+                <div class="mock-field-label">
+                  <span class="material-icons-round" style="color: #0284c7; font-size: 16px;">badge</span>
+                  <span>ผู้ตรวจเช็ค (รหัสพนักงาน หรือชื่อ-นามสกุล)</span>
+                </div>
+                <div class="mock-input highlighted">
+                  <div>
+                    <span style="font-weight: 800; color: #0284c7;">[000023]</span>
+                    <span style="color: #0f172a; font-weight: 700; margin-left: 6px;">น.ส.กมลทิพย์ วงษ์สุวรรณ</span>
+                    <span style="color: #64748b; font-size: 11.5px; margin-left: 6px;">(พยาบาลวิชาชีพ)</span>
+                  </div>
+                  <span class="material-icons-round" style="color: #10b981;">verified</span>
+                </div>
+              </div>
+
+              <!-- Success Modal Popup Simulation -->
+              <div style="background: #ffffff; border: 2px solid #a7f3d0; border-radius: 14px; padding: 16px; text-align: center; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.15);">
+                <span class="material-icons-round" style="font-size: 40px; color: #10b981;">check_circle</span>
+                <div style="font-size: 15px; font-weight: 800; color: #065f46; margin-top: 4px;">บันทึกผลการตรวจเช็คสำเร็จ</div>
+                <div style="font-size: 12px; color: #047857; margin-top: 2px;">
+                  เครื่องให้ยาสลบพร้อมระบบช่วยหายใจ (EQ-66-ANES-001)<br>
+                  <strong style="color: #10b981;">🟢 พร้อมใช้งานปกติ (ยืนยันผ่านการตรวจสอบ)</strong>
+                </div>
+              </div>
+
+              <div class="mock-submit-btn">
+                <span class="material-icons-round">check_circle</span>
+                <span>บันทึกผลการตรวจเช็ค</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Slide Navigation Thumbnails -->
+  <footer class="deck-nav-bar no-print">
+    <div class="thumbnails-strip" id="thumbnailsStrip">
+      <button type="button" class="thumb-btn active" onclick="goToSlide(1)">1. ภาพรวม 4 ขั้นตอน</button>
+      <button type="button" class="thumb-btn" onclick="goToSlide(2)">2. เลือกชนิด & รหัสเครื่อง</button>
+      <button type="button" class="thumb-btn" onclick="goToSlide(3)">3. บังคับเลือกแผนก *</button>
+      <button type="button" class="thumb-btn" onclick="goToSlide(4)">4. ตรวจเช็คทีละข้อ</button>
+      <button type="button" class="thumb-btn" onclick="goToSlide(5)">5. ส่งต่อเวรเครื่องเพิ่งซ่อม</button>
+      <button type="button" class="thumb-btn" onclick="goToSlide(6)">6. ระบุผู้ตรวจ & บันทึก</button>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <button type="button" class="nav-arrow-btn" onclick="prevSlide()" title="สไลด์ก่อนหน้า (Left Arrow)">
+        <span class="material-icons-round">arrow_back</span>
+      </button>
+      <button type="button" class="nav-arrow-btn" onclick="nextSlide()" title="สไลด์ถัดไป (Right Arrow)">
+        <span class="material-icons-round">arrow_forward</span>
+      </button>
+    </div>
+  </footer>
+
+  <script>
+    var currentSlideIdx = 1;
+    var totalSlides = 6;
+
+    function showSlide(idx) {
+      if (idx < 1) idx = 1;
+      if (idx > totalSlides) idx = totalSlides;
+      currentSlideIdx = idx;
+
+      for (var i = 1; i <= totalSlides; i++) {
+        var s = document.getElementById('slide_' + i);
+        if (s) {
+          s.classList.remove('active');
+          if (i === idx) s.classList.add('active');
+        }
+      }
+
+      var thumbs = document.querySelectorAll('.thumb-btn');
+      thumbs.forEach(function (btn, bIdx) {
+        btn.classList.toggle('active', (bIdx + 1) === idx);
+      });
+
+      var ind = document.getElementById('slideIndicator');
+      if (ind) ind.innerText = 'สไลด์ ' + idx + ' / ' + totalSlides;
+    }
+
+    function nextSlide() {
+      if (currentSlideIdx < totalSlides) {
+        showSlide(currentSlideIdx + 1);
+      } else {
+        showSlide(1);
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlideIdx > 1) {
+        showSlide(currentSlideIdx - 1);
+      } else {
+        showSlide(totalSlides);
+      }
+    }
+
+    function goToSlide(idx) {
+      showSlide(idx);
+    }
+
+    function toggleFullScreen() {
+      var elem = document.getElementById('presentationStage');
+      if (!document.fullscreenElement) {
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) {
+          elem.webkitRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    // Keyboard Navigation
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        prevSlide();
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullScreen();
+      } else if (e.key >= '1' && e.key <= '6') {
+        goToSlide(parseInt(e.key, 10));
+      }
+    });
+
+    // Auto-load slide from URL query parameter ?slide=N
+    var urlParams = new URLSearchParams(window.location.search);
+    var paramSlide = parseInt(urlParams.get('slide'), 10);
+    if (!isNaN(paramSlide) && paramSlide >= 1 && paramSlide <= totalSlides) {
+      showSlide(paramSlide);
+    }
+  </script>
+</body>
+</html>
