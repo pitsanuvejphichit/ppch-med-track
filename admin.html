@@ -7089,7 +7089,13 @@
 
         // ==================== COLUMN 1: ความพร้อมใช้ของเครื่อง (READINESS STATUS) ====================
         if (dual.readinessState === 'ready') {
-          readinessBadge = '<div class="status-symbol-btn symbol-ready" title="ความพร้อมใช้: พร้อมใช้งานปกติ" onclick="location.href=\'eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '\'"><span class="material-icons-round">check_circle</span></div>';
+          var repInfo = (window.PPCH_STORE && window.PPCH_STORE.getRecentRepairedDefectInfo)
+            ? window.PPCH_STORE.getRecentRepairedDefectInfo(eq.id)
+            : null;
+          var repNote = (repInfo && repInfo.isAwaitingPostRepairCheck)
+            ? ' (เพิ่งซ่อมเสร็จเมื่อ ' + repInfo.repairedAt + ' • รอยืนยันตรวจเช็คเวรนี้)'
+            : '';
+          readinessBadge = '<div class="status-symbol-btn symbol-ready" title="ความพร้อมใช้: พร้อมใช้งานปกติ' + repNote + '" onclick="location.href=\'eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '\'"><span class="material-icons-round">check_circle</span></div>';
         } else if (dual.readinessState === 'conditional_ready') {
           var allowReasonTxt = eq.allowUseReason ? (' (' + eq.allowUseReason + ')') : '';
           var allowDefectTxt = eq.abnormalReason ? (' | อาการรอซ่อม: ' + eq.abnormalReason) : '';

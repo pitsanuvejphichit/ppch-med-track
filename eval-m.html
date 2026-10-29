@@ -410,6 +410,57 @@
       border-color: #fcd34d;
       background: #fffbeb;
     }
+    .checklist-item.row-repaired {
+      border-color: #99f6e4;
+      border-left: 4px solid #0d9488;
+      background: #f0fdfa;
+    }
+    .checklist-item.row-repaired.row-pass {
+      border-color: #34d399;
+      border-left: 4px solid #10b981;
+      background: #f0fdf4;
+    }
+    .checklist-item.row-repaired.row-fail {
+      border-color: #f87171;
+      border-left: 4px solid #ef4444;
+      background: #fef2f2;
+    }
+    .checklist-item.row-repaired .item-num-badge {
+      background: #0d9488;
+      color: #ffffff;
+    }
+    .checklist-item.row-repaired.row-pass .item-num-badge {
+      background: #10b981;
+    }
+    .checklist-item.row-repaired.row-fail .item-num-badge {
+      background: #ef4444;
+    }
+    .badge-repaired-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 7px;
+      background: #ccfbf1;
+      color: #0f766e;
+      border: 1px solid #99f6e4;
+      border-radius: 6px;
+      font-size: 10.5px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .repaired-action-hint {
+      font-size: 11px;
+      color: #0f766e;
+      background: rgba(204, 251, 241, 0.45);
+      border: 1px dashed #99f6e4;
+      padding: 4px 8px;
+      border-radius: 6px;
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      line-height: 1.35;
+    }
     .checklist-item.item-unanswered-highlight {
       border-color: #f59e0b;
       box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
@@ -842,6 +893,21 @@
               <div id="conditionalUseDefectReason" style="font-size: 11.5px; color: #b91c1c; margin-top: 1px;"></div>
               <div id="conditionalUseReasonText" style="font-size: 11.5px; color: #78350f;"></div>
               <div style="display: none;"><span id="conditionalUseBy"></span><span id="conditionalUseAt"></span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recently Repaired Notice Banner (Handover Alert) -->
+        <div id="recentlyRepairedBanner" class="status-strip-banner teal" style="display: none; background: #f0fdfa; border: 1.5px solid #99f6e4; color: #0f766e; border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.08);">
+          <div style="display: flex; align-items: flex-start; gap: 8px; flex: 1;">
+            <span class="material-icons-round" style="font-size: 22px; color: #0d9488; margin-top: 1px;">healing</span>
+            <div style="flex: 1;">
+              <div style="font-weight: 700; font-size: 12.5px; color: #0f766e; display: flex; align-items: center; gap: 5px; flex-wrap: wrap;">
+                <span>🛠️ เครื่องนี้เพิ่งซ่อมแซมเสร็จสิ้น</span>
+                <span style="font-size: 10.5px; background: #ccfbf1; color: #115e59; padding: 1px 7px; border-radius: 999px; font-weight: 700; border: 1px solid #5eead4;">ตรวจละเอียด</span>
+              </div>
+              <div id="recentlyRepairedActionText" style="font-size: 11.5px; color: #134e4a; margin-top: 3px; font-weight: 600;"></div>
+              <div id="recentlyRepairedMetaText" style="font-size: 11px; color: #0f766e; margin-top: 2px; opacity: 0.9;"></div>
             </div>
           </div>
         </div>
@@ -1457,6 +1523,24 @@
         }
       }
 
+      var repBanner = document.getElementById('recentlyRepairedBanner');
+      if (repBanner) {
+        var repInfo = (window.PPCH_STORE && window.PPCH_STORE.getRecentRepairedDefectInfo)
+          ? window.PPCH_STORE.getRecentRepairedDefectInfo(currentDevice.id)
+          : null;
+
+        if (repInfo && !underRepair && (currentDevice.status === 'ready' || currentDevice.status === 'conditional_ready')) {
+          repBanner.style.display = 'flex';
+          var actEl = document.getElementById('recentlyRepairedActionText');
+          var metaEl = document.getElementById('recentlyRepairedMetaText');
+          if (actEl) actEl.innerHTML = '<span class="material-icons-round" style="font-size: 13px; vertical-align: -2px;">build</span> สิ่งที่ช่างแก้ไข: <strong>' + repInfo.actionTaken + '</strong>' +
+            (repInfo.defectReason ? ' <span style="font-weight: 400; color: #475569;">(อาการเดิม: ' + repInfo.defectReason + ')</span>' : '');
+          if (metaEl) metaEl.innerText = 'ซ่อมเสร็จเมื่อ: ' + repInfo.repairedAt + ' โดย: ' + repInfo.repairedBy + (repInfo.isAwaitingPostRepairCheck ? ' • รอยืนยันตรวจเช็คเวรนี้' : ' • มีการตรวจเช็คแล้ว');
+        } else {
+          repBanner.style.display = 'none';
+        }
+      }
+
       checkExistingEvaluationOnDate();
       renderChecklist(currentForm.items || []);
     }
@@ -1527,8 +1611,14 @@
         : null;
       var lockedDefectIndices = (defectInfo && Array.isArray(defectInfo.failedIndices)) ? defectInfo.failedIndices : [];
 
+      var repInfo = (window.PPCH_STORE && window.PPCH_STORE.getRecentRepairedDefectInfo && currentDevice)
+        ? window.PPCH_STORE.getRecentRepairedDefectInfo(currentDevice.id)
+        : null;
+      var repairedIndices = (repInfo && Array.isArray(repInfo.failedIndices)) ? repInfo.failedIndices : [];
+
       items.forEach(function (text, idx) {
         var isCondLockedItem = isConditionalDevice && lockedDefectIndices.indexOf(idx) !== -1;
+        var isRepairedItem = !isCondLockedItem && repairedIndices.indexOf(idx) !== -1;
         var div = document.createElement('div');
         div.id = 'checkItemRow_' + idx;
         var numStr = String(idx + 1).padStart(2, '0');
@@ -1546,6 +1636,40 @@
                 '<span class="material-icons-round" style="font-size: 16px;">build_circle</span>' +
                 '<span>ผ่อนผันรอซ่อม</span>' +
               '</span>' +
+            '</div>';
+        } else if (isRepairedItem) {
+          checklistState[idx] = null;
+          div.className = 'checklist-item row-repaired';
+          div.innerHTML =
+            '<div class="item-left">' +
+              '<span class="item-num-badge" id="itemBadge_' + idx + '" title="รายการนี้เคยเสียและเพิ่งได้รับการซ่อมแซมเสร็จสิ้น">' +
+                '<span class="material-icons-round" style="font-size: 16px;">healing</span>' +
+              '</span>' +
+              '<div style="flex: 1; min-width: 0;">' +
+                '<div style="display: flex; align-items: center; gap: 5px; flex-wrap: wrap;">' +
+                  '<span class="item-text">' + text + '</span>' +
+                  '<span class="badge-repaired-tag" title="รายการนี้เคยเสียและเพิ่งได้รับการซ่อมแซม โปรดตรวจเช็คและทดสอบอย่างละเอียด">' +
+                    '<span class="material-icons-round" style="font-size: 12px;">build</span>' +
+                    '<span>เคยเสีย • เพิ่งซ่อมเสร็จ (ตรวจละเอียด)</span>' +
+                  '</span>' +
+                '</div>' +
+                '<div class="repaired-action-hint">' +
+                  '<span class="material-icons-round" style="font-size: 13px;">handyman</span>' +
+                  '<span>สิ่งที่ช่างแก้ไข: <strong>' + (repInfo.actionTaken || 'แก้ไขเรียบร้อย') + '</strong>' +
+                    (repInfo.defectReason ? ' <span style="font-weight: 400; opacity: 0.85;">(อาการเดิม: ' + repInfo.defectReason + ')</span>' : '') +
+                  '</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="item-btn-group">' +
+              '<button type="button" class="btn-check-choice" id="btnPass_' + idx + '" onclick="setChoice(' + idx + ', \'pass\')" ' + (isDeviceLockedForRepair ? 'disabled' : '') + '>' +
+                '<span class="material-icons-round" style="font-size: 18px;">check</span>' +
+                '<span>ผ่าน</span>' +
+              '</button>' +
+              '<button type="button" class="btn-check-choice" id="btnFail_' + idx + '" onclick="setChoice(' + idx + ', \'fail\')" ' + (isDeviceLockedForRepair ? 'disabled' : '') + '>' +
+                '<span class="material-icons-round" style="font-size: 18px;">close</span>' +
+                '<span>ไม่ผ่าน</span>' +
+              '</button>' +
             '</div>';
         } else {
           checklistState[idx] = null;
@@ -1752,6 +1876,10 @@
         });
       }
 
+      var repInfo = (window.PPCH_STORE && window.PPCH_STORE.getRecentRepairedDefectInfo && currentDevice)
+        ? window.PPCH_STORE.getRecentRepairedDefectInfo(currentDevice.id)
+        : null;
+
       var record = {
         id: 'EV-' + Date.now(),
         deviceId: currentDevice.id,
@@ -1764,6 +1892,8 @@
         evaluatedAt: evalTimeStr,
         result: hasNewFail ? 'abnormal' : 'normal',
         keepConditional: isKeepConditional,
+        verifiedPostRepair: !!(repInfo && repInfo.isAwaitingPostRepairCheck && !hasNewFail),
+        repairedAt: repInfo ? repInfo.repairedAt : null,
         abnormalNote: note,
         checklist: checklistState,
         checklistDetails: checklistDetails
@@ -1799,7 +1929,9 @@
         }
         var statusMsgText = record.result === 'abnormal'
           ? '🔴 พบข้อบกพร่องใหม่ (แจ้งซ่อมทันที)'
-          : (record.keepConditional ? '🟢 ตรวจผ่าน (คงสถานะผ่อนผันรอซ่อม)' : '🟢 พร้อมใช้งานปกติ');
+          : (record.keepConditional
+              ? '🟢 ตรวจผ่าน (คงสถานะผ่อนผันรอซ่อม)'
+              : (record.verifiedPostRepair ? '🟢 พร้อมใช้งาน (ยืนยันผ่านการตรวจสอบหลังซ่อมแซม)' : '🟢 พร้อมใช้งานปกติ'));
         document.getElementById('successModalSub').innerText = currentDevice.name + ' (' + currentDevice.assetCode + ')\n' + statusMsgText;
         document.getElementById('successModal').classList.remove('hidden');
       }

@@ -168,6 +168,133 @@
       };
     },
 
+    getRecentRepairedDefectInfo: function (deviceId) {
+      var eq = this.getEquipmentById(deviceId);
+      if (!eq) return null;
+
+      var allRepairs = inMemoryData.repairs || [];
+      var matchingRepairs = allRepairs.filter(function (rep) {
+        var matchDev = (rep.device_id === eq.id || rep.device_asset === eq.assetCode || rep.deviceId === eq.id || rep.deviceAsset === eq.assetCode);
+        var rAt = rep.resolved_at || rep.resolvedAt;
+        return matchDev && !!rAt;
+      });
+
+      if (matchingRepairs.length === 0) return null;
+
+      matchingRepairs.sort(function (a, b) {
+        var tA = String(a.resolved_at || a.resolvedAt || '');
+        var tB = String(b.resolved_at || b.resolvedAt || '');
+        return tB.localeCompare(tA);
+      });
+
+      var latestRepair = matchingRepairs[0];
+      var resolvedAt = latestRepair.resolved_at || latestRepair.resolvedAt;
+      var resolvedBy = latestRepair.resolved_by || latestRepair.resolvedBy || 'เจ้าหน้าที่เครื่องมือแพทย์';
+      var actionTaken = latestRepair.action_taken || latestRepair.actionTaken || 'ดำเนินการแก้ไขและทดสอบระบบเรียบร้อย';
+      var defectReason = latestRepair.defect_reason || latestRepair.defectReason || '';
+      var testNote = latestRepair.test_note || latestRepair.testResultNote || '';
+
+      // Check if there has been an evaluation AFTER this repair
+      var evalsAfterRepair = (inMemoryData.evaluations || []).filter(function (ev) {
+        if (!ev || isRepairResolutionLog(ev)) return false;
+        var matchDev = (ev.deviceId === eq.id || ev.deviceAsset === eq.assetCode);
+        return matchDev && String(ev.evaluatedAt || '') > String(resolvedAt);
+      });
+
+      evalsAfterRepair.sort(function (a, b) {
+        return String(b.evaluatedAt || '').localeCompare(String(a.evaluatedAt || ''));
+      });
+
+      var isAwaitingPostRepairCheck = (evalsAfterRepair.length === 0);
+
+      var repairTimeMs = new Date(String(resolvedAt).replace(' ', 'T')).getTime();
+      var nowMs = Date.now();
+      var isWithin48Hours = !isNaN(repairTimeMs) && ((nowMs - repairTimeMs) < 48 * 3600 * 1000);
+
+      if (!isAwaitingPostRepairCheck && !isWithin48Hours) {
+        return null;
+      }
+
+      var failedIndices = [];
+      if (Array.isArray(latestRepair.repairedIndices) && latestRepair.repairedIndices.length > 0) {
+        failedIndices = latestRepair.repairedIndices.slice();
+      }
+
+      if (failedIndices.length === 0) {
+        var evalsBeforeRepair = (inMemoryData.evaluations || []).filter(function (ev) {
+          if (!ev || isRepairResolutionLog(ev)) return false;
+          var matchDev = (ev.deviceId === eq.id || ev.deviceAsset === eq.assetCode);
+          return matchDev && ev.result === 'abnormal' && String(ev.evaluatedAt || '') <= String(resolvedAt);
+        });
+
+        evalsBeforeRepair.sort(function (a, b) {
+          return String(b.evaluatedAt || '').localeCompare(String(a.evaluatedAt || ''));
+        });
+
+        var abnormalEv = evalsBeforeRepair.length > 0 ? evalsBeforeRepair[0] : null;
+        var form = this.getFormById(eq.formId);
+        var formItems = (form && Array.isArray(form.items)) ? form.items : [];
+
+        if (abnormalEv) {
+          var chk = abnormalEv.checklist || {};
+          if (typeof chk === 'string') {
+            try { chk = JSON.parse(chk); } catch (e) { chk = {}; }
+          }
+          formItems.forEach(function (qItem, idx) {
+            var qText = (typeof qItem === 'string') ? qItem : (qItem.text || qItem.title || qItem.label || '');
+            var val = undefined;
+            if (chk[idx] !== undefined) val = chk[idx];
+            else if (chk[String(idx)] !== undefined) val = chk[String(idx)];
+            else if (chk[idx + 1] !== undefined) val = chk[idx + 1];
+            else if (chk[String(idx + 1)] !== undefined) val = chk[String(idx + 1)];
+            else if (qText && chk[qText] !== undefined) val = chk[qText];
+
+            if (val === 'fail' || val === 'abnormal' || val === false || val === 0 || val === 'ไม่ผ่าน' || val === 'conditional') {
+              if (failedIndices.indexOf(idx) === -1) failedIndices.push(idx);
+            }
+          });
+
+          if (failedIndices.length === 0) {
+            Object.keys(chk).forEach(function (k) {
+              var v = chk[k];
+              if (v === 'fail' || v === 'abnormal' || v === false || v === 0 || v === 'ไม่ผ่าน' || v === 'conditional') {
+                var num = parseInt(String(k).replace(/\D/g, ''), 10);
+                if (!isNaN(num)) {
+                  var zeroIdx = (chk['0'] !== undefined || chk[0] !== undefined) ? num : (num > 0 ? num - 1 : 0);
+                  if (failedIndices.indexOf(zeroIdx) === -1) failedIndices.push(zeroIdx);
+                }
+              }
+            });
+          }
+        }
+
+        var reasonText = String(defectReason || (abnormalEv && abnormalEv.abnormalNote) || '').toLowerCase();
+        if (reasonText && formItems.length > 0) {
+          formItems.forEach(function (qItem, idx) {
+            var qText = String((typeof qItem === 'string') ? qItem : (qItem.text || '')).toLowerCase();
+            var itemNoPattern = new RegExp('(ข้อ|หัวข้อ|ข้อที่)\\s*' + (idx + 1) + '(\\D|$)', 'i');
+            if (itemNoPattern.test(reasonText)) {
+              if (failedIndices.indexOf(idx) === -1) failedIndices.push(idx);
+            } else if (qText && qText.length >= 6 && (reasonText.indexOf(qText.slice(0, 14)) !== -1 || qText.indexOf(reasonText.slice(0, 14)) !== -1)) {
+              if (failedIndices.indexOf(idx) === -1) failedIndices.push(idx);
+            }
+          });
+        }
+      }
+
+      return {
+        isRecentlyRepaired: true,
+        isAwaitingPostRepairCheck: isAwaitingPostRepairCheck,
+        repairedAt: resolvedAt,
+        repairedBy: resolvedBy,
+        actionTaken: actionTaken,
+        defectReason: defectReason,
+        testNote: testNote,
+        failedIndices: failedIndices,
+        repairRecord: latestRepair
+      };
+    },
+
     // Initialize or refresh live data directly from Google Apps Script / Google Sheets
     initFromCloud: function (cloudData) {
       if (!cloudData) return inMemoryData;
@@ -722,6 +849,10 @@
       }
       if (!eq) throw new Error('ไม่พบเครื่องมือแพทย์รหัส: ' + deviceId);
 
+      // Capture failed indices before resetting equipment status
+      var activeDefect = this.getActiveDefectInfo(deviceId);
+      var repairedIndices = (activeDefect && Array.isArray(activeDefect.failedIndices)) ? activeDefect.failedIndices.slice() : [];
+
       var nowStr = resolvedDt || new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }).slice(0, 16).replace('T', ' ');
       var defectLog = {
         id: 'FIX-' + Date.now(),
@@ -736,7 +867,8 @@
         resolvedAt: nowStr,
         resolvedBy: techName || 'อาภากร บุญเกตกูล',
         actionTaken: actionTaken || 'ดำเนินการแก้ไขและทดสอบระบบเรียบร้อย',
-        testResultNote: testNote || ''
+        testResultNote: testNote || '',
+        repairedIndices: repairedIndices
       };
 
       // Unlock ONLY equipment readiness status — DO NOT create a fake daily evaluation or overwrite lastEvaluatedAt
@@ -747,6 +879,9 @@
       eq.allowUseBy = '';
       eq.allowUseAt = '';
       eq.allowUseReason = '';
+      eq.lastRepairedAt = nowStr;
+      eq.lastRepairedAction = actionTaken || 'ดำเนินการแก้ไขและทดสอบระบบเรียบร้อย';
+      eq.lastRepairedIndices = repairedIndices;
 
       inMemoryData.repairs.unshift(defectLog);
       notifyUpdated();
