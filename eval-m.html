@@ -857,10 +857,10 @@
           <div class="field-pod">
             <div class="field-pod-label">
               <span class="material-icons-round">meeting_room</span>
-              <span>แผนกที่ใช้งาน</span>
+              <span>แผนกที่ใช้งาน <span style="color: #ef4444; font-weight: 700;">*</span></span>
             </div>
-            <select id="evalDeptSelect">
-              <option value="">เลือกตำแหน่งปัจจุบันของเครื่องมือ</option>
+            <select id="evalDeptSelect" onchange="this.style.borderColor=''; this.style.boxShadow='';">
+              <option value="">-- กรุณาเลือกตำแหน่งปัจจุบันของเครื่อง --</option>
             </select>
           </div>
 
@@ -1274,7 +1274,7 @@
         var allEq = (window.PPCH_STORE && window.PPCH_STORE.getEquipment ? window.PPCH_STORE.getEquipment() : []) || [];
 
         if (deptSelect && window.PPCH_CONFIG && window.PPCH_CONFIG.departments) {
-          deptSelect.innerHTML = '<option value="">เลือกตำแหน่งปัจจุบันของเครื่องมือ</option>';
+          deptSelect.innerHTML = '<option value="">-- กรุณาเลือกตำแหน่งปัจจุบันของเครื่อง --</option>';
           window.PPCH_CONFIG.departments.forEach(function (dp) {
             var opt = document.createElement('option');
             opt.value = dp.id;
@@ -1828,7 +1828,22 @@
         evalDateObj = now;
       }
 
-      var chosenDept = (document.getElementById('evalDeptSelect') && document.getElementById('evalDeptSelect').value) ? document.getElementById('evalDeptSelect').value : currentDevice.currentDept;
+      var deptSelect = document.getElementById('evalDeptSelect');
+      var chosenDept = deptSelect ? deptSelect.value.trim() : '';
+      if (!chosenDept) {
+        showToast('⚠️ กรุณาเลือกตำแหน่งหรือแผนกปัจจุบันของเครื่องมือก่อนบันทึก');
+        if (deptSelect) {
+          deptSelect.focus();
+          deptSelect.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          deptSelect.style.borderColor = '#ef4444';
+          deptSelect.style.boxShadow = '0 0 0 3px rgba(239, 68, 68, 0.25)';
+          setTimeout(function () {
+            deptSelect.style.borderColor = '';
+            deptSelect.style.boxShadow = '';
+          }, 3500);
+        }
+        return;
+      }
 
       var checklistDetails = [];
       if (currentForm && currentForm.items) {

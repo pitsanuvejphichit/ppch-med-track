@@ -4540,8 +4540,8 @@
                     <th style="width: 125px;">รหัส</th>
                     <th>เครื่องมือแพทย์</th>
                     <th style="width: 150px;">แผนก</th>
-                    <th style="width: 90px; text-align: center;" title="สถานะความพร้อมใช้ของเครื่อง (✓ พร้อมใช้ / 🔧 ผ่อนผัน / 🔨 กำลังซ่อม / ✕ ชำรุด)">พร้อมใช้</th>
-                    <th style="width: 90px; text-align: center;" id="thDailyCheckCol" title="สถานะการตรวจเช็ควันนี้ (✓ ตรวจแล้ว / 🕒 รอตรวจ)">ตรวจวันนี้</th>
+                    <th style="width: 90px; text-align: center;" title="สถานะของเครื่องมือแพทย์ (✓ พร้อมใช้ / ✕ เสีย / 🔧 อนุญาตให้ใช้ / ⚙ กำลังซ่อม)">สถานะ</th>
+                    <th style="width: 90px; text-align: center;" id="thDailyCheckCol" title="สถานะการตรวจเช็ควันนี้ (✓ ตรวจแล้ว / 🕒 ยังไม่ได้ตรวจ)">ตรวจวันนี้</th>
                     <th class="btn-action-col no-print" style="width: 76px; text-align: center;">จัดการ</th>
                   </tr>
                 </thead>
@@ -6877,17 +6877,8 @@
         });
       }
 
-      // 1. Daily Inspection Status (ตรวจเช็ควันนี้ / รอบนี้)
-      var dailyCheckState = 'pending'; // 'checked_pass', 'checked_conditional', 'checked_fail', 'pending'
-      if (evOnDate) {
-        if (evOnDate.result === 'abnormal') {
-          dailyCheckState = 'checked_fail';
-        } else if (hasConditionalItems(evOnDate)) {
-          dailyCheckState = 'checked_conditional';
-        } else {
-          dailyCheckState = 'checked_pass';
-        }
-      }
+      // 1. Daily Inspection Status (ตรวจเช็ควันนี้ / รอบนี้: ตรวจแล้ว vs ยังไม่ได้ตรวจ)
+      var dailyCheckState = evOnDate ? 'checked' : 'pending';
 
       // 2. Equipment Readiness Status (ความพร้อมใช้ของตัวเครื่อง)
       var readinessState = 'ready'; // 'ready', 'conditional_ready', 'in_progress', 'abnormal'
@@ -7087,7 +7078,7 @@
         var dailyCheckBadge = '';
         var actionBtns = [];
 
-        // ==================== COLUMN 1: ความพร้อมใช้ของเครื่อง (READINESS STATUS) ====================
+        // ==================== COLUMN 1: สถานะเครื่องมือแพทย์ (EQUIPMENT STATUS) ====================
         if (dual.readinessState === 'ready') {
           var repInfo = (window.PPCH_STORE && window.PPCH_STORE.getRecentRepairedDefectInfo)
             ? window.PPCH_STORE.getRecentRepairedDefectInfo(eq.id)
@@ -7095,29 +7086,25 @@
           var repNote = (repInfo && repInfo.isAwaitingPostRepairCheck)
             ? ' (เพิ่งซ่อมเสร็จเมื่อ ' + repInfo.repairedAt + ' • รอยืนยันตรวจเช็คเวรนี้)'
             : '';
-          readinessBadge = '<div class="status-symbol-btn symbol-ready" title="ความพร้อมใช้: พร้อมใช้งานปกติ' + repNote + '" onclick="location.href=\'eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '\'"><span class="material-icons-round">check_circle</span></div>';
+          readinessBadge = '<div class="status-symbol-btn symbol-ready" title="สถานะ: พร้อมใช้งานปกติ' + repNote + '" onclick="location.href=\'eval.html?formId=' + eq.formId + '&deviceId=' + eq.id + '\'"><span class="material-icons-round">check_circle</span></div>';
         } else if (dual.readinessState === 'conditional_ready') {
           var allowReasonTxt = eq.allowUseReason ? (' (' + eq.allowUseReason + ')') : '';
           var allowDefectTxt = eq.abnormalReason ? (' | อาการรอซ่อม: ' + eq.abnormalReason) : '';
-          readinessBadge = '<div class="status-symbol-btn symbol-conditional" title="ความพร้อมใช้: ผ่อนผันใช้งานชั่วคราว' + allowReasonTxt + allowDefectTxt + ' (โดย ' + (eq.allowUseBy || 'เจ้าหน้าที่') + ')" onclick="openResolveModal(\'' + eq.id + '\')"><span class="material-icons-round">build_circle</span></div>';
+          readinessBadge = '<div class="status-symbol-btn symbol-conditional" title="สถานะ: อนุญาตให้ใช้ชั่วคราว (ผ่อนผันรอซ่อม)' + allowReasonTxt + allowDefectTxt + ' (โดย ' + (eq.allowUseBy || 'เจ้าหน้าที่') + ')" onclick="openResolveModal(\'' + eq.id + '\')"><span class="material-icons-round">build_circle</span></div>';
         } else if (dual.readinessState === 'in_progress') {
           var ackInfoTxt = eq.repairAcknowledgedBy ? (' (รับทราบโดย ' + eq.repairAcknowledgedBy + ')') : '';
-          readinessBadge = '<div class="status-symbol-btn symbol-in-progress" title="ความพร้อมใช้: กำลังซ่อมบำรุง / งดใช้ชั่วคราว' + ackInfoTxt + '" onclick="switchView(\'defective\')"><span class="material-icons-round">build</span></div>';
+          readinessBadge = '<div class="status-symbol-btn symbol-in-progress" title="สถานะ: กำลังซ่อมบำรุง / งดใช้งานชั่วคราว' + ackInfoTxt + '" onclick="switchView(\'defective\')"><span class="material-icons-round">build</span></div>';
         } else {
           var defectTxt = (eq.abnormalReason || (ev && ev.abnormalNote)) ? (' (' + (eq.abnormalReason || ev.abnormalNote) + ')') : '';
-          readinessBadge = '<div class="status-symbol-btn symbol-abnormal" title="ความพร้อมใช้: พบข้อบกพร่อง / รอรับทราบ' + defectTxt + '" onclick="openAcknowledgeModal(\'' + eq.id + '\')"><span class="material-icons-round">cancel</span></div>';
+          readinessBadge = '<div class="status-symbol-btn symbol-abnormal" title="สถานะ: เสีย / ชำรุด (รอรับทราบ)' + defectTxt + '" onclick="openAcknowledgeModal(\'' + eq.id + '\')"><span class="material-icons-round">cancel</span></div>';
         }
 
-        // ==================== COLUMN 2: ตรวจเช็ควันนี้ (DAILY INSPECTION STATUS) ====================
-        if (dual.dailyCheckState === 'checked_pass') {
-          var passTime = (ev && ev.evaluatedAt) ? ev.evaluatedAt.slice(11, 16) : '';
-          dailyCheckBadge = '<div class="status-symbol-btn symbol-ready" title="ตรวจเช็ควันนี้แล้ว: ปกติทุกข้อ' + (passTime ? ' (เวลา ' + passTime + ' น. โดย ' + (ev.evaluatedBy || '-') + ')' : '') + ' • คลิกเพื่อดูสลิป" onclick="openSlipModal(\'' + ev.id + '\')"><span class="material-icons-round">fact_check</span></div>';
-        } else if (dual.dailyCheckState === 'checked_conditional') {
-          var condTime = (ev && ev.evaluatedAt) ? ev.evaluatedAt.slice(11, 16) : '';
-          dailyCheckBadge = '<div class="status-symbol-btn symbol-ready" title="ตรวจเช็ควันนี้แล้ว: ผ่านเกณฑ์ตามเงื่อนไขผ่อนผัน' + (condTime ? ' (เวลา ' + condTime + ' น. โดย ' + (ev.evaluatedBy || '-') + ')' : '') + ' • คลิกเพื่อดูสลิป" onclick="openSlipModal(\'' + ev.id + '\')"><span class="material-icons-round">fact_check</span></div>';
-        } else if (dual.dailyCheckState === 'checked_fail') {
-          var failTime = (ev && ev.evaluatedAt) ? ev.evaluatedAt.slice(11, 16) : '';
-          dailyCheckBadge = '<div class="status-symbol-btn symbol-abnormal" title="ตรวจเช็ควันนี้แล้ว: พบข้อบกพร่อง' + (failTime ? ' (เวลา ' + failTime + ' น. โดย ' + (ev.evaluatedBy || '-') + ')' : '') + ' • คลิกเพื่อดูสลิป" onclick="openSlipModal(\'' + ev.id + '\')"><span class="material-icons-round">report_problem</span></div>';
+        // ==================== COLUMN 2: ตรวจวันนี้ (DAILY INSPECTION STATUS: ตรวจแล้ว vs ยังไม่ได้ตรวจ) ====================
+        if (ev) {
+          var evalTime = (ev && ev.evaluatedAt) ? ev.evaluatedAt.slice(11, 16) : '';
+          var evalNoteTxt = (ev.result === 'abnormal') ? ' (พบข้อบกพร่อง/แจ้งซ่อมแล้ว)' : (ev.keepConditional ? ' (ผ่านตามเงื่อนไขผ่อนผัน)' : ' (ปกติ)');
+          var evalDetailTxt = 'ตรวจเช็คแล้ววันนี้' + evalNoteTxt + (evalTime ? ' เวลา ' + evalTime + ' น. โดย ' + (ev.evaluatedBy || '-') : '') + ' • คลิกเพื่อดูสลิป';
+          dailyCheckBadge = '<div class="status-symbol-btn symbol-ready" title="' + evalDetailTxt + '" onclick="openSlipModal(\'' + ev.id + '\')"><span class="material-icons-round">fact_check</span></div>';
         } else {
           if (dual.readinessState === 'in_progress' || dual.readinessState === 'abnormal') {
             dailyCheckBadge = '<div class="status-symbol-btn symbol-pending" title="ยังไม่ได้ตรวจเช็ควันนี้ (เครื่องอยู่ระหว่างแจ้งซ่อม/งดใช้งาน)" onclick="switchView(\'defective\')"><span class="material-icons-round">schedule</span></div>';
@@ -8933,18 +8920,8 @@
           readinessCls = 'badge-abnormal';
         }
 
-        var checkTh = 'ยังไม่ได้ตรวจเช็ควันนี้';
-        var checkCls = 'badge-pending';
-        if (dual.dailyCheckState === 'checked_pass') {
-          checkTh = 'ตรวจแล้ว (ปกติ)';
-          checkCls = 'badge-ready';
-        } else if (dual.dailyCheckState === 'checked_conditional') {
-          checkTh = 'ตรวจแล้ว (ผ่านตามเงื่อนไขผ่อนผัน)';
-          checkCls = 'badge-ready';
-        } else if (dual.dailyCheckState === 'checked_fail') {
-          checkTh = 'ตรวจแล้ว (พบข้อบกพร่อง)';
-          checkCls = 'badge-abnormal';
-        }
+        var checkTh = dual.isChecked ? 'ตรวจแล้ว' : 'ยังไม่ได้ตรวจเช็ควันนี้';
+        var checkCls = dual.isChecked ? 'badge-ready' : 'badge-pending';
 
         var evaluator = (ev && ev.evaluatedBy) ? ev.evaluatedBy : '-';
         var evalTime = (ev && ev.evaluatedAt) ? ev.evaluatedAt : '-';
@@ -9014,14 +8991,7 @@
           readinessTh = 'พบข้อบกพร่อง/ชำรุด';
         }
 
-        var checkTh = 'ยังไม่ได้ตรวจเช็ควันนี้';
-        if (dual.dailyCheckState === 'checked_pass') {
-          checkTh = 'ตรวจแล้ว (ปกติ)';
-        } else if (dual.dailyCheckState === 'checked_conditional') {
-          checkTh = 'ตรวจแล้ว (ผ่านตามเงื่อนไขผ่อนผัน)';
-        } else if (dual.dailyCheckState === 'checked_fail') {
-          checkTh = 'ตรวจแล้ว (พบข้อบกพร่อง)';
-        }
+        var checkTh = dual.isChecked ? 'ตรวจแล้ว' : 'ยังไม่ได้ตรวจเช็ควันนี้';
 
         var evaluator = (ev && ev.evaluatedBy) ? ev.evaluatedBy : '-';
         var evalTime = (ev && ev.evaluatedAt) ? ev.evaluatedAt : '-';
